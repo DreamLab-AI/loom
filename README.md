@@ -82,10 +82,14 @@ generation produced the answer. The `grounding` sub-block reports the retrieval 
 
 ### Confidence-aware selective injection
 
-Grounding is only helpful when the query is actually on-ontology. 2026 research on *context
-interference* shows that injecting ontology context on a weak / off-topic match can **displace**
-the model's own parametric knowledge — so selective, confidence-scaled injection beats blanket
-grounding. Loom uses the retrieval score that `match()` already computes as the confidence
+Grounding is only helpful when the query is actually on-ontology. Research on *contextual
+interference* shows that injected context can **displace** the model's own parametric
+knowledge — models over-rely on retrieved evidence even when it is weak or off-topic
+([Lin et al. 2026, arXiv:2506.05154](https://arxiv.org/abs/2506.05154)), and irrelevant
+retrieved context measurably degrades answers
+([Yoran et al. 2024, arXiv:2310.01558](https://arxiv.org/abs/2310.01558);
+[Shi et al. 2023, arXiv:2302.00093](https://arxiv.org/abs/2302.00093)) — so selective,
+confidence-scaled injection beats blanket grounding. Loom uses the retrieval score that `match()` already computes as the confidence
 signal: a strong exact-title hit gets the full scaffold budget; a loose match gets a
 proportionally smaller one; a below-threshold match is skipped entirely.
 
@@ -120,6 +124,20 @@ Score both, then compare recall/quality and the per-answer `loom.grounding.top_s
 tokens (and less interference) on weak / off-topic ones. Protocol detail in
 [`bench/UPLIFT-BENCH-PROTOCOL.md`](bench/UPLIFT-BENCH-PROTOCOL.md); unit coverage in
 [`tests/test_confidence_injection.py`](tests/test_confidence_injection.py).
+
+**Verified live (2026-08-11, HP deployment, commit `4beba5f`).** The full standing test
+system passes with the new scaffold code — toolkit suite 6/6 PASS (scaffold selftest ·
+proxy integration · bench selftest · confidence unit · MCP server · pipeline pytest), repo
+suite 4/4 runnable PASS — and the deployed façade (flag on, 8143-class generation) shows
+the intended behaviour over HTTP:
+
+| Live query | `top_score` | Result |
+|---|---|---|
+| "what is a rollup in blockchain scaling?" (on-ontology) | 10.75 | full budget — `effective_budget` 1500, 683 tokens injected |
+| "best recipe for banana pancakes?" (off-ontology) | 0.0 | gate fired — `injected: false`, 0 tokens injected |
+
+The quality A/B (blanket vs confidence-aware over the shared question set) is the remaining
+step; the protocol below is ready to run as-is.
 
 ---
 

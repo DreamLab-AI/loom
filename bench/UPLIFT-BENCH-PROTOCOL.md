@@ -230,3 +230,22 @@ Score A and B with the SAME scorer/judge, then read two signals:
 Keep `--budget` and `LOOM_STRONG_MATCH_SCORE`/`LOOM_MIN_INJECT_SCORE`/
 `LOOM_MIN_INJECT_FRACTION` fixed across A and B so the only variable is the master
 switch. Unit coverage for the gate/scaling math: `tests/test_confidence_injection.py`.
+
+### Status — verified live, A/B pending (2026-08-11)
+
+The feature is deployed and verified on HP (loom `4beba5f`, rebuilt container, flag on):
+
+- **Standing tests** — toolkit suite (`llm-server/ontology/run-all-tests.sh`, with the new
+  scaffold synced in) 6/6 PASS: scaffold, proxy, bench, confidence, mcp, pipeline. Loom
+  repo suite (`bench/run-all-tests.sh`) PASS on all vendored suites (scaffold, bench,
+  confidence, mcp).
+- **Live HTTP probes** through `/v1/chat/completions`: an on-ontology query ("what is a
+  rollup in blockchain scaling?") scored `top_score` 10.75 → full `effective_budget` 1500
+  (683 tokens injected); an off-ontology query ("best recipe for banana pancakes?") scored
+  0.0 → `injected: false`, 0 tokens. Gate and full-budget paths both confirmed in
+  production.
+
+The quality A/B itself (steps above) has **not** been run yet — those two runs plus scoring
+are the open item. Grounding for the interference claim: Lin et al. 2026
+(arXiv:2506.05154, contextual interference / parametric-knowledge displacement), Yoran et
+al. 2024 (arXiv:2310.01558), Shi et al. 2023 (arXiv:2302.00093).

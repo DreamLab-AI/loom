@@ -14,6 +14,9 @@ import subprocess
 import sys
 
 APP = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "app")
+if not os.path.isdir(APP):
+    # flat toolkit layout (llm-server/ontology): the scaffold sits beside this test
+    APP = os.path.dirname(os.path.abspath(__file__))
 
 # A tiny probe program executed per-case: stub the index + section builder, call
 # scaffold(), and print the resulting grounding meta as `key=value` lines.

@@ -2,6 +2,7 @@ app/data/
 *.venv/
 .venv/
 **/node_modules/
+app/ontology-mcp/fixtures/
 **/__pycache__/
 uplift-results/
 *.pyc

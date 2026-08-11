@@ -81,10 +81,10 @@ NEIGHBOUR_DEFS = 2            # 1-hop neighbour definitions per seed (hops>=1)
 NEIGHBOUR_DEF_CHARS = 220     # neighbour one-liner definition truncation
 
 # --- confidence-aware selective injection (Loom optimisation #2) -------------
-# 2026 research on "context interference": injecting ontology context on a weak /
-# off-topic match can DISPLACE the model's own parametric knowledge, so selective,
-# confidence-scaled injection beats blanket grounding (see
-# docs/USING-ONTOLOGY-DATA-AGENTICALLY.md). The match() score is the confidence
+# Research on "contextual interference" (Lin et al. 2026, arXiv:2506.05154; Yoran et
+# al. 2024, arXiv:2310.01558): injecting ontology context on a weak / off-topic match
+# can DISPLACE the model's own parametric knowledge, so selective, confidence-scaled
+# injection beats blanket grounding (see docs/USING-ONTOLOGY-DATA-AGENTICALLY.md). The match() score is the confidence
 # signal — a strong exact-title hit scores >= EXACT_TITLE_WEIGHT; a loose overlap
 # barely clears MIN_SEED_SCORE. OPT-IN: with LOOM_CONFIDENCE_INJECTION unset the
 # behaviour is byte-identical to before (full budget whenever any seed matches).

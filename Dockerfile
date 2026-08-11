@@ -27,6 +27,6 @@ ENV ONTOLOGY_INDEX=/app/data/scaffold-index.json \
 
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=25s --retries=3 \
-  CMD curl -fsS http://127.0.0.1:8080/health || exit 1
+  CMD curl -fsS "http://127.0.0.1:${LOOM_FACADE_PORT:-8080}/health" || exit 1
 
 ENTRYPOINT ["/app/entrypoint.sh"]
