@@ -76,8 +76,50 @@ curl -sXPOST localhost:8084/v1/chat/completions \
 ```
 
 The response of a grounded completion carries a `loom` block (`injected_tokens`, `mode`,
-`generation`) so consumers can account for the grounding and prove which corpus generation
-produced the answer.
+`grounding`, `generation`) so consumers can account for the grounding and prove which corpus
+generation produced the answer. The `grounding` sub-block reports the retrieval confidence
+(`top_score`), `seed_count`, and `effective_budget` for that request.
+
+### Confidence-aware selective injection
+
+Grounding is only helpful when the query is actually on-ontology. 2026 research on *context
+interference* shows that injecting ontology context on a weak / off-topic match can **displace**
+the model's own parametric knowledge — so selective, confidence-scaled injection beats blanket
+grounding. Loom uses the retrieval score that `match()` already computes as the confidence
+signal: a strong exact-title hit gets the full scaffold budget; a loose match gets a
+proportionally smaller one; a below-threshold match is skipped entirely.
+
+| Env var | Default | Meaning |
+|---|---|---|
+| `LOOM_CONFIDENCE_INJECTION` | `0` (repo) / `1` (HP compose) | master switch; off = legacy blanket injection |
+| `LOOM_STRONG_MATCH_SCORE` | `8.0` | at/above this match score → full budget |
+| `LOOM_MIN_INJECT_SCORE` | `2.0` | below this top score → skip injection entirely |
+| `LOOM_MIN_INJECT_FRACTION` | `0.4` | weakest kept match still gets this fraction of budget |
+
+Default-off in the code is byte-identical to blanket injection, so it is safe to ship disabled
+and enable per deployment.
+
+**A/B testing it (on HP).** The switch is a runtime env on the *Loom* (injection is
+server-side), so recycle the container with each value and run the same scaffold benchmark
+against it — no rebuild needed:
+
+```bash
+python3 bench/bench_ontology_uplift.py generate --seed 7 --out bench/questions.jsonl   # one shared set
+
+# baseline — blanket injection
+LOOM_CONFIDENCE_INJECTION=0 docker compose up -d
+python3 bench/bench_ontology_uplift.py run --mode scaffold --questions bench/questions.jsonl --out A.jsonl
+
+# treatment — confidence-aware
+LOOM_CONFIDENCE_INJECTION=1 docker compose up -d
+python3 bench/bench_ontology_uplift.py run --mode scaffold --questions bench/questions.jsonl --out B.jsonl
+```
+
+Score both, then compare recall/quality and the per-answer `loom.grounding.top_score` /
+`effective_budget`. Expectation: unchanged on strong on-ontology questions, reduced injected
+tokens (and less interference) on weak / off-topic ones. Protocol detail in
+[`bench/UPLIFT-BENCH-PROTOCOL.md`](bench/UPLIFT-BENCH-PROTOCOL.md); unit coverage in
+[`tests/test_confidence_injection.py`](tests/test_confidence_injection.py).
 
 ---
 

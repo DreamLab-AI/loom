@@ -17,6 +17,12 @@ services:
       ONTOLOGY_BUDGET: "${LOOM_BUDGET:-1500}"
       LOOM_MIRROR_ON_START: "${LOOM_MIRROR_ON_START:-1}"
       ONTOLOGY_SITE: "https://narrativegoldmine.com"
+      # Confidence-aware selective injection (optimisation #2). Enabled here for the
+      # HP deployment; set LOOM_CONFIDENCE_INJECTION=0 to A/B against blanket grounding.
+      LOOM_CONFIDENCE_INJECTION: "${LOOM_CONFIDENCE_INJECTION:-1}"
+      LOOM_STRONG_MATCH_SCORE: "${LOOM_STRONG_MATCH_SCORE:-8.0}"   # full budget at/above this match score
+      LOOM_MIN_INJECT_SCORE: "${LOOM_MIN_INJECT_SCORE:-2.0}"       # below this top score → skip injection
+      LOOM_MIN_INJECT_FRACTION: "${LOOM_MIN_INJECT_FRACTION:-0.4}" # weakest kept match still gets this fraction of budget
     volumes:
       - loom-data:/app/data
     restart: unless-stopped

@@ -197,3 +197,36 @@ report identically (label model/scaffold-prose=path). Requires
 data/prose-index.json (in mirror.sh). Keep --budget identical across all
 modes; the landscape prose is appended LAST per section so the clamp drops it
 first under pressure — injected_tokens tells you what actually fit.
+
+## Mode: confidence-aware injection A/B (optimisation #2)
+
+This axis is not a bench `--mode`; it is a **server-side** toggle on the Loom.
+The façade decides how much scaffold to inject from the retrieval score, so you
+hold the bench mode fixed at `scaffold` and vary the Loom's environment between
+two container recycles. No rebuild — the switch is read at request time.
+
+```
+# one shared question set
+python3 bench_ontology_uplift.py generate --seed 7 --out questions.jsonl
+
+# A — blanket injection (baseline / legacy behaviour)
+LOOM_CONFIDENCE_INJECTION=0 docker compose up -d
+python3 bench_ontology_uplift.py run --mode scaffold --questions questions.jsonl --out A.jsonl
+
+# B — confidence-aware selective injection
+LOOM_CONFIDENCE_INJECTION=1 docker compose up -d
+python3 bench_ontology_uplift.py run --mode scaffold --questions questions.jsonl --out B.jsonl
+```
+
+Score A and B with the SAME scorer/judge, then read two signals:
+
+1. **Quality delta** — recall/quality should be *unchanged* on strong on-ontology
+   questions (those keep full budget) and must not regress on the set overall.
+2. **Efficiency / interference** — per-answer `loom.grounding` reports `top_score`
+   and `effective_budget`; on weak / off-ontology questions B should show a lower
+   `effective_budget` (or `injected=false`), i.e. fewer injected tokens for equal
+   or better answers. That reduction is the context-interference the switch avoids.
+
+Keep `--budget` and `LOOM_STRONG_MATCH_SCORE`/`LOOM_MIN_INJECT_SCORE`/
+`LOOM_MIN_INJECT_FRACTION` fixed across A and B so the only variable is the master
+switch. Unit coverage for the gate/scaling math: `tests/test_confidence_injection.py`.
