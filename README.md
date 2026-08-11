@@ -144,6 +144,14 @@ knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned cl
 - [`bench/`](bench/) — reproduce it: `bench_ontology_uplift.py` (objective, graph-derived
   gold, paired bootstrap CIs) + `UPLIFT-BENCH-PROTOCOL.md`.
 
+## Boundary — the Loom is the ontology only
+
+The Loom serves the **published ontology** (the reasoned generation) and nothing else. It
+**never reads or mirrors the working graph** (personal/working notes, which may become
+multi-user or private). Uplift *into* the ontology happens through VisionClaw's governed
+propose door, the forum/ACSP surface, or direct agentic writes into the corpus — never the
+Loom; the new generation is then mirrored here read-only. (DDD BC24 invariant I11.)
+
 ## Status & honesty
 
 Loom is a research/dev system on the DreamLab estate. The corpus it serves is **AI-generated
