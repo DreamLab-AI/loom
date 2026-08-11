@@ -1,0 +1,7 @@
+app/data/
+*.venv/
+.venv/
+**/node_modules/
+**/__pycache__/
+uplift-results/
+*.pyc

@@ -1,0 +1,24 @@
+# Ontology Loom — colocated deployment (Deployment A: Loom + model on one host).
+# The Loom façade runs in a container on the host network so it reaches the host's
+# llama.cpp model server directly (127.0.0.1). Swap the model on the host (systemd
+# unit) and the façade is unchanged — the model is a URL behind DISTILL_BACKEND_URL.
+#
+#   docker compose up --build -d
+#   curl http://127.0.0.1:8088/health
+services:
+  loom:
+    build: .
+    image: loom:local
+    container_name: loom
+    network_mode: host                     # reach the host llama-server at 127.0.0.1
+    environment:
+      LOOM_FACADE_PORT: "${LOOM_FACADE_PORT:-8088}"   # façade port on the host
+      DISTILL_BACKEND_URL: "${DISTILL_BACKEND_URL:-http://127.0.0.1:8085/v1}"  # host Muse
+      ONTOLOGY_BUDGET: "${LOOM_BUDGET:-1500}"
+      LOOM_MIRROR_ON_START: "${LOOM_MIRROR_ON_START:-1}"
+      ONTOLOGY_SITE: "https://narrativegoldmine.com"
+    volumes:
+      - loom-data:/app/data
+    restart: unless-stopped
+volumes:
+  loom-data:
