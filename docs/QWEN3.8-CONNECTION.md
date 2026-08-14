@@ -77,11 +77,15 @@ print(r.choices[0].message.reasoning_content) # chain-of-thought (if any)
 Thinking is **ON by default** at effort `xhigh`. Chain-of-thought arrives in
 `message.reasoning_content`; the answer in `.content`.
 
-- **Per-request effort** (`xhigh` | `medium` | `low` | `none`):
+- **Per-request effort** (`xhigh` | `medium` | `low` — verified live; `"none"` is REJECTED
+  by the chat template):
   ```jsonc
   { "chat_template_kwargs": {"reasoning_effort": "low"}, ... }
   ```
-  `"none"` disables thinking for that request (then use instruct-mode sampling).
+- **Disable thinking per request** (verified live — then use instruct-mode sampling):
+  ```jsonc
+  { "chat_template_kwargs": {"enable_thinking": false}, ... }
+  ```
 - **Server-side budget:** `REASONING_BUDGET` env on the `model` service
   (`-1` unrestricted, `0` off globally).
 - **preserve_thinking:** the server runs `--reasoning-preserve` — historical reasoning
@@ -96,6 +100,12 @@ Thinking is **ON by default** at effort `xhigh`. Chain-of-thought arrives in
 
 - **Runs in docker:** `cd ~/githubs/loom && docker compose up -d` starts both `loom-model`
   (engine, :8085) and `loom` (façade, :8084). Logs: `docker logs -f loom-model`.
+- **Verified at cutover (2026-08-14):** chat ✓, tool calling ✓, vision ✓ ("Red" on a red
+  test image), `reasoning_effort` low/medium/xhigh ✓, `enable_thinking:false` ✓, MTP
+  drafting active (~4 tok/draft) ✓, façade grounding against the new backend ✓ (683 tok
+  injected, top_score 10.75). Throughput ~42 tok/s end-to-end short-prompt. VRAM 45.4/48 GB
+  at full 262 K ctx — snug (GPU1 at 23.9/24.6); the server auto-fell-back from pipeline
+  parallelism on load, which is expected and fine.
 - **262 144 context is native** (no YaRN, unlike Muse's extended 256 K). Extension to 1 M
   is possible via YaRN but the KV cache would not fit alongside Q8 weights on 48 GB.
 - **MTP speculative decoding** (`--spec-type draft-mtp`, embedded `blk.64.nextn.*` head)
