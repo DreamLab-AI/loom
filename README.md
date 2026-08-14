@@ -4,8 +4,13 @@
 model-swappable façade.** You point a consumer (an agent, an email gateway, any
 OpenAI-compatible client) at one endpoint; Loom retrieves the relevant slice of a
 knowledge-graph corpus, injects it as budget-clamped context, and delegates generation to
-whatever model is deployed behind it. Swap the model — Gemma → Muse-Glimmer → next — and no
-consumer changes.
+whatever model is deployed behind it. Swap the model — Gemma → Muse-Glimmer → Qwen3.8 → next
+— and no consumer changes.
+
+Since 2026-08-14 the reference deployment ships the model engine **inside this stack**: the
+`model` service (`loom-model` container) serves **Qwen3.8-27B** (unsloth UD-Q8_K_XL, vision,
+embedded-MTP speculative decoding, 262 K native context) via llama.cpp on `:8085`, replacing
+the old host systemd unit. Client guide: [`docs/QWEN3.8-CONNECTION.md`](docs/QWEN3.8-CONNECTION.md).
 
 Loom is the *serving* half of a neurosymbolic pair. Its sibling
 [**knowledgeGraph**](https://github.com/DreamLab-AI/knowledgeGraph) (published at
@@ -72,7 +77,7 @@ curl -sXPOST localhost:8084/loom/scaffold \
 
 # grounded generation — scaffold-injected, then delegated to the model behind the façade
 curl -sXPOST localhost:8084/v1/chat/completions \
-  -d '{"model":"muse-glimmer-30B","messages":[{"role":"user","content":"what is a rollup?"}],"max_tokens":1536}'
+  -d '{"model":"qwen3.8-27B","messages":[{"role":"user","content":"what is a rollup?"}],"max_tokens":1536}'
 ```
 
 The response of a grounded completion carries a `loom` block (`injected_tokens`, `mode`,
@@ -145,14 +150,22 @@ step; the protocol below is ready to run as-is.
 
 Loom is a stdlib-Python + one-Node-dep container. Peer-clone it on any node and bring it up.
 
-**Deployment A — colocated with the model** (the reference deployment: Loom + GPU model on
-one host; the façade on the host network reaches the local model server):
+**Deployment A — colocated with the model** (the reference deployment: both facets are
+containers in this compose file — the `model` service is the GPU engine, the `loom` façade
+fronts it over the host network):
 
 ```bash
-docker compose up --build -d           # façade on :8084 (host network)
-export DISTILL_BACKEND_URL=http://127.0.0.1:8085/v1   # your local llama.cpp / vLLM / Ollama
-curl http://127.0.0.1:8084/health
+docker compose up --build -d           # model engine on :8085 + façade on :8084 (host network)
+curl http://127.0.0.1:8085/health      # llama.cpp engine (Qwen3.8-27B)
+curl http://127.0.0.1:8084/health      # façade
 ```
+
+The `model` service (`model/Dockerfile`) builds llama.cpp pinned to a validated commit
+(CUDA, sm_75 for this host's 2× Quadro RTX 6000) and serves
+`unsloth/Qwen3.8-27B-GGUF:UD-Q8_K_XL` + vision mmproj with embedded-MTP speculative
+decoding, layer-split across both GPUs, 262 K native context. Weights are mounted read-only
+from the host model store, not baked. To use an external model instead (llama.cpp / vLLM /
+Ollama anywhere), point `DISTILL_BACKEND_URL` at it and drop the `model` service.
 
 **Deployment B — sidecar beside consumers** (co-located with agents/email on a container
 network; delegate to a remote model URL). See VisionClaw `docker-compose.unified.yml` service

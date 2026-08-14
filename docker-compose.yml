@@ -1,19 +1,42 @@
 # Ontology Loom — colocated deployment (Deployment A: Loom + model on one host).
-# The Loom façade runs in a container on the host network so it reaches the host's
-# llama.cpp model server directly (127.0.0.1). Swap the model on the host (systemd
-# unit) and the façade is unchanged — the model is a URL behind DISTILL_BACKEND_URL.
+# BOTH facets are containers now: the `model` service is the llama.cpp engine
+# (Qwen3.8-27B on :8085, the network-default endpoint — replaced the muse-glimmer
+# systemd unit 2026-08-14), and the `loom` façade fronts it over the host network.
+# Swap the model by editing the `model` service — the façade is unchanged; the model
+# stays a URL behind DISTILL_BACKEND_URL.
 #
 #   docker compose up --build -d
-#   curl http://127.0.0.1:8088/health
+#   curl http://127.0.0.1:8085/health   # model engine
+#   curl http://127.0.0.1:8084/health   # façade
 services:
+  model:
+    build: ./model
+    image: loom-model:local
+    container_name: loom-model
+    network_mode: host                   # serve the LAN directly on 0.0.0.0:8085
+    gpus: all                            # both RTX 6000s, layer-split by llama.cpp
+    environment:
+      PORT: "${MODEL_PORT:-8085}"
+      CTX_SIZE: "${MODEL_CTX:-262144}"   # Qwen3.8 native context
+      SPEC: "${MODEL_SPEC:-mtp}"         # embedded-MTP speculative decoding
+      DRAFT_N_MAX: "${MODEL_DRAFT_N_MAX:-4}"
+      KV_TYPE: "${MODEL_KV_TYPE:-q8_0}"
+      REASONING_BUDGET: "${MODEL_REASONING_BUDGET:--1}"
+    volumes:
+      # Model store stays on the host (llm-server repo's models dir), mounted read-only.
+      - /home/john/githubs/llm-server/models:/models:ro
+    restart: unless-stopped
+
   loom:
     build: .
     image: loom:local
     container_name: loom
-    network_mode: host                     # reach the host llama-server at 127.0.0.1
+    network_mode: host                     # reach the model container at 127.0.0.1
+    depends_on:
+      - model
     environment:
       LOOM_FACADE_PORT: "${LOOM_FACADE_PORT:-8084}"   # façade port on the host
-      DISTILL_BACKEND_URL: "${DISTILL_BACKEND_URL:-http://127.0.0.1:8085/v1}"  # host Muse
+      DISTILL_BACKEND_URL: "${DISTILL_BACKEND_URL:-http://127.0.0.1:8085/v1}"  # loom-model (Qwen3.8-27B)
       ONTOLOGY_BUDGET: "${LOOM_BUDGET:-1500}"
       LOOM_MIRROR_ON_START: "${LOOM_MIRROR_ON_START:-1}"
       ONTOLOGY_SITE: "https://narrativegoldmine.com"
