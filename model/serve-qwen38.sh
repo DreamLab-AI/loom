@@ -39,9 +39,13 @@ MIN_P="${MIN_P:-0.0}"
 SPEC="${SPEC:-mtp}"
 DRAFT_N_MAX="${DRAFT_N_MAX:-3}"
 
-# Reasoning: thinking on by default (per-request reasoning_effort xhigh/medium/low/none
-# via the chat template). Budget -1 = unrestricted; preserve keeps historical thinking
-# blocks in context (Qwen's preserve_thinking — better KV reuse + consistency).
+# Reasoning: thinking on by default. Server default effort is MEDIUM (2026-08-15 —
+# xhigh can spiral to 17K-token traces on adversarial/incoherent prompts); clients
+# override per request with chat_template_kwargs {"reasoning_effort": "xhigh|medium|low"}
+# or disable with {"enable_thinking": false} ("none" is rejected by the template).
+# Budget -1 = unrestricted; preserve keeps historical thinking blocks in context
+# (Qwen's preserve_thinking — better KV reuse + consistency).
+REASONING_EFFORT="${REASONING_EFFORT:-medium}"
 REASONING_BUDGET="${REASONING_BUDGET:--1}"
 REASONING_PRESERVE="${REASONING_PRESERVE:-1}"
 
@@ -64,6 +68,9 @@ ARGS=(
     --temp "$TEMP" --top-p "$TOP_P" --top-k "$TOP_K" --min-p "$MIN_P"
     --reasoning-budget "$REASONING_BUDGET"
 )
+if [[ -n "$REASONING_EFFORT" && "$REASONING_EFFORT" != "default" ]]; then
+    ARGS+=(--chat-template-kwargs "{\"reasoning_effort\":\"$REASONING_EFFORT\"}")
+fi
 # Unified KV: all slots share one pool so a single request can use the full -c.
 if [[ "$KV_UNIFIED" == "1" ]]; then
     ARGS+=(-kvu)

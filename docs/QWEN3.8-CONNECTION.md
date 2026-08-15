@@ -74,7 +74,9 @@ print(r.choices[0].message.reasoning_content) # chain-of-thought (if any)
 
 ## 3. Reasoning control
 
-Thinking is **ON by default** at effort `xhigh`. Chain-of-thought arrives in
+Thinking is **ON by default at effort `medium`** (server-side default since 2026-08-15 —
+the model's own `xhigh` default can spiral to 17K-token traces on adversarial prompts;
+request `xhigh` explicitly for hard tasks). Chain-of-thought arrives in
 `message.reasoning_content`; the answer in `.content`.
 
 - **Per-request effort** (`xhigh` | `medium` | `low` — verified live; `"none"` is REJECTED

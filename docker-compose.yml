@@ -22,6 +22,7 @@ services:
       DRAFT_N_MAX: "${MODEL_DRAFT_N_MAX:-3}"  # swept 2026-08-15: n=3 29.9 tok/s > n=2 29.3 > n=4 26.3 > off 18.0
       KV_TYPE: "${MODEL_KV_TYPE:-q8_0}"
       REASONING_BUDGET: "${MODEL_REASONING_BUDGET:--1}"
+      REASONING_EFFORT: "${MODEL_REASONING_EFFORT:-medium}"  # server default; per-request override via chat_template_kwargs
     volumes:
       # Model store stays on the host (llm-server repo's models dir), mounted read-only.
       - /home/john/githubs/llm-server/models:/models:ro
