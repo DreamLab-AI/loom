@@ -2,8 +2,8 @@
 
 **A portable node that grounds LLM responses in a formal ontology, behind a stable,
 model-swappable façade.** You point a consumer (an agent, an email gateway, any
-OpenAI-compatible client) at one endpoint; Loom retrieves the relevant slice of a
-knowledge-graph corpus, injects it as budget-clamped context, and delegates generation to
+OpenAI-compatible client) at one endpoint; Loom retrieves the relevant slice of the
+knowledge graph, injects it as budget-clamped context, and delegates generation to
 whatever model is deployed behind it. Swap the model — Gemma → Muse-Glimmer → Qwen3.8 → next
 — and no consumer changes.
 
@@ -17,9 +17,14 @@ unit. Docs: [`docs/QWEN3.8-CONNECTION.md`](docs/QWEN3.8-CONNECTION.md) (model re
 Loom is the *serving* half of a neurosymbolic pair. Its sibling
 [**knowledgeGraph**](https://github.com/DreamLab-AI/knowledgeGraph) (published at
 [narrativegoldmine.com](https://narrativegoldmine.com)) is the corpus, the Logseq→OWL
-pipeline, and the method — *how you build an ontology*. Loom is *how you serve that ontology
-to ground an LLM at runtime*. It also reasons over the corpus alongside the
-[VisionClaw](https://github.com/DreamLab-AI/VisionClaw) engine.
+pipeline and the method — *how the ontology and the knowledge graph get built*. Loom is
+*how that checked graph gets served to ground an LLM at runtime*: it retrieves the relevant
+slice into a model's context so answers restate checked facts rather than guesses. This is
+the layer the 2026 industry calls a **context graph** (a label still settling; we use its
+assembly sense) — the top of the stack, building an agent's working set from everything
+beneath it. Loom does not reason; the symbolic check is
+Whelk's, in the sibling [VisionClaw](https://github.com/DreamLab-AI/VisionClaw) engine, which
+reasons over the same corpus.
 
 ---
 
@@ -198,7 +203,7 @@ knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned cl
 ```
 
 - **[knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph)** — the corpus + the
-  Logseq→OWL pipeline + the explorer. *Build your own ontology.* Loom **consumes** its
+  Logseq→OWL pipeline + the explorer. *Build your own ontology and knowledge graph.* Loom **consumes** its
   published generations; it does not duplicate them (see the separation note in
   [`docs/design/`](docs/design/)).
 - **[VisionClaw](https://github.com/DreamLab-AI/VisionClaw)** — GPU graph engine + OWL 2 EL
