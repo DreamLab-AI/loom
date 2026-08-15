@@ -24,12 +24,12 @@
     "60": "deployment-hardening"
   },
   "controlPlaneProbes": [
-    "/tmp/loom-venv/bin/python3 -c 'import flask, pyoxigraph; print(\"deps ok\")' 2>&1 || python3 -c 'import flask, pyoxigraph; print(\"deps ok (system)\")' 2>&1 || true",
-    "ls app/*.py tests/*.py bench/*.py 2>&1 | head -10 || true"
+    "python3 -c 'import pyoxigraph; print(f\"pyoxigraph {pyoxigraph.__version__}\")' 2>&1 || true",
+    "ls app/*.py tests/*.py bench/*.py 2>&1 | head -15 || true"
   ],
   "buildStep": {
-    "cmd": "python3 -m venv /tmp/loom-venv 2>/dev/null; /tmp/loom-venv/bin/pip install -r app/ontology-mcp/requirements.txt 2>&1 | tail -10 || true",
-    "degradeOnWasmFailure": false
+    "cmd": "python3 -c 'import pyoxigraph; print(f\"pyoxigraph {pyoxigraph.__version__}\")' 2>&1 && cd app/ontology-mcp && npm ci --ignore-scripts 2>&1 | tail -5 || true",
+    "degradeOnWasmFailure": true
   },
   "evaluatorEntrypoints": {
     "bench": "cd tests && python3 -m pytest -v 2>&1 | tail -30"
