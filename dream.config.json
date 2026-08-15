@@ -1,0 +1,48 @@
+{
+  "repo": "DreamLab-AI/loom",
+  "cron": "0 3 * * *",
+  "slots": [
+    {
+      "deep": "scaffold-retrieval",
+      "scan": ["ontology-proxy", "budget-clamping"]
+    },
+    {
+      "deep": "model-facade",
+      "scan": ["chat-completions", "model-passthrough"]
+    },
+    {
+      "deep": "confidence-injection",
+      "scan": ["grounding-scores", "selective-injection"]
+    },
+    {
+      "deep": "graph-engine",
+      "scan": ["pyoxigraph", "triple-loading"]
+    }
+  ],
+  "bonusModuli": {
+    "30": "benchmark-methodology",
+    "60": "deployment-hardening"
+  },
+  "controlPlaneProbes": [
+    "python3 -c 'import flask, pyoxigraph; print(\"deps ok\")' 2>&1 || true",
+    "ls app/*.py tests/*.py bench/*.py 2>&1 | head -10 || true"
+  ],
+  "buildStep": {
+    "cmd": "pip install -r app/ontology-mcp/requirements.txt 2>&1 | tail -5 || true",
+    "degradeOnWasmFailure": false
+  },
+  "evaluatorEntrypoints": {
+    "bench": "cd tests && python3 -m pytest test_confidence_injection.py -v 2>&1 | tail -30"
+  },
+  "competitors": ["LangChain RAG", "LlamaIndex", "Haystack", "DSPy"],
+  "adrConvention": "3-digit",
+  "extraDisciplines": [
+    "evaluation-is-not-promotion",
+    "witness-every-quantitative-claim",
+    "scaffold-is-the-product-not-prose"
+  ],
+  "ledgerPath": "docs/dream-cycle/LEDGER.md",
+  "branchPrefix": "dream/",
+  "labels": ["dream-cycle", "research"],
+  "autoMerge": false
+}
