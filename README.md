@@ -9,8 +9,10 @@ whatever model is deployed behind it. Swap the model — Gemma → Muse-Glimmer 
 
 Since 2026-08-14 the reference deployment ships the model engine **inside this stack**: the
 `model` service (`loom-model` container) serves **Qwen3.8-27B** (unsloth UD-Q8_K_XL, vision,
-embedded-MTP speculative decoding, 262 K native context) via llama.cpp on `:8085`, replacing
-the old host systemd unit. Client guide: [`docs/QWEN3.8-CONNECTION.md`](docs/QWEN3.8-CONNECTION.md).
+embedded-MTP speculative decoding tuned n=3, 262 K native context, thinking on at
+server-default `medium` effort) via llama.cpp on `:8085`, replacing the old host systemd
+unit. Docs: [`docs/QWEN3.8-CONNECTION.md`](docs/QWEN3.8-CONNECTION.md) (model reference) ·
+[`docs/REMOTE-CLIENT-SETUP.md`](docs/REMOTE-CLIENT-SETUP.md) (connect a LAN machine).
 
 Loom is the *serving* half of a neurosymbolic pair. Its sibling
 [**knowledgeGraph**](https://github.com/DreamLab-AI/knowledgeGraph) (published at
