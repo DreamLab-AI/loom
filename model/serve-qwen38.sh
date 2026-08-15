@@ -33,10 +33,11 @@ TOP_P="${TOP_P:-0.95}"
 TOP_K="${TOP_K:-20}"
 MIN_P="${MIN_P:-0.0}"
 
-# Speculative decoding via the embedded MTP head: mtp | off. n_max 1-6, hardware-
-# dependent (tune with bench); 4 was the sweet spot for Gemma 4 MTP on these cards.
+# Speculative decoding via the embedded MTP head: mtp | off. n_max swept on this
+# hardware 2026-08-15 (llm-server/logs/mtp-sweep.txt): 3 is best (29.9 tok/s greedy,
+# 50% acceptance; 1.66x over no-spec 18.0); acceptance falls monotonically with n.
 SPEC="${SPEC:-mtp}"
-DRAFT_N_MAX="${DRAFT_N_MAX:-4}"
+DRAFT_N_MAX="${DRAFT_N_MAX:-3}"
 
 # Reasoning: thinking on by default (per-request reasoning_effort xhigh/medium/low/none
 # via the chat template). Budget -1 = unrestricted; preserve keeps historical thinking

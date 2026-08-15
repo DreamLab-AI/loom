@@ -19,7 +19,7 @@ services:
       PORT: "${MODEL_PORT:-8085}"
       CTX_SIZE: "${MODEL_CTX:-262144}"   # Qwen3.8 native context
       SPEC: "${MODEL_SPEC:-mtp}"         # embedded-MTP speculative decoding
-      DRAFT_N_MAX: "${MODEL_DRAFT_N_MAX:-4}"
+      DRAFT_N_MAX: "${MODEL_DRAFT_N_MAX:-3}"  # swept 2026-08-15: n=3 29.9 tok/s > n=2 29.3 > n=4 26.3 > off 18.0
       KV_TYPE: "${MODEL_KV_TYPE:-q8_0}"
       REASONING_BUDGET: "${MODEL_REASONING_BUDGET:--1}"
     volumes:
