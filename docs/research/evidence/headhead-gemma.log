@@ -1,0 +1,29 @@
+
+=== HEAD-TO-HEAD: Gemma-4-31B (http://127.0.0.1:8084) sys='' ===
+  [PASS] AG1 Agentic   1.0 | get_weather(Tokyo)
+  [PASS] AG2 Agentic   1.0 | get_stock_price
+  [PASS] AG3 Agentic   1.0 | no tool + 36
+  [PASS] AG4 Agentic   1.0 | minutes=30
+  [PASS] AG5 Agentic   1.0 | weather->email chain
+  [PASS] AG6 Agentic   1.0 | recovered after error
+  [PART] AG7 Agentic   0.5 | partial
+  [PASS] AG8 Agentic   1.0 | JFK->LAX
+  [PASS] RE1 Reasoning 1.0 | correct
+  [PASS] RE2 Reasoning 1.0 | correct
+  [PASS] RE3 Reasoning 1.0 | correct
+  [PASS] RE4 Reasoning 1.0 | heat trick
+  [PASS] RE5 Reasoning 1.0 | correct
+  [PASS] RE6 Reasoning 1.0 | correct
+  [PASS] CD1 Coding    1.0 | tests pass
+  [PASS] CD2 Coding    1.0 | tests pass
+  [PASS] CD3 Coding    1.0 | tests pass
+  [PASS] CD4 Coding    1.0 | tests pass
+
+  CATEGORY   score
+  Agentic    7.5/8  (94%)
+  Reasoning  6.0/6  (100%)
+  Coding     4.0/4  (100%)
+
+  OVERALL: 17.5/18 = 97.2%
+  saved logs/headhead-Gemma-4-31B.json
+JSON_SUMMARY: {"model": "Gemma-4-31B", "overall": 97.2, "cats": {"Agentic": 94, "Reasoning": 100, "Coding": 100}}

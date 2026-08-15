@@ -34,7 +34,7 @@ TOP_K="${TOP_K:-20}"
 MIN_P="${MIN_P:-0.0}"
 
 # Speculative decoding via the embedded MTP head: mtp | off. n_max swept on this
-# hardware 2026-08-15 (llm-server/logs/mtp-sweep.txt): 3 is best (29.9 tok/s greedy,
+# hardware 2026-08-15 (docs/research/evidence/mtp-sweep.txt): 3 is best (29.9 tok/s greedy,
 # 50% acceptance; 1.66x over no-spec 18.0); acceptance falls monotonically with n.
 SPEC="${SPEC:-mtp}"
 DRAFT_N_MAX="${DRAFT_N_MAX:-3}"

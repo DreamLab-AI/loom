@@ -1,0 +1,2 @@
+# Captured live env — may contain WEBUI_SECRET_KEY / API keys. Never commit.
+open-webui.env

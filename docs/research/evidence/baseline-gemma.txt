@@ -1,0 +1,15 @@
+### run 1 ###
+  prefill : 5 tok @ 20.1 tok/s
+  decode  : 300 tok @ 46.8 tok/s
+  TTFT    : 248 ms
+  spec    : draft 216/328 accepted = 65.9%
+### run 2 ###
+  prefill : 5 tok @ 20.8 tok/s
+  decode  : 300 tok @ 49.1 tok/s
+  TTFT    : 240 ms
+  spec    : draft 221/311 accepted = 71.1%
+### run 3 ###
+  prefill : 5 tok @ 20.8 tok/s
+  decode  : 300 tok @ 51.1 tok/s
+  TTFT    : 241 ms
+  spec    : draft 224/300 accepted = 74.7%

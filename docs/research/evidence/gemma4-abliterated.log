@@ -1,0 +1,44 @@
+0.00.024.230 I log_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.024.231 I device_info:
+0.00.120.699 I   - CUDA0   : NVIDIA RTX 6000 Ada Generation (48510 MiB, 22127 MiB free)
+0.00.214.595 I   - CUDA1   : NVIDIA RTX 6000 Ada Generation (48502 MiB, 12221 MiB free)
+0.00.214.604 I   - CPU     : AMD Ryzen Threadripper PRO 7965WX 24-Cores (257100 MiB, 257100 MiB free)
+0.00.214.678 I system_info: n_threads = 24 (n_threads_batch = 24) / 48 | CUDA : ARCHS = 890 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.214.715 I srv          init: running without SSL
+0.00.214.748 I srv          init: using 47 threads for HTTP server
+0.00.214.830 I srv         start: binding port with default address family
+0.00.216.009 I srv          main: loading model
+0.00.216.016 I srv    load_model: loading model '/home/john/githubs/llm-server/models/gemma-4-26B-A4B-ara-abliterated/gemma4-ara-2pass-APEX-IQ.gguf'
+0.00.216.051 I common_init_result: fitting params to device memory ...
+0.00.216.051 I common_init_result: (for bugs during this step try to reproduce them with -fit off, or provide --verbose logs if the bug only occurs with -fit on)
+0.00.858.439 W load: override 'tokenizer.ggml.add_bos_token' to 'true' for Gemma4
+0.00.910.863 W load: control-looking token:    212 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.911.153 W load: control-looking token:     50 '<|tool_response>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.925.483 W load: special_eog_ids contains '<|tool_response>', removing '</s>' token from EOG list
+0.02.606.102 W llama_context: n_ctx_seq (32768) < n_ctx_train (262144) -- the full capacity of the model will not be utilized
+0.02.869.451 W common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+0.03.158.154 I srv    load_model: loaded multimodal model, '/home/john/githubs/llm-server/models/gemma-4-26B-A4B-ara-abliterated/mmproj-gemma4-f16.gguf'
+0.03.158.164 I srv    load_model: initializing slots, n_slots = 1
+0.03.197.786 W common_speculative_init: no implementations specified for speculative decoding
+0.03.197.790 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 32768
+0.03.197.886 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+0.03.197.888 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+0.03.197.888 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.03.197.905 W srv          init: --cache-idle-slots requires --kv-unified, disabling
+0.03.200.062 W common_chat_try_specialized_template: detected an outdated gemma4 chat template, applying compatibility workarounds. Consider updating to the official template.
+0.03.200.331 I init: chat template, example_format: '<|turn>system
+<|think|>You are a helpful assistant<turn|>
+<|turn>user
+Hello<turn|>
+<|turn>model
+Hi there<turn|>
+<|turn>user
+How are you?<turn|>
+<|turn>model
+'
+0.03.200.471 W common_chat_try_specialized_template: detected an outdated gemma4 chat template, applying compatibility workarounds. Consider updating to the official template.
+0.03.200.578 I srv          init: init: chat template, thinking = 1
+0.03.200.602 I srv          main: model loaded
+0.03.200.607 I srv          main: server is listening on http://0.0.0.0:8082
+0.03.200.611 I srv  update_slots: all slots are idle
+1057.52.097.626 

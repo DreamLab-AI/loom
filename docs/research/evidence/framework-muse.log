@@ -1,0 +1,25 @@
+=== raw ===
+run [muse-glimmer/raw]: 10/37 (0 errors)
+run [muse-glimmer/raw]: 20/37 (0 errors)
+run [muse-glimmer/raw]: 30/37 (0 errors)
+run [muse-glimmer/raw]: 37/37 (0 errors)
+run: wrote uplift-results/results-muse-glimmer-raw.jsonl (37 rows, 0 errors)
+=== scaffold ===
+run [muse-glimmer/scaffold]: 10/37 (0 errors)
+run [muse-glimmer/scaffold]: 20/37 (0 errors)
+run [muse-glimmer/scaffold]: 30/37 (0 errors)
+run [muse-glimmer/scaffold]: 37/37 (0 errors)
+run: wrote uplift-results/results-muse-glimmer-scaffold.jsonl (37 rows, 0 errors)
+=== scaffold-prose ===
+run [muse-glimmer/scaffold-prose]: 10/37 (0 errors)
+run [muse-glimmer/scaffold-prose]: 20/37 (0 errors)
+run [muse-glimmer/scaffold-prose]: 30/37 (0 errors)
+run [muse-glimmer/scaffold-prose]: 37/37 (0 errors)
+run: wrote uplift-results/results-muse-glimmer-scaffold-prose.jsonl (37 rows, 0 errors)
+=== tools ===
+run [muse-glimmer/tools]: 10/37 (0 errors)
+run [muse-glimmer/tools]: 20/37 (0 errors)
+run [muse-glimmer/tools]: 30/37 (0 errors)
+run [muse-glimmer/tools]: 37/37 (0 errors)
+run: wrote uplift-results/results-muse-glimmer-tools.jsonl (37 rows, 0 errors)
+MUSE_4AXES_DONE

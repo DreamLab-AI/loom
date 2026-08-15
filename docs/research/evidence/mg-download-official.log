@@ -1,0 +1,6 @@
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]Fetching 3 files:  33%|███▎      | 1/3 [06:59<13:59, 419.67s/it]Fetching 3 files:  67%|██████▋   | 2/3 [08:19<03:39, 219.97s/it]Fetching 3 files: 100%|██████████| 3/3 [41:52<00:00, 1038.73s/it]Fetching 3 files: 100%|██████████| 3/3 [41:52<00:00, 837.63s/it] 
+/home/john/githubs/llm-server/models/muse-glimmer-30B-official
+OFFICIAL_DONE exit=0 at 22:48:32
+  dflash-kquant.gguf magic=GGUF
+  mmproj-kquant.gguf magic=GGUF
+  muse-glimmer-30B-kquant-dynamic.gguf magic=GGUF

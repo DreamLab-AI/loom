@@ -1,0 +1,17 @@
+=== AGENTIC UPLIFT A/B: Muse-Glimmer-Q8 ===
+-- IN-DOMAIN (scaffold-relevant) --
+  [=] 1inch          eng=1 raw=0.2 scaf=0.2 | Automated Market Maker
+  [=] 2d-lidar       eng=1 raw=0.2 scaf=0.2 | Simultaneous Localisation and 
+  [=] axelar         eng=1 raw=1.0 scaf=1.0 | Validator Set
+  [UP] crdt           eng=1 raw=0.2 scaf=1.0 | Eventual Consistency
+  [=] balancer       eng=1 raw=0.2 scaf=0.2 | Arbitrage
+  [UP] actuators      eng=1 raw=0.2 scaf=1.0 | Feedback Control
+  [=] 6dof           eng=1 raw=0.2 scaf=0.2 | XR Applications
+  [UP] aerial-robot   eng=1 raw=0.2 scaf=1.0 | Flight Control System
+-- GENERAL (out-of-domain control) --
+  [=] g_checking     eng=1 raw=1.0 scaf=1.0
+  [=] g_food         eng=0 raw=1.0 scaf=1.0
+  [=] g_flight       eng=0 raw=1.0 scaf=1.0
+
+  IN-DOMAIN  raw 30.0% -> scaffold 60.0%  (uplift +30.0) | engaged 8/8
+  GENERAL    raw 100.0% -> scaffold 100.0%  (delta +0.0) | engaged 1/3 (expect 0)

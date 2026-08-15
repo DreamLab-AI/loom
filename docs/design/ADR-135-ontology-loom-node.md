@@ -235,7 +235,7 @@ Laws:
 - **Claim-time admission** replaces "429 past cap" (a pull worker has nobody to 429): `jobd`
   claims a job only when `depth < cap` AND estimated completion fits the deadline; otherwise it
   leaves the job unclaimed for the harness reaper.
-- **GPU flock must be CREATED, not referenced:** ship `~/githubs/llm-server/.gpu.lock`, patch the
+- **GPU flock must be CREATED, not referenced:** ship `~/githubs/loom/.gpu.lock`, patch the
   bench harnesses + protocol to take it (shared for benches), `jobd` tries it non-blocking.
   Arbitration: **benches always win**; `jobd` never preempts/kills a bench; jobs blocked past
   deadline expire `cause=gpu-contended`.

@@ -81,7 +81,7 @@ Notes:
 
 - **Open WebUI**: Admin → Connections → OpenAI API → URL `http://10.10.10.1:8085/v1`,
   key `not-needed`. Model appears as `qwen3.8-27B`. (A compose lives in
-  `llm-server/openwebui-docker/` on the host.)
+  `loom/legacy/openwebui-docker/` on the host.)
 - **aider**: `aider --openai-api-base http://10.10.10.1:8085/v1 --openai-api-key not-needed --model openai/qwen3.8-27B`
 - **LiteLLM / proxies**: provider `openai`, `api_base` as above.
 - **Anything speaking "Ollama"**: not exposed; use the OpenAI-compatible route above.

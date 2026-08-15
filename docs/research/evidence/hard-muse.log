@@ -1,0 +1,33 @@
+
+=== HARD HEAD-TO-HEAD: Muse-Glimmer-Q8 (http://127.0.0.1:8085) sys='Reasoning strength: high' ===
+  [PASS] HA1 Agentic   1.0 | filtered 2026+delivered -> 70
+  [PASS] HA2 Agentic   1.0 | checking total 4000, ACC4>half
+  [PASS] HA3 Agentic   1.0 | full pagination + food filter -> 450
+  [PASS] HA4 Agentic   1.0 | booked F2 + confirmation
+  [PASS] HA5 Agentic   1.0 | cancelled Acme John's tomorrow mtg (501)
+  [PASS] HA6 Agentic   1.0 | both conditions + 21 shares
+  [PASS] BR1 Agentic   1.0 | most-recent delivered +8% = 43.20
+  [PASS] BR2 Agentic   1.0 | declined (no such tool)
+  [PASS] BR3 Agentic   1.0 | C->F, correctly 'no'
+  [PASS] BR5 Agentic   1.0 | recognized impossibility
+  [PASS] HR1 Reasoning 1.0 | correct
+  [PASS] HR2 Reasoning 1.0 | correct
+  [PASS] HR3 Reasoning 1.0 | correct
+  [FAIL] HR4 Reasoning 0.0 | want 1/3, got 'The $36$ ordered outcomes are equally likely.
+
+* Sum $=
+  [PASS] HR5 Reasoning 1.0 | correct
+  [PASS] HR6 Reasoning 1.0 | correct
+  [PASS] HC1 Coding    1.0 | tests pass
+  [PASS] HC2 Coding    1.0 | tests pass
+  [PASS] HC3 Coding    1.0 | tests pass
+  [PASS] HC4 Coding    1.0 | tests pass
+  [PASS] HC5 Coding    1.0 | tests pass
+
+  CATEGORY   score
+  Agentic    10.0/10  (100%)
+  Reasoning  5.0/6  (83%)
+  Coding     5.0/5  (100%)
+
+  OVERALL: 20.0/21 = 95.2%
+JSON_SUMMARY: {"model": "Muse-Glimmer-Q8", "overall": 95.2, "cats": {"Agentic": 100, "Reasoning": 83, "Coding": 100}}

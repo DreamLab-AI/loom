@@ -1,0 +1,4 @@
+# Keep the build context tiny: only the source tarball + dg_server.py go into the image.
+*
+!llama-diffgemma-src.tar.gz
+!dg_server.py

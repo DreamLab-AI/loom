@@ -1,0 +1,34 @@
+# OpenWebUI — moved onto the shared `visionflow_runtime` network (was host-networked).
+#
+# Reaches DiffusionGemma by container DNS (`diffusiongemma:8084`) and the other host-local model
+# servers via `host.docker.internal`. Full prior env is preserved in open-webui.env (gitignored);
+# only the model URLs were rewired. State persists in the existing `open-webui` named volume.
+#
+#   docker compose pull && docker compose up -d
+#   # rollback: docker compose down && <recreate host-networked> (see openwebui-docker/README is N/A;
+#   #           the original was `--network host` with 127.0.0.1 model URLs)
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    env_file:
+      - open-webui.env
+    environment:
+      - PORT=3000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # so the non-containerized models stay reachable
+    ports:
+      - "3000:3000"
+    volumes:
+      - open-webui:/app/backend/data
+    networks:
+      - visionflow_runtime
+    restart: unless-stopped
+
+networks:
+  visionflow_runtime:
+    external: true
+
+volumes:
+  open-webui:
+    external: true            # existing named volume — preserves users/settings/chats

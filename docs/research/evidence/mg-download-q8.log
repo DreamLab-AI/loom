@@ -1,0 +1,6 @@
+bartowski Q8_0 download 07:56:28
+Error while downloading from https://huggingface.co/bartowski/Muse-Glimmer-30B-GGUF/resolve/main/Muse-Glimmer-30B-Q8_0.gguf: The read operation timed out
+Trying to resume download...
+models/muse-glimmer-30B/Muse-Glimmer-30B-Q8_0.gguf
+Q8_DONE exit=0 at 08:52:08
+GGUF

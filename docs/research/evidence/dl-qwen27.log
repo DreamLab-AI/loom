@@ -1,0 +1,8 @@
+Downloading Qwen3.6-27B UD-Q4_K_XL...
+Ignored error while writing commit hash to /home/john/.cache/huggingface/hub/models--unsloth--Qwen3.6-27B-GGUF/refs/main: [Errno 13] Permission denied: '/home/john/.cache/huggingface/hub/models--unsloth--Qwen3.6-27B-GGUF'.
+Fetching 1 files:   0%|          | 0/1 [00:00<?, ?it/s]Fetching 1 files: 100%|██████████| 1/1 [25:19<00:00, 1519.68s/it]Fetching 1 files: 100%|██████████| 1/1 [25:19<00:00, 1519.68s/it]
+/home/john/githubs/llm-server/models/Qwen3.6-27B
+QWEN27_DL_EXIT=0
+total 17G
+-rw-r--r-- 1 john john 17G Jun  7 14:51 Qwen3.6-27B-UD-Q4_K_XL.gguf
+QWEN27_DOWNLOAD_COMPLETE

@@ -1,0 +1,3 @@
+Ignored error while writing commit hash to /home/john/.cache/huggingface/hub/models--unsloth--gemma-4-31B-it-qat-GGUF/refs/main: [Errno 13] Permission denied: '/home/john/.cache/huggingface/hub/models--unsloth--gemma-4-31B-it-qat-GGUF'.
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]Fetching 3 files:  33%|███▎      | 1/3 [34:54<1:09:48, 2094.14s/it]Fetching 3 files: 100%|██████████| 3/3 [34:54<00:00, 698.05s/it]   
+/home/john/githubs/llm-server/models/gemma-4-31B-it-qat

@@ -294,7 +294,7 @@ Laws (all binding):
   leaves the job unclaimed for the harness reaper.
 - **`admitted`** probes `/v1/models`, records the **exact model id + file metadata**, and
   takes the GPU flock **non-blocking**.
-- **GPU flock must be CREATED, not referenced:** ship `~/githubs/llm-server/.gpu.lock`, patch
+- **GPU flock must be CREATED, not referenced:** ship `~/githubs/loom/.gpu.lock`, patch
   the bench harnesses + protocol to take it (shared for benches), `jobd` tries it
   non-blocking. Arbitration: **benches always win**; `jobd` never preempts/kills a bench; jobs
   blocked past deadline expire `cause=gpu-contended`.

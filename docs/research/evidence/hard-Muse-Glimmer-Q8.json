@@ -1,0 +1,225 @@
+{
+ "model": "Muse-Glimmer-Q8",
+ "cats": {
+  "Agentic": [
+   10.0,
+   10
+  ],
+  "Reasoning": [
+   5.0,
+   6
+  ],
+  "Coding": [
+   5.0,
+   5
+  ]
+ },
+ "tasks": [
+  {
+   "id": "HA1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "filtered 2026+delivered -> 70",
+   "trace": [
+    "get_user_id",
+    "get_orders",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details"
+   ],
+   "final": "Bob's orders placed in 2026 with status 'delivered':\n\n* Order 1001: year 2026, amount $30, status delivered\n* Order 1004: year 2026, amount $40, status delivered\n\nTotal = $30 + $40"
+  },
+  {
+   "id": "HA2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "checking total 4000, ACC4>half",
+   "trace": [
+    "list_accounts",
+    "get_account_type",
+    "get_account_type",
+    "get_account_type",
+    "get_account_type",
+    "get_balance",
+    "get_balance",
+    "get_balance"
+   ],
+   "final": "Your checking accounts are:\n\n* **ACC1** \u2013 checking \u2013 balance $1,500\n* **ACC3** \u2013 checking \u2013 balance $400\n* **ACC4** \u2013 checking \u2013 balance $2,100\n\nACC2 is savings and is excluded.\n\nC"
+  },
+  {
+   "id": "HA3",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "full pagination + food filter -> 450",
+   "trace": [
+    "get_transactions",
+    "get_transactions",
+    "get_transactions"
+   ],
+   "final": "Across all pages, the transactions in the **food** category are:\n\n* Page 1: $100\n* Page 2: $50\n* Page 3: $300\n\nTotal food amount = 100 + 50 + 300 = **$450**"
+  },
+  {
+   "id": "HA4",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "booked F2 + confirmation",
+   "trace": [
+    "search_flights",
+    "book_flight_id"
+   ],
+   "final": "I've booked the cheapest eligible flight from NYC to LA.\n\n\u2022 Flight: BlueJet (ID F2)\n\u2022 Price: $450\n\u2022 Duration: 7 hours\n\u2022 Airline is not RedAir and duration is under 8 hours\n\nConfirm"
+  },
+  {
+   "id": "HA5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "cancelled Acme John's tomorrow mtg (501)",
+   "trace": [
+    "search_contacts",
+    "get_meetings",
+    "cancel_meeting"
+   ],
+   "final": "I've cancelled the meeting with John Smith from Acme Corp that was scheduled for tomorrow."
+  },
+  {
+   "id": "HA6",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "both conditions + 21 shares",
+   "trace": [
+    "get_stock_price",
+    "get_account_balance"
+   ],
+   "final": "AAPL is currently $231.50, which is above $200, and your account balance is $5,000, which is at least $2,000.\n\nMaximum whole shares you can afford with $5,000:\n$5,000 / $231.50 = 2"
+  },
+  {
+   "id": "BR1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "most-recent delivered +8% = 43.20",
+   "trace": [
+    "get_user_id",
+    "get_orders",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details"
+   ],
+   "final": "Bob's user id is 42. His orders are 1001, 1002, 1003, 1004.\n\nDelivered orders:\n* 1001 \u2013 2026-03 \u2013 $30 \u2013 delivered\n* 1002 \u2013 2025-11 \u2013 $70 \u2013 delivered\n* 1004 \u2013 2026-08 \u2013 $40 \u2013 delive"
+  },
+  {
+   "id": "BR2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "declined (no such tool)",
+   "trace": [],
+   "final": "I\u2019m not able to retrieve your credit score. The tools I have access to for your accounts only let me list your account IDs and check balances for those accounts, and there\u2019s no cre"
+  },
+  {
+   "id": "BR3",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "C->F, correctly 'no'",
+   "trace": [
+    "get_weather"
+   ],
+   "final": "No. Right now in Miami the temperature is 22 \u00b0C, which is about 71.6 \u00b0F, below 75 \u00b0F."
+  },
+  {
+   "id": "BR5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "recognized impossibility",
+   "trace": [
+    "search_flights",
+    "search_flights",
+    "search_flights",
+    "search_flights",
+    "search_flights",
+    "search_flights",
+    "search_flights",
+    "search_flights"
+   ],
+   "final": "I searched for flights from NYC to LA and checked several airport code variations. The current options available are:\n\n* **F1** \u2013 RedAir \u2013 $380 \u2013 6h duration\n* **F4** \u2013 SkyWay \u2013 $4"
+  },
+  {
+   "id": "HR1",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "738"
+  },
+  {
+   "id": "HR2",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "5"
+  },
+  {
+   "id": "HR3",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "3"
+  },
+  {
+   "id": "HR4",
+   "cat": "Reasoning",
+   "score": 0.0,
+   "detail": "want 1/3, got 'The $36$ ordered outcomes are equally likely.\n\n* Sum $=7$ : '",
+   "final": "The $36$ ordered outcomes are equally likely.\n\n* Sum $=7$ : $(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)$  $6$ outcomes\n* Same value : $(1,1),(2,2),(3,3),(4,4"
+  },
+  {
+   "id": "HR5",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "24"
+  },
+  {
+   "id": "HR6",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "8"
+  },
+  {
+   "id": "HC1",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef longest_palindrome(s):\n    if not s:\n        return \"\"\n    n = len(s)\n    start = 0\n    max_len = 1\n    for i in range(n):\n        # odd length palindrome\n        l = r = i\n        while l >= 0 and r < n and s[l] == s[r]:\n            cu"
+  },
+  {
+   "id": "HC2",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef min_coins(coins, amount):\n    if amount < 0:\n        return -1\n    if amount == 0:\n        return 0\n    INF = amount + 1\n    dp = [INF] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        best = INF\n        for c in "
+  },
+  {
+   "id": "HC3",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef bsearch(a,t):\n    lo,hi=0,len(a)\n    while lo<hi:\n        m=(lo+hi)//2\n        if a[m]==t:\n            return m\n        if a[m]<t:\n            lo=m+1\n        else:\n            hi=m\n    return -1\n```"
+  },
+  {
+   "id": "HC4",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef merge(intervals):\n    if not intervals:\n        return []\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        last_start, last_end = merged[-1]\n        if start <= last_end:\n  "
+  },
+  {
+   "id": "HC5",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef evaluate(expr):\n    s = expr.replace(' ', '')\n    tokens = []\n    i = 0\n    n = len(s)\n    while i < n:\n        c = s[i]\n        if c.isdigit():\n            j = i\n            while j < n and s[j].isdigit():\n                j += 1\n      "
+  }
+ ],
+ "overall_pct": 95.2
+}

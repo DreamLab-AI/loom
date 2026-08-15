@@ -1,0 +1,389 @@
+[
+ {
+  "id": "1-hive",
+  "title": "1Hive",
+  "domain": "governance",
+  "q": 0.6,
+  "question": "What core mechanism does 1Hive fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Decentralized Autonomous Organization",
+  "gold_words": [
+   "decentralized",
+   "autonomous",
+   "organization"
+  ],
+  "gold_acr": "dao"
+ },
+ {
+  "id": "3-d-modeling-software",
+  "title": "3D Modeling Software",
+  "domain": "spatial-computing",
+  "q": 0.8,
+  "question": "What key capability does 3D Modeling Software primarily enable?",
+  "rel": "enables",
+  "gold": "3D Content Creation",
+  "gold_words": [
+   "content",
+   "creation"
+  ],
+  "gold_acr": "3cc"
+ },
+ {
+  "id": "6-do-f-tracking",
+  "title": "6DoF Tracking",
+  "domain": "spatial-computing",
+  "q": 0.8,
+  "question": "What key capability does 6DoF Tracking primarily enable?",
+  "rel": "enables",
+  "gold": "XR Applications",
+  "gold_words": [
+   "applications"
+  ],
+  "gold_acr": "xa"
+ },
+ {
+  "id": "access-control-system",
+  "title": "Access Control System",
+  "domain": "infrastructure",
+  "q": 0.52,
+  "question": "What core mechanism does Access Control System fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Authentication",
+  "gold_words": [
+   "authentication"
+  ],
+  "gold_acr": ""
+ },
+ {
+  "id": "accuracy",
+  "title": "Accuracy",
+  "domain": "artificial-intelligence",
+  "q": 0.68,
+  "question": "What core mechanism does Accuracy fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Confusion Matrix",
+  "gold_words": [
+   "confusion",
+   "matrix"
+  ],
+  "gold_acr": "cm"
+ },
+ {
+  "id": "actuators",
+  "title": "Actuators",
+  "domain": "robotics",
+  "q": 0.72,
+  "question": "What core mechanism does Actuators fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Feedback Control",
+  "gold_words": [
+   "feedback",
+   "control"
+  ],
+  "gold_acr": "fc"
+ },
+ {
+  "id": "addressing-scheme",
+  "title": "Addressing Scheme",
+  "domain": "infrastructure",
+  "q": 0.75,
+  "question": "What key capability does Addressing Scheme primarily enable?",
+  "rel": "enables",
+  "gold": "Content Identifier",
+  "gold_words": [
+   "content",
+   "identifier"
+  ],
+  "gold_acr": "ci"
+ },
+ {
+  "id": "aerial-robot",
+  "title": "Aerial Robot",
+  "domain": "robotics",
+  "q": 0.6,
+  "question": "What core mechanism does Aerial Robot fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Flight Control System",
+  "gold_words": [
+   "flight",
+   "control",
+   "system"
+  ],
+  "gold_acr": "fcs"
+ },
+ {
+  "id": "agent-identity",
+  "title": "Agent Identity",
+  "domain": "artificial-intelligence",
+  "q": 0.88,
+  "question": "What core mechanism does Agent Identity fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Authentication",
+  "gold_words": [
+   "authentication"
+  ],
+  "gold_acr": ""
+ },
+ {
+  "id": "agi-timelines",
+  "title": "AGI Timelines",
+  "domain": "ai",
+  "q": 0.88,
+  "question": "What key capability does AGI Timelines primarily enable?",
+  "rel": "enables",
+  "gold": "AI Governance",
+  "gold_words": [
+   "governance"
+  ],
+  "gold_acr": "ag"
+ },
+ {
+  "id": "ai-assisted-development-pr",
+  "title": "AI-Assisted Development Practice",
+  "domain": "infrastructure",
+  "q": null,
+  "question": "What core mechanism does AI-Assisted Development Practice fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Software Engineering",
+  "gold_words": [
+   "software",
+   "engineering"
+  ],
+  "gold_acr": "se"
+ },
+ {
+  "id": "ai-diagram-tools",
+  "title": "AI Diagram Tools",
+  "domain": "artificial-intelligence",
+  "q": 0.52,
+  "question": "What core mechanism does AI Diagram Tools fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Large Language Models",
+  "gold_words": [
+   "large",
+   "language",
+   "models"
+  ],
+  "gold_acr": "llm"
+ },
+ {
+  "id": "ai-safety-institute",
+  "title": "AI Safety Institute",
+  "domain": "governance",
+  "q": 0.75,
+  "question": "What core mechanism does AI Safety Institute fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Frontier AI",
+  "gold_words": [
+   "frontier"
+  ],
+  "gold_acr": "fa"
+ },
+ {
+  "id": "algorithm-layer",
+  "title": "Algorithm Layer",
+  "domain": "machine-learning",
+  "q": 0.88,
+  "question": "What core mechanism does Algorithm Layer fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Data Layer",
+  "gold_words": [
+   "data",
+   "layer"
+  ],
+  "gold_acr": "dl"
+ },
+ {
+  "id": "allo-protocol",
+  "title": "Allo Protocol",
+  "domain": "distributed-systems",
+  "q": 0.6,
+  "question": "What core mechanism does Allo Protocol fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Token",
+  "gold_words": [
+   "token"
+  ],
+  "gold_acr": ""
+ },
+ {
+  "id": "arbitrator-expertise",
+  "title": "Arbitrator Expertise",
+  "domain": "spatial-computing",
+  "q": 0.35,
+  "question": "What key capability does Arbitrator Expertise primarily enable?",
+  "rel": "enables",
+  "gold": "Informed decision-making",
+  "gold_words": [
+   "informed",
+   "decision",
+   "making"
+  ],
+  "gold_acr": "id"
+ },
+ {
+  "id": "asynchronous-collaboration",
+  "title": "Asynchronous Collaboration",
+  "domain": "distributed-collaboration",
+  "q": 0.68,
+  "question": "What core mechanism does Asynchronous Collaboration fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Version Control",
+  "gold_words": [
+   "version",
+   "control"
+  ],
+  "gold_acr": "vc"
+ },
+ {
+  "id": "authentication",
+  "title": "Authentication",
+  "domain": "security",
+  "q": 0.74,
+  "question": "What core mechanism does Authentication fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Cryptography",
+  "gold_words": [
+   "cryptography"
+  ],
+  "gold_acr": ""
+ },
+ {
+  "id": "automated-dispute-resoluti",
+  "title": "Automated Dispute Resolution",
+  "domain": "blockchain",
+  "q": 0.8,
+  "question": "What key capability does Automated Dispute Resolution primarily enable?",
+  "rel": "enables",
+  "gold": "Enforcement Mechanism",
+  "gold_words": [
+   "enforcement",
+   "mechanism"
+  ],
+  "gold_acr": "em"
+ },
+ {
+  "id": "axelar",
+  "title": "Axelar",
+  "domain": "blockchain",
+  "q": 0.72,
+  "question": "What core mechanism does Axelar fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Validator Set",
+  "gold_words": [
+   "validator"
+  ],
+  "gold_acr": "vs"
+ },
+ {
+  "id": "balancer",
+  "title": "Balancer",
+  "domain": "blockchain",
+  "q": 0.8,
+  "question": "What core mechanism does Balancer fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Arbitrage",
+  "gold_words": [
+   "arbitrage"
+  ],
+  "gold_acr": ""
+ },
+ {
+  "id": "basel-committee-on-banking",
+  "title": "Basel Committee on Banking Supervision",
+  "domain": "finance",
+  "q": 0.75,
+  "question": "What core mechanism does Basel Committee on Banking Supervision fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Risk Weighted Assets",
+  "gold_words": [
+   "risk",
+   "weighted",
+   "assets"
+  ],
+  "gold_acr": "rwa"
+ },
+ {
+  "id": "best-practice",
+  "title": "Best Practice",
+  "domain": "standards",
+  "q": 0.8,
+  "question": "What key capability does Best Practice primarily enable?",
+  "rel": "enables",
+  "gold": "Interoperability",
+  "gold_words": [
+   "interoperability"
+  ],
+  "gold_acr": ""
+ },
+ {
+  "id": "blind-signatures",
+  "title": "Blind Signatures",
+  "domain": "security",
+  "q": 0.72,
+  "question": "What core mechanism does Blind Signatures fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Public-Key Cryptography",
+  "gold_words": [
+   "public",
+   "cryptography"
+  ],
+  "gold_acr": "pc"
+ },
+ {
+  "id": "bounding-box-regression",
+  "title": "Bounding Box Regression",
+  "domain": "machine-learning",
+  "q": 0.62,
+  "question": "What core mechanism does Bounding Box Regression fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Computer Vision",
+  "gold_words": [
+   "computer",
+   "vision"
+  ],
+  "gold_acr": "cv"
+ },
+ {
+  "id": "case-management-system",
+  "title": "Case Management System",
+  "domain": "governance",
+  "q": 0.8,
+  "question": "What does Case Management System primarily use or rely on?",
+  "rel": "uses",
+  "gold": "Workflow Automation",
+  "gold_words": [
+   "workflow",
+   "automation"
+  ],
+  "gold_acr": "wa"
+ },
+ {
+  "id": "computation-graph",
+  "title": "Computation Graph",
+  "domain": "machine-learning",
+  "q": 0.62,
+  "question": "What core mechanism does Computation Graph fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Automatic Differentiation",
+  "gold_words": [
+   "automatic",
+   "differentiation"
+  ],
+  "gold_acr": "ad"
+ },
+ {
+  "id": "crdt",
+  "title": "CRDT",
+  "domain": "distributed-collaboration",
+  "q": 0.52,
+  "question": "What core mechanism does CRDT fundamentally require to function?",
+  "rel": "requires",
+  "gold": "Eventual Consistency",
+  "gold_words": [
+   "eventual",
+   "consistency"
+  ],
+  "gold_acr": "ec"
+ }
+]

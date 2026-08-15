@@ -330,3 +330,76 @@ Gemma only edging GPQA/HLE; **those are Meta's full-precision numbers, not yet i
 verified here.** Caveat: weaker prompt-injection resistance (Siren AgentDojo 28.4 vs 25.6) —
 matters for agentic deployments. Gemma disabled-but-available; the two can't co-reside on 48 GB.
 
+---
+
+## 2026-08-15 — Qwen3.8-27B cutover + full A/B vs recorded Muse baselines
+
+**DEPLOYED 2026-08-14:** `unsloth/Qwen3.8-27B-GGUF:UD-Q8_K_XL` (31.5 GB) + `mmproj-BF16`, served
+by the **loom docker stack** (`~/githubs/loom`, `loom-model` container, llama.cpp `030ebb55`
+CUDA sm_75) on :8085 — replaced Muse Glimmer (systemd units removed; Muse GGUFs kept on disk).
+262144 ctx **native** (no YaRN), q8_0 unified KV, **embedded-MTP** spec decode (`draft-mtp`,
+no `-md`, DRAFT_N_MAX=4), vision, tool calling. VRAM 45.4/48 GB at full ctx (snug; GPU1 23.9/24.6).
+Reasoning: `chat_template_kwargs {"reasoning_effort": xhigh|medium|low}` ("none" REJECTED);
+thinking-off = `{"enable_thinking": false}`. Suite: `scripts/run-qwen38-ab-suite.sh`, identical
+questions/caps/grader rubric as the 2026-08-11 Muse/Gemma runs. Qwen ran in its default
+best mode (thinking xhigh), as Muse ran "Reasoning strength: high".
+
+### Throughput (same probe, `bench-throughput.sh`)
+
+| Metric | **Qwen3.8 UD-Q8_K_XL** (deployed) | Muse Q8 (prior) |
+|---|---|---|
+| Prefill (cold) | ~677 tok/s | **~905 tok/s** |
+| Decode — with speculative | 26.3 tok/s greedy (content-dependent; ~42 observed on predictable text) | **~39 tok/s** (DFlash) |
+| Draft acceptance | 43.5% per-tok (MTP, n_max 4) | ~15% (block-16 DFlash) |
+| TTFT (2.4k prompt) | 5.1 s | — |
+
+### Quality suites (identical data + rubric)
+
+| Suite | **Qwen3.8** | Muse Q8 | Gemma 4 31B |
+|---|---|---|---|
+| Easy head-to-head (18) | **97.2%** | 97.2% | 97.2% |
+| Hard (21, corrected caps 16/16K) | **90.5%** (Agentic 10/10, HR 5/6, HC 4/5) | ~near-parity* (truncated run) | 90.5% |
+| **BullshitBench (26+5 ctrl)** | **67.3% (1.35/2)** — 13 full pushback, 4 accepted, 9 flag-then-comply | **83% (1.65/2)** — 19 pushback, 2 accepted | 46% (0.92/2) |
+| Controls (over-refusal) | 5/5 | 5/5 | 5/5 |
+| Ontology recall raw→scaffold | 21.4% → **96.4%** (+75.0) | 46.4% → 100% (+53.6) | 46.4% → 100% (+53.6) |
+| **In-domain agentic uplift** | 30% → **80% (+50)** | 30% → 60% (+30) | 30% → 40% (+10) |
+| General agentic control | 100% → 100% (neutral; gate engaged 1/3) | neutral | neutral |
+
+### Read
+
+1. **Qwen3.8 ties or wins every capability axis**: easy tie at ceiling; hard 90.5% clean (no
+   truncation — Muse's comparable run needed cap corrections); **best-in-house agentic adoption
+   of injected ontology facts (+50 vs Muse +30)** — the scaffold→tool-call conversion Muse was
+   previously best at.
+2. **BullshitBench is the one Muse retains: 83% vs 67.3%.** Qwen's signature failure is
+   **flag-then-comply** (9/26): it correctly notes the premise is fabricated ("no such unit…",
+   "not a real Basel III rule…") then builds the requested pseudo-framework anyway — half
+   credit. Outright acceptance is rare (4/26, vs Gemma's 10). For agentic use behind the loom
+   façade this is mitigated by grounding, but keep it in mind for autonomous flows: **Qwen is
+   more compliant under confident-nonsense pressure than Muse.**
+3. **Weaker parametric recall on the KG domain (21.4% raw)** but the scaffold closes it
+   (96.4%) — grounding matters *more* for Qwen, and it uses it better agentically.
+4. Throughput: prefill down ~25% vs Muse, decode greedy 26.3 vs 39 — heavier quant (31.5 vs
+   28 GB) + 17K-token thinking traces amplify wall-clock. MTP acceptance 43.5% at n_max 4;
+   sweep below. One pathological case: `leg_cds_01` generated 47K chars of reasoning
+   (16977 completion tokens) — xhigh thinking can spiral on incoherent premises; consider
+   `reasoning_effort: medium` + tighter `max_tokens` for latency-sensitive callers.
+5. **Net: cutover justified** — published-bench wins confirmed locally on capability;
+   context-faithfulness regression (−15.4pts) is real but Qwen still ~1.5× Gemma, and the
+   ontology-grounded path (the production path) is stronger than ever.
+
+Grades: `logs/bullshit-grades.json` (`qwen38` key); transcripts `logs/bullshit-qwen3.8-27B.json`
+(leg_cds_01 re-run at 32K budget after 2× 600 s timeouts); raw logs `logs/*qwen3.8*`.
+
+### MTP draft-n sweep (2026-08-15, `logs/mtp-sweep.txt`) — n=3 deployed
+
+| Config | Decode (greedy) | Acceptance | Prefill |
+|---|---|---|---|
+| spec off | 18.0 tok/s | — | 917 tok/s |
+| n=2 | 29.3 | 58.8% | 794 |
+| **n=3 (deployed)** | **29.9–30.0** | **50.3%** | 800 |
+| n=4 | 26.3 | 43.5% | 677 |
+
+**MTP = 1.66× decode** on this Turing rig; acceptance falls monotonically with n (n=6 leg
+failed to probe, but the trend made it moot). Gap to Muse's 39 tok/s is the heavier quant
+(31.5 vs 28 GB weights) — Q6_K would close it if throughput ever outranks quality.

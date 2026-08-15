@@ -1,0 +1,31 @@
+
+=== HARD HEAD-TO-HEAD: Gemma-4-31B (http://127.0.0.1:8084) sys='' ===
+  [PASS] HA1 Agentic   1.0 | filtered 2026+delivered -> 70
+  [PASS] HA2 Agentic   1.0 | checking total 4000, ACC4>half
+  [PASS] HA3 Agentic   1.0 | full pagination + food filter -> 450
+  [PASS] HA4 Agentic   1.0 | booked F2 + confirmation
+  [PASS] HA5 Agentic   1.0 | cancelled Acme John's tomorrow mtg (501)
+  [PASS] HA6 Agentic   1.0 | both conditions + 21 shares
+  [PASS] BR1 Agentic   1.0 | most-recent delivered +8% = 43.20
+  [PASS] BR2 Agentic   1.0 | declined (no such tool)
+  [FAIL] BR3 Agentic   0.0 | wrongly said above 75F
+  [PASS] BR5 Agentic   1.0 | recognized impossibility
+  [FAIL] HR1 Reasoning 0.0 | want 738, got 'To find the number of ordered pairs $(a,b)$ of positive
+  [PASS] HR2 Reasoning 1.0 | correct
+  [PASS] HR3 Reasoning 1.0 | correct
+  [PASS] HR4 Reasoning 1.0 | correct
+  [PASS] HR5 Reasoning 1.0 | correct
+  [PASS] HR6 Reasoning 1.0 | correct
+  [PASS] HC1 Coding    1.0 | tests pass
+  [PASS] HC2 Coding    1.0 | tests pass
+  [PASS] HC3 Coding    1.0 | tests pass
+  [PASS] HC4 Coding    1.0 | tests pass
+  [PASS] HC5 Coding    1.0 | tests pass
+
+  CATEGORY   score
+  Agentic    9.0/10  (90%)
+  Reasoning  5.0/6  (83%)
+  Coding     5.0/5  (100%)
+
+  OVERALL: 19.0/21 = 90.5%
+JSON_SUMMARY: {"model": "Gemma-4-31B", "overall": 90.5, "cats": {"Agentic": 90, "Reasoning": 83, "Coding": 100}}

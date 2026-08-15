@@ -2,9 +2,9 @@
 # Run the complete ontology-toolkit test system (the same suites used to build it).
 # Suites: scaffold selftest · proxy integration tests · uplift-bench selftest ·
 #         confidence-injection unit test · MCP server tests · pipeline unit suite.
-# This copy is wired for the Loom repo layout (code in ../app, tests in ../tests);
-# the canonical flat-layout copy lives in llm-server/ontology on HP.
-# Suites whose files are not vendored into this repo (proxy, pipeline) are SKIPped.
+# This copy is wired for the Loom repo layout (code in ../app, tests in ../tests).
+# All suites are vendored here (llm-server retired 2026-08-15); pipeline needs the
+# repo-root .venv (python3 -m venv .venv && .venv/bin/pip install 'rdflib>=7' pytest).
 # Exit nonzero if any suite fails.
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -27,7 +27,7 @@ run scaffold    python3 "$APP"/ontology_scaffold.py --selftest
 if [[ -f "$APP"/test_proxy.py ]]; then
   run proxy     python3 "$APP"/test_proxy.py
 else
-  RESULT[proxy]="SKIP (test_proxy.py lives in the llm-server/ontology toolkit)"
+  RESULT[proxy]="SKIP (app/test_proxy.py missing)"
 fi
 run bench       env PYTHONPATH="$APP" python3 bench_ontology_uplift.py --selftest
 run confidence  python3 ../tests/test_confidence_injection.py
@@ -39,7 +39,7 @@ fi
 if [[ -x "$APP"/../.venv/bin/python && -d "$APP"/pipeline/tests ]]; then
   run pipeline "$APP"/../.venv/bin/python -m pytest "$APP"/pipeline/tests -q
 else
-  RESULT[pipeline]="SKIP (pipeline suite lives in the llm-server/ontology toolkit)"
+  RESULT[pipeline]="SKIP (run: python3 -m venv .venv && .venv/bin/pip install 'rdflib>=7' pytest)"
 fi
 
 echo "── ontology toolkit test system ──"

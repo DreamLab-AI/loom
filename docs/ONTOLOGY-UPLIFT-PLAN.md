@@ -2,7 +2,7 @@
 
 **Deployed:** 2026-08-11 by the workspace Claude session (via `ssh hp`).
 **Audience:** the agent/operator running the Muse-Glimmer ↔ Gemma comparison benches in
-`~/githubs/llm-server/scripts/` (`bench-headhead.py`, `bench-headhead-hard.py`, …).
+`loom/legacy/scripts/` (`bench-headhead.py`, `bench-headhead-hard.py`, …).
 **Ask from John:** once the data lands, restart the current test matrix **with the
 ontology scaffold engaged as a third axis** — raw vs scaffolded, per model.
 
@@ -22,7 +22,7 @@ The retrieval recipe is the one proven in PRD-020 (agentbox "one brain"):
 *link → seed → expand → serialise → budget-clamp → prepend*. It ran 18/18 tests
 there; this is the portable re-packaging.
 
-## Directory layout (`~/githubs/llm-server/ontology/`)
+## Directory layout (`~/githubs/loom/ (formerly llm-server/ontology/)`)
 
 | Path | What |
 |---|---|

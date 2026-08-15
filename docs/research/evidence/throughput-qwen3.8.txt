@@ -1,0 +1,5 @@
+── baseline: qwen38-mtp (port 8085) ──
+  prefill : 3450 tok @ 676.8 tok/s
+  decode  : 300 tok @ 26.3 tok/s
+  TTFT    : 5098 ms
+  spec    : draft 189/434 accepted = 43.5%

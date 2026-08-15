@@ -1,0 +1,25 @@
+# ontology-proxy-tools.service — A3 tools-mode proxy (agentic ontology traversal)
+# Sibling of ontology-proxy.service (scaffold, :8086). Runs tools mode on :8087,
+# same upstream (Muse :8085). Lets the model traverse the ontology via
+# ontology_search / ontology_class_get / ontology_neighbours (max 4 tool rounds).
+
+[Unit]
+Description=Ontology tools-mode proxy (A3 agentic traversal, llama.cpp front)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=john
+WorkingDirectory=/home/john/githubs/llm-server/ontology
+ExecStart=/usr/bin/python3 ontology_proxy.py
+Environment=ONTOLOGY_UPSTREAM=http://127.0.0.1:8085
+Environment=ONTOLOGY_PROXY_PORT=8087
+Environment=ONTOLOGY_INDEX=/home/john/githubs/llm-server/ontology/data/scaffold-index.json
+Environment=ONTOLOGY_MODE=tools
+Environment=ONTOLOGY_BUDGET=1500
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

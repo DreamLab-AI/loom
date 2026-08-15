@@ -200,7 +200,7 @@ submitted → admitted → queued → running → distilled → stamped → deli
 ```
 
 - **Claim-time admission** (a pull worker has nobody to 429): `jobd` claims **only** when queue depth < cap AND estimated completion fits the deadline; otherwise it leaves the job unclaimed for the harness reaper.
-- **admitted** probes `/v1/models`, records the exact model id + file path/metadata, and takes the GPU flock (`~/githubs/llm-server/.gpu.lock`) **non-blocking**. Arbitration: **benches always win**; `jobd` never preempts a bench; a job blocked past deadline expires `cause=gpu-contended`.
+- **admitted** probes `/v1/models`, records the exact model id + file path/metadata, and takes the GPU flock (`~/githubs/loom/.gpu.lock`) **non-blocking**. Arbitration: **benches always win**; `jobd` never preempts a bench; a job blocked past deadline expires `cause=gpu-contended`.
 - **running** re-probes model identity per LLM call and aborts on mid-job change; map-reduce over the class set (scaffold retrieval → 1..N LLM calls).
 - `jobd` is **stateless-by-design**: queue durability = re-pull on restart; nothing persisted on HP.
 

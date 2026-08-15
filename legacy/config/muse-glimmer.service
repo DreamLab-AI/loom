@@ -1,0 +1,19 @@
+[Unit]
+Description=Muse Glimmer 30B (dense + vision, Unsloth UD-Q8_K_XL) — mainline llama.cpp OpenAI server on :8085
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=john
+Group=john
+WorkingDirectory=/home/john/githubs/llm-server
+Environment=HOME=/home/john
+Environment=PATH=/opt/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/john/githubs/llm-server/scripts/serve-muse-glimmer.sh
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target

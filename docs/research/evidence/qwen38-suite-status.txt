@@ -1,0 +1,7 @@
+2026-08-14 22:05:47  suite start (bullshit restarted from scratch after tmux migration)
+2026-08-15 00:17:14  bullshit done rc=0
+2026-08-15 01:00:12  uplift done rc=0
+2026-08-15 01:11:25  agentic-uplift done rc=0
+2026-08-15 01:13:46  headhead done rc=0
+2026-08-15 01:27:11  headhead-hard done rc=0
+2026-08-15 01:27:11  ALL DONE

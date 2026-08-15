@@ -1,0 +1,41 @@
+=== MTP DRAFT_N_MAX sweep 2026-08-15 01:52:45 ===
+ Container loom-model Recreate 
+ Container loom-model Recreated 
+ Container loom-model Starting 
+ Container loom-model Started 
+--- SPEC=off N=0 ---
+── baseline: spec=off,n=0 (port 8085) ──
+  prefill : 3450 tok @ 917.5 tok/s
+  decode  : 300 tok @ 18.0 tok/s
+  TTFT    : 3760 ms
+ Container loom-model Recreate 
+ Container loom-model Recreated 
+ Container loom-model Starting 
+ Container loom-model Started 
+--- SPEC=mtp N=2 ---
+── baseline: spec=mtp,n=2 (port 8085) ──
+  prefill : 3450 tok @ 794.0 tok/s
+  decode  : 300 tok @ 29.3 tok/s
+  TTFT    : 4345 ms
+  spec    : draft 161/274 accepted = 58.8%
+ Container loom-model Recreate 
+ Container loom-model Recreated 
+ Container loom-model Starting 
+ Container loom-model Started 
+--- SPEC=mtp N=3 ---
+── baseline: spec=mtp,n=3 (port 8085) ──
+  prefill : 3450 tok @ 789.6 tok/s
+  decode  : 300 tok @ 29.9 tok/s
+  TTFT    : 4369 ms
+  spec    : draft 179/356 accepted = 50.3%
+ Container loom-model Recreate 
+ Container loom-model Recreated 
+ Container loom-model Starting 
+ Container loom-model Started 
+--- SPEC=mtp N=6 ---
+── baseline: spec=mtp,n=6 (port 8085) ──
+ Container loom-model Recreate 
+ Container loom-model Recreated 
+ Container loom-model Starting 
+ Container loom-model Started 
+restored default n=4; done 01:54:55

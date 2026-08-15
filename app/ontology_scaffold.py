@@ -24,7 +24,7 @@ unchanged — the caller falls back to the raw prompt, so it is always safe to
 call unconditionally in an A/B loop.
 
 Index location: env ``ONTOLOGY_INDEX``, default
-``~/githubs/llm-server/ontology/data/scaffold-index.json``.
+``~/githubs/loom/app/data/scaffold-index.json``.
 
 CLI
 ---
@@ -65,7 +65,7 @@ from typing import Any, Iterable, Optional
 
 __all__ = ["ScaffoldIndex", "scaffold", "scaffold_messages", "slugify", "get_index"]
 
-DEFAULT_INDEX_PATH = "~/githubs/llm-server/ontology/data/scaffold-index.json"
+DEFAULT_INDEX_PATH = "~/githubs/loom/app/data/scaffold-index.json"
 ENV_VAR = "ONTOLOGY_INDEX"
 
 # --- tuning knobs -----------------------------------------------------------
@@ -286,7 +286,7 @@ def get_index(path: Optional[str] = None) -> ScaffoldIndex:
 # "cl": "Current Landscape" research prose}. OPTIONAL by design — a missing
 # file or missing slug degrades to structural-only, silently.
 
-DEFAULT_PROSE_PATH = "~/githubs/llm-server/ontology/data/prose-index.json"
+DEFAULT_PROSE_PATH = "~/githubs/loom/app/data/prose-index.json"
 PROSE_ENV_VAR = "ONTOLOGY_PROSE_INDEX"
 PROSE_SEEDS = 2            # only the top seeds get prose (budget discipline)
 PROSE_CL_CHARS = 1200      # landscape prose used per seed

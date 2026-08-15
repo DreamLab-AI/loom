@@ -1,0 +1,8 @@
+Downloading main QAT model (exact filename)...
+/home/john/githubs/llm-server/models/gemma-4-26B-A4B-it-qat/gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf
+MODEL_DL_EXIT=0
+total 15G
+-rw-r--r-- 1 john john 441M Jun  7 13:32 gemma-4-26B-A4B-it-qat-assistant-MTP-Q8_0.gguf
+-rw-r--r-- 1 john john  14G Jun  7 13:54 gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf
+-rw-r--r-- 1 john john 1.2G Jun  7 13:31 mmproj-BF16.gguf
+MODEL_DOWNLOAD_COMPLETE

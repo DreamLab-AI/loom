@@ -1,0 +1,35 @@
+0.00.173.506 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.397.432 W srv  llama_server: -----------------
+0.00.397.434 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.397.435 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.397.435 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.397.435 W srv  llama_server: -----------------
+0.00.398.700 I srv    load_model: loading model 'models/muse-glimmer-30B/Muse-Glimmer-30B-Q8_0.gguf'
+0.00.719.626 E llama_init_from_model: failed to initialize the context: dflash requires ctx_other to be set (this warning is normal during memory fitting)
+0.00.753.922 W srv    load_model: [spec] failed to measure draft model memory: failed to create llama_context from model
+0.01.256.683 W load: setting token '<|message|>' (200023) attribute to USER_DEFINED (16), old attributes: 8
+0.01.256.687 W load: setting token '<|start|>' (200022) attribute to USER_DEFINED (16), old attributes: 8
+0.01.259.341 W load: special_eot_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.05.187.549 I common_speculative_init_result: loading draft model 'models/muse-glimmer-30B-official/dflash-kquant.gguf'
+0.05.417.593 W load: setting token '<|message|>' (200023) attribute to USER_DEFINED (16), old attributes: 8
+0.05.417.596 W load: setting token '<|start|>' (200022) attribute to USER_DEFINED (16), old attributes: 8
+0.05.420.884 W load: special_eot_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.05.972.262 I srv    load_model: loaded multimodal model, 'models/muse-glimmer-30B-official/mmproj-kquant.gguf'
+0.06.030.069 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 131072, kv_unified = 'true'
+0.06.030.097 I common_speculative_impl_draft_dflash: adding speculative implementation 'draft-dflash'
+0.06.030.100 I common_speculative_impl_draft_dflash: - n_max=15, n_min=0, p_min=0.00
+0.06.030.101 I common_speculative_impl_draft_dflash: - block_size=16, mask_token_id=201818, n_extract=5
+0.06.057.175 I srv          init: chat template supports preserving reasoning, consider enabling it via --reasoning-preserve
+0.06.057.207 I srv  llama_server: model loaded
+0.06.057.212 I srv  llama_server: listening on http://127.0.0.1:8085
+0.08.986.643 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.08.986.838 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.12.623.726 I slot print_timing: id  0 | task 0 | n_decoded =    180, tg =  58.87 t/s, tg_3s =  58.87 t/s
+0.13.756.968 I slot print_timing: id  0 | task 0 | prompt eval time =     579.38 ms /    89 tokens (    6.51 ms per token,   153.61 tokens per second)
+0.13.756.971 I slot print_timing: id  0 | task 0 |        eval time =    4190.59 ms /   237 tokens (   17.68 ms per token,    56.56 tokens per second)
+0.13.756.972 I slot print_timing: id  0 | task 0 |       total time =    4769.98 ms /   326 tokens
+0.13.756.975 I slot print_timing: id  0 | task 0 |    graphs reused =         49
+0.13.756.980 I slot print_timing: id  0 | task 0 | draft acceptance = 0.24800 (  186 accepted /   750 generated), mean len =  4.72
+0.13.757.026 I slot      release: id  0 | task 0 | stop processing: n_tokens = 325, truncated = 0
+1.30.999.815 I srv    operator(): operator(): cleaning up before exit...
+1.31.001.269 W ~llama_context:  CUDA_Host compute buffer size of  25.3906 MiB, does not match expectation of  23.0469 MiB

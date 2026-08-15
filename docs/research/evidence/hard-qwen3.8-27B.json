@@ -1,0 +1,218 @@
+{
+ "model": "qwen3.8-27B",
+ "cats": {
+  "Agentic": [
+   10.0,
+   10
+  ],
+  "Reasoning": [
+   5.0,
+   6
+  ],
+  "Coding": [
+   4.0,
+   5
+  ]
+ },
+ "tasks": [
+  {
+   "id": "HA1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "filtered 2026+delivered -> 70",
+   "trace": [
+    "get_user_id",
+    "get_orders",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details"
+   ],
+   "final": "Bob's qualifying orders (2026 + delivered):\n- Order 1001: $30\n- Order 1004: $40\n\n(Order 1002 is 2025, and order 1003 was cancelled, so both are excluded.)\n\n**Total: $70**"
+  },
+  {
+   "id": "HA2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "checking total 4000, ACC4>half",
+   "trace": [
+    "list_accounts",
+    "get_account_type",
+    "get_account_type",
+    "get_account_type",
+    "get_account_type",
+    "get_balance",
+    "get_balance",
+    "get_balance"
+   ],
+   "final": "Your checking accounts are **ACC1 ($1,500)**, **ACC3 ($400)**, and **ACC4 ($2,100)**.\n\n- **Combined checking balance: $4,000**\n- **ACC4** holds $2,100 \u2014 more than half of the check"
+  },
+  {
+   "id": "HA3",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "full pagination + food filter -> 450",
+   "trace": [
+    "get_transactions",
+    "get_transactions",
+    "get_transactions"
+   ],
+   "final": "I've now fetched all pages of your transactions. Here are the 'food' category items:\n\n- Page 1: 100\n- Page 2: 50\n- Page 3: 300\n\n**Total amount in the 'food' category: 450**"
+  },
+  {
+   "id": "HA4",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "booked F2 + confirmation",
+   "trace": [
+    "search_flights",
+    "book_flight_id"
+   ],
+   "final": "Booked! The cheapest qualifying flight was F2 \u2014 BlueJet, $450, 7 hours (RedAir's $380 flight was excluded per your constraint, and SkyWay's 9-hour flight was too long).\n\n**Confirma"
+  },
+  {
+   "id": "HA5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "cancelled Acme John's tomorrow mtg (501)",
+   "trace": [
+    "search_contacts",
+    "get_meetings",
+    "cancel_meeting"
+   ],
+   "final": "Done! I've cancelled your meeting with John Smith (Acme Corp) that was scheduled for tomorrow (meeting #501)."
+  },
+  {
+   "id": "HA6",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "both conditions + 21 shares",
+   "trace": [
+    "get_stock_price",
+    "get_account_balance"
+   ],
+   "final": "Both conditions are met:\n- **AAPL price:** $231.50 (above $200 \u2713)\n- **Account balance:** $5,000 (at least $2,000 \u2713)\n\n**Maximum whole shares you can afford: 21 shares of AAPL**\n- Co"
+  },
+  {
+   "id": "BR1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "most-recent delivered +8% = 43.20",
+   "trace": [
+    "get_user_id",
+    "get_orders",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details"
+   ],
+   "final": "Bob's most recent **delivered** order is **Order 1004** (August 2026), which was $40.\n\n**Total including 8% sales tax:**\n- Tax: $40 \u00d7 0.08 = $3.20\n- **Total: $43.20**"
+  },
+  {
+   "id": "BR2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "declined (no such tool)",
+   "trace": [],
+   "final": "I'm sorry, but I don't have access to credit score information. My tools only allow me to:\n\n- **List your account IDs**\n- **Check balances** for specific accounts\n\nIf you'd like, I"
+  },
+  {
+   "id": "BR3",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "C->F, correctly 'no'",
+   "trace": [
+    "get_weather"
+   ],
+   "final": "No. The current temperature in Miami is 22\u00b0C, which is about 71.6\u00b0F \u2014 below 75\u00b0F."
+  },
+  {
+   "id": "BR5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "recognized impossibility",
+   "trace": [
+    "search_flights"
+   ],
+   "final": "I searched for flights from NYC to LA, but unfortunately none are under $300. Here's what's available:\n\n| ID | Airline | Price | Duration |\n|----|---------|-------|----------|\n| F1"
+  },
+  {
+   "id": "HR1",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "738"
+  },
+  {
+   "id": "HR2",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "5"
+  },
+  {
+   "id": "HR3",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "3"
+  },
+  {
+   "id": "HR4",
+   "cat": "Reasoning",
+   "score": 0.0,
+   "detail": "want 1/3, got 'The probability is \\(\\frac{1}{3}\\).'",
+   "final": "The probability is \\(\\frac{1}{3}\\)."
+  },
+  {
+   "id": "HR5",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "24"
+  },
+  {
+   "id": "HR6",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "8"
+  },
+  {
+   "id": "HC1",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef longest_palindrome(s):\n    if not s:\n        return \"\"\n\n    t = \"#\" + \"#\".join(s) + \"#\"\n    n = len(t)\n    p = [0] * n\n\n    center = right = 0\n    best_len = 0\n    best_center = 0\n\n    for i in range(n):\n        mirror = 2 * center - i\n"
+  },
+  {
+   "id": "HC2",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef min_coins(coins, amount):\n    if amount < 0:\n        return -1\n    if amount == 0:\n        return 0\n    if not coins:\n        return -1\n\n    dp = [amount + 1] * (amount + 1)\n    dp[0] = 0\n\n    for coin in coins:\n        if coin <= 0:\n  "
+  },
+  {
+   "id": "HC3",
+   "cat": "Coding",
+   "score": 0.0,
+   "detail": "FAIL: AssertionError",
+   "final": "```python\ndef bsearch(a, t):\n    lo, hi = 0, len(a)\n    while lo < hi:\n        m = (lo + hi) // 2\n        if a[m] == t:\n            return m\n        if a[m] < t:\n            lo = m + 1\n        else:\n            hi = m - 1\n    return -1\n```"
+  },
+  {
+   "id": "HC4",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef merge(intervals):\n    if not intervals:\n        return []\n\n    intervals = sorted(intervals, key=lambda x: x[0])\n    merged = [list(intervals[0])]\n\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merg"
+  },
+  {
+   "id": "HC5",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef evaluate(expr):\n    tokens = []\n    i = 0\n    n = len(expr)\n    digits = \"0123456789\"\n\n    while i < n:\n        c = expr[i]\n        if c.isspace():\n            i += 1\n        elif c in digits:\n            j = i\n            while j < n a"
+  }
+ ],
+ "overall_pct": 90.5
+}

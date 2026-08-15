@@ -1,0 +1,227 @@
+{
+ "model": "qwen3.8-27B",
+ "system": "",
+ "cats": {
+  "Agentic": [
+   7.5,
+   8
+  ],
+  "Reasoning": [
+   6.0,
+   6
+  ],
+  "Coding": [
+   4.0,
+   4
+  ]
+ },
+ "tasks": [
+  {
+   "id": "AG1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "get_weather(Tokyo)",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Tokyo"
+     }
+    }
+   ],
+   "final": "It's currently **22\u00b0C (72\u00b0F)** in Tokyo, with **clear** skies. Enjoy the nice weather! \u2600\ufe0f"
+  },
+  {
+   "id": "AG2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "get_stock_price",
+   "trace": [
+    {
+     "name": "get_stock_price",
+     "args": {
+      "symbol": "AAPL"
+     }
+    }
+   ],
+   "final": "Apple (AAPL) is currently trading at **$231.50**."
+  },
+  {
+   "id": "AG3",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "no tool + 36",
+   "trace": [],
+   "final": "36"
+  },
+  {
+   "id": "AG4",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "minutes=30",
+   "trace": [
+    {
+     "name": "create_reminder",
+     "args": {
+      "text": "Call mom",
+      "minutes": 30
+     }
+    }
+   ],
+   "final": "Done! I'll remind you to call mom in 30 minutes."
+  },
+  {
+   "id": "AG5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "weather->email chain",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Paris"
+     }
+    },
+    {
+     "name": "send_email",
+     "args": {
+      "to": "alice@example.com",
+      "body": "Hi Alice,\n\nHere's the current weather summary for Paris:\n- Temperature: 22\u00b0C\n- Conditions: Clear\n\nBest regards",
+      "subject": "Weather Summary: Paris"
+     }
+    }
+   ],
+   "final": "Done! Here's what I did:\n\n**Paris Weather:** 22\u00b0C, clear skies \u2600\ufe0f\n\nI've emailed this summary to alice@example.com with the subject \"Weather Summary: Paris.\" The email was sent successfully."
+  },
+  {
+   "id": "AG6",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "recovered after error",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Tokyo"
+     }
+    },
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Tokyo, Japan"
+     }
+    }
+   ],
+   "final": "Here's the current weather in **Tokyo, Japan**:\n\n- **Temperature:** 22\u00b0C\n- **Conditions:** Clear\n\nA pleasant, sunny day! \u2600\ufe0f"
+  },
+  {
+   "id": "AG7",
+   "cat": "Agentic",
+   "score": 0.5,
+   "detail": "partial",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "London"
+     }
+    },
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Dubai"
+     }
+    }
+   ],
+   "final": "Dubai is much warmer right now \u2014 it's 35\u00b0C and sunny, compared to London's 12\u00b0C with rain."
+  },
+  {
+   "id": "AG8",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "JFK->LAX",
+   "trace": [
+    {
+     "name": "book_flight",
+     "args": {
+      "origin": "JFK",
+      "dest": "LAX",
+      "date": "2026-09-15"
+     }
+    }
+   ],
+   "final": "Your flight is booked! Here are the details:\n\n- **Route:** JFK \u2192 LAX\n- **Date:** 2026-09-15\n- **Confirmation (PNR):** XR7788\n\nSafe travels! Let me know if you need anything else, like a return flight "
+  },
+  {
+   "id": "RE1",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "34650"
+  },
+  {
+   "id": "RE2",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "3"
+  },
+  {
+   "id": "RE3",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "74"
+  },
+  {
+   "id": "RE4",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "heat trick",
+   "final": "Turn on Switch 1 and leave it on for a few minutes. Then turn Switch 1 off and turn on Switch 2.\n\nEnter the room:\n\n- The bulb that is **on** is controlled by **Switch 2**.\n- Of the two off bulbs, the "
+  },
+  {
+   "id": "RE5",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "28"
+  },
+  {
+   "id": "RE6",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "Second"
+  },
+  {
+   "id": "CD1",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef flatten(lst):\n    result = []\n    for item in lst:\n        if isinstance(item, list):\n            result.extend(flatten(item))\n        else:\n            result.append(item)\n    return result\n```"
+  },
+  {
+   "id": "CD2",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef nth_prime(n):\n    if n < 1:\n        raise ValueError(\"n must be a positive integer\")\n\n    primes = []\n    candidate = 2\n\n    while len(primes) < n:\n        is_prime = True\n        for p in primes:\n            if p * p > candidate:\n                break\n            if candidate % p == 0"
+  },
+  {
+   "id": "CD3",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef is_pal(s):\n    cleaned = ''.join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n```"
+  },
+  {
+   "id": "CD4",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []\n```"
+  }
+ ],
+ "overall_pct": 97.2
+}

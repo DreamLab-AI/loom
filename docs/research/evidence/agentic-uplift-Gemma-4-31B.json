@@ -1,0 +1,105 @@
+{
+ "model": "Gemma-4-31B",
+ "indomain": [
+  {
+   "id": "1inch",
+   "gold": "Automated Market Maker",
+   "engaged": true,
+   "raw": 0.2,
+   "scaf": 0.2,
+   "raw_d": "checked wrong: Ethereum",
+   "scaf_d": "checked wrong: Ethereum Smart Contract Platform"
+  },
+  {
+   "id": "2d-lidar",
+   "gold": "Simultaneous Localisation and Mapping",
+   "engaged": true,
+   "raw": 0.2,
+   "scaf": 0.2,
+   "raw_d": "checked wrong: Laser",
+   "scaf_d": "checked wrong: Time-of-Flight Sensor"
+  },
+  {
+   "id": "axelar",
+   "gold": "Validator Set",
+   "engaged": true,
+   "raw": 0.2,
+   "scaf": 1.0,
+   "raw_d": "checked wrong: cross-chain-messaging",
+   "scaf_d": "checked Validator Set + provisioned"
+  },
+  {
+   "id": "crdt",
+   "gold": "Eventual Consistency",
+   "engaged": true,
+   "raw": 0.2,
+   "scaf": 0.2,
+   "raw_d": "checked wrong: Vector Clocks",
+   "scaf_d": "checked wrong: Join-Semilattice"
+  },
+  {
+   "id": "balancer",
+   "gold": "Arbitrage",
+   "engaged": true,
+   "raw": 0.2,
+   "scaf": 0.2,
+   "raw_d": "checked wrong: Network",
+   "scaf_d": "checked wrong: Liquidity Provider"
+  },
+  {
+   "id": "actuators",
+   "gold": "Feedback Control",
+   "engaged": true,
+   "raw": 0.2,
+   "scaf": 0.2,
+   "raw_d": "checked wrong: Power",
+   "scaf_d": "checked wrong: Control System"
+  },
+  {
+   "id": "6dof",
+   "gold": "XR Applications",
+   "engaged": true,
+   "raw": 0.2,
+   "scaf": 0.2,
+   "raw_d": "checked wrong: SLAM",
+   "scaf_d": "checked wrong: Simultaneous Localisation and Mapping"
+  },
+  {
+   "id": "aerial-robot",
+   "gold": "Flight Control System",
+   "engaged": true,
+   "raw": 1.0,
+   "scaf": 1.0,
+   "raw_d": "checked Flight Control System + provisioned",
+   "scaf_d": "checked Flight Control System + provisioned"
+  }
+ ],
+ "general": [
+  {
+   "id": "g_checking",
+   "engaged": true,
+   "raw": 1.0,
+   "scaf": 1.0
+  },
+  {
+   "id": "g_food",
+   "engaged": false,
+   "raw": 1.0,
+   "scaf": 1.0
+  },
+  {
+   "id": "g_flight",
+   "engaged": false,
+   "raw": 1.0,
+   "scaf": 1.0
+  }
+ ],
+ "summary": {
+  "indomain_raw": 30.0,
+  "indomain_scaf": 40.0,
+  "indomain_engaged": 8,
+  "general_raw": 100.0,
+  "general_scaf": 100.0,
+  "general_engaged": 1
+ }
+}

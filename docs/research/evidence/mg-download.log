@@ -1,0 +1,23 @@
+download restart 20:44:33
+A new version of huggingface_hub (1.27.0) is available! You are using version 1.3.4.
+To update, run: pip install -U huggingface_hub
+
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+/usr/lib/python3.14/multiprocessing/resource_tracker.py:475: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown: {'/mp-twk5ujg6'}
+  warnings.warn(
+download restart AUTHENTICATED 20:48:57
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]/usr/lib/python3.14/multiprocessing/resource_tracker.py:475: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown: {'/mp-91t3gtaa'}
+  warnings.warn(
+download restart XET-DISABLED 20:52:41
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]/usr/lib/python3.14/multiprocessing/resource_tracker.py:475: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown: {'/mp-2zas1vcr'}
+  warnings.warn(
+download restart HF_TRANSFER 20:54:10
+Fetching 3 files:   0%|          | 0/3 [00:00<?, ?it/s]Fetching 3 files:  33%|███▎      | 1/3 [57:17<1:54:34, 3437.17s/it]Fetching 3 files: 100%|██████████| 3/3 [57:17<00:00, 1145.72s/it]  
+/home/john/githubs/llm-server/models/muse-glimmer-30B
+DOWNLOAD_DONE exit=0 at 21:51:27
+-rw-r--r-- 1 john john 1.6G Aug 10 20:52 models/muse-glimmer-30B/dflash-kquant.gguf
+-rw-r--r-- 1 john john 2.0G Aug 10 20:52 models/muse-glimmer-30B/mmproj-Muse-Glimmer-30B-Q8_0.gguf
+-rw-r--r-- 1 john john  31G Aug 10 21:51 models/muse-glimmer-30B/Muse-Glimmer-30B-UD-Q8_K_XL.gguf
+re-download dflash 21:56:31
+models/muse-glimmer-30B/dflash-kquant.gguf
+official GGUF download 22:06:39

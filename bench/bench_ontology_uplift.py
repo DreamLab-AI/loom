@@ -1195,7 +1195,7 @@ def _selftest() -> int:
 def _add_gen_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--index", default=None,
                     help="scaffold-index.json path (default: $ONTOLOGY_INDEX "
-                         "or ~/githubs/llm-server/ontology/data/scaffold-index.json)")
+                         "or ~/githubs/loom/app/data/scaffold-index.json)")
     ap.add_argument("--seed", type=int, default=DEFAULT_SEED)
     ap.add_argument("--per-domain", type=int, default=12,
                     help="classes sampled per domain (default 12)")

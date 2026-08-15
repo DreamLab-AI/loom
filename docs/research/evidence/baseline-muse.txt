@@ -1,0 +1,9 @@
+  prefill : 3263 tok @ 905.5 tok/s
+  decode  : 300 tok @ 41.4 tok/s
+  spec    : draft 211/1257 accepted = 16.8%
+  prefill : 5 tok @ 33.7 tok/s
+  decode  : 300 tok @ 37.8 tok/s
+  spec    : draft 203/1390 accepted = 14.6%
+  prefill : 5 tok @ 34.1 tok/s
+  decode  : 300 tok @ 37.6 tok/s
+  spec    : draft 203/1390 accepted = 14.6%

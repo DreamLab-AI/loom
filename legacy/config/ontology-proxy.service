@@ -1,0 +1,29 @@
+# ontology-proxy.service — OpenAI-compatible ontology proxy in front of llama-server
+#
+# Install (on HP-Desktop, as john):
+#   sudo cp ontology-proxy.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now ontology-proxy
+#
+# Shipped as a template only — NOT enabled by the pipeline.
+
+[Unit]
+Description=Ontology-augmented OpenAI-compatible proxy (llama.cpp front)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=john
+WorkingDirectory=/home/john/githubs/llm-server/ontology
+ExecStart=/usr/bin/python3 ontology_proxy.py
+Environment=ONTOLOGY_UPSTREAM=http://127.0.0.1:8085
+Environment=ONTOLOGY_PROXY_PORT=8086
+Environment=ONTOLOGY_INDEX=/home/john/githubs/llm-server/ontology/data/scaffold-index.json
+Environment=ONTOLOGY_MODE=scaffold
+Environment=ONTOLOGY_BUDGET=1500
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

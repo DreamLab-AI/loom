@@ -1,0 +1,218 @@
+{
+ "model": "Gemma-4-31B",
+ "cats": {
+  "Agentic": [
+   9.0,
+   10
+  ],
+  "Reasoning": [
+   5.0,
+   6
+  ],
+  "Coding": [
+   5.0,
+   5
+  ]
+ },
+ "tasks": [
+  {
+   "id": "HA1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "filtered 2026+delivered -> 70",
+   "trace": [
+    "get_user_id",
+    "get_orders",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details"
+   ],
+   "final": "70"
+  },
+  {
+   "id": "HA2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "checking total 4000, ACC4>half",
+   "trace": [
+    "list_accounts",
+    "get_account_type",
+    "get_account_type",
+    "get_account_type",
+    "get_account_type",
+    "get_balance",
+    "get_balance",
+    "get_balance"
+   ],
+   "final": "The combined balance of your checking accounts is 4,000, and account ACC4 holds more than half of that total with a balance of 2,100."
+  },
+  {
+   "id": "HA3",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "full pagination + food filter -> 450",
+   "trace": [
+    "get_transactions",
+    "get_transactions",
+    "get_transactions"
+   ],
+   "final": "The total amount in the 'food' category across all pages is 450."
+  },
+  {
+   "id": "HA4",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "booked F2 + confirmation",
+   "trace": [
+    "search_flights",
+    "book_flight_id"
+   ],
+   "final": "The cheapest flight from NYC to LA under 8 hours and not operated by RedAir was flight F2 (BlueJet) at $450. Your confirmation code is XR7788."
+  },
+  {
+   "id": "HA5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "cancelled Acme John's tomorrow mtg (501)",
+   "trace": [
+    "search_contacts",
+    "get_meetings",
+    "cancel_meeting"
+   ],
+   "final": "OK. I've cancelled your meeting tomorrow with John Smith from Acme Corp."
+  },
+  {
+   "id": "HA6",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "both conditions + 21 shares",
+   "trace": [
+    "get_stock_price",
+    "get_account_balance"
+   ],
+   "final": "You can afford to buy 21 shares of AAPL."
+  },
+  {
+   "id": "BR1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "most-recent delivered +8% = 43.20",
+   "trace": [
+    "get_user_id",
+    "get_orders",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details",
+    "get_order_details"
+   ],
+   "final": "Bob's most recent delivered order is order #1004 (from August 2026) with a total of $43.20 (including 8% sales tax on the $40.00 order amount)."
+  },
+  {
+   "id": "BR2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "declined (no such tool)",
+   "trace": [],
+   "final": "I'm sorry, but I don't have access to your credit score. I can help you check your account balances or list your accounts if you'd like."
+  },
+  {
+   "id": "BR3",
+   "cat": "Agentic",
+   "score": 0.0,
+   "detail": "wrongly said above 75F",
+   "trace": [
+    "get_weather"
+   ],
+   "final": "No, it is not warmer than 75 degrees Fahrenheit because the current temperature in Miami is 22\u00b0C, which is approximately 71.6\u00b0F."
+  },
+  {
+   "id": "BR5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "recognized impossibility",
+   "trace": [
+    "search_flights"
+   ],
+   "final": "I'm sorry, but I couldn't find any flights from NYC to LA for under $300. The cheapest available flight is $380. Would you like me to book that one or search for something else?"
+  },
+  {
+   "id": "HR1",
+   "cat": "Reasoning",
+   "score": 0.0,
+   "detail": "want 738, got 'To find the number of ordered pairs $(a,b)$ of positive inte'",
+   "final": "To find the number of ordered pairs $(a,b)$ of positive integers such that $a+b=1000$ and neither $a$ nor $b$ contains the digit 0, we consider the po"
+  },
+  {
+   "id": "HR2",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "5"
+  },
+  {
+   "id": "HR3",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "3"
+  },
+  {
+   "id": "HR4",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "To find the probability that the sum of two fair six-sided dice is 7 or both dice show the same value, we can use the Addition Rule for Probability:\n$"
+  },
+  {
+   "id": "HR5",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "24"
+  },
+  {
+   "id": "HR6",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "8"
+  },
+  {
+   "id": "HC1",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef longest_palindrome(s):\n    if not s:\n        return \"\"\n    \n    start = 0\n    end = 0\n    \n    def expand_around_center(left, right):\n        nonlocal start, end\n        while left >= 0 and right < len(s) and s[left] == s[right]:\n      "
+  },
+  {
+   "id": "HC2",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef min_coins(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    \n    for i in range(1, amount + 1):\n        for coin in coins:\n            if i - coin >= 0:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n       "
+  },
+  {
+   "id": "HC3",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef bsearch(a,t):\n    lo,hi=0,len(a)\n    while lo<hi:\n        m=(lo+hi)//2\n        if a[m]==t: return m\n        if a[m]<t: lo=m+1\n        else: hi=m\n    return -1\n```"
+  },
+  {
+   "id": "HC4",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef merge(intervals):\n    if not intervals:\n        return []\n\n    # Sort the intervals based on the start time\n    intervals.sort(key=lambda x: x[0])\n\n    merged = [intervals[0]]\n\n    for i in range(1, len(intervals)):\n        current_star"
+  },
+  {
+   "id": "HC5",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef evaluate(expr):\n    stack = []\n    num = 0\n    last_op = '+'\n    i = 0\n    while i < len(expr):\n        char = expr[i]\n        if char.isdigit():\n            num = num * 10 + int(char)\n        \n        if char in '+-*/' or i == len(expr"
+  }
+ ],
+ "overall_pct": 90.5
+}

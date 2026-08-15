@@ -1,0 +1,34 @@
+=== UPLIFT A/B: Gemma-4-31B (http://127.0.0.1:8084) — 28 questions ===
+  [=] 1-hive                 eng=1 base=1 scaf=1 | gold=Decentralized Autonomous Organiz
+  [UP] 3-d-modeling-software  eng=1 base=0 scaf=1 | gold=3D Content Creation
+  [UP] 6-do-f-tracking        eng=1 base=0 scaf=1 | gold=XR Applications
+  [=] access-control-system  eng=1 base=1 scaf=1 | gold=Authentication
+  [UP] accuracy               eng=1 base=0 scaf=1 | gold=Confusion Matrix
+  [UP] actuators              eng=1 base=0 scaf=1 | gold=Feedback Control
+  [UP] addressing-scheme      eng=1 base=0 scaf=1 | gold=Content Identifier
+  [=] aerial-robot           eng=1 base=1 scaf=1 | gold=Flight Control System
+  [UP] agent-identity         eng=1 base=0 scaf=1 | gold=Authentication
+  [=] agi-timelines          eng=1 base=1 scaf=1 | gold=AI Governance
+  [UP] ai-assisted-developmen eng=1 base=0 scaf=1 | gold=Software Engineering
+  [=] ai-diagram-tools       eng=1 base=1 scaf=1 | gold=Large Language Models
+  [=] ai-safety-institute    eng=1 base=1 scaf=1 | gold=Frontier AI
+  [=] algorithm-layer        eng=1 base=1 scaf=1 | gold=Data Layer
+  [UP] allo-protocol          eng=1 base=0 scaf=1 | gold=Token
+  [=] arbitrator-expertise   eng=1 base=1 scaf=1 | gold=Informed decision-making
+  [UP] asynchronous-collabora eng=1 base=0 scaf=1 | gold=Version Control
+  [UP] authentication         eng=1 base=0 scaf=1 | gold=Cryptography
+  [UP] automated-dispute-reso eng=1 base=0 scaf=1 | gold=Enforcement Mechanism
+  [=] axelar                 eng=1 base=1 scaf=1 | gold=Validator Set
+  [=] balancer               eng=1 base=1 scaf=1 | gold=Arbitrage
+  [=] basel-committee-on-ban eng=1 base=1 scaf=1 | gold=Risk Weighted Assets
+  [UP] best-practice          eng=1 base=0 scaf=1 | gold=Interoperability
+  [UP] blind-signatures       eng=1 base=0 scaf=1 | gold=Public-Key Cryptography
+  [UP] bounding-box-regressio eng=1 base=0 scaf=1 | gold=Computer Vision
+  [=] case-management-system eng=1 base=1 scaf=1 | gold=Workflow Automation
+  [=] computation-graph      eng=1 base=1 scaf=1 | gold=Automatic Differentiation
+  [UP] crdt                   eng=1 base=0 scaf=1 | gold=Eventual Consistency
+
+  scaffold engaged: 28/28
+  OVERALL   baseline 46.4%  ->  scaffold 100.0%  (uplift +53.6 pts)
+  ENGAGED-ONLY (28)  baseline 46.4%  ->  scaffold 100.0%  (uplift +53.6 pts)
+  baseline declined (said 'don't know'): 0/28

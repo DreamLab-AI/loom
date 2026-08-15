@@ -1,0 +1,227 @@
+{
+ "model": "Gemma-4-31B",
+ "system": "",
+ "cats": {
+  "Agentic": [
+   7.5,
+   8
+  ],
+  "Reasoning": [
+   6.0,
+   6
+  ],
+  "Coding": [
+   4.0,
+   4
+  ]
+ },
+ "tasks": [
+  {
+   "id": "AG1",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "get_weather(Tokyo)",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Tokyo"
+     }
+    }
+   ],
+   "final": "The weather in Tokyo is currently clear with a temperature of 22\u00b0C."
+  },
+  {
+   "id": "AG2",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "get_stock_price",
+   "trace": [
+    {
+     "name": "get_stock_price",
+     "args": {
+      "symbol": "AAPL"
+     }
+    }
+   ],
+   "final": "Apple's stock is currently trading at $231.50."
+  },
+  {
+   "id": "AG3",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "no tool + 36",
+   "trace": [],
+   "final": "36"
+  },
+  {
+   "id": "AG4",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "minutes=30",
+   "trace": [
+    {
+     "name": "create_reminder",
+     "args": {
+      "minutes": 30,
+      "text": "call mom"
+     }
+    }
+   ],
+   "final": "OK. I've set a reminder to call your mom in 30 minutes."
+  },
+  {
+   "id": "AG5",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "weather->email chain",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Paris"
+     }
+    },
+    {
+     "name": "send_email",
+     "args": {
+      "body": "The current weather in Paris is clear with a temperature of 22\u00b0C.",
+      "subject": "Weather Summary for Paris",
+      "to": "alice@example.com"
+     }
+    }
+   ],
+   "final": "The weather in Paris is currently clear with a temperature of 22\u00b0C, and a summary has been emailed to alice@example.com."
+  },
+  {
+   "id": "AG6",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "recovered after error",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Tokyo"
+     }
+    },
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Tokyo, Japan"
+     }
+    }
+   ],
+   "final": "The weather in Tokyo, Japan is currently clear with a temperature of 22\u00b0C."
+  },
+  {
+   "id": "AG7",
+   "cat": "Agentic",
+   "score": 0.5,
+   "detail": "partial",
+   "trace": [
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "London"
+     }
+    },
+    {
+     "name": "get_weather",
+     "args": {
+      "city": "Dubai"
+     }
+    }
+   ],
+   "final": "Dubai is warmer right now, with a temperature of 35\u00b0C compared to 12\u00b0C in London."
+  },
+  {
+   "id": "AG8",
+   "cat": "Agentic",
+   "score": 1.0,
+   "detail": "JFK->LAX",
+   "trace": [
+    {
+     "name": "book_flight",
+     "args": {
+      "date": "2026-09-15",
+      "dest": "LAX",
+      "origin": "JFK"
+     }
+    }
+   ],
+   "final": "Flight booked successfully! Your PNR is XR7788."
+  },
+  {
+   "id": "RE1",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "34650"
+  },
+  {
+   "id": "RE2",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "3"
+  },
+  {
+   "id": "RE3",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "74"
+  },
+  {
+   "id": "RE4",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "heat trick",
+   "final": "1. Turn the **first switch ON** and leave it for a few minutes.\n2. Turn the **first switch OFF** and the **second switch ON**.\n3. Enter the room immediately.\n\n**The Results:**\n*   The bulb that is **O"
+  },
+  {
+   "id": "RE5",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "28"
+  },
+  {
+   "id": "RE6",
+   "cat": "Reasoning",
+   "score": 1.0,
+   "detail": "correct",
+   "final": "Second"
+  },
+  {
+   "id": "CD1",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef flatten(lst):\n    result = []\n    for item in lst:\n        if isinstance(item, list):\n            result.extend(flatten(item))\n        else:\n            result.append(item)\n    return result\n```"
+  },
+  {
+   "id": "CD2",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef nth_prime(n):\n    if n == 1:\n        return 2\n    count = 1\n    num = 1\n    while count < n:\n        num += 2\n        for i in range(3, int(num**0.5) + 1, 2):\n            if num % i == 0:\n                break\n        else:\n            count += 1\n    return num\n```"
+  },
+  {
+   "id": "CD3",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef is_pal(s):\n    filtered_s = \"\".join(char.lower() for char in s if char.isalnum())\n    return filtered_s == filtered_s[::-1]\n```"
+  },
+  {
+   "id": "CD4",
+   "cat": "Coding",
+   "score": 1.0,
+   "detail": "tests pass",
+   "final": "```python\ndef two_sum(nums, target):\n    prevMap = {}  # val : index\n    for i, n in enumerate(nums):\n        diff = target - n\n        if diff in prevMap:\n            return [prevMap[diff], i]\n        prevMap[n] = i\n```"
+  }
+ ],
+ "overall_pct": 97.2
+}

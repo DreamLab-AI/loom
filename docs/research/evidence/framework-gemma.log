@@ -1,0 +1,26 @@
+(eval):10: no matches found: uplift-results/results-gemma-*.jsonl
+=== gemma raw ===
+run [gemma/raw]: 10/37 (0 errors)
+run [gemma/raw]: 20/37 (0 errors)
+run [gemma/raw]: 30/37 (0 errors)
+run [gemma/raw]: 37/37 (0 errors)
+run: wrote uplift-results/results-gemma-raw.jsonl (37 rows, 0 errors)
+=== gemma scaffold ===
+run [gemma/scaffold]: 10/37 (0 errors)
+run [gemma/scaffold]: 20/37 (0 errors)
+run [gemma/scaffold]: 30/37 (0 errors)
+run [gemma/scaffold]: 37/37 (0 errors)
+run: wrote uplift-results/results-gemma-scaffold.jsonl (37 rows, 0 errors)
+=== gemma scaffold-prose ===
+run [gemma/scaffold-prose]: 10/37 (0 errors)
+run [gemma/scaffold-prose]: 20/37 (0 errors)
+run [gemma/scaffold-prose]: 30/37 (0 errors)
+run [gemma/scaffold-prose]: 37/37 (0 errors)
+run: wrote uplift-results/results-gemma-scaffold-prose.jsonl (37 rows, 0 errors)
+=== gemma tools ===
+run [gemma/tools]: 10/37 (0 errors)
+run [gemma/tools]: 20/37 (0 errors)
+run [gemma/tools]: 30/37 (0 errors)
+run [gemma/tools]: 37/37 (0 errors)
+run: wrote uplift-results/results-gemma-tools.jsonl (37 rows, 0 errors)
+GEMMA_4AXES_DONE

@@ -1,0 +1,23 @@
+=== quality bench job start ===
+using /home/john/githubs/llm-server/.venv/bin/python3
+stopped Aria pid=2715317
+── Qwen 3.6 27B dense @ :8090 (GPU0, q8_0 KV, ctx 8192) ──
+PID 2719893 — waiting for load...
+Ready (3x2s) — http://0.0.0.0:8090/v1
+=== running bench-quality-v2.py ===
+BENCH_EXIT=0
+stopped qwen27 pid=2719893
+══════════════════════════════════════════════════════
+  Gemma 4 26B-A4B-it — ARA-abliterated (uncensored)
+══════════════════════════════════════════════════════
+  Model:    gemma4-ara-2pass-APEX-IQ.gguf
+  Vision:   mmproj-gemma4-f16.gguf
+  KV cache: q8_0 (Hadamard auto)   Ctx: 32768   Parallel: 1
+  GPU pin:  both (split layer)
+  Decode:   PLAIN (no MTP — see config/gemma4-qat-mtp.env for the fast path)
+  API:      http://0.0.0.0:8082/v1     Log: /home/john/githubs/llm-server/logs/gemma4-abliterated.log
+══════════════════════════════════════════════════════
+Server PID: 2721555  — waiting for load...
+Ready after 3s — API at http://0.0.0.0:8082/v1
+ARIA_RESTORED
+BENCH_COMPLETE

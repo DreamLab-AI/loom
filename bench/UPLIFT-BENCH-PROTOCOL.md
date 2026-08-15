@@ -7,7 +7,7 @@ are the scaffold index and the two llama-server endpoints.
 ## Prerequisites
 
 ```bash
-cd ~/githubs/llm-server/ontology
+cd ~/githubs/loom/bench
 ./mirror.sh                                   # refresh data/scaffold-index.json
 python3 ontology_scaffold.py --stats          # expect ~8k classes
 bash run-all-tests.sh                         # all suites (incl. bench selftest) must PASS
@@ -235,7 +235,7 @@ switch. Unit coverage for the gate/scaling math: `tests/test_confidence_injectio
 
 The feature is deployed and verified on HP (loom `4beba5f`, rebuilt container, flag on):
 
-- **Standing tests** — toolkit suite (`llm-server/ontology/run-all-tests.sh`, with the new
+- **Standing tests** — toolkit suite (`loom/bench/run-all-tests.sh`, with the new
   scaffold synced in) 6/6 PASS: scaffold, proxy, bench, confidence, mcp, pipeline. Loom
   repo suite (`bench/run-all-tests.sh`) PASS on all vendored suites (scaffold, bench,
   confidence, mcp).

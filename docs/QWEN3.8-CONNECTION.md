@@ -112,12 +112,12 @@ request `xhigh` explicitly for hard tasks). Chain-of-thought arrives in
   is possible via YaRN but the KV cache would not fit alongside Q8 weights on 48 GB.
 - **MTP speculative decoding** (`--spec-type draft-mtp`, embedded `blk.64.nextn.*` head)
   is transparent to clients. Tune `DRAFT_N_MAX` (1–6) via compose env.
-- **Model store:** GGUFs live in `~/githubs/llm-server/models/qwen3.8-27B/`, mounted
-  read-only into the container at `/models`.
+- **Model store:** GGUFs live in `~/models/qwen3.8-27B/` (moved from the retired
+  `llm-server` repo 2026-08-15), mounted read-only into the container at `/models`.
 - **Legacy retired 2026-08-14:** `muse-glimmer.service`, `gemma4-31b.service`, and the
   host `ontology-proxy*` units are removed. Rollback = re-download nothing: Muse GGUFs
-  are still on disk; recreate a systemd unit from git history of `llm-server` if needed,
-  or run its serve script manually.
+  are still on disk in `~/models/`; the legacy serve scripts, env configs, and the
+  muse-glimmer unit file are preserved in this repo under `legacy/`.
 
 ---
 
