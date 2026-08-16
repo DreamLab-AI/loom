@@ -107,6 +107,8 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--web-answers", default=None,
                     help="optional web-arm answers json ({id: {answer}}) judged as model 'web-perplexity'")
+    ap.add_argument("--modes", default="raw,scaffold",
+                    help="comma-separated condition names to judge (e.g. 'bare,harness' for the general experiment)")
     ap.add_argument("--sleep", type=float, default=0.3)
     args = ap.parse_args()
 
@@ -121,8 +123,9 @@ def main():
 
     # Build the arms to judge: each model's raw+scaffold, plus the web arm.
     arms = []  # (model_label, mode, answers_dict)
+    mode_names = [m.strip() for m in args.modes.split(",") if m.strip()]
     for model in models:
-        for mode in ("raw", "scaffold"):
+        for mode in mode_names:
             arms.append((model, mode, load_answers(args.answers_dir, model, mode, ids)))
     if args.web_answers and os.path.exists(args.web_answers):
         web = {k: v.get("answer", "") for k, v in json.load(open(args.web_answers)).items()
