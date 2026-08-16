@@ -78,7 +78,10 @@ def main():
     engaged = {qid: bool(v.get("engaged")) for qid, v in scaf.items()}
     for r in rows:
         r["engaged"] = engaged.get(r["id"], False)
-    # stratum field carries the category (gold.stratum = category)
+    # stratum field carries the category; derive the category list from the data
+    # so arcane_thin / arcane_documented (or any stratification) are picked up.
+    global CATS
+    CATS = sorted({r["stratum"] for r in rows if r.get("stratum")})
     models = sorted({r["model"] for r in rows})
 
     out = ["# General-knowledge harness experiment — bare vs harness\n",
