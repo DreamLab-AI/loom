@@ -164,6 +164,13 @@ the generation artifact is the single source of truth), with Whelk retained insi
 an **incremental read-side accelerator that is conformance-gated against the artifact** rather
 than an independent authority. Revisit to Option 1 if EL++ completeness gaps bite.
 
+> **SUPERSEDED on D3-a by [ADR-136](ADR-136-loom-tooling-allocation.md) D6 (2026-08-16):**
+> D3-a is resolved to **Option 1 — Whelk-rs canonical, run at BUILD time**, and the duplicate
+> `reason.py` BFS closure is retired to a conformance oracle. ADR-136 D6 accepts Option 1 because
+> running Whelk only at build time neutralises the Option-1 "Con" (Deployment B's runtime façade
+> stays GPU-free/stdlib-portable — it loads the pre-reasoned generation, never runs the reasoner).
+> The *one-authority* invariant above is unchanged; only the engine choice is now settled.
+
 **D3.1 Conformance-test contract (stops drift regardless of engine choice).** A CI gate computes
 the closure with BOTH engines over a fixed corpus fixture and asserts
 `whelk_inferred_triples ≡ reason_py_inferred_triples` (set-equality over `(s,p,o)` after IRI
