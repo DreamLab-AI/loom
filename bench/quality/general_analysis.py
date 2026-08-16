@@ -20,12 +20,41 @@ Usage: python3 bench/quality/general_analysis.py \
     --out uplift-results/general/analysis.md
 """
 from __future__ import annotations
-import argparse, glob, json, statistics
+import argparse, glob, json, random, statistics
 
 
 def mean(xs):
     xs = [x for x in xs if isinstance(x, (int, float))]
     return statistics.mean(xs) if xs else None
+
+
+def paired_deltas(rows, subset):
+    """Per-(model,question) harness-minus-bare deltas over a row subset."""
+    by = {}
+    for r in rows:
+        if subset(r):
+            by.setdefault((r["model"], r["id"]), {})[r["mode"]] = r["score"]
+    return [v["harness"] - v["bare"] for v in by.values()
+            if "harness" in v and "bare" in v]
+
+
+def bootstrap_ci(deltas, resamples=10000, seed=42):
+    if len(deltas) < 2:
+        return (None, None)
+    rng = random.Random(seed)
+    n = len(deltas)
+    means = sorted(sum(deltas[rng.randrange(n)] for _ in range(n)) / n
+                   for _ in range(resamples))
+    return (round(means[int(0.025 * resamples)], 3),
+            round(means[int(0.975 * resamples)], 3))
+
+
+def delta_stat(rows, subset):
+    d = paired_deltas(rows, subset)
+    if not d:
+        return "-", (None, None), 0
+    m = round(statistics.mean(d), 3)
+    return m, bootstrap_ci(d), len(d)
 
 
 def f(x, n=2):
@@ -84,6 +113,29 @@ def main():
         d = None if b is None or h is None else round(h - b, 2)
         out.append(f"| {c} | {f(b)} | {f(h)} | {('+' if (d or 0)>=0 else '')}{f(d)} | {n} |")
         coords["bare"].append((i, b)); coords["harness"].append((i, h))
+    out.append("")
+
+    # ---- 2b. STATISTICALLY ISOLATED assertions: paired delta + 95% CI ----
+    out.append("## Paired harness−bare delta with 95% bootstrap CI (the isolated assertion)\n")
+    out.append("Paired per (model,question); bootstrap over pairs. CI excludes 0 ⇒ real effect.\n")
+    out.append("| subset | mean Δ | 95% CI | n pairs | reading |")
+    out.append("|---|---|---|---|---|")
+    def _row(label, subset):
+        m, (lo, hi), n = delta_stat(rows, subset)
+        if lo is None:
+            reading = "-"
+        elif lo > 0:
+            reading = "UPLIFT (CI>0)"
+        elif hi < 0:
+            reading = "DEGRADE (CI<0)"
+        else:
+            reading = "null / no effect"
+        out.append(f"| {label} | {m} | [{lo}, {hi}] | {n} | {reading} |")
+    _row("all questions", lambda r: True)
+    for c in CATS:
+        _row(c, lambda r, c=c: r["stratum"] == c)
+    _row("off_domain gate-engaged (worst case)",
+         lambda r: r["stratum"] == "off_domain" and r.get("engaged"))
     out.append("")
 
     # ---- 3. jaggedness: off-domain, gate mis-fired vs correctly-skipped ----
