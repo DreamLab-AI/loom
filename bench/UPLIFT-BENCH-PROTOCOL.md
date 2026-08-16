@@ -280,7 +280,7 @@ PYTHONPATH=app python3 bench/bench_ontology_uplift.py run --questions uplift-res
   --mode scaffold --index app/data/scaffold-index.json --outdir uplift-results $COMMON
 ```
 
-Then score + report exactly as Steps 3–4. A ready driver is `uplift-results/run-gemini.sh`.
+Then score + report exactly as Steps 3–4. A ready driver is `bench/run-gemini.sh`.
 
 ### Gemini 3.x gotchas (verified live 2026-08-16, `gemini-3.7-flash`)
 

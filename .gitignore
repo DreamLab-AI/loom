@@ -6,3 +6,6 @@ app/ontology-mcp/fixtures/
 **/__pycache__/
 uplift-results/
 *.pyc
+# local agent-tooling state (not project artifacts)
+.agentic-qe/
+.claude-flow/

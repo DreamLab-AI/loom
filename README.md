@@ -37,15 +37,27 @@ scaffolding is a **decisive, model-agnostic win**:
 
 | Model | Raw (parametric) | + Loom scaffold | Paired uplift (95% CI) | Latency |
 |---|---|---|---|---|
-| Gemma-4-31B | 0.146 | **0.939** | **+0.793** [+0.680, +0.894] | 31.5 s → 5.1 s |
-| Muse-Glimmer-30B | 0.268 | **0.939** | **+0.671** [+0.527, +0.804] | 34.7 s → 9.8 s |
+| Gemma-4-31B (local) | 0.146 | **0.939** | **+0.793** [+0.680, +0.894] | 31.5 s → 5.1 s |
+| Muse-Glimmer-30B (local) | 0.268 | **0.939** | **+0.671** [+0.527, +0.804] | 34.7 s → 9.8 s |
+| Gemini 3.7 Flash (cloud) † | 0.359 | **0.942** | **+0.583** [+0.546, +0.618] | 2.4 s → 1.2 s |
 
-Read that twice: two different models, both land at **0.94** grounded, from wildly different
-parametric baselines — and grounding is **~3–6× faster** (the model stops doing heavy
-open-ended recall and restates supplied facts). The lift concentrates exactly where you'd
-want it — the niche domains a model doesn't already know: blockchain 0.11→1.0, robotics and
-standards 0→1.0 — and adds nothing where the model is already right. That is the signature of
-real grounding, not leakage.
+Read that twice: **three** different models — two local, one a frontier cloud model — all
+land at **~0.94** grounded, from wildly different parametric baselines, and grounding is
+**faster in every case** (the model stops doing heavy open-ended recall and restates supplied
+facts). The lift concentrates exactly where you'd want it — the niche domains a model doesn't
+already know (spatial-computing 0.23→0.97, distributed-collaboration 0.22→0.95) — and adds
+least where the model is already right. That is the signature of real grounding, not leakage.
+The stronger the model, the smaller the *uplift* it needs — but the grounded ceiling is the
+same. That is the whole bet of the swappable façade: the scaffold carries the recall, not the
+model behind the door.
+
+† First cloud model benched (2026-08-16, `gemini-3.7-flash`), and on a larger set — 510
+questions vs 37 for the local runs. Its config differs deliberately: `temp=1.0` (Google's
+recommended setting for Gemini 3.x; `temp<1.0` is off-label) vs `temp=0` local, and
+`reasoning_effort=low` with `max_tokens=2048` so the model's mandatory thinking doesn't
+truncate answers. The *paired* delta is a within-model comparison and stays valid; the
+absolute raw recall is **not** cell-for-cell comparable to the temp=0 local runs. Full
+provenance and per-domain tables: [`docs/research/report-gemini-3.7-flash.md`](docs/research/report-gemini-3.7-flash.md).
 
 Three findings shaped Loom's defaults:
 
@@ -189,6 +201,12 @@ mounted volume), so Loom always serves a known, sha-addressable corpus generatio
 ---
 
 ## Where it sits — the ecosystem
+
+Loom is **[VisionFlow](https://github.com/DreamLab-AI)'s loop-closing ontology node** —
+the runtime that returns the ecosystem's shared formal semantic layer to a model at
+generation time. VisionFlow is the architecture the industry now calls *neurosymbolic*:
+thin agents over a shared, reasoned ontology rather than thick agents wired to raw data.
+Loom serves that layer; the pieces around it build, reason over and consume it.
 
 ```
 knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned closure + indexes)

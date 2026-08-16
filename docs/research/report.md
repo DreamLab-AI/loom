@@ -1,5 +1,12 @@
 # Ontology Uplift Benchmark Report
 
+> **Local models, `temp=0`, 37-question set.** The first **cloud** model (Gemini 3.7 Flash,
+> `temp=1.0`, 510-question set) is reported separately in
+> [`report-gemini-3.7-flash.md`](report-gemini-3.7-flash.md) — different temperature and set
+> size mean its absolute recall is not cell-for-cell comparable here, but its paired uplift
+> (+0.583) lands the grounded ceiling at the same ~0.94 as both models below. Three models,
+> one ceiling.
+
 Score files: scores-muse-glimmer-raw.jsonl, scores-muse-glimmer-scaffold.jsonl, scores-muse-glimmer-scaffold-prose.jsonl, scores-muse-glimmer-tools.jsonl, scores-gemma-raw.jsonl, scores-gemma-scaffold.jsonl, scores-gemma-scaffold-prose.jsonl, scores-gemma-tools.jsonl
 
 ## Summary (model x mode)
