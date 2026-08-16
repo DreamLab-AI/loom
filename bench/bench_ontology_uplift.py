@@ -139,23 +139,41 @@ def _fmt(v: Optional[float], nd: int = 3) -> str:
 
 
 def _chat_url(base_url: str) -> str:
+    """Resolve an OpenAI-compatible chat/completions URL.
+
+    Handles three shapes so the harness works for local llama.cpp *and*
+    cloud OpenAI-compat providers:
+      - already complete (…/chat/completions)          -> used as-is
+      - OpenAI-compat base (…/v1beta/openai, …/openai) -> + /chat/completions
+        (Google Gemini's shim lives at /v1beta/openai/, NOT /v1)
+      - bare host or …/v1                              -> ensure /v1 then append
+    """
     b = base_url.rstrip("/")
-    if not b.endswith("/v1"):
-        b += "/v1"
-    return b + "/chat/completions"
+    if b.endswith("/chat/completions"):
+        return b
+    if b.endswith("/v1") or b.endswith("/openai"):
+        return b + "/chat/completions"
+    return b + "/v1/chat/completions"
 
 
 def chat_request(base_url: str, payload: dict, timeout: float,
-                 retries: int) -> dict:
-    """POST an OpenAI chat payload; retry transport/HTTP failures."""
+                 retries: int, auth_bearer: Optional[str] = None) -> dict:
+    """POST an OpenAI chat payload; retry transport/HTTP failures.
+
+    ``auth_bearer`` (if given) is sent as ``Authorization: Bearer <token>`` —
+    required by cloud providers (e.g. Gemini's OpenAI-compat endpoint). Local
+    llama.cpp endpoints ignore it, so it is safe to always thread through.
+    """
     url = _chat_url(base_url)
     data = json.dumps(payload).encode("utf-8")
+    headers = {"Content-Type": "application/json"}
+    if auth_bearer:
+        headers["Authorization"] = f"Bearer {auth_bearer}"
     last: Optional[Exception] = None
     for attempt in range(retries + 1):
         try:
             req = urllib.request.Request(
-                url, data=data, method="POST",
-                headers={"Content-Type": "application/json"},
+                url, data=data, method="POST", headers=headers,
             )
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 raw = resp.read()
@@ -361,6 +379,8 @@ def run_bench(
     retries: int = 2,
     sleep: float = 0.0,
     out: Optional[str] = None,
+    reasoning_effort: Optional[str] = None,
+    auth_bearer: Optional[str] = None,
 ) -> str:
     questions = _read_jsonl(questions_path)
     label = mode_label or mode
@@ -398,8 +418,14 @@ def run_bench(
                     "temperature": temp,
                     "max_tokens": max_tokens,
                 }
+                # reasoning_effort is an OpenAI-compat knob for thinking models
+                # (Gemini 3.x maps it to thinking_level). Sending "low" keeps
+                # mandatory thinking from eating the max_tokens answer budget.
+                if reasoning_effort:
+                    payload["reasoning_effort"] = reasoning_effort
                 t0 = time.perf_counter()
-                resp = chat_request(base_url, payload, timeout, retries)
+                resp = chat_request(base_url, payload, timeout, retries,
+                                    auth_bearer=auth_bearer)
                 latency_ms = round((time.perf_counter() - t0) * 1000.0, 1)
                 try:
                     answer = resp["choices"][0]["message"].get("content") or ""
@@ -443,7 +469,8 @@ def cmd_run(args: argparse.Namespace) -> int:
         outdir=args.outdir, mode_label=args.mode_label, budget=args.budget,
         index_path=args.index, temp=args.temp, max_tokens=args.max_tokens,
         timeout=args.timeout, retries=args.retries, sleep=args.sleep,
-        out=args.out,
+        out=args.out, reasoning_effort=args.reasoning_effort,
+        auth_bearer=_resolve_bearer(args.auth_bearer_env),
     )
     return 0
 
@@ -850,6 +877,7 @@ def cmd_all(args: argparse.Namespace) -> int:
         min_quality=args.min_quality, min_def_len=args.min_def_len)
     cmd_generate(gen_args)
 
+    auth_bearer = _resolve_bearer(getattr(args, "auth_bearer_env", None))
     score_files: list[str] = []
     for name, url in endpoints:
         for mode in ("raw", "scaffold"):
@@ -857,7 +885,9 @@ def cmd_all(args: argparse.Namespace) -> int:
                 questions_path, url, name, mode, outdir=args.outdir,
                 budget=args.budget, index_path=args.index, temp=args.temp,
                 max_tokens=args.max_tokens, timeout=args.timeout,
-                retries=args.retries, sleep=args.sleep)
+                retries=args.retries, sleep=args.sleep,
+                reasoning_effort=getattr(args, "reasoning_effort", None),
+                auth_bearer=auth_bearer)
             scores, _summary = score_results(
                 questions_path, results, outdir=args.outdir,
                 judge_base_url=args.judge_base_url,
@@ -1214,6 +1244,25 @@ def _add_run_args(ap: argparse.ArgumentParser) -> None:
     ap.add_argument("--retries", type=int, default=2)
     ap.add_argument("--sleep", type=float, default=0.0,
                     help="seconds between calls (default 0)")
+    ap.add_argument("--reasoning-effort", default=None,
+                    choices=("low", "medium", "high"),
+                    help="OpenAI-compat reasoning_effort for thinking models "
+                         "(Gemini 3.x maps it to thinking_level). Use 'low' so "
+                         "mandatory thinking does not consume the answer budget.")
+    ap.add_argument("--auth-bearer-env", default=None, metavar="ENV_VAR",
+                    help="name of an env var holding a bearer token, sent as "
+                         "Authorization: Bearer <token> (e.g. GOOGLE_API_KEY for "
+                         "Gemini). Passed by name so the secret never enters argv.")
+
+
+def _resolve_bearer(env_name: Optional[str]) -> Optional[str]:
+    if not env_name:
+        return None
+    val = os.environ.get(env_name)
+    if not val:
+        raise SystemExit(
+            f"--auth-bearer-env {env_name}: environment variable is empty/unset")
+    return val
 
 
 def main(argv: Optional[list[str]] = None) -> int:

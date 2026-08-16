@@ -249,3 +249,54 @@ The quality A/B itself (steps above) has **not** been run yet — those two runs
 are the open item. Grounding for the interference claim: Lin et al. 2026
 (arXiv:2506.05154, contextual interference / parametric-knowledge displacement), Yoran et
 al. 2024 (arXiv:2310.01558), Shi et al. 2023 (arXiv:2302.00093).
+
+## Axis: cloud OpenAI-compat models (e.g. Gemini 3.7 Flash)
+
+The same harness benches a **cloud** model with no code change beyond the base URL — the
+façade contract *is* OpenAI-compatible, so any provider that speaks `/v1/chat/completions`
+is a drop-in endpoint. Scaffold injection still happens **client-side** from the local
+mirror (`app/data/scaffold-index.json`), so grounding is identical to what the deployed Loom
+serves; only generation is delegated to the cloud. This is the portability the façade design
+promises, exercised against a model behind someone else's door.
+
+Three harness flags (added 2026-08-16) make a cloud provider work:
+
+| Flag | Why it exists |
+|---|---|
+| `--auth-bearer-env ENV_VAR` | sends `Authorization: Bearer <token>` from the **named** env var (never argv), for keyed cloud endpoints |
+| `--reasoning-effort low\|medium\|high` | OpenAI-compat `reasoning_effort`; on Gemini 3.x it maps to `thinking_level` |
+| smarter `--base-url` | a base ending in `/openai` (Gemini's `…/v1beta/openai/`) is used as-is; it is **not** force-suffixed with `/v1` |
+
+**Run it — Gemini 3.7 Flash** (auth via `GOOGLE_API_KEY`; generate the shared question set
+first exactly as Step 1):
+
+```bash
+BASE=https://generativelanguage.googleapis.com/v1beta/openai/
+COMMON="--base-url $BASE --model-name gemini-3.7-flash --auth-bearer-env GOOGLE_API_KEY \
+  --reasoning-effort low --temp 1.0 --max-tokens 2048 --timeout 120 --retries 3 --sleep 0.4"
+PYTHONPATH=app python3 bench/bench_ontology_uplift.py run --questions uplift-results/questions.jsonl \
+  --mode raw --outdir uplift-results $COMMON
+PYTHONPATH=app python3 bench/bench_ontology_uplift.py run --questions uplift-results/questions.jsonl \
+  --mode scaffold --index app/data/scaffold-index.json --outdir uplift-results $COMMON
+```
+
+Then score + report exactly as Steps 3–4. A ready driver is `uplift-results/run-gemini.sh`.
+
+### Gemini 3.x gotchas (verified live 2026-08-16, `gemini-3.7-flash`)
+
+1. **Thinking cannot be disabled** (floor `low`, default `medium`) and thinking tokens are
+   drawn from the **output** budget. At the harness default `--max-tokens 400` the model
+   returned `finish_reason: length` truncated to 74 chars — an empty-ish answer that would
+   silently poison a whole arm. **Use `--max-tokens 2048` (or more) and `--reasoning-effort
+   low`.** This is the same trap the workspace records for local reasoners (Muse empties at
+   400); cloud reasoners hit it harder because thinking is mandatory.
+2. **`temperature=0` is off-label for Gemini 3.x.** Google recommends the default `1.0` and
+   warns that lower values can loop or degrade. The paired uplift is a *within-model* delta
+   (same temp both arms) so it stays valid, but we run **`--temp 1.0`** and record the
+   deviation from the historical local-model runs (which used `temp 0`). Do not silently mix
+   the two temperatures into one comparison.
+3. Thinking tokens are **billed as output** (Gemini 3.7 Flash intro pricing $0.75 / $3.75 per
+   1M in/out through 2026-12-31) — a full 510-question raw+scaffold sweep is ~$1–2, but keep
+   `--reasoning-effort low` to keep both cost and truncation risk down.
+4. The judge, if run, must **never** be the model under test — use the LAN Loom/Qwen or a
+   different cloud model as judge (auth for a cloud judge is not yet wired; use a local judge).
