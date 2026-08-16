@@ -7,6 +7,17 @@ reasoned ontology, injects it as budget-clamped context, and delegates generatio
 whatever model is deployed behind it. Swap the model — Gemma → Muse-Glimmer → Qwen3.8 → next
 — and no consumer changes.
 
+**What it is *for*: making swappable models performant against large, important, private
+customer datasets** — answering accurately and attributably on an in-domain corpus the model
+could never know parametrically, and delivering that curated, vetted knowledge faithfully and
+cheaply (the rigorous curation is amortised once, reused per query). The bar is
+**multivariate**: excellent recall on the locally-grounded questions, *without going jagged* on
+the general or novel ones (confidence-gated injection avoids displacing the model's own
+knowledge; genuinely new questions fall back to internet-research agents while still inheriting
+the ontology's domain framing). The right comparison for in-domain answers is a curated corpus
+**versus a generic web search**, not the bare model. Full framing:
+[`docs/design/LOOM-POSITIONING.md`](docs/design/LOOM-POSITIONING.md).
+
 Since 2026-08-14 the reference deployment ships the model engine **inside this stack**: the
 `model` service (`loom-model` container) serves **Qwen3.8-27B** (unsloth UD-Q8_K_XL, vision,
 embedded-MTP speculative decoding tuned n=3, 262 K native context, thinking on at

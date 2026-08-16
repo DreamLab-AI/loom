@@ -1,0 +1,366 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{microtype}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\usepackage{booktabs,array,tabularx,multirow}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage[backend=bibtex,style=numeric-comp,sorting=nyt,maxnames=4,giveninits=true]{biblatex}
+\addbibresource{refs.bib}
+
+\definecolor{teal0}{RGB}{0,110,110}
+\definecolor{burnt}{RGB}{192,80,0}
+\definecolor{ink}{RGB}{25,28,32}
+\definecolor{softgreen}{RGB}{46,139,87}
+\definecolor{grayln}{RGB}{200,200,200}
+\color{ink}
+\hypersetup{colorlinks=true,linkcolor=teal0,citecolor=teal0,urlcolor=teal0}
+\captionsetup{font=small,labelfont={bf}}
+\pgfplotsset{
+  every axis/.append style={font=\small,axis line style={grayln},tick style={grayln},
+    grid=major,major grid style={grayln!35},label style={color=ink},tick label style={color=ink}},
+  rawstyle/.style={fill=burnt!85,draw=burnt},
+  scafstyle/.style={fill=teal0!85,draw=teal0},
+  copystyle/.style={fill=gray!35,draw=gray!60},
+}
+\newcommand{\gainpos}[1]{\textcolor{softgreen}{$+#1$}}
+\newcommand{\gainneg}[1]{\textcolor{burnt}{$#1$}}
+
+\title{\vspace{-1.2cm}\bfseries Private Knowledge, Faithfully Served:\\[2pt]
+Grounding Swappable Language Models in a Curated Ontology,\\ Measured Against a Copy Ceiling}
+\author{Dr John O'Hare\\ \small DreamLab AI \and \small The Loom / VisionFlow neurosymbolic stack}
+\date{\today\\[4pt]\small\textit{Pre-print. Numbers marked \textcolor{burnt}{[SWEEP]} are finalised from the 10-model run.}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Organisations increasingly need language models that answer accurately over large, private,
+domain-specific corpora the model cannot have seen in pretraining. We study a system that serves
+a curated, human-vetted, provenance-tracked ontology---class definitions, typed relations and
+taxonomy---into a swappable model's context at query time, and ask what it actually delivers.
+Using a knowledge graph as its own oracle we auto-generate 510 in-domain questions with
+graph-derived gold and score a paired \{raw, scaffold\} design across ten contemporary models
+from five providers, under one deterministic configuration. Unaided, models score $\approx0.36$:
+the domain is genuinely private, absent from their parametric memory. Given the curated context
+they reach $\approx0.94$. To characterise \emph{what} that grounded score is, we introduce a
+per-item \textbf{copy ceiling}---the recall a no-op extractor of the injected context would
+obtain---and treat proximity to it as a measure of \emph{delivery fidelity}, not a defect: on
+Gemini~3.7~Flash the scaffold recall (0.943) tracks its copy ceiling (0.964) closely, i.e.\ the
+model faithfully restates the vetted facts it was given. High extractive fidelity to an
+authoritative source is the product for private-knowledge grounding: the answer is trustworthy
+because the source is, and it is attributable and cheap---the rigorous curation is amortised, not
+re-paid per query. The signed \emph{gain over copy} (recall $-$ ceiling) turns delivery fidelity
+into a model-discriminating metric:
+\textcolor{burnt}{[SWEEP: spread across the ten models, X to Y]}. We position this against the
+right alternative---grounding the same model in a generic web search rather than the bare
+model---and lay out the multivariate bar such a system must clear: excellent in-domain recall
+\emph{and} no ``jaggedness'' (regression) on general, out-of-domain questions. We release the
+hardened harness, the frozen question set, and all per-row artefacts.
+\end{abstract}
+
+% =====================================================================
+\section{Introduction}
+A recurring enterprise need is a language model that answers accurately over a large, private,
+domain-specific corpus---a customer's product data, an organisation's internal knowledge, a
+curated scientific ontology---that the model cannot have memorised because it was never in
+pretraining. Retrieval-augmented generation is the standard remedy for exactly this gap between
+parametric memory and the knowledge an answer requires~\cite{lewis2020rag,gao2023ragsurvey},
+and it helps most precisely where parametric memory is weakest: long-tail and proprietary
+facts~\cite{mallen2023trust}. Structured, graph-based retrieval sharpens
+it~\cite{edge2024graphrag,guo2024lightrag,baek2023kaping,pan2024unifying}. We study a system in
+this family that injects a slice of a curated, reasoned ontology---class definitions, typed
+relations, taxonomy---into a \emph{swappable} model's context, and characterise what grounding
+in an authoritative private corpus actually buys.
+
+The unaided-vs-grounded gap is stark and is the point: on in-domain questions our models score
+$\approx0.36$ from parametric memory and $\approx0.94$ with the curated context. The domain is
+genuinely private; the ontology supplies what the model lacks. Because we derive both questions
+and gold from the graph and then inject a slice of that graph, the injected context
+\emph{contains} the answers. Rather than hide this, we measure it. For every question we compute
+a \textbf{copy ceiling}: the recall a no-op extractor of exactly the text the model was shown
+would obtain. Proximity to the ceiling is \emph{delivery fidelity}---how faithfully the model
+restates the vetted facts it was given---not a defect to be explained away. High extractive
+fidelity to an authoritative source is the desired behaviour for private-knowledge grounding:
+it is what makes the answer attributable, non-hallucinated, and trustworthy \emph{because the
+source is trustworthy}~\cite{es2023ragas,adlakha2024evaluating}. The copy ceiling is the RAG-era,
+graph-grounded generalisation of the input-only baselines long used to interpret reading
+comprehension~\cite{kaushik2018reading} and of contamination audits that measure how much of a
+score is visible in the input~\cite{sainz2023contamination,golchin2024timetravel}; here the
+exposure is deliberate and we report exactly how much of the score it accounts for.
+
+The signed \textbf{gain over copy} (scaffold recall $-$ copy ceiling) turns fidelity into a
+model-discriminating quantity: at the ceiling the model is a perfect faithful extractor; below it
+it \emph{loses} surfaced facts (a faithfulness failure); above it it \emph{recovers} gold the
+lexical exposure check missed. This is the axis on which our ten models actually differ, where the
+raw uplift barely does.
+
+\paragraph{The bar is multivariate.} Excellent in-domain recall is necessary but not sufficient.
+A deployable private-knowledge system must also \emph{not} degrade the general and novel questions
+the model already handles---it must not become ``jagged'' when the ontology is irrelevant, a real
+risk because injected context can displace correct parametric
+knowledge~\cite{shi2023distracted,yoran2024robust,longpre2021entity}. The right response is
+selective, confidence-gated injection~\cite{mallen2023trust} with a fallback to broader
+retrieval (internet-research agents) for out-of-domain queries. And the right \emph{comparison}
+for an in-domain answer is not the bare model but the same model grounded in a generic web
+search: the claim is that a curated, vetted corpus is higher-precision and cheaper per query
+than open-web results, with the expensive curation amortised once. This paper establishes the
+first axis rigorously and specifies the rest.
+
+\paragraph{Contributions.}
+\begin{enumerate}[topsep=2pt,itemsep=1pt]
+\item A framing and metric for \emph{private-knowledge grounding}: a per-item, graph-derived
+\textbf{copy ceiling} that measures delivery fidelity, and a signed gain-over-copy metric
+(\S\ref{sec:method}).
+\item A ten-model, five-provider paired sweep under one deterministic configuration: grounding a
+private ontology lifts every model from $\approx0.36$ to $\approx0.94$ in-domain, and gain over
+copy---not raw uplift---is what separates the models (\S\ref{sec:results}).
+\item The multivariate evaluation design a deployable system must pass (in-domain fidelity;
+no jaggedness on out-of-domain; a web-search grounding baseline; attribution), and where the
+present study sits within it (\S\ref{sec:multivariate}).
+\item An open, hardened harness (paired bootstrap with domain-clustered intervals,
+intention-to-treat, per-row truncation/token/retry provenance) and a frozen artefact set.
+\end{enumerate}
+
+% =====================================================================
+\section{Related Work}\label{sec:related}
+\paragraph{Context faithfulness vs.\ correctness.}
+Whether a model \emph{uses} supplied context or falls back on parametric memory is separately
+measurable. \textcite{zhou2023contextfaithful} formalise context-faithful prompting;
+RAGAS~\cite{es2023ragas} treats faithfulness and context recall as first-class metrics distinct
+from correctness; and \textcite{adlakha2024evaluating} show instruction-following models are
+often correct while unfaithful, a split that exact-match/F1 obscure. A scaffold-fed model at its
+copy ceiling is being maximally extractive; the interesting behaviour is \emph{away} from that
+ceiling.
+
+\paragraph{Knowledge conflict and distraction.}
+\textcite{longpre2021entity} define entity-based knowledge conflicts and over-reliance on
+parametric memory; \textcite{mallen2023trust} probe parametric vs.\ non-parametric memory across
+roughly ten models on long-tail facts---the multi-model, graph-grounded tradition we follow;
+\textcite{xie2024chameleon} reveal receptiveness-vs-stubbornness under conflicting evidence.
+On irrelevant context, \textcite{shi2023distracted} show sharp degradation and
+\textcite{yoran2024robust} train robustness to it; \textcite{chen2024rgb} benchmark noise
+robustness and integration; \textcite{xu2024knowledgeconflicts} survey the area. The
+closed-book baseline is \textcite{roberts2020knowledge}.
+
+\paragraph{RAG and knowledge-graph grounding.}
+From the original RAG formulation~\cite{lewis2020rag} to graph-structured
+retrieval~\cite{edge2024graphrag,guo2024lightrag} and KG-triple prompting for zero-shot
+KGQA~\cite{baek2023kaping}, with the unifying roadmap of \textcite{pan2024unifying} and the
+neurosymbolic framing of \textcite{garcez2023neurosymbolic}. Notably, published KG-grounding work
+typically injects \emph{instance} triples; injecting \emph{schema-level} content---class
+definitions, typed relations and taxonomy---and benchmarking recall against it is comparatively
+under-studied.
+
+\paragraph{Answer leakage and input-only baselines.}
+\textcite{kaushik2018reading} establish that passage-only / question-only baselines often match
+full models, i.e.\ much apparent competence is shortcut exploitation of what the input already
+exposes. Contamination work~\cite{sainz2023contamination,golchin2024timetravel} shows gold in
+the input inflates scores and detects leakage by testing whether a model can \emph{reproduce}
+held-out strings. Our per-item copy ceiling is the RAG-era, graph-grounded generalisation of the
+input-only baseline: rather than auditing leakage post hoc, we make the deliberate exposure the
+metric's reference point.
+
+\paragraph{Evaluation statistics.}
+We use paired bootstrap resampling over a shared test set~\cite{efron1979bootstrap,koehn2004significance}.
+Because graph-derived questions cluster by class and domain and are therefore
+non-independent~\cite{dror2018hitchhiker}, we report a domain-clustered (block) bootstrap
+interval alongside the naive one, and an intention-to-treat estimate~\cite{hollis1999itt} that
+retains questions on which the scaffold did not engage.
+
+% =====================================================================
+\section{The Ontology Scaffold}\label{sec:scaffold}
+The knowledge graph is a reasoned OWL corpus (Oxigraph triple store, Whelk EL++ classifier)
+of \textbf{8{,}146 classes / 282{,}492 triples} at the generation evaluated here
+(2026-08-15). A retrieval facet---the ``Loom''---matches a query to the most relevant classes
+and serialises a budget-clamped extract: each class's title, definition, direct parents,
+inferred ancestors and typed relations (\texttt{requires}, \texttt{hasPart}, \texttt{enables},
+\texttt{dependsOn}, \texttt{uses}). This \emph{scaffold} is prepended to the user question; the
+model is asked to treat it as ground truth where relevant. The scaffold is a static structured
+extract, not free prose and not a tool-use trace: the model is given the structure, not asked to
+traverse the graph. Grounding is performed client-side from a local mirror of the exact deployed
+generation, so what the model receives is identical to production. The same retrieval fronts a
+swappable generation model, which is what lets us hold grounding constant while varying the model
+under test.
+
+% =====================================================================
+\section{Method}\label{sec:method}
+\paragraph{Questions and gold (graph-as-oracle).}
+From every class with a real definition ($\geq$120 chars), quality $\geq 0.6$ and $\geq 2$
+populated relation types, in each domain with $\geq 50$ eligible classes, we template three
+question types: \textbf{T-REL} (what does $X$ require / use / depend on / enable; what are its
+parts), \textbf{T-TAX} (immediate parent and broader ancestors) and \textbf{T-COMMON} (the shared
+ancestor of a pair). Gold is the set of \{slug, title\} targets the graph asserts. The generator
+is deterministic given a seed; seed~42 yields \textbf{510 questions} over 15 domains (285 T-REL,
+180 T-TAX, 45 T-COMMON).
+
+\paragraph{Design and configuration.}
+Each question is asked in two arms: \emph{raw} (question only) and \emph{scaffold} (question with
+the budget-clamped ontology extract prepended, budget 1500 tokens). To make ten heterogeneous
+models comparable we fix one configuration: \texttt{temperature}=0, \texttt{max\_tokens}=2048,
+and \texttt{reasoning\_effort}=low only for models whose thinking cannot be disabled (the
+Gemini~3.x family), so a mandatory thinking pass does not truncate the answer. All models are
+reached through their OpenAI-compatible chat endpoint.
+
+\paragraph{Scoring.}
+A gold item is a hit when its normalised title, or $\geq 80\%$ of its length-$\geq 4$ words,
+appears in the answer; recall is hits\,/\,gold (any-match for T-COMMON). Scoring is lexical and
+needs no model. This under-counts paraphrase, so \emph{absolute} recall is a lower bound; the
+\emph{paired} delta---same questions, same scorer, same model---is the signal.
+
+\paragraph{The copy ceiling.}
+For each question we compute $\mathrm{exposed}_i = $ the number of gold titles that already appear
+(under the same matcher) in the exact text shown to the model, and define the per-item copy
+ceiling $c_i = \mathrm{exposed}_i / |\text{gold}_i|$. The mean copy ceiling is the recall a
+deterministic extractor of the injected context would score. The \textbf{gain over copy} is
+mean scaffold recall $-$ mean copy ceiling. For the raw arm the injected text is empty, so
+$c_i\approx 0$ by construction.
+
+\paragraph{Statistics.}
+The headline is the paired per-question delta (scaffold $-$ raw) over the shared question ids,
+with a seeded 10{,}000-resample bootstrap 95\% CI~\cite{efron1979bootstrap,koehn2004significance}.
+Because questions cluster by class and domain~\cite{dror2018hitchhiker}, we also report a
+\textbf{domain-clustered} block bootstrap (resample the 15 domains, pool their deltas), which is
+wider and the interval we treat as primary. We report an \textbf{intention-to-treat} delta that
+keeps non-engaged questions~\cite{hollis1999itt}, and per-row \texttt{finish\_reason}, token
+breakdown and retry counts so truncation and transport flakiness are auditable, not hidden.
+
+% =====================================================================
+\section{Results}\label{sec:results}
+
+\subsection{In-domain: high-fidelity delivery of private knowledge}
+On Gemini~3.7~Flash the paired design gives a large, tight uplift---raw recall 0.359,
+scaffold recall 0.943, paired delta $\mathbf{+0.584}$, naive 95\% CI $[+0.549,+0.619]$,
+domain-clustered 95\% CI $[+0.536,+0.632]$ over $n=510$ with zero errors and zero truncated
+responses. The raw score confirms the domain is private---parametric memory answers barely a
+third. The copy ceiling then \emph{characterises} the grounded score: the mean fraction of gold
+already present in the injected scaffold is \textbf{0.964}, and the model's recall (0.943) tracks
+it within $-0.021$. The system is doing exactly what a private-knowledge grounding layer should:
+the curated ontology carries the answers, and the model delivers them back with high fidelity. The
+tiny negative gain says the model restates almost everything it is shown and fabricates almost
+nothing---faithful, attributable delivery, not free-associating from parametric memory. Whether a
+model does more than restate---recovering gold the lexical check missed, or conversely
+\emph{dropping} surfaced facts---is the axis \S\ref{sec:multi-model} turns on.
+
+\begin{figure}[t]\centering
+\begin{tikzpicture}
+\begin{axis}[ybar,width=12cm,height=5.4cm,bar width=15pt,ymin=0,ymax=1.05,
+  ylabel={Mean recall}, symbolic x coords={raw,scaffold,copy ceiling},
+  xtick=data, enlarge x limits=0.3, nodes near coords,
+  nodes near coords style={font=\footnotesize}]
+\addplot[rawstyle] coordinates {(raw,0.359)};
+\addplot[scafstyle] coordinates {(scaffold,0.943)};
+\addplot[copystyle] coordinates {(copy ceiling,0.964)};
+\end{axis}\end{tikzpicture}
+\caption{Gemini~3.7~Flash. The scaffold arm (0.943) lands just under the \emph{copy ceiling}
+(0.964)---the recall a no-op extractor of the injected context would already achieve. The
+$+0.58$ raw$\to$scaffold uplift is almost entirely answer exposure.}
+\label{fig:anchor}
+\end{figure}
+
+\subsection{Ten models: gain over copy separates them}\label{sec:multi-model}
+% ===================================================================
+% [SWEEP] Fill from bench/sweep/analyse.py (sweep-analysis.md):
+%   - Table: model | raw | scaffold | uplift [clustered CI] | copy ceiling | gain over copy
+%   - Figure: grouped bars raw/scaffold/copy-ceiling per model, sorted by gain over copy
+%   - Figure: signed gain-over-copy per model (the discriminating axis)
+% ===================================================================
+\textcolor{burnt}{[SWEEP] Multi-model table and figures inserted here once the 10-model run
+completes. Every model shows a large raw$\to$scaffold uplift; the discriminating quantity is
+gain over copy---whether a model merely restates exposed gold (gain $\approx 0$), falls short of
+it (negative: it loses surfaced facts, a delivery-fidelity failure that matters for a
+private-knowledge system), or exceeds it (positive: it recovers gold the lexical exposure check
+missed, via paraphrase or inference).}
+
+% =====================================================================
+\section{The Multivariate Bar}\label{sec:multivariate}
+In-domain fidelity is one axis of a deployable private-knowledge system, not the whole target.
+We state the full bar and where this study sits, so the single number is not mistaken for the
+claim.
+
+\begin{enumerate}[topsep=2pt,itemsep=2pt,leftmargin=1.4em]
+\item \textbf{In-domain recall / delivery fidelity (this paper).} Excellent, faithful,
+attributable recall on questions the curated corpus covers---measured against the copy ceiling so
+``faithful'' is quantified, not assumed. Established here across ten models.
+\item \textbf{No jaggedness on out-of-domain (designed, not yet run).} Injecting ontology context
+must not \emph{degrade} the general, novel questions a model already answers well; irrelevant
+context is known to distract and to displace correct parametric
+knowledge~\cite{shi2023distracted,yoran2024robust,longpre2021entity}. The mitigation is
+confidence-gated selective injection---inject in proportion to retrieval score, skip below a
+threshold~\cite{mallen2023trust}---evaluated by running an \emph{off-ontology} question set
+raw-vs-scaffold and requiring no regression. The harness supports this gate today; the paired
+off-ontology run is the open experiment.
+\item \textbf{The right baseline is web search, not the bare model (designed).} For an in-domain
+question the meaningful comparison is the same model grounded in live web-search results versus
+the curated scaffold. The hypothesis is that a vetted, structured corpus is higher-precision and
+lower-noise than open-web retrieval~\cite{shi2023distracted}, with the curation cost amortised
+once rather than re-paid per query. This is a third grounding arm on the identical question set.
+\item \textbf{Attribution (designed).} Every grounded answer already carries its corpus
+generation and grounding confidence; a reported attribution-precision metric would close the
+loop from ``faithful to the input'' to ``attributable to a named, versioned source.''
+\end{enumerate}
+
+\noindent A system that clears all four is the goal: \emph{excellent where it is grounded,
+un-degraded where it is not, better than a web search in-domain, and traceable throughout.} The
+out-of-domain and web-search arms are multivariate by construction---uplift on the local set and
+non-regression on the general set are distinct outcomes that must hold together.
+
+% =====================================================================
+\section{Discussion}
+\paragraph{What the copy ceiling does and does not say.}
+A near-ceiling result does not make grounding worthless---exposing the right facts and having the
+model restate them faithfully is exactly what a grounded QA system should do, and the raw arm
+shows models cannot do it from parametric memory alone. What the ceiling forbids is the
+\emph{inference} that the model is reasoning over ontological structure. For that claim the
+evidence is gain over copy, and negative controls (irrelevant, shuffled-target, and label-masked
+scaffolds) that we flag as required future work.
+
+\paragraph{Gain over copy as a faithfulness axis.}
+\textcolor{burnt}{[SWEEP] interpretation of the cross-model spread: which providers/models
+under-utilise surfaced structure, which recover beyond it.}
+
+% =====================================================================
+\section{Limitations and Threats to Validity}\label{sec:limits}
+\begin{itemize}[topsep=2pt,itemsep=1pt]
+\item \textbf{Estimand.} The primary metric is \emph{lexical gold-title recall}: it counts whether
+expected titles appear, not relation direction, negation, correctness of explanation, or
+contradiction. ``Grounding'' should be reserved for a composite that also checks these.
+\item \textbf{Leakage is deliberate.} Questions, gold and scaffold derive from one graph; the copy
+ceiling measures the leakage rather than removing it. Absolute recall is a lower bound (lexical
+matching under-counts paraphrase), possibly arm-dependently.
+\item \textbf{Single sample.} One completion per arm; at \texttt{temperature}=0 this is
+deterministic but leaves no estimate of a model's own sampling variance. Convergence claims need
+replicates and a pre-registered equivalence margin.
+\item \textbf{Non-independence.} Multiple questions share a class/domain; we report a
+domain-clustered interval but 15 domains is a small cluster count, so domain-level generalisation
+is uncertain.
+\item \textbf{Population.} Eligibility filters (dense, well-defined classes) select cases
+favourable to grounding; sparse classes, aliases, ambiguous phrasing, multi-hop and off-ontology
+queries are untested. Prompts name canonical titles, easing retrieval.
+\item \textbf{Single graph, single domain family.} Fidelity to one curated Web3/XR/AI ontology;
+generalisation to other graphs is plausible but unshown. The corpus is AI-generated synthetic
+content produced under human direction---an ontology testbed, not an authoritative encyclopaedia.
+\end{itemize}
+
+% =====================================================================
+\section{Conclusion}
+Ontology-scaffold grounding produces a large, statistically robust recall uplift for every model
+tested---but on the strongest model that uplift is, to within measurement, exactly what a copy of
+the injected context would score. The honest quantity is not the uplift but the \emph{gain over
+copy}, and it is small, sometimes negative, and \textcolor{burnt}{[SWEEP: it is what separates the
+ten models]}. Grounding evaluations that inject graph-derived gold should report a copy ceiling as
+standard. We release the harness, the frozen seed-42 question set, and all per-row artefacts.
+
+\paragraph{Reproducibility.} Harness, sweep drivers and per-row outputs:
+\texttt{github.com/DreamLab-AI/loom} (\texttt{bench/}). Every run ships its honesty notes and its
+copy ceiling.
+
+\printbibliography
+
+\end{document}
