@@ -89,8 +89,8 @@ mutually exclusive*, and *KG value is conditional on retrieval precision and que
 | condition | retrieval | judged Δ vs bare (independent gold) |
 |---|---|---|
 | stub harness | 1.5K, single-hop, lexical | ~null (answer often absent) |
-| naive traversal preload | 24K, 1-hop neighbourhood, noisy | **−0.40 [−0.58,−0.22]** (distraction; lit-predicted) |
-| precise (exact concept) | clean, ~1 concept, lexical-precise | *[running]* — expect ≈ dense (single-hop regime) |
+| naive traversal preload | 24K, 1-hop neighbourhood, noisy (avg 30.9 classes/21.5K chars) | **−0.40 [−0.58,−0.22]**, n=285, 5 models. Per-model gradient: haiku −1.30, deepseek −0.58, gemini −0.51, gpt-4.1-mini +0.23, mistral +0.16 — distraction worst on weakest model (lit-predicted) |
+| precise (exact concept) | clean, ~1 concept, tight budget | **STILL UNRUN** — the "precise" job (2026-08-16) over-retrieved (30.9 classes) and re-confirmed −0.40 instead. Needs semantic-seed + small char budget (RuVector HNSW fallback) to actually test the single-hop regime |
 | general knowledge (non-destructive) | gated | −0.05 [−0.11, 0.00] (null; safe) |
 
 Next experiment the literature points to: **multi-hop / relational / completeness questions** with
