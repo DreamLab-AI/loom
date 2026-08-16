@@ -300,3 +300,50 @@ Then score + report exactly as Steps 3–4. A ready driver is `bench/run-gemini.
    `--reasoning-effort low` to keep both cost and truncation risk down.
 4. The judge, if run, must **never** be the model under test — use the LAN Loom/Qwen or a
    different cloud model as judge (auth for a cloud judge is not yet wired; use a local judge).
+
+## Methodology hardening (adversarial pass, 2026-08-16)
+
+An external adversarial review (Codex, red-teaming the estimand and statistics) surfaced real
+weaknesses. The harness now instruments and reports the following; read them before quoting a
+headline. What each guards against is in brackets.
+
+**The estimand is *lexical gold-title recall*, not "grounding".** It counts whether expected
+class titles appear in the answer — not relation direction, negation, correctness of
+explanation, or contradiction. Reserve words like "grounded" / "decisive" for a composite that
+also checks precision and factual consistency. [over-claiming from recall alone]
+
+**Copy ceiling (the deepest issue).** Because the scaffold injects the gold titles by design, a
+no-op extractor that echoed the injected context would already score high. Every scaffold row
+now records `n_gold_exposed` / `n_gold`; the summary reports `mean_gold_exposed_recall` (the
+copy ceiling) and `recall_gain_over_exposure` (mean recall − copy ceiling). **Report the gain
+over copy, not just the headline recall.** For a stronger claim, add negative controls in future
+runs: irrelevant scaffold, relation-target-shuffled scaffold, and entity-label-masked
+definitions. [circularity / copy-from-context masquerading as reasoning]
+
+**Per-row observability.** Each row now carries `finish_reason`, a normalised token breakdown
+(`tokens.{prompt,completion,total,reasoning}`), `attempts` (retry count) and `response_model`.
+The summary reports `n_truncated_finish_length` and `n_with_retries_gt1`. A run with truncated
+rows or hidden retries is not trustworthy — check these before interpreting. [thinking-token
+truncation and transport flakiness confounding recall and latency]
+
+**Clustered CI + intention-to-treat.** Questions cluster by class and domain, so the naive
+per-question bootstrap is optimistic. The report now prints a **domain-clustered 95% CI** beside
+the naive one (expect it wider) and an **intention-to-treat delta** that keeps non-engaged pairs
+(at their real ~0 delta) rather than excluding them. [too-narrow CI; selection on treatment
+delivery]
+
+**Single-sample-at-temperature caveat.** Gemini runs at `temp=1.0` (one completion per arm), so
+run-to-run generation variance is unmeasured. Do **not** claim "convergence" from close point
+estimates across models run at different temperatures / set sizes. For a convergence claim, run
+**3–5 replicates per arm**, interleave/counterbalance raw-vs-scaffold order per question (not all
+raw then all scaffold — that confounds latency with time-of-day load), and pre-register an
+equivalence margin. [unmeasured sampling noise; order/latency confound; cross-condition
+conflation]
+
+### Minimum before the next headline run
+- [ ] Report `recall_gain_over_exposure`, not bare recall, and run at least one negative-control
+      scaffold (shuffled targets) to bound copy.
+- [ ] Confirm `n_truncated_finish_length == 0` and note `n_with_retries_gt1`.
+- [ ] Quote the **domain-clustered** CI as primary; keep the naive one as a footnote.
+- [ ] For any cross-model "convergence" claim: same frozen index, questions, temperature and
+      token budget, with ≥3 replicates and interleaved arm order.

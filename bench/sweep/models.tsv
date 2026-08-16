@@ -1,0 +1,14 @@
+GEMINI_BASE	https://generativelanguage.googleapis.com/v1beta/openai/
+OR_BASE	https://openrouter.ai/api/v1
+DS_BASE	https://api.deepseek.com/v1
+# label	base_var	model_id	key_env	reasoning_effort	group
+gemini-2.5-flash-lite	GEMINI_BASE	gemini-2.5-flash-lite	GOOGLE_API_KEY		google
+gemini-3.5-flash-lite	GEMINI_BASE	gemini-3.5-flash-lite	GOOGLE_API_KEY	low	google
+gemini-3.7-flash-t0	GEMINI_BASE	gemini-3.7-flash	GOOGLE_API_KEY	low	google
+deepseek-chat	DS_BASE	deepseek-chat	DEEPSEEK_API_KEY		deepseek
+gpt-4.1-mini	OR_BASE	openai/gpt-4.1-mini	OPENROUTER_API_KEY		or_a
+claude-haiku-4.5	OR_BASE	anthropic/claude-haiku-4.5	OPENROUTER_API_KEY		or_a
+llama-3.3-70b	OR_BASE	meta-llama/llama-3.3-70b-instruct	OPENROUTER_API_KEY		or_a
+mistral-small-24b	OR_BASE	mistralai/mistral-small-24b-instruct-2501	OPENROUTER_API_KEY		or_b
+qwen-2.5-72b	OR_BASE	qwen/qwen-2.5-72b-instruct	OPENROUTER_API_KEY		or_b
+glm-4.6	OR_BASE	z-ai/glm-4.6	OPENROUTER_API_KEY		or_b

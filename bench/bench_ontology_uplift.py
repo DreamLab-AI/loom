@@ -102,7 +102,19 @@ HONEST_NOTES = """\
    questions, same scorer, same model — are the signal.
 3. Questions where the scaffold never engaged are excluded from the paired
    delta: both arms saw the identical prompt, so they measure nothing about
-   uplift. They are counted separately above.
+   uplift. They are counted separately above; the intention-to-treat delta
+   (which keeps them) is reported alongside.
+4. **The primary endpoint is *lexical gold-title recall*, not "grounding".**
+   It counts whether expected class titles appear in the answer; it does not
+   verify relation direction, negation, correctness of explanation, or absence
+   of contradiction. Read the *copy ceiling* column: much of a scaffold arm's
+   recall is gold that was present verbatim in the injected context, so a no-op
+   extractor would score near it. The honest quantity is *gain over copy*.
+5. **Independence and sampling.** Questions cluster by class and domain, so the
+   naive per-question bootstrap CI is optimistic; a domain-clustered CI is
+   reported beside it. At temperature > 0 a single completion per arm leaves
+   run-to-run variance unmeasured — treat a lone run's point estimate as one
+   draw, and prefer several replicates before claiming convergence.
 """
 
 
@@ -157,12 +169,17 @@ def _chat_url(base_url: str) -> str:
 
 
 def chat_request(base_url: str, payload: dict, timeout: float,
-                 retries: int, auth_bearer: Optional[str] = None) -> dict:
+                 retries: int, auth_bearer: Optional[str] = None,
+                 stats: Optional[dict] = None) -> dict:
     """POST an OpenAI chat payload; retry transport/HTTP failures.
 
     ``auth_bearer`` (if given) is sent as ``Authorization: Bearer <token>`` —
     required by cloud providers (e.g. Gemini's OpenAI-compat endpoint). Local
     llama.cpp endpoints ignore it, so it is safe to always thread through.
+
+    ``stats`` (if given) is populated with ``{"attempts": <n>}`` so callers can
+    record retry counts per row — a successful retry otherwise hides transport
+    flakiness and confounds latency comparisons (adversarial pass 2026-08-16).
     """
     url = _chat_url(base_url)
     data = json.dumps(payload).encode("utf-8")
@@ -180,6 +197,8 @@ def chat_request(base_url: str, payload: dict, timeout: float,
             obj = json.loads(raw.decode("utf-8"))
             if not isinstance(obj, dict):
                 raise ValueError("upstream returned non-object JSON")
+            if stats is not None:
+                stats["attempts"] = attempt + 1
             return obj
         except urllib.error.HTTPError as exc:
             try:
@@ -191,7 +210,41 @@ def chat_request(base_url: str, payload: dict, timeout: float,
             last = exc
         if attempt < retries:
             time.sleep(min(2.0, 0.5 * (attempt + 1)))
+    if stats is not None:
+        stats["attempts"] = retries + 1
     raise RuntimeError(f"chat request failed after {retries + 1} attempts: {last}")
+
+
+def _usage_normalise(usage: Any) -> dict:
+    """Pull a flat, provider-agnostic token breakdown out of an OpenAI-style
+    usage block. Reasoning/thinking tokens (Gemini 3.x, o-series) live in
+    completion_tokens_details.reasoning_tokens — surfacing them is what lets a
+    reader see whether a small max_tokens was eaten by hidden thinking."""
+    if not isinstance(usage, dict):
+        return {}
+    out: dict[str, Any] = {}
+    for k in ("prompt_tokens", "completion_tokens", "total_tokens"):
+        if isinstance(usage.get(k), (int, float)):
+            out[k] = usage[k]
+    det = usage.get("completion_tokens_details")
+    if isinstance(det, dict) and isinstance(det.get("reasoning_tokens"), (int, float)):
+        out["reasoning_tokens"] = det["reasoning_tokens"]
+    return out
+
+
+def _gold_exposed(messages: list, gold: list) -> int:
+    """How many gold titles are literally present in what the model was shown.
+
+    This is the deterministic-copy ceiling (adversarial pass 2026-08-16, findings
+    1/2): a no-op extractor that echoed the injected context would score roughly
+    this recall. Reporting it next to headline recall makes the "scaffold contains
+    gold by design" honesty note MEASURABLE rather than merely asserted — if
+    exposed-recall ≈ scaffold-recall, most of the lift is copy, not reasoning."""
+    text = " ".join(
+        m.get("content") for m in messages if isinstance(m.get("content"), str))
+    norm = normalise(text)
+    words = set(norm.split())
+    return sum(1 for g in (gold or []) if gold_hit(g.get("title", ""), norm, words))
 
 
 # ---------------------------------------------------------------------------
@@ -412,6 +465,10 @@ def run_bench(
                         injected = max(
                             0, (_content_chars(new) - before + 3) // 4)
                     messages = new
+                # Deterministic-copy ceiling: how much gold was in what the model
+                # saw. Cheap to compute here where we still hold the messages.
+                row["n_gold"] = len(q.get("gold") or [])
+                row["n_gold_exposed"] = _gold_exposed(messages, q.get("gold") or [])
                 payload = {
                     "model": model_name,
                     "messages": messages,
@@ -423,12 +480,14 @@ def run_bench(
                 # mandatory thinking from eating the max_tokens answer budget.
                 if reasoning_effort:
                     payload["reasoning_effort"] = reasoning_effort
+                stats: dict = {}
                 t0 = time.perf_counter()
                 resp = chat_request(base_url, payload, timeout, retries,
-                                    auth_bearer=auth_bearer)
+                                    auth_bearer=auth_bearer, stats=stats)
                 latency_ms = round((time.perf_counter() - t0) * 1000.0, 1)
                 try:
-                    answer = resp["choices"][0]["message"].get("content") or ""
+                    choice0 = resp["choices"][0]
+                    answer = choice0["message"].get("content") or ""
                 except (KeyError, IndexError, TypeError):
                     raise RuntimeError(
                         f"malformed upstream response: {str(resp)[:200]}")
@@ -445,9 +504,21 @@ def run_bench(
                 row.update(answer=answer, latency_ms=latency_ms,
                            scaffold_engaged=engaged,
                            injected_tokens=injected)
+                # Per-row observability (adversarial pass 2026-08-16): finish_reason
+                # exposes truncation (thinking eating the budget); token breakdown,
+                # attempts and provider model-version make the run auditable and
+                # reproducible instead of a black box.
+                row["finish_reason"] = choice0.get("finish_reason")
+                row["answer_chars"] = len(answer)
+                row["attempts"] = stats.get("attempts")
+                if resp.get("model"):
+                    row["response_model"] = resp.get("model")
                 usage = resp.get("usage")
                 if isinstance(usage, dict):
                     row["usage"] = usage
+                    norm_usage = _usage_normalise(usage)
+                    if norm_usage:
+                        row["tokens"] = norm_usage
             except Exception as exc:
                 n_err += 1
                 row.update(error=str(exc), scaffold_engaged=engaged,
@@ -578,6 +649,17 @@ def score_results(
     model = results[0].get("model") or "model"
     mode = results[0].get("mode") or "mode"
 
+    # Guard against duplicate ids (adversarial pass 2026-08-16, finding 3):
+    # duplicates would silently double-count in summaries and collapse in the
+    # id-keyed pairing, desyncing n across stages.
+    seen_ids: set = set()
+    dupes = [r["id"] for r in results
+             if r.get("id") in seen_ids or seen_ids.add(r.get("id"))]
+    if dupes:
+        print(f"score: WARNING {len(dupes)} duplicate result id(s), "
+              f"e.g. {dupes[:5]} — expected one row per question",
+              file=sys.stderr)
+
     score_rows: list[dict] = []
     judge_fail_streak = 0
     judge_disabled = judge_base_url is None
@@ -592,6 +674,11 @@ def score_results(
             "scaffold_engaged": bool(r.get("scaffold_engaged")),
             "injected_tokens": r.get("injected_tokens", 0),
             "latency_ms": r.get("latency_ms"),
+            # observability carried through for the summary (adversarial pass)
+            "n_gold": r.get("n_gold"),
+            "n_gold_exposed": r.get("n_gold_exposed"),
+            "finish_reason": r.get("finish_reason"),
+            "attempts": r.get("attempts"),
         }
         if q is None:
             row["error"] = "question id not found in questions file"
@@ -641,6 +728,14 @@ def score_results(
     for r in scored:
         per_dom.setdefault(r["domain"], []).append(r["recall"])
         per_tmpl.setdefault(r["template"], []).append(r["recall"])
+    # Deterministic-copy ceiling: per-row fraction of gold already present in
+    # what the model was shown. If this ~= mean_recall, most of the "recall" is
+    # copy-from-context, not reasoning (adversarial pass 2026-08-16, findings 1/2).
+    exp = [r["n_gold_exposed"] / r["n_gold"] for r in scored
+           if isinstance(r.get("n_gold_exposed"), int) and (r.get("n_gold") or 0) > 0]
+    n_trunc = sum(1 for r in score_rows if r.get("finish_reason") == "length")
+    retries_used = [r["attempts"] for r in score_rows
+                    if isinstance(r.get("attempts"), int)]
     summary = {
         "model": model,
         "mode": mode,
@@ -650,8 +745,18 @@ def score_results(
         "mean_recall": _mean(recalls),
         "mean_recall_engaged_only": _mean(engaged),
         "n_engaged": len(engaged),
+        "engagement_rate": (len(engaged) / len(scored)) if scored else None,
         "mean_extra_recall": _mean(extra),
         "n_extra_scored": len(extra),
+        # copy-baseline: the recall a no-op extractor of the injected context
+        # would get, and the headline's genuine gain over it.
+        "mean_gold_exposed_recall": _mean(exp),
+        "recall_gain_over_exposure": (
+            None if _mean(recalls) is None or _mean(exp) is None
+            else round(_mean(recalls) - _mean(exp), 4)),
+        # truncation + transport auditability
+        "n_truncated_finish_length": n_trunc,
+        "n_with_retries_gt1": sum(1 for a in retries_used if a > 1),
         "judge_mean": _mean([float(j) for j in judges]),
         "n_judged": len(judges),
         "n_judge_failures": n_judge_fail,
@@ -696,6 +801,31 @@ def bootstrap_ci(deltas: list[float], resamples: int = 10000,
     return lo, hi
 
 
+def bootstrap_ci_clustered(clusters: list[list[float]], resamples: int = 10000,
+                           seed: int = DEFAULT_SEED) -> tuple[float, float]:
+    """Cluster (block) bootstrap: resample whole clusters with replacement,
+    then pool their deltas. Questions cluster by domain (and by seed class),
+    so the naive per-question bootstrap treats correlated observations as
+    independent and reports too-narrow an interval (adversarial pass
+    2026-08-16, finding 4). Resampling at the domain level restores the
+    domain-to-domain uncertainty the naive interval hides."""
+    clusters = [c for c in clusters if c]
+    k = len(clusters)
+    if k < 2:
+        return (float("nan"), float("nan"))
+    rng = random.Random(seed)
+    means: list[float] = []
+    for _ in range(resamples):
+        pooled: list[float] = []
+        for _ in range(k):
+            pooled.extend(clusters[rng.randrange(k)])
+        if pooled:
+            means.append(sum(pooled) / len(pooled))
+    means.sort()
+    m = len(means)
+    return (means[max(0, int(0.025 * m))], means[min(m - 1, int(0.975 * m))])
+
+
 def build_report(score_specs: list[str], resamples: int = 10000,
                  seed: int = DEFAULT_SEED) -> str:
     """Build the markdown report.
@@ -734,8 +864,9 @@ def build_report(score_specs: list[str], resamples: int = 10000,
     lines.append("## Summary (model x mode)")
     lines.append("")
     lines.append("| model | mode | n | errors | mean recall | recall (engaged only) "
+                 "| copy ceiling (gold exposed) | gain over copy "
                  "| extra recall (T-TAX ancestors) | judge 0-5 | mean injected tok | mean latency ms |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
     for (model, mode) in keys:
         rows = groups[(model, mode)]
         scored = [r for r in rows if r.get("recall") is not None]
@@ -747,11 +878,21 @@ def build_report(score_specs: list[str], resamples: int = 10000,
         inj = [float(r.get("injected_tokens") or 0) for r in scored]
         lat = [float(r["latency_ms"]) for r in scored
                if isinstance(r.get("latency_ms"), (int, float))]
+        exp = [r["n_gold_exposed"] / r["n_gold"] for r in scored
+               if isinstance(r.get("n_gold_exposed"), int) and (r.get("n_gold") or 0) > 0]
+        gain = (None if _mean(recalls) is None or _mean(exp) is None
+                else _mean(recalls) - _mean(exp))
         lines.append(
             f"| {model} | {mode} | {len(rows)} | {len(rows) - len(scored)} "
             f"| {_fmt(_mean(recalls))} | {_fmt(_mean(eng))} "
+            f"| {_fmt(_mean(exp))} | {_fmt(gain)} "
             f"| {_fmt(_mean(extra))} | {_fmt(_mean(judges), 2)} "
             f"| {_fmt(_mean(inj), 0)} | {_fmt(_mean(lat), 0)} |")
+    lines.append("")
+    lines.append("*Copy ceiling* = mean fraction of gold titles already present in "
+                 "what the model was shown (raw ≈ 0; a no-op extractor of the "
+                 "injected context would score ~this). *Gain over copy* = mean recall "
+                 "− copy ceiling: the recall not explained by verbatim exposure.")
     lines.append("")
 
     # -- per-domain / per-template ----------------------------------------
@@ -793,6 +934,8 @@ def build_report(score_specs: list[str], resamples: int = 10000,
             other = {r["id"]: r for r in groups[(m, mode)]}
             ids = sorted(set(raw_rows) & set(other))
             deltas: list[float] = []
+            itt_deltas: list[float] = []          # intention-to-treat: keep non-engaged
+            clusters: dict[str, list[float]] = {}  # engaged deltas grouped by domain
             n_not_engaged = 0
             n_errors = 0
             not_engaged_pairs: list[tuple[float, float]] = []
@@ -802,12 +945,15 @@ def build_report(score_specs: list[str], resamples: int = 10000,
                 if a.get("recall") is None or b.get("recall") is None:
                     n_errors += 1
                     continue
+                d = b["recall"] - a["recall"]
+                itt_deltas.append(d)  # ITT: both arms answered; keep the real delta
                 if not b.get("scaffold_engaged"):
                     n_not_engaged += 1
                     not_engaged_pairs.append((a["recall"], b["recall"]))
                     not_engaged_ids.append(str(qid))
                     continue
-                deltas.append(b["recall"] - a["recall"])
+                deltas.append(d)
+                clusters.setdefault(b.get("domain") or "", []).append(d)
             any_pair = True
             if deltas:
                 d_mean = sum(deltas) / len(deltas)
@@ -823,6 +969,23 @@ def build_report(score_specs: list[str], resamples: int = 10000,
                         f"error-free pairs (excluded_not_engaged="
                         f"{n_not_engaged}, excluded_errors={n_errors})")
             lines.append("- " + line)
+            # Domain-clustered CI + intention-to-treat, per the adversarial pass
+            # (findings 4 & 6): the naive CI above assumes independent questions;
+            # ITT keeps the non-engaged pairs instead of dropping them.
+            if deltas:
+                clo, chi = bootstrap_ci_clustered(
+                    list(clusters.values()), resamples=resamples, seed=seed)
+                if clo == clo:  # not NaN
+                    lines.append(
+                        f"  - domain-clustered 95% CI [{clo:+.3f}, {chi:+.3f}] "
+                        f"({len(clusters)} domain clusters) — wider than the naive "
+                        f"interval because questions cluster within domain/class.")
+                if itt_deltas:
+                    itt_mean = sum(itt_deltas) / len(itt_deltas)
+                    lines.append(
+                        f"  - intention-to-treat delta={itt_mean:+.3f} over all "
+                        f"n={len(itt_deltas)} answered pairs (non-engaged kept at "
+                        f"their real, ~0, delta rather than excluded).")
             if not_engaged_pairs:
                 ra = _mean([p[0] for p in not_engaged_pairs])
                 rb = _mean([p[1] for p in not_engaged_pairs])
