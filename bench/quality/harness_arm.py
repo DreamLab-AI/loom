@@ -50,8 +50,12 @@ HARNESS_PREAMBLE = (
     "relationships; otherwise answer from your own knowledge.\n\n[ONTOLOGY CONTEXT]\n")
 
 
-def loom_scaffold(loom, prompt, budget=700, timeout=20):
-    body = json.dumps({"prompt": prompt, "budget_tokens": budget}).encode()
+def loom_scaffold(loom, prompt, budget=700, timeout=20, prose=False):
+    """Fetch the confidence-gated scaffold. prose=True enriches the top seeds
+    with the corpus's detailed research prose (dfull) — the actual explanatory
+    payload for arcane subjects, not just the terse taxonomy stub."""
+    body = json.dumps({"prompt": prompt, "budget_tokens": budget,
+                       "prose": bool(prose)}).encode()
     req = urllib.request.Request(loom.rstrip("/") + "/loom/scaffold", data=body,
                                  method="POST", headers={"Content-Type": "application/json"})
     try:
@@ -98,6 +102,10 @@ def main():
                     help="answer budget; use 2048 for thinking models like qwen3.8-local")
     ap.add_argument("--timeout", type=float, default=120,
                     help="per-request timeout; raise for long-thinking models on hard questions")
+    ap.add_argument("--prose", action="store_true",
+                    help="inject the corpus's detailed research prose (dfull), not just the terse scaffold")
+    ap.add_argument("--budget", type=int, default=700,
+                    help="scaffold token budget; raise (e.g. 3000) with --prose to surface deep prose")
     ap.add_argument("--sleep", type=float, default=0.25)
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)
@@ -108,7 +116,7 @@ def main():
     scaf = {}
     n_eng = 0
     for q in qs:
-        s, eng, tok = loom_scaffold(args.loom, q["question"])
+        s, eng, tok = loom_scaffold(args.loom, q["question"], budget=args.budget, prose=args.prose)
         scaf[q["id"]] = {"scaffold": s, "engaged": eng, "approx_tokens": tok}
         n_eng += int(eng)
     json.dump(scaf, open(os.path.join(args.outdir, "harness-scaffolds.json"), "w"), indent=2)
