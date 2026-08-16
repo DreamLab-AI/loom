@@ -1,0 +1,49 @@
+{
+  "repo": "DreamLab-AI/loom",
+  "cron": "0 3 * * *",
+  "slots": [
+    {
+      "deep": "scaffold-retrieval",
+      "scan": ["ontology-proxy", "budget-clamping"]
+    },
+    {
+      "deep": "model-facade",
+      "scan": ["chat-completions", "model-passthrough"]
+    },
+    {
+      "deep": "confidence-injection",
+      "scan": ["grounding-scores", "selective-injection"]
+    },
+    {
+      "deep": "graph-engine",
+      "scan": ["pyoxigraph", "triple-loading"]
+    }
+  ],
+  "bonusModuli": {
+    "30": "benchmark-methodology",
+    "60": "deployment-hardening"
+  },
+  "controlPlaneProbes": [
+    "curl -s --max-time 10 http://127.0.0.1:8084/health || echo 'FACADE UNREACHABLE'",
+    "ls app/*.py tests/*.py bench/*.py 2>&1 | head -15 || true"
+  ],
+  "buildStep": {
+    "cmd": "echo '== facade =='; curl -s --max-time 10 http://127.0.0.1:8084/health || echo 'FACADE UNREACHABLE'; echo; echo '== ontology-mcp =='; (cd app/ontology-mcp && npm ci --ignore-scripts 2>&1 | tail -5) || echo 'NPM CI FAILED'",
+    "degradeOnWasmFailure": true
+  },
+  "evaluatorEntrypoints": {
+    "bench": "cd tests && python3 -m pytest -v 2>&1 | tail -30",
+    "graph": "curl -s --max-time 10 http://127.0.0.1:8084/health | python3 -c \"import json,sys; h=json.load(sys.stdin); g=h.get('graph',{}); print('engine:',g.get('engine'),'triples:',g.get('triples'),'available:',g.get('available'),'loaded:',g.get('loaded_files')); sys.exit(0 if g.get('available') and (g.get('triples') or 0)>0 else 1)\" || echo 'GRAPH EVALUATOR FAILED'"
+  },
+  "competitors": ["LangChain RAG", "LlamaIndex", "Haystack", "DSPy"],
+  "adrConvention": "3-digit",
+  "extraDisciplines": [
+    "evaluation-is-not-promotion",
+    "witness-every-quantitative-claim",
+    "scaffold-is-the-product-not-prose"
+  ],
+  "ledgerPath": "docs/dream-cycle/LEDGER.md",
+  "branchPrefix": "dream/",
+  "labels": ["dream-cycle", "research"],
+  "autoMerge": false
+}
