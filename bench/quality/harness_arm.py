@@ -61,7 +61,7 @@ def loom_scaffold(loom, prompt, budget=700, timeout=20):
         return "", False, f"err:{str(e)[:60]}"
 
 
-def run_model(label, question, scaffold, engaged, max_tokens=800):
+def run_model(label, question, scaffold, engaged, max_tokens=800, timeout=120):
     base, model, keyenv, effort = MODELS[label]
     key = os.environ.get(keyenv) if keyenv else None
     results = {}
@@ -77,7 +77,7 @@ def run_model(label, question, scaffold, engaged, max_tokens=800):
         stats = {}
         try:
             t0 = time.perf_counter()
-            resp = bu.chat_request(base, payload, 120, 3, auth_bearer=key, stats=stats)
+            resp = bu.chat_request(base, payload, timeout, 3, auth_bearer=key, stats=stats)
             lat = round((time.perf_counter() - t0) * 1000)
             ans = resp["choices"][0]["message"].get("content") or ""
             results[cond] = {"answer": ans, "latency_ms": lat, "attempts": stats.get("attempts"),
@@ -96,6 +96,8 @@ def main():
     ap.add_argument("--models", required=True)
     ap.add_argument("--max-tokens", type=int, default=800,
                     help="answer budget; use 2048 for thinking models like qwen3.8-local")
+    ap.add_argument("--timeout", type=float, default=120,
+                    help="per-request timeout; raise for long-thinking models on hard questions")
     ap.add_argument("--sleep", type=float, default=0.25)
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)
@@ -117,7 +119,8 @@ def main():
         out = {"bare": [], "harness": []}
         for i, q in enumerate(qs, 1):
             sc = scaf[q["id"]]
-            r = run_model(label, q["question"], sc["scaffold"], sc["engaged"], max_tokens=args.max_tokens)
+            r = run_model(label, q["question"], sc["scaffold"], sc["engaged"],
+                          max_tokens=args.max_tokens, timeout=args.timeout)
             for cond in ("bare", "harness"):
                 out[cond].append({"id": q["id"], "model": label, "category": q.get("category"),
                                   **r[cond]})
