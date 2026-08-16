@@ -105,6 +105,8 @@ def main():
     ap.add_argument("--judge-model", required=True)
     ap.add_argument("--judge-key-env", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--web-answers", default=None,
+                    help="optional web-arm answers json ({id: {answer}}) judged as model 'web-perplexity'")
     ap.add_argument("--sleep", type=float, default=0.3)
     args = ap.parse_args()
 
@@ -117,35 +119,49 @@ def main():
     judge_fam = family(args.judge_model)
     models = [m.strip() for m in args.models.split(",") if m.strip()]
 
-    rows = []
+    # Build the arms to judge: each model's raw+scaffold, plus the web arm.
+    arms = []  # (model_label, mode, answers_dict)
     for model in models:
-        fam_match = family(model) == judge_fam
         for mode in ("raw", "scaffold"):
-            ans = load_answers(args.answers_dir, model, mode, ids)
-            for qid in sorted(ids):
-                g = gold[qid]; q = qmeta[qid]
-                cand = ans.get(qid)
-                if cand is None:
-                    continue
-                private = bool(g.get("abstained"))
-                if private:
-                    reference = ("[Not publicly answerable; the authoritative answer per the "
-                                 "curated domain corpus is: " + ", ".join(q.get("gold_titles", [])) + "]")
-                else:
-                    reference = g.get("answer") or ""
-                if not reference.strip():
-                    continue
-                score, why = judge_call(args.judge_base_url, args.judge_model, key,
-                                        q["question_natural"], reference, cand)
-                rows.append({"model": model, "mode": mode, "id": qid,
-                             "domain": q["domain"], "template": q["template"],
-                             "stratum": "private" if private else "public",
-                             "score": score, "why": why,
-                             "judge_family_match": fam_match})
-                if args.sleep:
-                    time.sleep(args.sleep)
-        done = sum(1 for r in rows if r["model"] == model and r["score"] is not None)
-        print(f"judged {model}: {done} gradings", file=sys.stderr)
+            arms.append((model, mode, load_answers(args.answers_dir, model, mode, ids)))
+    if args.web_answers and os.path.exists(args.web_answers):
+        web = {k: v.get("answer", "") for k, v in json.load(open(args.web_answers)).items()
+               if not v.get("error")}
+        arms.append(("web-perplexity", "web", web))
+
+    def reference_for(g, q):
+        # public → the independent web-researched answer; private → the
+        # corpus-authoritative answer the mesh authored (fallback to titles).
+        ref = g.get("answer") or ""
+        if ref.strip():
+            return ref
+        return ("[Authoritative answer per the curated corpus: "
+                + ", ".join(q.get("gold_titles", [])) + "]")
+
+    rows = []
+    for model, mode, ans in arms:
+        fam_match = family(model) == judge_fam
+        for qid in sorted(ids):
+            g = gold[qid]; q = qmeta[qid]
+            cand = ans.get(qid)
+            if cand is None:
+                continue
+            reference = reference_for(g, q)
+            if not reference.strip():
+                continue
+            score, why = judge_call(args.judge_base_url, args.judge_model, key,
+                                    q["question_natural"], reference, cand)
+            rows.append({"model": model, "mode": mode, "id": qid,
+                         "domain": q["domain"], "template": q["template"],
+                         "stratum": g.get("stratum") or ("private" if g.get("abstained") else "public"),
+                         "findability": g.get("web_findability"),
+                         "reference_source": g.get("reference_source"),
+                         "score": score, "why": why,
+                         "judge_family_match": fam_match})
+            if args.sleep:
+                time.sleep(args.sleep)
+        done = sum(1 for r in rows if r["model"] == model and r["mode"] == mode and r["score"] is not None)
+        print(f"judged {model}/{mode}: {done} gradings", file=sys.stderr)
 
     json.dump(rows, open(args.out, "w"), indent=2)
 
