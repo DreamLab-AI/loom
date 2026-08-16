@@ -123,14 +123,21 @@ recall the lexical matcher cannot reach. It must be added as a **third signal**,
 over-retrieval result (Δ = −0.40, 95% CI [−0.58, −0.22], n = 285, five models, worst on the
 weakest model at −1.30) proves naive fusion can underperform.
 
-**(c) The write gate exists but is not enforced.** `app/pipeline/gate.py` +
-`app/pipeline/conflicts.py` are real, tested code that detects subclass cycles, duplicate
+**(c) The write gate is enforced — in the canonical builder, not in this serving mirror.**
+`gate.py` + `conflicts.py` are real, tested code that detects subclass cycles, duplicate
 concepts, type conflicts and relation contradictions — the genuine non-eroding advantage, because
-a write-time gate is categorically different from any read-time retrieval trick. But **there is no
-`.github/workflows/` in the repo** (verified): the gate is an importable library, not an enforced
-control. An agent or swarm can write straight past it. And its verdict is an unattested Python
-`CheckResult` — no tamper-evidence, no ledger — where RuVector ADR-047 already ships a more
-general, cryptographically-attested version of exactly this pattern.
+a write-time gate is categorically different from any read-time retrieval trick. **Correction (2026-08-16,
+against the canonical `jjohare/logseq` repo):** these live canonically in `logseq/pipeline/`, and
+that repo's `publish.yml` runs `pytest pipeline/tests` + `python -m pipeline.validate` **before
+deploy**, with `enrich-gate.yml` gating enrichment PRs — so admission control **is** CI-enforced at
+build/publish time, where it belongs. The loom is a **serving mirror**: it correctly does not
+re-gate, it serves pre-gated artifacts. `app/pipeline/` here is a **stale vendored copy** (missing
+`prose_index.py` + `iri_integrity.py`), not the enforcement point — the earlier "no `.github/workflows/`
+in *this* repo, therefore unenforced" reasoning wrongly generalised from the mirror to the ecosystem.
+The one genuinely-remaining delta is **attestation**: the gate's verdict is an unattested Python
+`CheckResult` — no tamper-evidence, no ledger — where RuVector ADR-047 ships a more general,
+cryptographically-attested version. Re-platforming onto that is the real (optional) improvement, not
+"turning on" a control that is already on.
 
 ### 1.3 The commitment (from ADR-136)
 
@@ -180,7 +187,7 @@ this document implies a different status, the table wins and the prose is a defe
 | Model-swappable `/v1` OpenAI-compatible façade | **SHIPPED** | Qwen3.8-27B behind it today; consumers hold the façade. |
 | Lexical title-matcher (inverted index, 8,146 titles, <50 ms) | **SHIPPED** | First-tier signal; currently ahead of the shipped ecosystem equivalent. |
 | pyoxigraph native-Rust SPARQL over the reasoned closure | **SHIPPED** | More capable than `@ruvector/graph-node` Cypher (label-scan-only). |
-| Admission-control domain predicates (`conflicts.py`/`gate.py`) | **SHIPPED as a library; NOT enforced** | No `.github/workflows/` exists — the gate is importable, not a CI control. Enforcement is the aspirational delta. |
+| Admission-control domain predicates (`conflicts.py`/`gate.py`) | **SHIPPED + CI-enforced (canonically)** | Enforced in the `jjohare/logseq` builder: `publish.yml` runs `pytest pipeline/tests` + `pipeline.validate` before deploy; `enrich-gate.yml` gates enrichment PRs. This serving mirror serves pre-gated artifacts and does not re-gate; `app/pipeline/` here is a stale vendored copy. Aspirational delta = **attestation** (ProofGate ledger), not enforcement. |
 | Semantic/embedding HNSW fallback for OOV/paraphrase queries | **ASPIRATIONAL** | The one real retrieval gap. Must beat the lexical baseline on the multivariate bench before default-on. |
 | Single-source-of-truth build (one source → ttl + scaffold + prose + HNSW) | **ASPIRATIONAL** | Today three parallel materialisations drift. |
 | ProofGate/MutationLedger attestation of the gate (RuVector ADR-047) | **ASPIRATIONAL** | Re-platform the mechanics; predicates stay in the Loom. |

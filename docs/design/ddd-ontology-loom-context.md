@@ -40,7 +40,7 @@ No author of the three documents may contradict this table. "Shipped" means live
 | pyoxigraph native-Rust SPARQL over the reasoned closure | Loom | **Shipped** | More capable than `@ruvector/graph-node` Cypher (label-scan-only). |
 | Semantic/embedding fallback (HNSW) for OOV / paraphrase queries | RuVector (`@ruvector/core`, RuVector ADR-004) | **Aspirational** | The one real retrieval gap; today = silent no-injection below `MIN_INJECT_SCORE`. **Benchmark-gated** before default-on. |
 | Single-source-of-truth build pipeline (one source derives ttl + scaffold + prose + HNSW) | Loom build pipeline | **Aspirational** | Today three materialisations (ttl 13M + scaffold-index.json 7.9M + prose-index.json 4.3M ≈ 25M) drift (the 8152-vs-5975 divergence). |
-| Admission-control **domain predicates** (acyclicity, dupe-label, type-match, relation-contradiction) | Loom (`pipeline/gate.py`, `conflicts.py`) | **Library** | Real and tested; **NOT wired into any CI**. Enforcement is the aspirational delta. |
+| Admission-control **domain predicates** (acyclicity, dupe-label, type-match, relation-contradiction) | Canonical `logseq/pipeline/` (build/CI); vendored copy in Loom `app/pipeline/` | **Shipped + CI-enforced (canonically)** | Enforced in the `jjohare/logseq` builder (`publish.yml`: `pytest pipeline/tests` + `pipeline.validate` before deploy; `enrich-gate.yml` on enrichment PRs). The serving mirror serves pre-gated artifacts; its `app/pipeline/` is a stale copy. Aspirational delta = **attestation** (ProofGate ledger), not enforcement. |
 | Admission-control **attestation mechanics** (verdict → tamper-evident ledger) | RuVector `ProofGate<T>` / `MutationLedger` (RuVector ADR-047) | **Aspirational** | Re-platform the mechanics; keep the domain predicates in the Loom. |
 | EL++ reasoning **authority** (build/CI-time closure over the TBox) | VisionClaw Whelk-rs (build-time) | **Aspirational** | Resolves ADR-135 D3-a (= PRD-025 §12 OD-1), selecting Option 1 (Whelk) over ADR-135's own Option-2 recommendation. Corpus has **zero `owl:disjointWith`** axioms — Whelk is authority for closure/subsumption, not a contradiction-catcher we can currently exercise. |
 | EL++ reasoning at Loom **query time** | none (build-time only) | **Deferred** | `loom_graph.py` serves a pre-reasoned snapshot; Whelk does not run inside the Loom. |
@@ -114,7 +114,7 @@ The Loom is one node; within and around it the responsibilities partition into f
 |---|---|---|---|
 | **Loom Corpus & Authority** (this context, core) | The Canonical Unit lifecycle: parse → reason → gate → index → publish → serve. Aggregate root = Canonical Unit; version boundary = Corpus Generation; single owner = Ontology Authority. | The markdown, the injection policy, the lexical matcher, the pyoxigraph in-context SPARQL, the atomic Generation. | **Shipped** (serving, lexical, SPARQL, policy, corpusNature). Authority-consolidation (one reasoner, one index, SSOT) is **Aspirational**. |
 | **Retrieval / Index Acceleration** (downstream adapter) | Semantic-fallback recall for OOV / paraphrase queries the lexical matcher misses; future hybrid fusion if it ships and beats the baseline. | Nothing canonical. Holds **projections** of Canonical Units keyed by IRI. | **Aspirational** (HNSW behind the Accelerator ACL, benchmark-gated). Hybrid/mincut/gnn = **Deferred**. |
-| **Admission Control & Attestation** (write door) | Block a bad write before it reaches the corpus; attest tamper-evidently that the gate ran. | Domain predicates (Loom); attestation mechanics (RuVector). | Predicates = **Library** (exist, tested, not in CI). CI enforcement + ProofGate re-platform = **Aspirational**. |
+| **Admission Control & Attestation** (write door) | Block a bad write before it reaches the corpus; attest tamper-evidently that the gate ran. | Domain predicates (canonical `logseq/pipeline`, CI-enforced); attestation mechanics (RuVector). | Predicates = **CI-enforced** in the canonical builder (`publish.yml` + `enrich-gate.yml`); the mirror serves pre-gated artifacts. ProofGate attestation re-platform = **Aspirational**. |
 | **Serving Façade** (published contract) | The stable model-swap door: `/v1` OpenAI-compatible; `/loom/scaffold` + `/health` retrieval (no model); confidence-gated injection then delegate to the model behind `DISTILL_BACKEND_URL`. | The endpoint contract; the injection execution. | **Shipped**. |
 | **Mesh Coordination** (deferred region) | A shared blackboard multiple agents read and write, coordinated by job URNs and signed result envelopes. | Nothing today. | **Deferred / aspirational** (§9). Not a shipped property. |
 
@@ -141,7 +141,7 @@ graph TD
       end
 
       subgraph GATE["Admission Control & Attestation (write door)"]
-        PRED["Domain predicates<br/>conflicts.py / gate.py (LIBRARY — not in CI)"]
+        PRED["Domain predicates<br/>conflicts.py / gate.py (CI-enforced in canonical logseq builder)"]
       end
 
       ACL["Accelerator ACL<br/>(anti-corruption — IRI-keyed only)"]
