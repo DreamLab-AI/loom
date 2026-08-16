@@ -50,9 +50,13 @@ GRAPH = LoomGraph(os.path.dirname(INDEX))
 
 
 def _generation() -> dict:
-    """Corpus generation identity — from build-manifest if mirrored (WS-A), else the
-    scaffold-index's own stamp (pre-manifest fallback)."""
-    for path, keys in ((os.path.join(os.path.dirname(INDEX), "build-manifest.json"),
+    """Corpus generation identity, best source first:
+      1. upstream build-manifest.json (commitSha/buildId — WS-A, when upstream ships it);
+      2. the mirror's local .generation.json — proof the served set is ONE verified
+         generation (never mixed-build), written atomically by mirror.sh (ADR-136 D4);
+      3. the scaffold-index's own stamp (barest pre-manifest fallback)."""
+    data_dir = os.path.dirname(INDEX)
+    for path, keys in ((os.path.join(data_dir, "build-manifest.json"),
                         ("commitSha", "buildId", "generatedAt", "pipelineVersion")),):
         try:
             with open(path) as f:
@@ -60,6 +64,18 @@ def _generation() -> dict:
             return {k: m.get(k) for k in keys} | {"source": "build-manifest"}
         except (OSError, ValueError):
             pass
+    try:
+        with open(os.path.join(data_dir, ".generation.json")) as f:
+            m = json.load(f)
+        arts = m.get("artifacts", {})
+        return {"generatedAt": m.get("generation"), "commitSha": None,
+                "promotedAt": m.get("promoted_at"),
+                "clusterSpanSeconds": m.get("cluster_span_seconds"),
+                "scaffoldSha256": arts.get("scaffold-index.json", {}).get("sha256"),
+                "verifiedSingleGeneration": True,
+                "source": "mirror-manifest"}
+    except (OSError, ValueError):
+        pass
     try:
         with open(INDEX) as f:
             d = json.load(f)
