@@ -233,6 +233,8 @@ knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned cl
 - **agentbox** — the agentic harness; its "one brain" retrieval resolves through Loom
   (`ADR-051`), and its deferred-distillation tools submit long-running grounded jobs to Loom.
 
+**Self-improvement.** Dreaming grounds its nightly research through this door: a [dream cycle](https://github.com/DreamLab-AI/dream-engine) can query the reasoned ontology so hypotheses restate checked facts, not parametric guesses — then opens a draft PR a human merges.
+
 ---
 
 ## Design & research
