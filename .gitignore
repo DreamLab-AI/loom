@@ -9,3 +9,11 @@ uplift-results/
 # local agent-tooling state (not project artifacts)
 .agentic-qe/
 .claude-flow/
+# LaTeX build intermediates (keep .tex/.bib and the built report.pdf)
+docs/research/latex/*.aux
+docs/research/latex/*.bbl
+docs/research/latex/*.blg
+docs/research/latex/*.log
+docs/research/latex/*.out
+docs/research/latex/*.run.xml
+docs/research/latex/*-blx.bib

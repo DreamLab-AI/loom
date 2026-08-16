@@ -70,7 +70,11 @@ Three findings shaped Loom's defaults:
    — it under-calls the ancestor-walk). So Loom's default is *inject*, not *traverse*; the
    tools path stays available for models that traverse well.
 
-Full report and honesty notes in [`docs/research/`](docs/research/). The honest frame:
+The full write-up is the typeset flagship report
+**[`docs/research/ontology-uplift-report.pdf`](docs/research/ontology-uplift-report.pdf)**
+(*Does Grounding an LLM in a Formal Ontology Actually Work?*) — two independent studies, the
+Loom scaffold uplift (Study A) and the ontology-augment A/B eval (Study B), converging on the
+same conclusion. Markdown reports and honesty notes in [`docs/research/`](docs/research/). The honest frame:
 scaffolded scores measure *grounded-answer capability*, raw scores measure *parametric
 knowledge* — the paired delta is "uplift available from grounding," and it is large.
 
@@ -237,10 +241,13 @@ knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned cl
   (architecture decision), the DDD bounded context, agentbox `ADR-051` (harness client +
   deferred distillation), and the corpus-build/generation-identity pipeline note. The design
   was adversarially reviewed (five-lens panel) before authoring.
-- [`docs/research/`](docs/research/) — the ontology-uplift benchmark: combined model report,
-  per-domain / per-template breakdowns, the model comparison, and the honesty notes.
+- [`docs/research/ontology-uplift-report.pdf`](docs/research/ontology-uplift-report.pdf) — the
+  typeset flagship report (two-study, LaTeX source in [`docs/research/latex/`](docs/research/latex/)).
+- [`docs/research/`](docs/research/) — the ontology-uplift benchmark markdown: the local-model
+  report, the [Gemini 3.7 Flash cloud companion](docs/research/report-gemini-3.7-flash.md),
+  per-domain / per-template breakdowns, and the honesty notes.
 - [`bench/`](bench/) — reproduce it: `bench_ontology_uplift.py` (objective, graph-derived
-  gold, paired bootstrap CIs) + `UPLIFT-BENCH-PROTOCOL.md`.
+  gold, paired bootstrap CIs), `UPLIFT-BENCH-PROTOCOL.md`, and `run-gemini.sh` (the cloud driver).
 
 ## Boundary — the Loom is the ontology only
 
