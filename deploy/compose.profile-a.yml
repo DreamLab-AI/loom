@@ -34,8 +34,10 @@ services:
       - ../data:/app/data:ro
     # tmpfs for the writable rvdb copy — keeps the mutating redb off any bind mount
     # and out of the writable image layer (fast, ephemeral, right-sized).
+    # uid/gid MUST match the image's non-root user (65532) or the entrypoint's
+    # cp fails with EACCES (verified on the HP cutover, 2026-08-17).
     tmpfs:
-      - /run/loom
+      - /run/loom:mode=0750,uid=65532,gid=65532
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8084/health"]

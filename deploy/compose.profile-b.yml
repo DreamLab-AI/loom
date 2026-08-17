@@ -41,7 +41,9 @@ services:
     volumes:
       - ../data:/app/data:ro
     tmpfs:
-      - /run/loom                       # writable home for the mutating redb copy
+      # uid/gid must match the image's non-root user (65532) or the entrypoint
+      # cp fails EACCES (verified on the HP profile-A cutover, 2026-08-17).
+      - /run/loom:mode=0750,uid=65532,gid=65532
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"]
