@@ -13,6 +13,18 @@ loom-domain = { path = "../loom-domain" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 regex = { workspace = true }
+async-trait = { workspace = true }
+# Insertion-ordered maps: preserves Python dict iteration order for the
+# `by_title` first-wins rule and the slug-substring scan. Local to this crate.
+indexmap = { version = "2", features = ["serde"] }
+
+[dev-dependencies]
+criterion = { version = "0.5", default-features = false }
+tokio = { workspace = true }
+
+[[bench]]
+name = "match"
+harness = false
 
 [lints]
 workspace = true
