@@ -1,0 +1,2522 @@
+[
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains client-side validation, contrasts it with traditional blockchain validation, covers all key points from the reference, and adds correct technical detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate answer does not correctly explain client-side validation as defined in the reference; it instead describes how Bitcoin full nodes validate transactions, which is not the same as client-side validation where only involved parties validate state transitions off-chain and the blockchain stores only commitments. It is on-topic but contains only one partially correct point about validation being done by the client, not the network, but misses the core concept and contrast."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer accurately defines a single-use seal as per Peter Todd, explains its analogy to Bitcoin's UTXO model, and correctly identifies the two core operations (seal/commit and open/verify), including the single-use property and its cryptographic significance."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate answer confuses single-use seals with single-use encryption or one-time tokens; it does not mention the core properties of commitment, closure, and public verifiability, nor the correct operations (close and verify), but it is on-topic and mentions single-use and sealing."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer correctly maps the seal definition to a UTXO identified by (txid, vout) and describes its uniqueness and state, but does not explicitly cover the seal closing (spending with a message commitment) or proof of publication, making it incomplete compared to the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is on-topic but does not correctly map the seal definition, seal closing, or proof of publication to concrete Bitcoin mechanics as required by the question and shown in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer accurately describes a consignment as an off-chain data bundle containing the relevant DAG shard, contract genesis, and anchoring data, and correctly explains that the recipient validates it client-side by checking state transitions, anchor commitments, and seal closures, matching all key points from the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate answer correctly identifies that a consignment is an off-chain data bundle sent from sender to recipient and that the recipient validates it client-side, but it incorrectly describes consignments as encrypted and attached to Bitcoin transactions (they are not encrypted nor attached on-chain), and omits key details about the contents (genesis, DAG shard, anchor proofs) and the specific validation steps (schema, anchor, seal uniqueness), while adding some inaccurate or extraneous information."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb06",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate answer is mostly correct about RGB's general commitment model and determinism, but it does not answer the specific question about how Tapret and Opret work or the 'first-output' determinism rule, instead expressing unfamiliarity with the terms and providing only general context."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb06",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is on-topic and discusses RGB commitments and determinism in general, but does not answer the specific question about Tapret, Opret, or the determinism rule as described in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: AluVM's purpose, purely functional and register-based RISC design, lack of random/addressable memory, no side effects or global mutable state, fully defined semantics, and the necessity of determinism for consensus in RGB. It also adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is on-topic and discusses general requirements for deterministic VMs in consensus-critical systems, but provides no correct or specific information about AluVM itself or its architectural choices as required by the question."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate answer is mostly wrong regarding Contractum, as it does not provide the correct definition or its relationship to Strict Types and AluVM, but it does correctly describe Strict Types and AluVM and infers a plausible architectural slot for Contractum, which is one right point."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer accurately describes Contractum as the high-level language for RGB smart contracts, its use of Strict Types for deterministic type definitions, and compilation to AluVM bytecode for execution, matching all key points in the reference answer and adding some correct contextual details without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer correctly explains Bifrost's role as a transport/channel layer for RGB and client-side-validated protocols, and details the limitations of BOLT that Bifrost addresses (arbitrary contract state, client-side validation, privacy, consignment hand-off, no routing graph). However, it omits explicit mention of LNPBP-50/51 standards, Strict-Types encoding, Taproot/MuSig, and multi-peer channels, which are key technical distinctions in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate answer correctly identifies that Bifrost (or a protocol like it) is needed to enable RGB assets over Lightning and explains the limitations of the BOLT stack, but it does not describe Bifrost itself, its LNPBP standardization, or its technical features (Strict-Types, Noise_XK reuse, multi-peer channels, etc.) as in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Solid Pod is, how it works, and the problems Solid aims to solve, covering all key points from the reference and adding correct technical detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Solid Pod is, how it works, and the problems Solid aims to solve, matching all key points in the reference answer and adding correct, relevant detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate answer correctly explains that Solid-OIDC uses the WebID as the subject and emphasizes decentralization and issuer discovery, but it omits explicit mention of the 'webid' claim/scope, issuer discovery via solid:oidcIssuer triples, and does not explain DPoP or its proof-of-possession mechanism, which are key parts of the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "raw",
+  "score": 1,
+  "why": "The answer is on-topic but contains no correct content or explanation; it only restates the question as a heading."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains that the client dereferences the WebID URI, inspects the RDF profile for solid:oidcIssuer triples, and uses the listed issuer(s) to authenticate, matching all key points from the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points: dereferencing the WebID, inspecting for solid:oidcIssuer, decentralised trust, and the client using the discovered issuer for OIDC; it also adds correct contextual and practical details."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points: WebID as an HTTP(S) URI identifying an agent, dereferencing to an RDF profile, inclusion of authentication material, use of fragments, decentralised/self-sovereign control, and adds correct context about authentication methods and broader ecosystem without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: WebID as an HTTP(S) URI identifying an agent, dereferencing returns a machine-readable RDF profile (often Turtle), use of fragments, profile holds identity/auth material, and owner control enabling decentralised identity, with additional correct elaboration and examples."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer accurately and thoroughly explains both WebID-TLS and WebID-OIDC, their mechanisms, differences, and the reasons for the ecosystem's shift, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains the core similarities and differences between WebID-TLS and WebID-OIDC, including the use of client certificates and RDF profile verification for WebID-TLS, and the application-layer approach for WebID-OIDC. However, it omits the key reason for the ecosystem shift: poor browser/UX support for client certificates and the widespread usability of OIDC/OAuth2."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference: it describes the WebID Profile as an RDF document at the WebID URI, explains its role in authentication (including public keys and OIDC issuers), details the dereferencing and verification process, and emphasizes its owner-controlled, authoritative nature; it also adds correct, relevant context without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately describes the WebID Profile Document, its RDF nature, its role in authentication (including both public key and OIDC issuer use cases), and its function as the authoritative, owner-controlled source of identity, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly lists all required fields, explains the computation of id, the use of pubkey and sig for authorship and integrity, and even adds accurate details about tags and protocol properties, fully matching and expanding on the reference answer without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly lists all required fields, explains the computation of 'id', the use of Schnorr signatures for 'sig', and accurately describes how integrity and authorship are guaranteed, matching the reference answer in completeness and correctness."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what npub and nsec encode, the purpose of NIP-19, and why these identifiers must not be used inside NIP-01 events or filters, matching all key points from the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what npub and nsec encode, the purpose of NIP-19, and why these identifiers must not be used inside NIP-01 events or filters, matching all key points from the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully explains Git's content-addressed Merkle DAG structure, how tampering is detectable, and the limitation of self-asserted timestamps requiring external anchoring for trusted proof-of-existence, matching all key points in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains Git's content-addressed Merkle DAG structure, how tampering is detectable, and why external anchoring is needed due to the lack of an independent timestamp or root of trust, matching all key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov01",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly explains the distinction between a hash chain and a Merkle DAG, lists and describes all four object types, explains content addressing and how edges are hashes of target objects, and addresses why the graph is acyclic, matching all key points from the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov01",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate correctly distinguishes a Merkle DAG from a hash chain, notes the fan-in/fan-out structure, and mentions merge commits and trees referencing multiple objects, but does not explicitly list all four object types or fully explain acyclicity and content addressing as in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly identifies that the signature binds the key to the commit object (including the date fields), explains that the guarantee is authenticity/integrity not trusted time, points out that the date fields are attacker-controlled, and explains why an external timestamp is needed, matching all key points from the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains that the signature binds the key to the commit object (including tree, parents, identities, and message), provides authenticity and integrity, and that the author/committer date fields are attacker-controllable and not attested by the signature. It also notes that the signature says nothing about when the commit was made. However, it omits explicit mention of the need for an external timestamping mechanism (like OpenTimestamps or a transparency log) to provide a trusted time anchor, which is a key point in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer accurately explains how notes are stored (as blobs in a separate notes ref keyed by commit SHA), and why the commit's object ID is unchanged, but it omits explicit discussion of the implications for provenance data and the need to separately protect/sign the notes ref."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate correctly explains that notes are stored in refs/notes/commits (or other refs), that these are ordinary refs with their own history, and that you can have multiple namespaces. However, it does not yet explain why the commit's object ID is unchanged, nor does it discuss the implications for provenance data or signatures, so it is only partially correct."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer accurately describes the model (anchoring commit hashes to a blockchain, the role of the genesis transaction, and the tamper-evident guarantee), but omits explicit mention of the difference between Git's internal hash chain/signed commits and the external guarantee provided by the blockchain anchor."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate answer gives a generally correct description of the public ledger anchoring pattern, the genesis transaction, and the difference from Git's internal guarantees, but lacks specific details about git-mark (e.g., Bitmark blockchain, npm distribution, exact invocation syntax), and does not mention the per-repository chain of mark transactions or block confirmation anchoring."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer gives the exact hash definitions for leaves and interior nodes, explains the domain separation property, and describes how it prevents second-preimage/tree-structure ambiguity attacks, matching all key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer gives the exact hash definitions for leaf and interior nodes, explains the domain separation property, and describes the attack prevented, matching all key points in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate answer correctly distinguishes what each proof demonstrates and their security properties, but omits explicit details about the required inputs for each proof, the contents of a Signed Tree Head, and the definition of Maximum Merge Delay, all of which are present in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately distinguishes audit/inclusion proofs from consistency proofs, details what each proves, the required inputs, the contents of a Signed Tree Head, and explains Maximum Merge Delay, matching all key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_04",
+  "arm": "loom",
+  "score": 1,
+  "why": "The candidate answer is on-topic and discusses related cryptographic concepts, but does not describe the LNPBP-4 mechanism, buffer slotting, filler data, or the uniqueness proof as specified in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_04",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is on-topic and acknowledges the question, but provides no correct content about the LNPBP-4 scheme's mechanics, buffer structure, slot filling, or proof techniques as described in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate answer correctly identifies Carbonado as a single-file archival format for RGB stashes, its long-term and 'apocalypse-resistant' goals, and that it layers multiple techniques to address different failure modes, but the answer is incomplete and does not enumerate or explain the specific cryptographic and coding techniques (authenticated encryption, Bao, Reed-Solomon, etc.) as required by the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is on-topic and acknowledges the context of RGB and BitMask, but provides no correct content about the specific cryptographic and coding techniques or their purposes as required by the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer correctly describes the HTTP request, the JSON structure, the meaning of '_', and the security rule, but omits explicit mention that clients must not follow the NIP-05 address as primary identity and should stop showing the address if the key changes; it also does not mention the CORS header or the prohibition on HTTP redirects."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers the HTTP request, JSON structure, the special '_' name, and the core security rule, matching all key points in the reference answer with no omissions or errors."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers the NIP-07 window.nostr capability, the problem it solves, the two mandatory methods with signatures, the details of signEvent's input and output, and lists the optional encryption namespaces, matching the reference answer in content and accuracy."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains the purpose of NIP-07, the two mandatory methods with their signatures, and what signEvent receives and returns, but omits explicit mention of the optional nip04 and nip44 encryption namespaces, which is a minor omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer is correct and covers the flow, event kind (22242), required tags (relay and challenge), relay validation, and how the relay signals authentication is needed, but it incorrectly names the relay tag as 'relays' instead of 'relay', which is a minor omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer is correct and covers all key points, but it incorrectly uses the tag name 'relays' instead of 'relay' (singular), which is a minor but notable omission; otherwise, it fully describes the flow, event kind, required tags, relay validation, and signaling."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate answer correctly describes the general subscription process and the use of JSON-LD, but gives incorrect channel type identifiers and namespace, and uses the wrong property ('sn:resource' instead of 'notify:topic'); it also omits the key distinction in response properties (notify:receiveFrom vs notify:sendTo) and does not mention Activity Streams 2.0 payloads."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate answer correctly describes the subscription process and the general idea of channel types and properties, but uses incorrect type identifiers (WebSocketChannel/WebhookChannel instead of WebSocketChannel2023/WebhookChannel2023), the wrong namespace (https://www.w3.org/ns/solid/notifications/ instead of http://www.w3.org/ns/solid/notifications#), and incorrect property names (sn:resource, sn:webSocketUrl) instead of notify:topic and notify:receiveFrom; it also omits the Webhook response property and the Activity Streams 2.0 payload detail."
+ },
+ {
+  "set": "general",
+  "id": "adj01",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference: it explains the withdrawal/finality differences, security assumptions, and EVM compatibility, and correctly concludes that zk-rollups are superior for fast, trustless settlement in payments applications."
+ },
+ {
+  "set": "general",
+  "id": "adj01",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers the key differences in withdrawal/finality, security assumptions, and EVM compatibility, and correctly concludes that zk-rollups are preferable for fast, trustless settlement in payments, matching the reference answer in content and detail."
+ },
+ {
+  "set": "general",
+  "id": "adj02",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers the CAP theorem, explains the tradeoff between consistency and availability, gives appropriate examples for both eventual and strong consistency, and even expands with more detail, but does not contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj02",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers the CAP theorem, explains the tradeoff between availability and consistency during partitions, gives appropriate examples for both eventual and strong consistency, and even expands with more technical detail, matching and exceeding the reference answer's content without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj03",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including RAG's suitability for freshness, citation, and modularity, the limitations of fine-tuning for dynamic knowledge, trade-offs, and the possibility of hybrid approaches, with no contradictions or omissions."
+ },
+ {
+  "set": "general",
+  "id": "adj03",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including RAG's suitability for freshness, citation, and scale, fine-tuning's role in behavior/style, the cost and retraining trade-offs, and the possibility and rationale for hybrid approaches, with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj04",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including TCP's head-of-line blocking, retransmission latency, congestion control issues, UDP's lack of ordering/retransmission, and application-layer loss handling, with additional correct details and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "adj04",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including TCP's head-of-line blocking, retransmission latency, congestion control issues, UDP's lack of ordering/retransmission, and application-level loss recovery techniques, with additional correct elaboration."
+ },
+ {
+  "set": "general",
+  "id": "adj05",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, accurately describing how each algorithm works, how they handle bursts, and when to use each, with no omissions or contradictions."
+ },
+ {
+  "set": "general",
+  "id": "adj05",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including the mechanics, burst handling, and selection criteria for both algorithms, and adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully explains the purpose of idempotency keys, the failure scenario (lost response or timeout leading to unsafe retries and potential duplicate charges), and how the mechanism works, matching all key points in the reference answer with additional correct context."
+ },
+ {
+  "set": "general",
+  "id": "adj06",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the purpose of idempotency keys, the failure scenario they protect against (lost response or timeout leading to unsafe retries and possible duplicate charges), and the mechanism by which they provide exactly-once semantics, matching all key points in the reference answer and adding relevant context without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including defaulting to a monolith for small teams, the operational and transactional complexities of microservices, when microservices become appropriate, and the trade-offs involved, while also providing additional correct detail and nuance."
+ },
+ {
+  "set": "general",
+  "id": "adj07",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: it recommends a monolith for small teams, explains why microservices are better suited for larger organizations or specific constraints, details the operational complexity and trade-offs, and discusses the concept of a modular monolith; it also adds helpful elaboration without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj08",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including schema flexibility, horizontal scalability, BASE/eventual consistency, access patterns, and hybrid architectures, while also providing additional correct context and examples."
+ },
+ {
+  "set": "general",
+  "id": "adj08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including schema flexibility, horizontal scaling, BASE/eventual consistency, specific access patterns, and when to prefer relational databases, while also providing concrete examples and practical advice without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, correctly assigning REST/JSON to the public browser-facing edge and gRPC to internal service-to-service traffic, and provides detailed justifications for both choices, including protocol strengths, browser compatibility, streaming, contract typing, and ecosystem considerations."
+ },
+ {
+  "set": "general",
+  "id": "adj09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including protocol choice for each surface, technical reasons, browser and ecosystem constraints, gRPC's internal strengths, and even adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj10",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including the mechanics, risk reduction, rollback, cost, observability, and when to prefer each strategy, with no omissions or contradictions."
+ },
+ {
+  "set": "general",
+  "id": "adj10",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including mechanisms, risk reduction, rollback, infrastructure cost, operational complexity, and when to prefer each strategy, and even mentions hybrid approaches; it is complete and accurate."
+ },
+ {
+  "set": "general",
+  "id": "adj11",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including definitions, trade-offs, fault tolerance, cost, complexity, scalability ceilings, and suitability for different workloads, with no contradictions or omissions."
+ },
+ {
+  "set": "general",
+  "id": "adj11",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including definitions, trade-offs, fault tolerance, cost, complexity, scalability ceilings, and suitability for different workloads, with no contradictions or omissions."
+ },
+ {
+  "set": "general",
+  "id": "adj12",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains why TLS uses both symmetric and asymmetric encryption, covering all key points from the reference: symmetric is fast but has key-distribution issues, asymmetric solves key distribution and authentication but is slow, and TLS uses asymmetric for handshake and symmetric for bulk data, combining their strengths."
+ },
+ {
+  "set": "general",
+  "id": "adj12",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference: symmetric is fast but has key-distribution problems, asymmetric solves key distribution and authentication but is slow, TLS uses asymmetric for handshake and symmetric for bulk data, and explains why both are needed; it also adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj13",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains why hash(key) % N causes massive remapping, how consistent hashing reduces remapping to a small, contiguous set of keys, and how virtual nodes address load imbalance and improve distribution, matching all key points in the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "adj13",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains why hash(key) % N causes massive remapping, how consistent hashing reduces remapping to K/N keys, and how virtual nodes address load imbalance and failure impact, matching all key points in the reference answer with additional illustrative detail."
+ },
+ {
+  "set": "general",
+  "id": "adj14",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer is fully correct and complete, covering all key points from the reference: Bloom filter structure and operation, accuracy guarantee (no false negatives, possible false positives), tunable false-positive rate, and detailed explanation of how LSM-tree databases like Cassandra and RocksDB use Bloom filters to avoid unnecessary disk reads."
+ },
+ {
+  "set": "general",
+  "id": "adj14",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points: Bloom filter structure (bit array, k hash functions), insertion/query process, no false negatives but possible false positives, tunable space/accuracy trade-off, and detailed explanation of how LSM-tree databases like Cassandra use per-SSTable Bloom filters to skip unnecessary disk reads, matching the reference answer in completeness and correctness."
+ },
+ {
+  "set": "general",
+  "id": "adj15",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: temporal and spatial decoupling, load-leveling/backpressure, use cases for asynchronous work, at-least-once delivery with idempotent consumers, and when to use synchronous calls; it also adds correct elaboration without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj15",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: temporal and spatial decoupling, load-leveling/backpressure, use cases for asynchronous work, at-least-once delivery with idempotent consumers, and when to use synchronous calls; it also adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj16",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including when to use serverless vs containers/VMs, the trade-offs (cost, cold start, execution limits, statelessness, scaling, and control), and even adds correct, relevant details without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj16",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including when to use serverless (event-driven, short-lived, stateless, idle workloads, pay-per-use, scale-to-zero), the trade-offs (cold start, execution time limit, statelessness), and when to use containers/VMs (long-running, stateful, latency-sensitive, high-throughput, more control), with additional correct details and examples."
+ },
+ {
+  "set": "general",
+  "id": "adj17",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains why HNSW is preferred over relational DB scans for semantic similarity search, details the O(n) brute-force problem, describes HNSW's multi-layer proximity graph, and thoroughly covers the recall-latency trade-off, matching and expanding on all key points in the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "adj17",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains why brute-force search in a relational database is slow and why HNSW is much faster, accurately describing the HNSW structure and search process. However, it omits a clear explanation of the recall-versus-latency trade-off and how ANN parameters like ef_search affect recall and latency, which is a key part of the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "adj18",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including when to use OAuth/OIDC vs API keys, the security trade-offs, and details about scopes, expiry, revocation, delegation, and identity, with no contradictions or omissions."
+ },
+ {
+  "set": "general",
+  "id": "adj18",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: when to use OAuth/OIDC vs API keys, the nature of each, security trade-offs (lifetime, scope, revocation, blast radius), and adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "adj19",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including when to use batch vs. stream processing, latency, bounded vs. unbounded data, throughput, cost, operational complexity, and provides accurate, relevant examples for each; it also adds correct, non-contradictory detail."
+ },
+ {
+  "set": "general",
+  "id": "adj19",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including when to use batch vs. stream processing, latency, bounded vs. unbounded data, operational complexity, and provides clear, accurate examples for both approaches."
+ },
+ {
+  "set": "general",
+  "id": "adj20",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: when to use a knowledge graph (highly-connected, heterogeneous, evolving data, multi-hop traversals, first-class relationships), what OWL ontologies add (formal reasoning, subclass inference, transitivity, property chains, consistency checking, interoperability), and contrasts with relational databases, including hybrid approaches; it is complete and correct."
+ },
+ {
+  "set": "general",
+  "id": "adj20",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate answer correctly identifies the open-world vs closed-world distinction, the schema-as-data aspect, and the use case of integrating heterogeneous data, but omits key points about graph traversal efficiency, multi-hop queries, first-class edges, and the specific reasoning capabilities (subclass inference, transitivity, property chains) and standards-based interoperability that OWL provides, which are central in the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "in_01",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a smart contract is, how it works on a blockchain, and contrasts it in detail with traditional paper contracts, covering all key points from the reference and adding correct, relevant elaborations."
+ },
+ {
+  "set": "general",
+  "id": "in_01",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer is fully correct and complete, covering all key points from the reference answer and adding accurate, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_02",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including the distinction between labelled and unlabelled data, typical tasks (classification/regression for supervised, clustering/dimensionality reduction for unsupervised), the core difference of presence/absence of labels, and even adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_02",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including the distinction between labelled and unlabelled data, typical tasks, goals, and the core difference; it also adds correct extra information without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_03",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains 6DoF and 3DoF, covering all key points from the reference, including translations, rotations, differences in tracking, and implications for VR/XR; additional correct details do not detract from completeness."
+ },
+ {
+  "set": "general",
+  "id": "in_03",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains 6DoF and 3DoF, covering all key points from the reference, including translations, rotations, and the practical implications in VR/XR, with no omissions or errors."
+ },
+ {
+  "set": "general",
+  "id": "in_04",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what an RDF triple is, details the roles of subject, predicate, and object (including IRIs, blank nodes, and literals), and clearly describes how sets of triples form a directed, labelled knowledge graph, matching and expanding upon all key points in the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "in_04",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what an RDF triple is, its components, provides examples, and clearly describes how sets of triples form a knowledge graph, matching and expanding upon all key points in the reference answer without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_05",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains public-key cryptography, the key pair, one-way functions, encryption and signature roles, and the digital signature process (key generation, signing, verification), matching all key points in the reference and adding correct, relevant detail."
+ },
+ {
+  "set": "general",
+  "id": "in_05",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains public-key cryptography, the key pair, infeasibility of deriving the private key, encryption and signature roles, and details the digital signature process, matching and expanding on all key points in the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "in_06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the CAP theorem, defines each property, describes the practical trade-off during a partition, and provides additional correct context and examples without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_06",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the CAP theorem, its properties, the practical trade-off during a partition, and even adds correct nuance about real-world systems, matching and exceeding the reference answer without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all the main points in the reference, including the problem Raft solves, its decomposition into leader election, log replication, and safety, its design goal of understandability, and its equivalence to Paxos in fault tolerance and performance, while also providing additional correct details."
+ },
+ {
+  "set": "general",
+  "id": "in_07",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all the main points in the reference, including the problem Raft solves, its decomposition into leader election, log replication, safety, and membership changes, and even adds correct details about log compaction and practical deployment, with no contradictions or omissions."
+ },
+ {
+  "set": "general",
+  "id": "in_08",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Merkle tree is, how it works, and why blockchains use them, covering all key points from the reference answer and adding helpful clarifications and examples."
+ },
+ {
+  "set": "general",
+  "id": "in_08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Merkle tree is, how it works, and why blockchains use them, covering all key points from the reference and adding correct, relevant details."
+ },
+ {
+  "set": "general",
+  "id": "in_09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the differences in consensus and Sybil resistance between Proof of Work and Proof of Stake, covering all key points from the reference and adding correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains how Proof of Work and Proof of Stake achieve consensus and Sybil resistance, covering all key points from the reference and adding correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_10",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and correctly explains how gradient descent works, the update rule, the role of the learning rate, consequences of different learning rate choices, and includes all key points from the reference, with additional correct details."
+ },
+ {
+  "set": "general",
+  "id": "in_10",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains gradient descent, the update rule, the role and effects of the learning rate, and even adds correct practical details and examples beyond the reference without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_11",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference, including the definition and symptoms of overfitting, causes, the role and mechanism of regularisation, specific techniques (L1/L2, dropout, early stopping), and the conceptual reasoning behind regularisation, with additional correct details."
+ },
+ {
+  "set": "general",
+  "id": "in_11",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference, including the definition and symptoms of overfitting, the role and mechanism of regularisation (penalty term, lambda, L1/L2, early stopping, dropout), and even adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_12",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what vector embeddings are, why cosine similarity is used, and provides additional correct details without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_12",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains vector embeddings, their purpose, and why cosine similarity is used, covering all key points from the reference and adding correct, relevant detail."
+ },
+ {
+  "set": "general",
+  "id": "in_13",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains RAG, its architecture, how it works, the problems it addresses for LLMs (stale/missing knowledge, hallucination, updatability), and even adds correct, relevant details beyond the reference without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_13",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains RAG, its architecture, how it works, the problems it addresses for LLMs, and even includes the original authors and variants, matching and expanding upon all key points in the reference answer without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_14",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what SLAM is, why it is a chicken-and-egg problem, covers the need for simultaneous localisation and mapping, mentions real-time operation, sensor types, probabilistic methods, and relevant applications, matching and expanding on all key points in the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "in_14",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what SLAM is, why it is a chicken-and-egg problem, and covers all key points from the reference, including real-time operation, sensor types, joint estimation, and practical applications."
+ },
+ {
+  "set": "general",
+  "id": "in_15",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: OWL as a W3C standard built on RDF/RDFS, formal semantics, definition of classes, properties, individuals, axioms, and the support for automated reasoning and inference; it also adds correct detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_15",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: OWL as a W3C ontology language for the semantic web built on RDF/RDFS, formal domain description, definition of classes, properties, individuals, logical axioms, and automated reasoning capabilities; it also adds correct detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_16",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the Byzantine Generals Problem, distinguishes Byzantine from crash faults, cites the 3f+1 requirement, and provides correct context and implications, matching and expanding on the reference answer without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "in_16",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the Byzantine Generals Problem, the nature of Byzantine faults, the 3f+1 requirement, and even provides additional correct context and examples without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_17",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer accurately defines zero-knowledge proofs and clearly explains the three defining properties\u2014completeness, soundness, and zero-knowledge\u2014in line with the reference answer, with no omissions or contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_17",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer accurately defines zero-knowledge proofs and clearly explains the three defining properties\u2014completeness, soundness, and zero-knowledge\u2014matching the reference answer in content and correctness, with no omissions or contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_18",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including the scaled dot-product attention formula, Q/K/V roles, multi-head attention, positional encoding, parallelism, and the reasons Transformers replaced recurrent models, with no omissions or contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_18",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: it explains scaled dot-product attention, Q/K/V from the same sequence, multi-head attention, permutation invariance and positional encoding, parallelism, and why Transformers replaced recurrent models, with no contradictions or omissions."
+ },
+ {
+  "set": "general",
+  "id": "in_19",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains that backpropagation computes the gradient of the loss with respect to every weight, describes the use of the chain rule layer by layer, details the efficiency via a single backward pass reusing intermediate results, and covers the practical significance, matching all key points in the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_19",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains that backpropagation computes the gradient of the loss with respect to every weight, describes the use of the chain rule layer by layer, details the efficiency via reuse of intermediate results, and covers all key points from the reference answer, with additional correct technical detail."
+ },
+ {
+  "set": "general",
+  "id": "in_20",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: it explains nearest neighbour search, the ANN trade-off, HNSW's multi-layer graph structure, sparse upper layers, dense bottom layer, greedy descent, and near-logarithmic search, with additional correct context and detail."
+ },
+ {
+  "set": "general",
+  "id": "in_20",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including the definition of ANN, the trade-off between speed and exactness, the structure and search process of HNSW, and the hierarchical, small-world graph design, with additional correct details and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off01",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly identifies Canberra as the capital, explains it was a compromise between Sydney and Melbourne, and notes its location in the ACT, fully matching the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off01",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly identifies Canberra as the capital, mentions its location in the ACT, and explains it was purpose-built as a compromise between Sydney and Melbourne, fully matching the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off02",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly gives the specific date of the Berlin Wall's fall, fully matching the key factual content of the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off02",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly gives the specific date of the Berlin Wall's fall, fully matching the key factual content of the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off03",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly identifies the gases involved, explains the process, includes the chemical equation, and adds accurate detail about the light-dependent reactions and Calvin cycle, fully matching and expanding on the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off03",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer includes all key points from the reference: intake of CO2, release of O2, use of light energy and chlorophyll, production of glucose, and even adds correct extra detail without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off04",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly states that the symbol for gold is Au, explains it comes from the Latin 'aurum', addresses why it isn't 'Go' or 'Gd', and even provides additional accurate context without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off04",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly states that the symbol for gold is Au, explains it comes from the Latin 'aurum', and addresses why 'Go' or 'Gd' are not used, matching and expanding on all key points from the reference."
+ },
+ {
+  "set": "general",
+  "id": "off05",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly identifies Jane Austen as the author, the publication year (1813), and mentions the central characters, fully matching the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off05",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly identifies Jane Austen as the author, mentions the 1813 publication date, and references the main characters, fully matching the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully explains Rayleigh scattering, the preferential scattering of blue light, why the sky is not violet, and also covers the reddish color of sunsets, matching and expanding on all key points in the reference answer."
+ },
+ {
+  "set": "general",
+  "id": "off06",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully explains Rayleigh scattering, the wavelength dependence, why blue is scattered more, why the sky isn't violet, and also covers the reddish color of sunsets, matching and expanding on all key points in the reference."
+ },
+ {
+  "set": "general",
+  "id": "off07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key distinctions between fiscal and monetary policy, including who sets them, their instruments, objectives, and mechanisms, matching and expanding upon the reference answer without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off07",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key distinctions between fiscal and monetary policy as in the reference, including who sets each, their tools, mechanisms, and objectives, and adds correct elaboration without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off08",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference: autoimmune destruction and absolute insulin deficiency in Type 1, insulin resistance and relative deficiency in Type 2, typical age of onset, treatment differences, and association with lifestyle; it also adds correct, relevant details without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference: autoimmune destruction and absolute insulin deficiency in Type 1, insulin resistance and relative deficiency in Type 2, typical age of onset, treatment differences, and association with lifestyle/obesity; it also adds correct, relevant details without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including variation, heritability, overproduction, competition, differential survival, accumulation of traits, and adaptation, with additional correct context and examples."
+ },
+ {
+  "set": "general",
+  "id": "off09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference, including variation, heritability, overproduction, competition, differential survival and reproduction, and the accumulation of advantageous traits over generations, with additional correct context and examples."
+ },
+ {
+  "set": "general",
+  "id": "off10",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the cause of Earth's seasons, covering all key points from the reference and adding correct, relevant details about equinoxes and solstices."
+ },
+ {
+  "set": "general",
+  "id": "off10",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the cause of Earth's seasons, covering all key points from the reference and adding correct, relevant details about equinoxes and solstices without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off11",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including the origin of the name from Monet's 'Impression, Sunrise', the 1874 exhibition, the critic's derisive use of the term, and all major characteristics of Impressionist painting, while adding accurate, relevant detail."
+ },
+ {
+  "set": "general",
+  "id": "off11",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference, including the origin of the name from Monet's 'Impression, Sunrise', the 1874 exhibition, the critic's derisive use of the term, and all major characteristics of Impressionist painting, while adding accurate, relevant detail."
+ },
+ {
+  "set": "general",
+  "id": "off12",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and correctly explains what the pH scale measures, provides the formula, describes the scale, explains the acid/base distinction, and even adds correct extra context without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off12",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference, including the definition, formula, scale, distinction between acids and bases, and the logarithmic nature of the scale, with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "off13",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all the key points from the reference answer in detail, including MAIN (militarism, alliances, imperialism, nationalism), the alliance blocs, the assassination of Franz Ferdinand by Gavrilo Princip in Sarajevo on 28 June 1914, the July Crisis, and how alliances escalated the conflict; it also adds accurate, relevant detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off13",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all the main long-term causes (militarism, alliances, imperialism, nationalism), details the alliance blocs, describes the assassination of Archduke Franz Ferdinand by Gavrilo Princip in Sarajevo on 28 June 1914 as the trigger, and explains how the alliance system escalated the conflict, matching and expanding on the reference answer without contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off14",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points: the entropy statement of the second law, equivalent Clausius and Kelvin-Planck forms, the statistical (Boltzmann) definition of entropy, its connection to irreversibility and the arrow of time, and even expands with correct, relevant details about probability, information, and cosmological context."
+ },
+ {
+  "set": "general",
+  "id": "off14",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference: the second law's statement, entropy's statistical and thermodynamic definitions, equivalent formulations (Clausius, Kelvin-Planck), the connection to irreversibility and the arrow of time, and even expands with correct, relevant context about the universe's initial conditions."
+ },
+ {
+  "set": "general",
+  "id": "off15",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the stream of consciousness technique and why Ulysses is its most famous example, covering all key points from the reference and adding correct, relevant detail."
+ },
+ {
+  "set": "general",
+  "id": "off15",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the stream of consciousness technique, details its features, and thoroughly explains why Ulysses is the landmark example, including all key points from the reference and adding relevant, correct context."
+ },
+ {
+  "set": "general",
+  "id": "off16",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer includes all key points: correct release date, length of imprisonment, correct inauguration date, context of the first democratic elections, and Mandela as the first black President."
+ },
+ {
+  "set": "general",
+  "id": "off16",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer includes all key facts: Mandela's release date, length of imprisonment, presidency date, first black president status, and context of the first democratic elections."
+ },
+ {
+  "set": "general",
+  "id": "off17",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference answer in detail, including mRNA encoding the spike protein, delivery via lipid nanoparticles, translation in the cytoplasm, immune response (B and T cells), mRNA degradation, and explicitly states that mRNA does not enter the nucleus or alter DNA, with additional accurate molecular detail."
+ },
+ {
+  "set": "general",
+  "id": "off17",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference answer in detail, including mRNA encoding the spike protein, lipid nanoparticle delivery, cytoplasmic translation, immune response (B and T cells), lack of nuclear entry or DNA alteration, and mRNA degradation, with additional accurate molecular details."
+ },
+ {
+  "set": "general",
+  "id": "off18",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: the traditional view of the Nile as longest, the Amazon as a close contender with some studies claiming it is longer, the genuine dispute due to source and measurement methods, and the practical consensus; it also adds accurate detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off18",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: the Nile is traditionally considered the longest, the Amazon is a close contender with some studies claiming it is longer, the dispute is genuine and arises from how the source and course are defined and measured, and the answer depends on methodology; it also adds correct detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off19",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully explains Ricardo's theory, opportunity cost, comparative vs absolute advantage, uses a concrete example, and clearly shows how both countries can gain from trade even if one is better at everything, matching all key points in the reference."
+ },
+ {
+  "set": "general",
+  "id": "off19",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully explains Ricardo's theory, opportunity cost, comparative vs absolute advantage, uses a concrete example, and clearly shows how both countries can gain from trade even if one is better at everything, matching all key points in the reference."
+ },
+ {
+  "set": "general",
+  "id": "off20",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points: credits Mendeleev, mentions his 1869 publication, arrangement by atomic mass, grouping by properties, leaving gaps and predicting elements, the modern arrangement by atomic number, and Moseley's contribution; it even gives relevant examples without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off20",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer accurately covers all key points: Mendeleev's credit, arrangement by atomic mass, grouping by properties, leaving gaps, prediction of elements, modern arrangement by atomic number, and Moseley's contribution."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains proof of publication, its necessity, and the role of a publication medium, covering all key points from the reference and adding correct, relevant detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "raw",
+  "score": 0,
+  "why": "The candidate answer denies the existence of the LNP/BP Standards Association and LNPBP standards, which are clearly described in the reference answer, and provides no correct content."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer accurately explains ordinal theory's numbering of sats, the mechanics of inscriptions via Taproot witness data, and notes the consensus-independence and off-chain nature, but omits explicit mention of the OP_FALSE OP_IF ... OP_ENDIF envelope and does not fully explain why BRC-20 is indexer-based and not a formal protocol."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate correctly identifies that Solid Pods use standard HTTP verbs and RESTful interaction, but does not mention the Linked Data Platform (LDP) specifically, nor does it address the differences between WAC and ACP access control mechanisms."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains how did:nostr constructs and resolves a DID, emphasizing the direct mapping to a Nostr secp256k1 public key, offline/deterministic resolution, lack of registry/ledger, and contrasts these points in detail with ledger-based methods, matching all key points in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer accurately and completely describes the OpenTimestamps process, including hashing, Merkle tree aggregation, anchoring in a blockchain transaction, proof structure, and verification, matching all key points in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_02",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate correctly explains the use of HMAC-SHA256 to prevent length-extension attacks, and that the HMAC key is a protocol-domain-separation constant, but does not specify that it is the sum of public keys (S*) or its serialization; the candidate also correctly explains the deterministic, nonce-free design, but omits the exact tweaked-key formula and some protocol-specific details."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_03",
+  "arm": "raw",
+  "score": 0,
+  "why": "The candidate answer denies the existence of the protocol described in the question and does not address any of the technical mechanisms or requirements outlined in the reference answer, thus providing no correct content relevant to the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate correctly explains the schema as a declarative specification defining state, transitions, and validation, and notes client-side validation, but omits details about AluVM scripts, .rgb/.rgba compilation, and the distinction that interfaces are APIs bundled with contracts and can be added over time; the answer is mostly correct but lacks some specifics from the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove01",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate correctly identifies the method-specific identifier as the 64-char lowercase hex x-only secp256k1 pubkey and that the minimal resolver derives the document offline, with authentication and assertionMethod referencing the verification method. However, it incorrectly specifies the verification method type as 'Ed25519VerificationKey2018' instead of 'Multikey', and the publicKeyMultibase as base58 with 'z' prefix instead of base16 with 'f' prefix and the correct multicodec prefix, which are significant errors."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove04",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate correctly states that NIP-19 uses bech32 (not bech32m) and describes the TLV structure, but the TLV type numbers and their meanings are incorrect: type 0 is not relay, type 1 is not pubkey, etc.; this is a major error, though the answer is otherwise on-topic and partially correct."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all required points: kind 10002, replaceable, 'r' tags, read/write/unmarked markers, the outbox/gossip model, and the rules for fetching posts vs mentions, matching the reference answer in content and completeness."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly covers WAC's authorization modes, the distinction between acl:accessTo and acl:default, and public access via acl:Agent, as well as ACP's core objects (ACR, policy, matcher) and boolean combinators, and mentions ACP's greater expressiveness; however, it omits explicit mention of ACP's key conceptual capability of attribute/context-based conditions (e.g., acp:client, acp:issuer, acp:vc) that WAC lacks, which is a minor omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove11",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer correctly explains the Merkle tree aggregation, the role of calendar servers, and how a single Bitcoin transaction anchors many documents, but it omits details about the two-step stamp-then-upgrade workflow, the PendingAttestation and BitcoinBlockHeaderAttestation, and the specific operations inside a .ots proof and verification process."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains client-side validation, its mechanics, and contrasts it with normal blockchain validation, covering all key points from the reference and adding correct, relevant detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains client-side validation, contrasts it with normal blockchain validation, and covers all key points from the reference, including privacy, scalability, local validation, and the blockchain's role as a commitment layer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains client-side validation, contrasts it with normal blockchain validation, covers all key points from the reference (local validation, off-chain state, blockchain as commitment, privacy, scalability), and adds correct technical detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer correctly explains the concept of a single-use seal, its analogy to Bitcoin's UTXO model, and the two core operations (seal/commit and open/reveal), but uses slightly different terminology ('open' instead of 'close', and 'seal' instead of 'close'), and omits explicit mention of the public verifiability of the closure and the infeasibility of producing two valid closures over different messages."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate answer correctly describes the single-use seal as a cryptographic primitive that can be used exactly once and draws a valid analogy to Bitcoin UTXOs, but it misidentifies the two core operations (using 'seal' and 'break/open' instead of 'close' and 'verify'), omits the requirement for public verifiability and anti-double-spend, and does not mention the production of a witness/proof or the verification operation as defined by Peter Todd."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "masked",
+  "score": 3,
+  "why": "The candidate answer correctly identifies the single-use property and the analogy to Bitcoin's UTXO model, but it misnames the two core operations as 'Seal' and 'Open' instead of 'Close' and 'Verify', and describes 'Open' as recovering the value rather than producing a publicly verifiable proof of closure; it partially captures the concept but omits the crucial verification operation and the anti-double-spend property as defined by Peter Todd."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer correctly maps the seal definition to a UTXO, the seal closing to spending the UTXO with a message commitment, and the proof of publication to the confirmed transaction in the blockchain, matching all key points from the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer thoroughly explains how a Bitcoin UTXO acts as a single-use seal, mapping the seal definition to the UTXO and its properties, but it omits explicit discussion of the seal closing (spending the UTXO in a transaction that commits to a message) and the proof of publication (the confirmed spending transaction), which are key parts of the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains proof of publication, its necessity, and the properties of the publication medium, matching and expanding on all key points in the reference answer without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains proof of publication, its necessity, and the role of a publication medium, matching all key points in the reference answer and adding correct, relevant detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains proof of publication, its necessity, and the role of the publication medium, covering all key points from the reference and adding correct, relevant detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "true",
+  "score": 3,
+  "why": "The candidate answer is partially correct: it describes the correct mechanics of RGB asset transfer, including off-chain data, DAG fragments, seals, and client-side validation, but incorrectly claims 'consignment' is not a recognised term, missing the explicit definition and terminology used in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points: defines consignment as the off-chain data bundle, details its contents (genesis, state transitions/DAG, anchor/commitment proofs), and describes the recipient's client-side validation process, including checking transitions, anchors, and seals, with no global ledger\u2014matching the reference answer and adding correct elaboration."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer correctly explains that a consignment is an off-chain data bundle sent from sender to recipient, describes its anchoring to a Bitcoin transaction, and details the recipient's client-side validation steps, including checking the commitment, validating the asset history, and confirming the UTXO. However, it omits explicit mention of the consignment containing the contract genesis and the precise structure of the state transition DAG shard, and slightly overemphasizes the hash/commitment aspect rather than the full data bundle, which is a minor omission."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: AluVM's purely functional, register-based RISC design, lack of random memory access, no side effects or I/O, deterministic execution, and its role in RGB; it also adds correct contextual details without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: AluVM's purpose, purely functional and register-based RISC design, lack of random memory access, no side effects or global mutable state, fully defined semantics, and the necessity for determinism in RGB; it also adds correct elaboration without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: AluVM is a purely functional, register-based RISC VM for deterministic, consensus-critical execution in RGB, with no global mutable state, no random memory access, a reduced orthogonal instruction set, and fully defined semantics; it also adds correct, relevant detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what Contractum is, its relationship to Strict Types and AluVM, and the compilation pipeline, matching all key points in the reference answer and adding correct, relevant detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "The candidate answer is mostly wrong regarding Contractum, as it claims no knowledge and does not provide the required information about its role, design, or relationship to Strict Types and AluVM, though it does correctly describe Strict Types and AluVM."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "masked",
+  "score": 3,
+  "why": "The candidate answer correctly explains the roles of Strict Types and AluVM in the RGB stack, but fails to directly identify Contractum as the high-level functional/declarative DSL for RGB smart contracts, omitting its relationship as the authoring layer and its compilation to both schema and AluVM bytecode."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "true",
+  "score": 3,
+  "why": "The candidate answer correctly describes Bifrost as a protocol for exchanging RGB consignments and highlights its role in client-side validation and off-chain state transfer, but it omits key technical details from the reference such as its definition by LNPBP standards (LNPBP-50/51), its reuse of Noise_XK/BOLT-8 framing, Strict-Types encoding, and the specific problems BOLT cannot solve (deterministic commitments, single-use seals, Taproot/MuSig, multi-peer channels), making it only partially correct."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate answer correctly identifies Bifrost as a protocol for transporting RGB consignments over Lightning infrastructure and explains that BOLT is insufficient for RGB's needs, but it omits key technical details such as the LNPBP standards (LNPBP-50/51), Strict-Types encoding, support for deterministic commitments, single-use seals, Taproot/MuSig, and multi-peer channels, which are central to the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer correctly explains Bifrost as a protocol for transporting RGB/client-side-validated state, why BOLT cannot do this, and the need for new message formats and semantics, but omits explicit mention of LNPBP-50/51, Strict-Types encoding, and Taproot/MuSig/multi-peer channel support, which are key technical details in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer accurately describes the LNP/BP Standards Association as a non-profit standards body for Bitcoin L2/L3 protocols, explains the LNPBP standards, and covers RGB and client-side validation, but omits specific examples of LNPBP standards (like LNPBP-1/2/3, LNPBP-8, LNPBP-12), the Swiss origin, and key figures such as Maxim Orlovsky and Giacomo Zucco."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "The candidate answer correctly describes the LNP/BP Standards Association as a non-profit maintaining standards for Bitcoin Layer 2/3 protocols and explains the LNPBP standards' purpose and scope, including RGB and client-side validation, but omits specific examples of LNPBP standards (like LNPBP-1/2/3, LNPBP-8, LNPBP-12), the Swiss origin, and key figures involved."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer correctly describes the LNP/BP Standards Association as a non-profit maintaining Bitcoin L2/L3 standards (including RGB and client-side validation), and explains that LNPBP standards are formal specifications for Bitcoin-anchored protocols without base layer changes. However, it omits specific examples of LNPBP standards (like LNPBP-1/2/3, LNPBP-8, LNPBP-12), does not mention Bifrost, and does not name key figures (Maxim Orlovsky, Giacomo Zucco), which are present in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer accurately explains ordinal theory's numbering of sats and the deterministic assignment during transfers, and describes how inscriptions embed data in the witness of Taproot spends, but omits explicit mention of the OP_FALSE OP_IF ... OP_ENDIF envelope structure and does not address BRC-20 at all, which is a significant omission."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer accurately explains ordinal theory's numbering of sats and how inscriptions embed data in Taproot witness data, including the use of MIME types and JSON for BRC-20; however, it omits explicit mention of the OP_FALSE OP_IF ... OP_ENDIF envelope structure and does not clearly state that BRC-20 is off-chain/indexer-based due to lack of consensus enforcement, though it implies this by noting Bitcoin does not interpret or enforce the data."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "irrelevant",
+  "score": 2,
+  "why": "The candidate answer mostly disputes the premise and focuses on how Bitcoin's validation works, but does not explain client-side validation as a paradigm or contrast it with global validation as in the reference; it only partially addresses the difference in validation approaches."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer accurately defines a single-use seal as a cryptographic primitive analogous to a tamper-evident seal, explains the single-use property, and clearly identifies the two core operations (seal/commit and open/reveal), matching the reference answer in content and completeness."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "The candidate answer correctly maps the seal definition to the UTXO and explains its uniqueness and verifiability, but omits explicit discussion of the seal closing (spending the UTXO with a message commitment) and proof of publication (confirmed spending transaction), which are key parts of the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "The candidate answer correctly identifies a consignment as an off-chain data bundle used to transfer asset state and describes the recipient's validation process, but it omits key details such as the inclusion of the contract genesis, the full DAG shard of state transitions, and the need to check for single-use seal closure and absence of conflicting transitions; it also introduces some inaccuracies (e.g., encryption is not a core protocol feature, and the recipient does not necessarily create a new Bitcoin transaction to accept the transfer), making it only partially correct."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "The candidate answer correctly explains the requirements for a deterministic, consensus-critical VM in the context of RGB, but explicitly admits to lacking specific knowledge about AluVM and omits key details such as its register-based, RISC, purely functional design, and its origin/maintainers, which are central to the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer accurately and thoroughly explains Contractum, Strict Types, and AluVM, matching all key points from the reference answer and providing additional correct context without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "irrelevant",
+  "score": 1,
+  "why": "The candidate answer is on-topic but does not provide any correct content about Bifrost or the specific problems it solves compared to the BOLT stack."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference: user-controlled storage, HTTP(S) access, decoupling data from apps, addressing silos and lock-in, WebID-based control, and adds correct technical detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Solid Pod is, how it works, and the problems Solid aims to solve, covering all key points from the reference and adding correct technical detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Solid Pod is, how it works, and the problems Solid is designed to solve, covering all key points from the reference and adding correct, relevant technical detail without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Solid Pod is, how it works, and the problem Solid is trying to solve, covering all key points from the reference answer and adding correct, relevant detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer correctly identifies that Solid Pods use standard HTTP verbs and RDF serialization, and describes the access control mechanisms WAC and ACP, including their deny-by-default nature and structural differences; however, it omits explicit mention of the Linked Data Platform (LDP) as the HTTP interaction model and does not fully detail the inheritance/default ACLs or the specific allow/deny logic of ACP."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "The candidate correctly identifies that Solid Pods use standard HTTP verbs and RDF serialization, and explains both WAC and ACP, including their structure and differences; however, it omits explicit mention of the Linked Data Platform (LDP) as the HTTP interaction model, which is a key point in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate correctly identifies that Solid Pods implement the W3C Linked Data Platform (LDP) HTTP interaction model with standard verbs and describes both WAC and ACP, including their structure, rule models, and differences in expressiveness; however, it omits some specific details such as the exact access modes (Control), the inheritance/default ACLs in WAC, and the matcher/policy separation in ACP."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "The candidate correctly identifies that Solid Pods use standard HTTP verbs and RDF serializations, and accurately describes the distinction between WAC (ACL-based, per-resource, RDF, access modes) and ACP (policies, matchers, more expressive), but omits explicit mention of the Linked Data Platform (LDP) as the HTTP interaction model, which is a minor but important detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer correctly explains how Solid-OIDC extends OIDC (WebID as sub, user-chosen IdP, DPoP-bound tokens, issuer discovery via WebID), and details DPoP's role in binding tokens to a client-held key and per-request proof, but omits explicit mention of the 'webid' scope/claim and issuer discovery via solid:oidcIssuer triples in the WebID profile."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "The candidate answer correctly explains how Solid-OIDC extends OpenID Connect by using WebID URIs as subject identifiers, issuer discovery via the WebID profile, and the decentralised identity model. It also introduces DPoP and its purpose, but omits some technical details about DPoP-bound tokens and the exact mechanism of sending a fresh DPoP proof with each request, which are present in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "masked",
+  "score": 2,
+  "why": "The candidate answer is on-topic and correctly identifies that Solid-OIDC uses a WebID as the subject, but it does not mention the 'webid' claim/scope, issuer discovery via solid:oidcIssuer, or the DPoP mechanism, so it only partially addresses the question."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains that the client dereferences the WebID URI, inspects the RDF profile for solid:oidcIssuer triples, and uses the listed issuer(s) to determine which OpenID Provider is authorised, matching all key points from the reference answer and adding correct, relevant detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains the mechanism by which a client discovers the authorised OpenID Provider for a WebID in Solid-OIDC, covering all key points from the reference answer and adding correct, relevant details."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains that the client discovers the allowed OpenID Provider(s) by dereferencing the WebID and inspecting the solid:oidcIssuer predicate in the RDF profile, matching all key points in the reference answer and adding correct, relevant details."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer fully and correctly explains that the client fetches the WebID document, looks for the solid:oidcIssuer predicate, and uses the listed issuer for OIDC authentication, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: WebID as an HTTP(S) URI identifying an agent, dereferencing returns an RDF profile, use of fragments, inclusion of authentication material, decentralised/self-sovereign control, and adds correct contextual details without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: WebID as an HTTP(S) URI identifying an agent, dereferencing to an RDF profile (often Turtle), use of fragments, inclusion of authentication material, decentralised/self-sovereign control, and its role in linked data; it also adds correct, relevant details without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: WebID as an HTTP(S) URI identifying an agent, dereferencing returns an RDF profile, use of fragments, inclusion of authentication material, decentralised/self-sovereign identity, and even adds correct context about Solid and authentication methods without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer covers all key points: WebID as an HTTP(S) URI identifying an agent, dereferencing returns an RDF profile, use of fragments, self-sovereign control, and its role in decentralized identity and authentication; it is complete and accurate compared to the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer accurately and thoroughly explains both WebID-TLS and WebID-OIDC, including their technical differences, authentication flows, and the reasons for the ecosystem's shift to OIDC, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate answer correctly identifies that both protocols prove control over a WebID URI and mentions the use of RDF profiles and public keys, but it does not explain the technical differences between WebID-TLS and WebID-OIDC or the reasons for the ecosystem's shift to OIDC, leaving out key details from the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer accurately describes the mechanisms of both WebID-TLS and WebID-OIDC, including the use of client certificates and OIDC tokens, and notes the shift in how proof is delivered; however, it omits explicit mention of the main reason for the ecosystem shift (poor browser/UX support for mTLS and better deployment/usability of OIDC), which is a key point in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer accurately and thoroughly explains both WebID-TLS and WebID-OIDC, covering their mechanisms, differences, and the reasons for the ecosystem's shift to OIDC, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains proof of publication and the essential role of the publication medium, covering all key points from the reference answer with additional correct detail and examples."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate answer correctly identifies the LNP/BP Standards Association as a non-profit standards body for Bitcoin L2/L3 protocols and describes the LNPBP standards as formal specifications for upper-layer protocols that do not require Bitcoin consensus changes, but it contains factual errors (incorrect founders, omits key figures like Maxim Orlovsky and Giacomo Zucco, and misattributes client-side validation to Adam Back), and lacks specific examples of LNPBP standards (like LNPBP-1/2/3, LNPBP-8, LNPBP-12) and the association's role in RGB governance."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb11",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer accurately describes Taproot Assets' issuance and holding of assets via Taproot outputs, the use and structure of the Merkle-Sum Sparse Merkle Tree, and the supply conservation mechanism. It also compares Taproot Assets to RGB, but omits some details such as the deterministic derivation of asset IDs from the genesis outpoint plus metadata, and the explicit mention of client-side validation and off-chain proof chains, which are present in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb11",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer accurately and thoroughly explains how Taproot Assets issues and holds assets using Taproot outputs and the Merkle-Sum Sparse Merkle Tree, covers asset IDs, client-side validation, and provides a detailed comparison to RGB, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer accurately explains ordinal theory numbering, inscriptions, and why BRC-20 is off-chain/indexer-based, but omits some technical details such as the specific OP_FALSE OP_IF ... OP_ENDIF envelope structure and the segwit witness discount."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly identifies that Solid Pods use standard HTTP verbs and Linked Data (RDF) resources, and accurately distinguishes WAC (ACL-based, per-resource, fixed modes) from ACP (policy/matcher-based, more expressive, RDF-native), but incorrectly claims WAC is not RDF and omits the LDP (Linked Data Platform) model specifically, which is a minor but notable omission."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains how did:nostr constructs and resolves a DID, emphasizing the direct mapping to a Nostr public key, offline/deterministic resolution, optional relay enrichment, and contrasts these points in detail with ledger-based DID methods, matching all key points in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: local hashing, Merkle tree aggregation, anchoring in a Bitcoin transaction (OP_RETURN), .ots proof structure, verification steps, trust minimisation, and what the proof demonstrates; it is complete and accurate."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov02",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer correctly explains the roles of objectFormat and compatObjectFormat, the need for a mapping between SHA-1 and SHA-256 object names, and the experimental/interoperable state, but overemphasizes the pack index file as the auxiliary structure rather than the bidirectional mapping, and slightly overstates current interop (reference says there is no general interop, candidate suggests some limited interop is possible), so a minor omission/mismatch."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov02",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains the purpose of extensions.objectFormat and compatObjectFormat, describes the need for an auxiliary data structure (though it focuses on the .idx file rather than the explicit bidirectional mapping), and accurately states the current lack of interoperability and experimental status; however, it omits explicit mention of the bidirectional SHA-1<->SHA-256 mapping stored alongside the packfile, which is a key detail in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov03",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate answer correctly explains why chosen-prefix collisions are not a practical threat to Git and describes Git's integrity check mechanism, but it omits the key point that modern Git uses the sha1dc (SHA-1 collision detection) implementation, which actively detects and rejects known collision attacks; this is a major omission compared to the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov03",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is on-topic but does not provide any correct content or mention the sha1dc mechanism, its detection method, or how Git mitigates SHA-1 collisions."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov06",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer correctly explains the aggregation mechanism, the Merkle tree, the calendar server's role and trust model, and the proof structure, but incorrectly claims that OpenTimestamps does not use OP_RETURN, whereas the reference specifies that the deployed protocol does use OP_RETURN to commit the Merkle root to Bitcoin; this is a significant but not total omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov08",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly describes the wrapper mechanism (wrapping gpg via gpg.program), the git config setting to activate it, and thoroughly explains the provenance problem solved (lack of trustworthy time in ordinary signed commits, solved by blockchain-anchored timestamps), matching all key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly describes the wrapper mechanism (replacing gpg.program with a wrapper that calls GPG and creates an OTS proof), the git config setting (git config gpg.program <wrapper>), and explains the provenance problem (lack of trustworthy time in ordinary signed commits, solved by anchoring to Bitcoin), matching all key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov11",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what a Trillian personality is, details three responsibilities (admission/validation, canonicalisation, external interface/auth, etc.) that the core omits, and gives a thorough, correct explanation of tiles and the problems tiling addresses, matching and expanding on the reference answer without contradiction."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov11",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains what a Trillian personality is and covers the three responsibilities (admission/validation, canonicalisation is implied in validation, and external interface), and gives a detailed, accurate explanation of tiles and the problems tiling addresses, though it slightly misattributes storage/persistence as a personality responsibility instead of canonicalisation, which is a minor omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_01",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate answer correctly describes the register file as fixed-size and register-based, explains the role of st0, and emphasizes totality and exception-freedom, but omits key details: the specific structure of the register file (A, R, S registers with their sizes), the nullable/None state for impossible operations, the use of st0 as a boolean status register for flagged operations, and the mechanism of zero-padding code and zero-opcode for total control flow."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_01",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is on-topic and acknowledges the general goals of determinism and totality, but provides no correct or specific content about AluVM's register file, st0, or the mechanisms for deterministic, exception-free execution as described in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_02",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate gives a correct general formula for a tweaked key using HMAC-SHA256 and explains the rationale for HMAC, the HMAC key, and the absence of a nonce, but omits key LNPBP-1 specifics: the double-tagged hash prefix, the use of the sum of all unique public keys (S*) as the HMAC key, and the exact formula structure as in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_05",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate answer confuses Tapret with key-path commitments (embedding in the Taproot output key), while the reference describes Tapret as a script-path commitment (embedding in a tapscript leaf). It also misstates the on-chain forms and byte sizes, and gives an incorrect explanation for the 1-byte nonce, which is for leaf hash ordering, not curve point validity or uniqueness. Only the Opret part is partially correct."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all required abstract operations (Create/Gen, Close/Seal, Verify), states the precise security property (infeasibility of verifying two distinct messages for the same seal), and explains how Bitcoin's UTXO model and consensus enforce the one-time property in a trust-minimised way, matching the reference answer in content and completeness."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_06",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all required abstract operations (including Close/Verify equivalents), states the precise security property (infeasibility of double-closing a seal), and explains how Bitcoin's UTXO model enforces single-use seals in a trust-minimised way, matching and expanding on the reference answer without contradiction."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate correctly distinguishes contract and transfer consignments and explains the blinded UTXO, but gets the size relationship backwards (contract consignments are smaller, not larger), omits the need for full validated history in transfer consignments, and does not mention the stash or the 'rgb accept' validation process."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate answer correctly distinguishes contract and transfer consignments and explains the blinded UTXO, but it inverts the size relationship (claiming contract consignments are larger than transfer consignments, which is incorrect), omits the need for full validated history in transfer consignments, and does not mention the stash or the PSBT/witness transaction process."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer accurately explains the distinction between schema and interface in RGB, details how schemas differ from Ethereum contracts (declarative, client-side, sealed, off-chain validation), and correctly relates interfaces (RGB20, RGB21, RGB25) to schemas, matching all key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points: the distinction between strict types and ADTs (including explicit bounds, determinism, and resource predictability), the 64 KiB rule and its rationale, and why RGB compiles its consensus layer into strict types, with additional correct detail and no contradictions."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_09",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains the distinction between strict types and Haskell-style ADTs, the 64 KiB rule, and the rationale for RGB's use of strict types, but omits some details such as explicit mention of min/max bounds on collections and formal verification/binary compatibility proofs, though it covers most key points accurately."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_10",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer thoroughly explains why a new protocol was needed (difficulty extending BOLTs, separation of concerns, type-space issues, incremental adoption, and operational requirements), and describes the central encoding change (namespaced message types and TLV encoding), but omits explicit mention of strict encoding for client-side-validated data and does not detail what LNPBP-51 and LNPBP-53 specifically add on top of LNPBP-50."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_10",
+  "arm": "raw",
+  "score": 3,
+  "why": "The candidate answer correctly explains why a new protocol was introduced (difficulty extending BOLTs, separation of concerns, reusability), and identifies a central encoding change (shift to TLV framing), but does not mention strict encoding or the specific roles of LNPBP-51 and LNPBP-53, leaving the last part incomplete."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove01",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate answer correctly identifies the method-specific identifier, the offline/minimal resolution process, the verification method type (Multikey), and the two required verification relationships (authentication and assertionMethod). However, it incorrectly describes the construction of publicKeyMultibase: it uses the wrong multicodec prefix (0x120e instead of 0xe701), the wrong multibase (base58btc 'z' instead of base16-lower 'f'), and omits the parity byte, which are major errors in the key encoding details."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove04",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate correctly states that NIP-19 uses bech32 (not bech32m), explains the difference between npub and nprofile, and describes the structure of naddr, but makes significant errors about the TLV types: it omits type 0 (the primary payload), incorrectly claims only three types exist, and misstates the meaning of type 2 (title is not a defined TLV type in NIP-19), which are major factual inaccuracies."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all required points: kind 10002, 'r' tags, read/write/unmarked markers, the outbox/gossip model, and the rules for fetching posts vs. mentions, with no omissions or contradictions."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key points: how the WebID is conveyed (via a claim in the token), how the resource server avoids trusting rogue OPs (by dereferencing the WebID and checking solid:oidcIssuer), the removal of pre-registered clients (client_id as a resolvable URI/Client ID Document), the use of DPoP-bound tokens instead of bearer tokens, and the DPoP proof binding mechanism per RFC 9449, matching the reference answer in content and correctness."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove07",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains WebID conveyance, the WebID Provider Confirmation mechanism, and DPoP-bound tokens, but incorrectly states that the WebID is in the 'sub' claim (instead of the 'webid' claim) and describes dynamic client registration (RFC 7591) rather than the Solid-specific dereferenceable Client ID Document, which is a minor but notable omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "loom",
+  "score": 4,
+  "why": "The candidate answer correctly contrasts WAC and ACP, names WAC's modes, explains acl:accessTo vs acl:default, and describes public access, as well as ACP's ACR, policy, matcher, boolean combinators, and the key conceptual capability ACP adds. However, it uses some incorrect property names (e.g., 'acl:public' instead of 'foaf:Agent', 'solid:' instead of 'acp:'), and omits mention of ACP's ability to match on client, issuer, and verifiable credentials, which is a key point in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "loom",
+  "score": 3,
+  "why": "The candidate correctly describes the SAN field carrying the WebID and the general authentication flow, but incorrectly claims the use of the P3P vocabulary for public key material instead of the cert:key/cert:RSAPublicKey/cert:modulus/cert:exponent terms, which is a major error; the reasons for moving to OIDC are mostly correct but incomplete."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer correctly explains the WebID-TLS flow, identifies the SAN URI as the WebID carrier, and describes the profile fetch and key matching, but incorrectly names the RDF ontology terms (using pim:publicKeyBase64/pim:publicKeyPem instead of cert:key/cert:RSAPublicKey/cert:modulus/cert:exponent), though the rest of the explanation and the reasons for moving to OIDC are thorough and accurate."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove11",
+  "arm": "raw",
+  "score": 4,
+  "why": "The candidate answer accurately explains aggregation via Merkle trees, the role of calendar servers, the two-step workflow, and the structure and verification of .ots proofs, but omits explicit mention of the specific operations (append/prepend <hex>, hash ops) inside the proof and the exact attestation types (PendingAttestation, BitcoinBlockHeaderAttestation) described in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains what the WebID Profile Document is, its RDF nature, its role in authentication (including both WebID-TLS and WebID-OIDC), and its function as the authoritative, owner-controlled source of authentication material, matching all key points in the reference answer and adding correct, relevant detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference: it describes the WebID Profile Document as an RDF document, explains its role in authentication (including dereferencing, public key matching, and issuer verification), and emphasizes its owner-controlled, authoritative nature. It also adds correct contextual information without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference: it describes the WebID Profile Document as an RDF document at the dereferenced WebID URI, details its role in authentication (public key binding, issuer info), mentions its owner-controlled, authoritative nature, and even expands with correct additional context without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer fully and accurately describes the WebID Profile Document, its RDF nature, its role in authentication (including both WebID-TLS and OIDC flows), and its function as the authoritative, owner-controlled source of identity and authentication metadata, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer correctly lists all required fields, explains the id computation and signature process, and accurately describes how integrity and authorship are guaranteed, matching and expanding upon the reference answer without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer accurately lists all required fields, explains the computation of 'id', the use of Schnorr signatures for 'sig', and how integrity and authorship are guaranteed, matching and expanding upon the reference answer without contradiction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer correctly lists all required fields, explains the computation of 'id', the use of secp256k1 and Schnorr signatures for authorship, and the integrity guarantees, matching and expanding on the reference answer without contradiction or omission."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer correctly lists all event fields, explains the canonical serialization and SHA-256 hash for id, describes the use of a secp256k1 public key and Schnorr signature for authorship, and covers integrity and verification as in the reference answer, with no omissions or errors."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains how did:nostr constructs and resolves a DID, emphasizing the direct mapping to a Nostr public key, offline/deterministic resolution, lack of registry/ledger, and contrasts these points in detail with ledger-based DID methods, matching all key points in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer accurately and thoroughly explains how did:nostr constructs and resolves a DID, emphasizing the direct mapping to a Nostr public key, offline/deterministic resolution, optional relay enrichment, and contrasts these points clearly with ledger-based methods, matching all key points in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains how did:nostr constructs and resolves a DID, emphasizing the key-as-identifier, offline/deterministic resolution, and lack of registry/ledger, and contrasts these points in detail with ledger-based methods, matching and expanding on all key points in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer correctly explains Git's content-addressed structure, Merkle DAG, commit hash chaining, and the limitation of self-asserted timestamps, matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "The candidate answer thoroughly explains why Git's commit structure is tamper-evident, covering content-addressing, Merkle DAG, and hash propagation, but omits the key limitation: that commit timestamps are self-asserted and can be forged, necessitating external anchoring for trusted proof-of-existence."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer correctly explains Git's content-addressed structure, Merkle DAG, and how tampering is detectable, but it omits the key limitation: that commit timestamps are self-asserted and can be forged, which is why external anchoring is needed."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer fully and accurately explains Git's tamper-evident structure (content-addressed Merkle DAG, commit chaining, hash avalanche), and clearly identifies the limitation (self-asserted, forgeable timestamps and lack of external anchoring), matching all key points in the reference answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "shuffled",
+  "score": 1,
+  "why": "The candidate answer is on-topic but contains no correct content or explanation; it is incomplete and does not address how OpenTimestamps works or what the proof demonstrates."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer covers all key mechanisms: local hashing, Merkle tree aggregation, anchoring the Merkle root in a Bitcoin transaction, proof file contents, and verification steps, and explains the trust-minimised, tamper-evident nature of the proof, matching the reference answer in completeness and correctness."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "The candidate answer accurately describes the process: local hashing, Merkle tree aggregation, anchoring the root in a blockchain, and the trust-minimised, tamper-evident proof, but omits explicit mention of the .ots proof file contents and the verification process details."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov01",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer correctly explains the distinction between a hash chain and a Merkle DAG, and describes the fan-in/fan-out structure, but it omits explicitly listing the four Git object types (blob, tree, commit, tag) and does not fully explain how edges get their addresses or why the graph is necessarily acyclic, though it gestures at these concepts."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "The candidate answer correctly explains that the signature binds the key to the commit content and provides authenticity/integrity, and notes that the signature is about content, not time; however, it does not explicitly mention that the author/committer date fields are attacker-controllable or that an external timestamp is needed for a trusted time guarantee, which are key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer correctly explains that the signature attests to the authenticity and integrity of the commit content, but it is incomplete as it does not explicitly mention that the author/committer date fields are attacker-controllable and does not address the need for an external timestamp or why the 'when' claim is untrustworthy."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "The candidate answer correctly explains that the signature binds the key to the commit payload and guarantees authenticity/integrity, and notes that the signature covers the commit content including dates, but it does not explicitly state that the date fields are attacker-controllable or that an external timestamp is needed for a trusted time guarantee, which is a minor omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer accurately explains how notes are stored (as blobs in a separate notes ref keyed by commit SHA), why the commit's object ID is unchanged, and describes the notes ref's independent history; however, it omits explicit mention that a signature on the commit does not cover its notes and that the notes ref must be separately protected for provenance data."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer accurately explains how git notes are stored in a separate ref, why the commit's object ID remains unchanged, and the implications for provenance data, matching all key points in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer accurately explains how git notes are stored (as blobs in a separate notes ref keyed by object ID), why the annotated commit's object ID is unchanged (notes are external and do not alter the commit object), and discusses the implications for provenance data, including the need to protect the notes ref separately; all key points from the reference are covered."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "true",
+  "score": 3,
+  "why": "The candidate answer correctly describes the anchoring of Git commit hashes to a blockchain via a chain of transactions, and explains the single-use-seal model and ordering, but omits explicit mention of the 'genesis' transaction, the invocation process ('git mark'), and does not clearly contrast the guarantees with Git's internal hash chain and signed commits as required by the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate answer correctly describes the anchoring of Git commits to a blockchain and the role of a genesis transaction, but it omits details about the invocation process (`git mark` and `git mark --genesis`), the use of Bitmark (not Bitcoin), and the explicit comparison to Git's internal guarantees versus external blockchain anchoring."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "masked",
+  "score": 3,
+  "why": "The candidate answer correctly describes the anchoring of Git commits to a blockchain via a chain of transactions and the role of the genesis transaction, but it omits details about the invocation of 'mark', the specific Bitmark blockchain (instead referring to Bitcoin), and the explicit comparison to Git's internal guarantees and force-push vulnerability."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "The candidate answer correctly explains the general model of anchoring Git commits to a public ledger, the role of a genesis transaction, and the difference in guarantees versus Git's internal mechanisms, but it does not specifically mention git-mark, Bitmark, or the exact invocation details, and it hedges on the specifics, making it only partially correct compared to the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer gives the exact hash definitions for leaves and interior nodes, explains the domain separation property provided by the 0x00 and 0x01 prefixes, and describes how this prevents structural ambiguity and second-preimage attacks, fully matching the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer gives the exact hash definitions for leaves and interior nodes, explains the domain separation property, and details how the prefixes prevent structural ambiguity and second-preimage attacks, fully matching the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer gives the exact hash definitions for leaves and interior nodes, explains the domain separation property, and details the security rationale, matching and expanding on all key points in the reference answer without contradiction."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer gives the exact hash definitions for both leaf and interior nodes, explains the domain separation property, and describes the attack prevented by the prefixes, matching all key points in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully and accurately distinguishes inclusion and consistency proofs, details their purposes, required inputs, and verification processes, and correctly describes the contents of a Signed Tree Head and the Maximum Merge Delay, matching all key points in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "irrelevant",
+  "score": 0,
+  "why": "The candidate answer is empty and does not address any part of the question or reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov11",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "The candidate answer correctly explains what a Trillian personality is and covers the three responsibilities (admission/validation, canonicalisation, external interface), though the canonicalisation and external interface points are not fully elaborated in the visible portion; the explanation of the core's agnosticism and the personality's role is accurate, but the answer is incomplete regarding tiles and tiling."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_01",
+  "arm": "irrelevant",
+  "score": 1,
+  "why": "The candidate answer is on-topic and acknowledges the question, but provides no correct content about AluVM's register file, exception handling, st0, or control flow mechanisms as described in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_04",
+  "arm": "true",
+  "score": 2,
+  "why": "The candidate answer is mostly incorrect: it does not describe the deterministic slot placement via n = id mod N, the use of a buffer of N 32-byte slots, or the filler slot construction with BIP-340 tagged hashes; it instead proposes a different structure (with protocol_id, payload_hash, nonce) and commitment scheme, missing the key uniqueness and zero-knowledge mechanisms of LNPBP-4, though it is on-topic and mentions some relevant cryptographic primitives."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_06",
+  "arm": "masked",
+  "score": 2,
+  "why": "The candidate answer is on-topic and correctly identifies that single-use-seals are cryptographic commitment objects with unique identifiers and that implementations must expose certain operations, but it does not enumerate or describe the required operations, the security property, or the Bitcoin realisation, making it mostly incomplete."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate distinguishes contract and transfer consignments and discusses their content and size difference, but reverses the size logic (contract consignment is actually smaller, not larger), omits the need for full validated history in transfer consignments, and only partially describes the role of the blinded UTXO and stash."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "masked",
+  "score": 3,
+  "why": "The candidate correctly distinguishes contract and transfer consignments and describes their contents, but incorrectly states that contract consignments are larger (tens of kilobytes) when they are actually much smaller than transfer consignments; the answer is incomplete (cut off) and does not address the blinded UTXO, stash, or the full reason for transfer consignment size."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer correctly explains the distinction between schema and interface, the off-chain nature of RGB schemas, and the contrast with Ethereum's on-chain bytecode, but omits explicit mention of AluVM scripts, the .rgb/.rgba binary, and the ability to attach multiple interfaces over time; it also only partially covers the specifics of RGB20/21/25 interfaces."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "shuffled",
+  "score": 1,
+  "why": "The candidate answer only provides section headings and does not contain any substantive content addressing the question or matching the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "masked",
+  "score": 3,
+  "why": "The candidate answer correctly explains the distinction between schema (declarative, data model, state transitions) and interface (API boundary, operations), and notes that the schema is not executable code, but omits key details: it does not mention AluVM scripts, the Genesis instantiation, the .rgb/.rgba compilation, or the client-side validation vs Ethereum's on-chain execution; it also does not specify how interfaces like RGB20/21/25 relate to schemas or their bundling/distribution."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "The candidate correctly explains the schema as a declarative, issuer-defined state machine and notes its off-chain nature and client-side validation, but omits the distinction between schema and interface, does not mention AluVM scripts, Genesis instantiation, or how interfaces like RGB20/21/25 relate to schemas, and does not fully contrast with Ethereum's on-chain bytecode model."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "true",
+  "score": 3,
+  "why": "The candidate answer correctly identifies Reed-Solomon erasure coding for redundancy, symmetric encryption for confidentiality, and integrity hashing for tamper detection, but omits Bao (BLAKE3-based) streaming verification, Zstandard compression, and post-quantum signature sidecars, and uses SHA-256 instead of HMAC-SHA512 or BLAKE3 as in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate answer correctly identifies Reed-Solomon erasure coding for durability, symmetric encryption for confidentiality, and integrity hashing for tamper detection, but omits Bao (BLAKE3-based streaming verification), Zstandard compression, and post-quantum signature sidecars, and has some inaccuracies (e.g., per-shard encryption and hashing instead of encrypt-then-MAC on the whole file as in the reference)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "masked",
+  "score": 2,
+  "why": "The candidate answer correctly identifies Carbonado as a single flat-file archival container for RGB stash persistence and mentions compression as one of the layers, but omits the key cryptographic and coding techniques (authenticated encryption, Bao/BLAKE3, Reed-Solomon, post-quantum signatures) and their purposes, providing only a partial and incomplete answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "The candidate answer correctly identifies Reed-Solomon erasure coding and its purpose (resilience to partial loss/media failure), but omits the other key layers (authenticated encryption, Bao/BLAKE3 streaming verification, compression, post-quantum signatures) described in the reference, making it only partially correct."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer gives the correct HTTP request, including the scheme, host, path, and query parameter, and notes the Content-Type, but does not yet describe the JSON structure, the meaning of '_', or the security rule, so it is correct so far but incomplete."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer covers the exact HTTP request, JSON structure, the meaning of the '_' name, and the core security rule, matching all key points in the reference answer with no omissions or errors."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "masked",
+  "score": 4,
+  "why": "The candidate answer correctly describes the HTTP request, JSON structure, and the meaning of the '_' name, but it incorrectly states that the 'relays' object is keyed by name instead of by pubkey, and omits the core security rule that clients must follow the pubkey, not the NIP-05 address as primary identity."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "The candidate answer correctly describes the HTTP request, the JSON structure (including 'names' and 'relays'), and the HTTPS requirement, but omits the special meaning of the '_' name and the crucial security rule that clients must follow the pubkey, not the NIP-05 address as identity."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer fully covers all required points: the purpose of window.nostr, the two mandatory methods with signatures, the details of signEvent input and output, and the optional nip04 and nip44 encryption namespaces, matching the reference answer in content and accuracy."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully covers the purpose of NIP-07, the two mandatory methods with signatures, the details of signEvent's input and output, and mentions the optional encryption namespaces (nip04 and nip44), matching all key points from the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully covers all required points: it explains the purpose of window.nostr, lists and describes the two mandatory methods with correct signatures, details what signEvent receives and returns, and lists both optional encryption namespaces with their methods and purpose, matching the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer fully covers the window.nostr capability, the problem it solves, the two mandatory methods with signatures, the details of signEvent's input and output, and lists the optional nip04 and nip44 encryption namespaces, matching the reference answer in content and completeness."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer correctly describes the flow, event kind (22242), challenge/relay tags, and relay validation, but incorrectly names the relay tag as 'relays' instead of 'relay', which is a minor but important omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate answer correctly describes the challenge-response flow, the relay sending an AUTH message, and the client replying with a signed event containing the challenge, but it incorrectly states the event kind as 2 instead of 22242 and does not fully specify the required tags or relay validation steps."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "The candidate answer covers all required points: the challenge-response flow, use of kind 22242, required tags (relay and challenge), relay validation steps, and how the relay signals authentication is needed, matching the reference answer in content and completeness."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "true",
+  "score": 3,
+  "why": "The candidate answer correctly identifies the event kind (10002), the use of 'r' tags, and the general purpose of the relay list for the outbox/gossip model, but omits the crucial details about the read/write markers, the meaning of an unmarked entry, and the specific rules for fetching posts versus mentions."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer covers all required points: kind 10002, 'r' tags, read/write markers and their meanings (including unmarked = both), the outbox/gossip model, and the rule for fetching posts vs. mentions; it is complete and accurate."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer covers all required points: kind 10002, 'r' tags, marker meanings (read/write/unmarked), the outbox/gossip model, and the rules for fetching posts vs mentions, matching the reference answer in content and completeness."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer correctly identifies WAC's authorization modes (including an extra mode, acl:ControlRead, which is not standard but does not contradict), explains the difference between acl:accessTo and acl:default, and describes public access via agentClass, but does not yet address ACP at all, so it is incomplete for the full question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "The candidate answer correctly lists WAC's authorization modes (with a minor extra: acl:ControlRead), and accurately explains the difference between acl:accessTo and acl:default, but does not address how public access is granted, nor does it mention ACP at all, omitting all ACP-related requirements."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "The candidate answer correctly describes WAC's modes, the distinction between acl:accessTo and acl:default, and the general structure of ACP, but incorrectly states that public access is granted via http://www.w3.org/ns/solid/terms#Public as acl:agent, rather than using foaf:Agent as acl:agentClass, which is the standard method per the reference; otherwise, the answer is accurate and complete for the WAC part, and begins to describe ACP structure but is incomplete for ACP details."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "true",
+  "score": 4,
+  "why": "The candidate answer correctly explains that the WebID is carried in the certificate's Subject Alternative Name (SAN) as a URI, and describes the dereferencing of the WebID profile, but does not explicitly mention the cert:key, cert:RSAPublicKey, cert:modulus, and cert:exponent RDF ontology terms or the key matching process in detail; it also does not yet address the reasons for the move to WebID-OIDC/Solid-OIDC, though the answer appears incomplete."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "The candidate answer correctly describes the authentication flow, identifies the SAN as the certificate field carrying the WebID, and outlines dereferencing and key matching, but omits explicit mention of the cert:key, cert:RSAPublicKey, cert:modulus, and cert:exponent RDF ontology terms, and does not fully detail the reasons for the move to WebID-OIDC/Solid-OIDC."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "true",
+  "score": 3,
+  "why": "The candidate correctly describes the POST of a JSON-LD document to subscribe, but omits the exact channel type identifiers, namespace, the notify:topic property, and the specific response property differences between WebSocket and Webhook channels."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "shuffled",
+  "score": 0,
+  "why": "The candidate answer does not provide any content relevant to the question; it only includes a heading and no substantive information."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "irrelevant",
+  "score": 1,
+  "why": "The candidate answer is on-topic and acknowledges the question, but provides no correct content or specification details from the reference answer."
+ }
+]

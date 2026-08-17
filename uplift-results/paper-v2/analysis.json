@@ -1,0 +1,450 @@
+{
+ "paired": {
+  "arcane": {
+   "n_pairs": 24,
+   "mean_loom": 4.3333,
+   "mean_raw": 3.5417,
+   "paired_mean_diff": 0.7917,
+   "boot95_lo": 0.1667,
+   "boot95_hi": 1.4167,
+   "wilcoxon_W": 76.0,
+   "wilcoxon_z": 2.132,
+   "p_raw": 0.033047,
+   "cliffs_delta": 0.2917,
+   "wins": 10,
+   "losses": 3,
+   "ties": 11,
+   "p_holm": 0.099141
+  },
+  "general": {
+   "n_pairs": 60,
+   "mean_loom": 5.0,
+   "mean_raw": 4.95,
+   "paired_mean_diff": 0.05,
+   "boot95_lo": 0.0,
+   "boot95_hi": 0.1333,
+   "wilcoxon_W": 3.0,
+   "wilcoxon_z": 1.342,
+   "p_raw": 0.179712,
+   "cliffs_delta": 0.0333,
+   "wins": 2,
+   "losses": 0,
+   "ties": 58,
+   "p_holm": 0.236502
+  },
+  "thin": {
+   "n_pairs": 30,
+   "mean_loom": 3.8667,
+   "mean_raw": 3.5667,
+   "paired_mean_diff": 0.3,
+   "boot95_lo": -0.0333,
+   "boot95_hi": 0.6333,
+   "wilcoxon_W": 109.5,
+   "wilcoxon_z": 1.562,
+   "p_raw": 0.118251,
+   "cliffs_delta": 0.2333,
+   "wins": 12,
+   "losses": 5,
+   "ties": 13,
+   "p_holm": 0.236502
+  },
+  "pooled": {
+   "n_pairs": 114,
+   "mean_loom": 4.5614,
+   "mean_raw": 4.2895,
+   "paired_mean_diff": 0.2719,
+   "boot95_lo": 0.1053,
+   "boot95_hi": 0.4474,
+   "wilcoxon_W": 419.5,
+   "wilcoxon_z": 2.908,
+   "p_raw": 0.003641,
+   "cliffs_delta": 0.1404,
+   "wins": 24,
+   "losses": 8,
+   "ties": 82
+  }
+ },
+ "telemetry": {
+  "arcane": {
+   "engagement_rate": 0.958,
+   "injected_tokens_median": 1199,
+   "latency_median_loom_s": 89.8,
+   "latency_median_raw_s": 93.4
+  },
+  "thin": {
+   "engagement_rate": 1.0,
+   "injected_tokens_median": 1297,
+   "latency_median_loom_s": 172.4,
+   "latency_median_raw_s": 145.2
+  },
+  "general": {
+   "engagement_rate": 0.783,
+   "injected_tokens_median": 1292,
+   "latency_median_loom_s": 66.0,
+   "latency_median_raw_s": 65.7
+  }
+ },
+ "controls": {
+  "arcane": {
+   "true-raw": {
+    "n": 19,
+    "mean_diff": 0.9474,
+    "boot95": [
+     0.3684,
+     1.6316
+    ],
+    "wilcoxon_p": 0.01796,
+    "cliffs_delta": 0.3684,
+    "wins": 7,
+    "losses": 0,
+    "ties": 12
+   },
+   "shuffled-raw": {
+    "n": 20,
+    "mean_diff": 0.65,
+    "boot95": [
+     -0.25,
+     1.6
+    ],
+    "wilcoxon_p": 0.195539,
+    "cliffs_delta": 0.2,
+    "wins": 8,
+    "losses": 4,
+    "ties": 8
+   },
+   "masked-raw": {
+    "n": 21,
+    "mean_diff": 0.7619,
+    "boot95": [
+     0.1429,
+     1.4762
+    ],
+    "wilcoxon_p": 0.046853,
+    "cliffs_delta": 0.2857,
+    "wins": 8,
+    "losses": 2,
+    "ties": 11
+   },
+   "irrelevant-raw": {
+    "n": 16,
+    "mean_diff": 0.4375,
+    "boot95": [
+     -0.0625,
+     1.0625
+    ],
+    "wilcoxon_p": 0.172955,
+    "cliffs_delta": 0.125,
+    "wins": 4,
+    "losses": 2,
+    "ties": 10
+   },
+   "true-irrelevant": {
+    "n": 14,
+    "mean_diff": 0.4286,
+    "boot95": [
+     -0.0714,
+     1.0
+    ],
+    "wilcoxon_p": 0.144127,
+    "cliffs_delta": 0.1429,
+    "wins": 3,
+    "losses": 1,
+    "ties": 10
+   },
+   "true-shuffled": {
+    "n": 18,
+    "mean_diff": 0.2778,
+    "boot95": [
+     -0.1667,
+     0.7778
+    ],
+    "wilcoxon_p": 0.280713,
+    "cliffs_delta": 0.1667,
+    "wins": 4,
+    "losses": 1,
+    "ties": 13
+   },
+   "true-masked": {
+    "n": 19,
+    "mean_diff": 0.2632,
+    "boot95": [
+     -0.0526,
+     0.6316
+    ],
+    "wilcoxon_p": 0.176296,
+    "cliffs_delta": 0.1579,
+    "wins": 5,
+    "losses": 2,
+    "ties": 12
+   },
+   "loom-true": {
+    "n": 19,
+    "mean_diff": -0.1053,
+    "boot95": [
+     -0.5789,
+     0.3158
+    ],
+    "wilcoxon_p": 0.735317,
+    "cliffs_delta": -0.0526,
+    "wins": 3,
+    "losses": 4,
+    "ties": 12
+   }
+  },
+  "thin": {
+   "true-raw": {
+    "n": 13,
+    "mean_diff": 0.0769,
+    "boot95": [
+     -0.4615,
+     0.6154
+    ],
+    "wilcoxon_p": 0.799846,
+    "cliffs_delta": 0.0769,
+    "wins": 4,
+    "losses": 3,
+    "ties": 6
+   },
+   "shuffled-raw": {
+    "n": 16,
+    "mean_diff": -0.25,
+    "boot95": [
+     -1.0,
+     0.4375
+    ],
+    "wilcoxon_p": 0.61209,
+    "cliffs_delta": -0.0625,
+    "wins": 3,
+    "losses": 4,
+    "ties": 9
+   },
+   "masked-raw": {
+    "n": 12,
+    "mean_diff": -0.1667,
+    "boot95": [
+     -0.9167,
+     0.5
+    ],
+    "wilcoxon_p": 0.674987,
+    "cliffs_delta": 0.0,
+    "wins": 3,
+    "losses": 3,
+    "ties": 6
+   },
+   "irrelevant-raw": {
+    "n": 12,
+    "mean_diff": -0.5,
+    "boot95": [
+     -1.5833,
+     0.4167
+    ],
+    "wilcoxon_p": 0.398025,
+    "cliffs_delta": -0.0833,
+    "wins": 3,
+    "losses": 4,
+    "ties": 5
+   },
+   "true-irrelevant": {
+    "n": 9,
+    "mean_diff": 0.2222,
+    "boot95": [
+     -0.2222,
+     0.7778
+    ],
+    "wilcoxon_p": 0.422678,
+    "cliffs_delta": 0.1111,
+    "wins": 2,
+    "losses": 1,
+    "ties": 6
+   },
+   "true-shuffled": {
+    "n": 12,
+    "mean_diff": 0.3333,
+    "boot95": [
+     -0.5,
+     1.1667
+    ],
+    "wilcoxon_p": 0.498962,
+    "cliffs_delta": 0.0833,
+    "wins": 4,
+    "losses": 3,
+    "ties": 5
+   },
+   "true-masked": {
+    "n": 8,
+    "mean_diff": -0.125,
+    "boot95": [
+     -0.75,
+     0.5
+    ],
+    "wilcoxon_p": 0.715001,
+    "cliffs_delta": 0.0,
+    "wins": 2,
+    "losses": 2,
+    "ties": 4
+   },
+   "loom-true": {
+    "n": 13,
+    "mean_diff": 0.0,
+    "boot95": [
+     -0.3846,
+     0.4615
+    ],
+    "wilcoxon_p": 1.0,
+    "cliffs_delta": -0.0769,
+    "wins": 2,
+    "losses": 3,
+    "ties": 8
+   }
+  },
+  "pooled": {
+   "true-raw": {
+    "n": 32,
+    "mean_diff": 0.5938,
+    "boot95": [
+     0.1562,
+     1.0625
+    ],
+    "wilcoxon_p": 0.025843,
+    "cliffs_delta": 0.25,
+    "wins": 11,
+    "losses": 3,
+    "ties": 18
+   },
+   "shuffled-raw": {
+    "n": 36,
+    "mean_diff": 0.25,
+    "boot95": [
+     -0.3889,
+     0.8889
+    ],
+    "wilcoxon_p": 0.42091,
+    "cliffs_delta": 0.0833,
+    "wins": 11,
+    "losses": 8,
+    "ties": 17
+   },
+   "masked-raw": {
+    "n": 33,
+    "mean_diff": 0.4242,
+    "boot95": [
+     -0.0909,
+     0.9394
+    ],
+    "wilcoxon_p": 0.14766,
+    "cliffs_delta": 0.1818,
+    "wins": 11,
+    "losses": 5,
+    "ties": 17
+   },
+   "irrelevant-raw": {
+    "n": 28,
+    "mean_diff": 0.0357,
+    "boot95": [
+     -0.5357,
+     0.5714
+    ],
+    "wilcoxon_p": 0.726768,
+    "cliffs_delta": 0.0357,
+    "wins": 7,
+    "losses": 6,
+    "ties": 15
+   },
+   "true-irrelevant": {
+    "n": 23,
+    "mean_diff": 0.3478,
+    "boot95": [
+     0.0,
+     0.7826
+    ],
+    "wilcoxon_p": 0.090969,
+    "cliffs_delta": 0.1304,
+    "wins": 5,
+    "losses": 2,
+    "ties": 16
+   },
+   "true-shuffled": {
+    "n": 30,
+    "mean_diff": 0.3,
+    "boot95": [
+     -0.1,
+     0.7333
+    ],
+    "wilcoxon_p": 0.209427,
+    "cliffs_delta": 0.1333,
+    "wins": 8,
+    "losses": 4,
+    "ties": 18
+   },
+   "true-masked": {
+    "n": 27,
+    "mean_diff": 0.1481,
+    "boot95": [
+     -0.1852,
+     0.4444
+    ],
+    "wilcoxon_p": 0.398305,
+    "cliffs_delta": 0.1111,
+    "wins": 7,
+    "losses": 4,
+    "ties": 16
+   },
+   "loom-true": {
+    "n": 32,
+    "mean_diff": -0.0625,
+    "boot95": [
+     -0.375,
+     0.25
+    ],
+    "wilcoxon_p": 0.813945,
+    "cliffs_delta": -0.0625,
+    "wins": 5,
+    "losses": 7,
+    "ties": 20
+   }
+  },
+  "empty_rate_1536": {
+   "irrelevant": {
+    "empty": 28,
+    "total": 56,
+    "rate": 0.5
+   },
+   "loom": {
+    "empty": 0,
+    "total": 29,
+    "rate": 0.0
+   },
+   "masked": {
+    "empty": 23,
+    "total": 56,
+    "rate": 0.411
+   },
+   "raw": {
+    "empty": 0,
+    "total": 29,
+    "rate": 0.0
+   },
+   "shuffled": {
+    "empty": 20,
+    "total": 56,
+    "rate": 0.357
+   },
+   "true": {
+    "empty": 24,
+    "total": 56,
+    "rate": 0.429
+   },
+   "_note": "loom/raw rates of 0.0 are post-retry artefacts: their 1536-budget empties were re-run at 4096 and replaced. Original 1536-budget empty counts from the main run: arcane loom 2/24, arcane raw 6/24, thin loom 19/33, thin raw 15/33. Control arms were not retried; their contrasts are complete-case over surviving pairs.",
+   "live_original_1536": {
+    "arcane": {
+     "loom": "2/24",
+     "raw": "6/24"
+    },
+    "thin": {
+     "loom": "19/33",
+     "raw": "15/33"
+    }
+   }
+  }
+ }
+}
