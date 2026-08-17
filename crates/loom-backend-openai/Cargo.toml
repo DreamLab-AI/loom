@@ -12,6 +12,13 @@ description = "ModelBackend adapter → DISTILL_BACKEND_URL (OpenAI-compatible c
 loom-domain = { path = "../loom-domain" }
 reqwest = { workspace = true }
 serde_json = { workspace = true }
+async-trait = { workspace = true }
+
+[dev-dependencies]
+# EXP-006 backend half: mock the OpenAI-compatible upstream to assert the
+# max_tokens floor, stream stripping, /models passthrough and reachability.
+tokio = { workspace = true }
+wiremock = "0.6"
 
 [lints]
 workspace = true

@@ -10,14 +10,23 @@ description = "AttestationLedger adapter → RuVector ProofGate/MutationLedger (
 
 [dependencies]
 loom-domain = { path = "../loom-domain" }
-# sha2 is the always-on chain-hash fallback; ruvector-core ProofGate is the
-# real ledger, pulled in only under `attest` (build/CI builds, not serving).
+# sha2 is the always-on chain-hash of the append-only JSONL ledger.
 sha2 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+async-trait = { workspace = true }
+# ruvector-core is pulled in only under `attest` (build/CI builds, not serving).
+# The design-named ProofGate<T>/MutationLedger (ADR-047) are NOT in this crate;
+# see the module docs for the rg evidence and the binding decision.
 ruvector-core = { workspace = true, optional = true }
 
 [features]
 default = []
 attest = ["dep:ruvector-core"]
+
+[dev-dependencies]
+tokio = { workspace = true }
+tempfile = "3"
 
 [lints]
 workspace = true
