@@ -1,0 +1,62 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/loom-domain",
+    "crates/loom-scaffold",
+    "crates/loom-graph-oxigraph",
+    "crates/loom-vector-ruvector",
+    "crates/loom-embed-xinference",
+    "crates/loom-backend-openai",
+    "crates/loom-attest-proofgate",
+    "crates/loom-facade",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88"
+license = "AGPL-3.0-only"
+repository = "https://github.com/DreamLab-AI/loom"
+authors = ["DreamLab-AI contributors"]
+
+[workspace.lints.rust]
+unsafe_code = "deny"                       # matches solid-pod-rs; the facade has no cause for unsafe
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+
+# One place for versions; every crate uses `x = { workspace = true }`.
+[workspace.dependencies]
+tokio       = { version = "1.40", features = ["rt-multi-thread", "macros", "net", "signal", "fs", "time"] }
+axum        = { version = "0.7",  features = ["json", "http1"] }
+tower       = { version = "0.5",  features = ["timeout", "limit"] }
+tower-http  = { version = "0.6",  features = ["trace", "cors", "limit"] }
+serde       = { version = "1",    features = ["derive"] }
+serde_json  = "1"
+thiserror   = "1"
+anyhow      = "1"
+tracing     = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+reqwest     = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+oxigraph    = "0.4"
+regex       = "1.10"
+sha2        = "0.10"
+async-trait = "0.1"
+tokio-postgres = "0.7"
+pgvector    = { version = "0.4", features = ["postgres"] }
+# In-process HNSW: path-dep on the sibling workspace's core crate.
+# HNSW search in ruvector-core is behind the `hnsw` Cargo feature (which enables
+# the optional `hnsw_rs` dep); persistence is behind `storage` (redb + memmap2).
+# BOTH are in the crate's default feature set (verified against
+# ruvector/crates/ruvector-core/Cargo.toml:89 —
+# default = ["simd","storage","hnsw","api-embeddings","parallel"]). Rely on
+# defaults; do NOT set default-features=false, do NOT spell the feature "hnsw_rs".
+ruvector-core = { path = "../ruvector/crates/ruvector-core" }
+
+[profile.release]
+lto = "thin"          # sibling convention (solid-pod-rs); the static-binary win
+codegen-units = 1
+strip = "symbols"
+panic = "abort"       # facade has no unwinding contract to preserve; smaller binary

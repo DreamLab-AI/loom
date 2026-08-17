@@ -1,0 +1,21 @@
+[package]
+name = "loom-domain"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "Ontology Loom domain core: canonical types, ports (traits), and the error model. No I/O, no framework."
+
+[dependencies]
+serde = { workspace = true }
+# serde_json is a RUNTIME dep here, not test-only: ModelBackend::chat carries a
+# serde_json::Value across the port and LoomError wraps serde_json::Error.
+# (§2.2's table omits it; §4/§7 require it — necessary deviation to compile.)
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+async-trait = { workspace = true }
+
+[lints]
+workspace = true

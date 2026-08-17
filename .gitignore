@@ -17,3 +17,7 @@ docs/research/latex/*.log
 docs/research/latex/*.out
 docs/research/latex/*.run.xml
 docs/research/latex/*-blx.bib
+# Rust build output
+/target
+# agent scheduler scratch (not a project artifact)
+.claude/scheduled_tasks.lock

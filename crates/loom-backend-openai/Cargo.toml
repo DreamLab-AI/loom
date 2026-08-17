@@ -1,0 +1,17 @@
+[package]
+name = "loom-backend-openai"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "ModelBackend adapter → DISTILL_BACKEND_URL (OpenAI-compatible chat delegate; max_tokens floor, stream stripped)."
+
+[dependencies]
+loom-domain = { path = "../loom-domain" }
+reqwest = { workspace = true }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

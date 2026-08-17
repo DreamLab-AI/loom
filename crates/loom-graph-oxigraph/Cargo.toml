@@ -1,0 +1,17 @@
+[package]
+name = "loom-graph-oxigraph"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "GraphStore adapter over native oxigraph: read-only clamped SPARQL over the reasoned closure."
+
+[dependencies]
+loom-domain = { path = "../loom-domain" }
+oxigraph = { workspace = true }
+regex = { workspace = true }
+
+[lints]
+workspace = true

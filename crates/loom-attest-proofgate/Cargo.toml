@@ -1,0 +1,23 @@
+[package]
+name = "loom-attest-proofgate"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "AttestationLedger adapter → RuVector ProofGate/MutationLedger (build/CI-time only)."
+
+[dependencies]
+loom-domain = { path = "../loom-domain" }
+# sha2 is the always-on chain-hash fallback; ruvector-core ProofGate is the
+# real ledger, pulled in only under `attest` (build/CI builds, not serving).
+sha2 = { workspace = true }
+ruvector-core = { workspace = true, optional = true }
+
+[features]
+default = []
+attest = ["dep:ruvector-core"]
+
+[lints]
+workspace = true

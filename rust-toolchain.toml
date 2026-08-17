@@ -1,0 +1,5 @@
+[toolchain]
+# Pinned stable for the Nix/CI path. NOTE: the container's plain cargo (1.97.0,
+# no rustup) ignores this file — it is honoured only where rustup drives the build.
+channel = "stable"
+components = ["rustfmt", "clippy"]

@@ -1,0 +1,28 @@
+[package]
+name = "loom-vector-ruvector"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "VectorIndex adapter: in-process ruvector-core HNSW read (hot path) + off-turn Postgres write channel (build-time only)."
+
+[dependencies]
+loom-domain = { path = "../loom-domain" }
+# In-process HNSW read (hot path). Default features carry hnsw + storage.
+ruvector-core = { workspace = true }
+# Off-turn / build-time write channel to ruvector-postgres ONLY — feature-gated
+# so the serving binary never links Postgres on the query hot path.
+tokio-postgres = { workspace = true, optional = true }
+pgvector = { workspace = true, optional = true }
+
+[features]
+default = []
+# The build/off-turn write channel to ruvector-postgres.
+pg-write = ["dep:tokio-postgres", "dep:pgvector"]
+# Master gate for the semantic fallback code path (recall-gate governed).
+semantic-fallback = []
+
+[lints]
+workspace = true
