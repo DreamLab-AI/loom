@@ -15,10 +15,13 @@ CONTENT, holding everything else fixed:
   masked   : same block with every seed-class title replaced by "Entity-<k>".
              Structure intact, entity names gone. If gains survive, the judge
              was matching names, not knowledge.
-  irrelevant : the scaffold of a DIFFERENT question (fixed derangement over the
-             set). Well-formed, on-corpus, wrong entities. The classic
-             wrong-context control: if gains survive, any ontology-shaped text
-             would do.
+  irrelevant : the scaffold of a question whose SEED IRIS ARE DISJOINT from
+             this one's (greedy cross-domain donor search; a plain shift-by-one
+             derangement is invalid here — the arcane set clusters in two
+             coherent domains, so a neighbour's scaffold plus 1-hop expansion
+             frequently contains the right entities). Well-formed, on-corpus,
+             wrong entities, verified disjoint. The classic wrong-context
+             control: if gains survive, any ontology-shaped text would do.
 
 Scaffolds come from the production loom's /loom/scaffold (LLM-free retrieval),
 so every control uses the same block the loom arm actually served.
@@ -104,20 +107,21 @@ ARMS = ("true", "shuffled", "masked", "irrelevant")
 
 
 def run_one(setname: str, q: dict, block: str, seeds: list, other_block: str,
-            retries: int = 3) -> list:
+            arms: tuple = ARMS, retries: int = 3) -> list:
     rows = []
     if not block:
         # gate declined to inject — controls are identical to raw; record and skip
         return [{"set": setname, "id": q["id"], "arm": a, "skipped": "no-scaffold"}
-                for a in ARMS]
+                for a in arms]
     variants = {
         "true": block,
         "shuffled": shuffle_block(block, seed=hash(q["id"]) & 0xFFFF),
         "masked": mask_block(block, seeds),
         "irrelevant": other_block,
     }
+    variants = {a: v for a, v in variants.items() if a in arms}
     if not other_block:
-        variants.pop("irrelevant")
+        variants.pop("irrelevant", None)
     for arm, sys_block in variants.items():
         last = None
         for attempt in range(retries):
@@ -156,14 +160,32 @@ def main(argv=None):
             except Exception as e:  # noqa: BLE001
                 print(f"scaffold fetch failed for {q['id']}: {e}", file=sys.stderr)
                 blocks[(name, q["id"])], seedmap[(name, q["id"])] = "", []
+    # Irrelevant donor: any engaged question (either set) whose seed-IRI set is
+    # DISJOINT from the recipient's — verified, not assumed. Prefer a donor from
+    # a different set; fall back to minimal overlap only if no disjoint donor
+    # exists (then record the overlap for honesty).
+    engaged = [(n, q) for (n, q) in questions if blocks[(n, q["id"])]]
+    iris = {(n, q["id"]): {s.get("iri") for s in seedmap[(n, q["id"])]}
+            for (n, q) in engaged}
     other = {}
-    for name in args.sets.split(","):
-        engaged = [(n, q) for (n, q) in questions if n == name and blocks[(n, q["id"])]]
-        for i, (n, q) in enumerate(engaged):
-            nxt = engaged[(i + 1) % len(engaged)][1]
-            other[(n, q["id"])] = blocks[(n, nxt["id"])] if nxt["id"] != q["id"] else ""
-    print(f"scaffolds fetched: {sum(1 for b in blocks.values() if b)}/{len(blocks)} engaged",
-          file=sys.stderr)
+    for (n, q) in engaged:
+        me = iris[(n, q["id"])]
+        donor = None
+        # pass 1: cross-set disjoint; pass 2: same-set disjoint
+        for cross_set in (True, False):
+            for (m, p) in engaged:
+                if (m, p["id"]) == (n, q["id"]) or (m != n) != cross_set:
+                    continue
+                if not (me & iris[(m, p["id"])]):
+                    donor = (m, p["id"])
+                    break
+            if donor:
+                break
+        other[(n, q["id"])] = blocks[donor] if donor else ""
+        if not donor:
+            print(f"  WARN no seed-disjoint donor for {q['id']} — irrelevant arm skipped",
+                  file=sys.stderr)
+    print(f"scaffolds fetched: {len(engaged)}/{len(blocks)} engaged", file=sys.stderr)
 
     outpath = args.out / "control-results.jsonl"
     done = set()
@@ -171,10 +193,14 @@ def main(argv=None):
         for line in open(outpath):
             r = json.loads(line)
             if "error" not in r:
-                done.add((r["set"], r["id"]))
-    jobs = [(n, q, blocks[(n, q["id"])], seedmap[(n, q["id"])], other.get((n, q["id"]), ""))
-            for (n, q) in questions if (n, q["id"]) not in done]
-    print(f"{len(jobs)} questions x up to {len(ARMS)} control arms", file=sys.stderr)
+                done.add((r["set"], r["id"], r["arm"]))
+    jobs = []
+    for (n, q) in questions:
+        pending = tuple(a for a in ARMS if (n, q["id"], a) not in done)
+        if pending:
+            jobs.append((n, q, blocks[(n, q["id"])], seedmap[(n, q["id"])],
+                         other.get((n, q["id"]), ""), pending))
+    print(f"{len(jobs)} questions with pending arms", file=sys.stderr)
 
     with open(outpath, "a") as f, ThreadPoolExecutor(max_workers=args.concurrency) as ex:
         n = 0
