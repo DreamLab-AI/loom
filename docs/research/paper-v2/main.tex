@@ -453,7 +453,7 @@ the \emph{raw} arm calls the same model backend directly with no scaffold. Both 
 \texttt{temperature}=0 and \texttt{max\_tokens}=1536, below which the reasoning backend truncates to
 empty. Questions are three frozen sets---\emph{arcane} (deep in-domain), \emph{thin}
 (sparsely-covered) and \emph{general} (out-of-domain)---of \textbf{117} questions in total
-([N-ARCANE] arcane, [N-THIN] thin, [N-GENERAL] general), reused from the v1 sweep so the arms are
+(24 arcane, 33 thin, 60 general), reused from the v1 sweep so the arms are
 judge-comparable. The four negative-control arms of \S\ref{sec:ceiling-controls} run against the
 same node: scaffolds are fetched from the LLM-free \texttt{/loom/scaffold} endpoint---so every
 control injects exactly the block the loom arm served---and presented to the bare model as a system
@@ -473,7 +473,7 @@ distribution-free effect size. Because the three sets are reported together, set
 carry a \textbf{Holm--Bonferroni} correction~\cite{dror2018hitchhiker}. Where the claim is
 \emph{equivalence} rather than difference---the out-of-domain non-regression axis---we use two
 one-sided tests (TOST) against a pre-registered margin~\cite{lakens2017equivalence} of
-[DELTA-EQUIV], rather than reading a non-significant difference as no effect. In-domain,
+\pm0.25, rather than reading a non-significant difference as no effect. In-domain,
 graph-derived questions cluster by class and domain~\cite{dror2018hitchhiker}; following v1 we report
 a domain-clustered block bootstrap alongside the naive interval and an intention-to-treat delta that
 retains questions on which the gate did not engage~\cite{hollis1999itt}.
