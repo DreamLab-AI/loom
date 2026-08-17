@@ -38,6 +38,22 @@
 %     (v1 60-question judged arm + NEW general-set pairs).
 %   8 Analysis — "uplift is exposure, not reasoning" (Stronger-Baselines §4
 %     move): what the instrument reveals across all arms.
+%     REGISTER (operator directive, 2026-08-17): this is a technical report,
+%     not a peer-review submission — the honest discovery arc is IN SCOPE and
+%     wanted: we built the serving node first, feared we had reinvented
+%     GraphRAG, asked adversarially whether our own uplift evidenced reasoning,
+%     and the honest answer (no — it is exposure) became the paper. Plain
+%     first-person engineering narrative is fine; statistical claims keep full
+%     rigour; NO marketing copy masquerading as analysis. Third-party tools
+%     (OntoCast) are analysed neutrally — they are not our work.
+%     Include the "copy ceiling as regime detector" discussion: compute the
+%     ceiling before you architect; near-1 ceiling = serving regime (verbatim
+%     retrieval wins, generative re-encoding only loses); low ceiling =
+%     synthesis regime (GraphRAG-style machinery earns its keep, but must be
+%     measured above the ceiling, not above a bare-model baseline). And the
+%     upstream corollary: value concentrates at curation time — the instrument
+%     doubles as a promotion gate for automated-extraction candidates
+%     (answer-completeness of a block ≈ its copy ceiling → 1).
 %   9 The Multivariate Bar — shrunk scorecard (frame introduced in §2).
 %   10 Limitations — incl. single-corpus, judge-family, doc-embedding recall
 %     gate red (honest), lexical scorer for v1 axes (semantic judge for new).
@@ -170,10 +186,35 @@ consequence and its architectural decision record (ADR); Table~\ref{tab:req} rec
 enforced. The object of study is a served node\footnote{The served node
 \url{https://github.com/DreamLab-AI/loom} (code under the repository licence; corpus terms per the
 sibling knowledgeGraph repository).} over a corpus built by a separate, CI-gated
-pipeline\footnote{The canonical builder \url{https://github.com/jjohare/logseq} runs
+pipeline\footnote{The canonical builder \url{https://github.com/DreamLab-AI/knowledgeGraph} (published at \url{https://narrativegoldmine.com}) runs
 \texttt{pytest pipeline/tests} and \texttt{pipeline.validate} before publishing each generation.}
 and accelerated by an in-process HNSW index\footnote{RuVector:
 \url{https://github.com/ruvnet/ruvector}.}.
+
+\subsection{The ecosystem in brief}\label{sec:ecosystem}
+This is a technical report on one component of a working stack (VisionFlow), and the component is
+easier to evaluate when the reader can see the whole data path. Knowledge enters at the corpus
+repository (\emph{knowledgeGraph}): 8{,}138 Logseq markdown pages that compile losslessly into a
+pure-TBox OWL~2 ontology---8{,}146 classes, no individuals---published as versioned generations.
+Content arrives there two ways: curated authorship under human direction, and, recently, automated
+extraction---output from OntoCast~\cite{ontocast}, an independently developed open-source
+ontology-extraction tool that is not our work, is staged through a preview-first import that
+reports identity collisions, refuses overwrites, and emits private review candidates rather than
+publishing machine output directly (the integration treats it as an upstream producer at a
+governed boundary; neither project vendors the other). A CI gate (consistency tests plus a native conflict detector)
+and a Whelk OWL~2~EL reasoner~\cite{whelk} classify each build and reject contradictions before
+publication; the reasoned closure (282{,}492 triples) ships with the generation. The \emph{Loom}
+node measured in this paper mirrors a generation and serves it: lexical retrieval over class
+titles, confidence-gated injection of per-IRI markdown blocks, read-only SPARQL over the closure,
+and delegation to whatever local model sits behind its OpenAI-compatible fa\c{c}ade (at the time of
+writing, Qwen3.8-27B on two workstation GPUs). \emph{RuVector} supplies the vector substrate: the
+corpus embeddings live in its Postgres store, and an in-process HNSW index is wired as a semantic
+fallback---currently disabled by default because its measured recall (0.816) is below the
+pre-registered floor (0.87), a status we report rather than hide. Downstream, agent consumers
+(an email gateway, working agents) hold the fa\c{c}ade URL and inherit grounding without
+integration work. Nothing in this description is load-bearing for the contribution; it exists so
+that \S\ref{sec:system}--\S\ref{sec:results} can be read as measurements of a deployed system
+rather than a laboratory apparatus.
 
 \begin{enumerate}[topsep=3pt,itemsep=2pt,leftmargin=1.5em]
 \item \textbf{Private-knowledge need $\Rightarrow$ curated, amortised corpus.} The model must
