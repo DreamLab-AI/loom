@@ -7,7 +7,7 @@ authors: VisionFlow operator (did:nostr:jjohare) + opus consolidation mesh
 linked_adrs: [
   ADR-136 (loom tooling allocation — the decision record this PRD operationalises),
   ADR-135 (loom node boundary + façade + deferred distillation),
-  RuVector ADR-004 (HNSW production index),
+  RuVector ADR-001 (HNSW production index),
   RuVector ADR-047 (ProofGate<T> / MutationLedger — proof-gated mutation),
   ruflo ADR-344 (KG index for ReasoningBank — Proposed, feature-flag-off, deferred),
   VisionClaw ADR-099 (Whelk-rs EL++ reasoner authority)
@@ -70,8 +70,8 @@ supersedes: "Extends PRD-025 (does not replace it). Supersedes PRD-025's implici
 > *semantic-trust-layer*; **agentbox PRD-022** = *semantic-integrity-provenance-decisions*.
 > **VisionClaw ADR-050** = *pod-backed-kgnode-schema*; **agentbox ADR-050** =
 > *decision-elevation-inverse-corpus-path*. RuVector and ruflo ADRs are always prefixed with their
-> repo (**RuVector ADR-004/ADR-047**, **ruflo ADR-344**). An unqualified `PRD-022`, `ADR-050`, or a
-> bare `ADR-004/047/344` in this document is a defect.
+> repo (**RuVector ADR-001/ADR-047**, **ruflo ADR-344**). An unqualified `PRD-022`, `ADR-050`, or a
+> bare `ADR-001/047/344` in this document is a defect.
 
 ---
 
@@ -262,7 +262,7 @@ binding; **SHOULD** = strong default with a documented-exception escape hatch.
 ### 4.3 Semantic fallback (HNSW as a third signal, behind the markdown)
 
 - **FR-8 (HNSW is additive, gated, and benchmarked-first).** An HNSW semantic signal (RuVector
-  ADR-004 / `@ruvector/core`) MUST be added as a **third** signal alongside lexical + precomputed
+  ADR-001 / `@ruvector/core`) MUST be added as a **third** signal alongside lexical + precomputed
   graph, engaged **only** when the lexical top score falls below `MIN_INJECT_SCORE` (the current
   silent-no-injection case). It MUST NOT replace or reorder the lexical first-tier match when the
   lexical match is strong.
@@ -358,7 +358,7 @@ it lives. It is cited, not re-decided, here.
 | Model-swappable `/v1` façade | **Loom** | keep | shipped | Stable door; model swaps behind it with zero consumer change. |
 | Lexical title-matcher (first-tier signal) | **Loom** | keep | shipped | Fast, ahead of the ecosystem; points at markdown. |
 | pyoxigraph SPARQL over the reasoned closure | **Loom** | keep | shipped | More capable than graph-node Cypher; resolves canonical IRIs. |
-| Semantic HNSW fallback (OOV/paraphrase) | **RuVector** (ADR-004) | add | aspirational | The one real gap; ranks/finds markdown, never replaces it. Gated by FR-9. |
+| Semantic HNSW fallback (OOV/paraphrase) | **RuVector** (ADR-001) | add | aspirational | The one real gap; ranks/finds markdown, never replaces it. Gated by FR-9. |
 | Collapse three materialisations → one source | **Loom SSOT build** | retire the redundancy | aspirational | Removes drift; the human always reviews one authoritative copy. |
 | SSOT build (one source → ttl+scaffold+prose+HNSW) | **Loom build** | add | aspirational | Guarantees every accelerator is a projection, not a separate artifact to trust. |
 | Admission-control **domain predicates** | **Loom** | keep + enforce (FR-13) | aspirational (enforcement) | Blocks a bad write before it reaches the reviewed corpus. |
@@ -485,7 +485,7 @@ PRD-025's WS-A…WS-J lettering.
 
 | WS | Owner (repo) | Content | Requirements |
 |---|---|---|---|
-| **WS-N** | Loom + RuVector | Add `@ruvector/core` HNSW (ADR-004) as the third signal; derive it from the one source; re-embed-on-promote delta-diffed; engage only below `MIN_INJECT_SCORE`. | FR-6, FR-8, FR-10, FR-11, SM-12 |
+| **WS-N** | Loom + RuVector | Add `@ruvector/core` HNSW (ADR-001) as the third signal; derive it from the one source; re-embed-on-promote delta-diffed; engage only below `MIN_INJECT_SCORE`. | FR-6, FR-8, FR-10, FR-11, SM-12 |
 | **WS-O** | Loom bench | Multivariate bench arms (in-domain + general jaggedness + OOV recovery); the SM-5 flag gate; keep HNSW default **off** until it passes. | FR-9, SM-5, SM-6 |
 | **WS-P** | Loom + RuVector | Re-platform the gate verdict onto ProofGate<T>/MutationLedger (ADR-047): predicates → `InvariantPreserved` obligations; chain-hashed ledger entry per run. | FR-14, FR-15, SM-10 |
 
@@ -521,7 +521,7 @@ own gate.
   (rationale: build-time Whelk leaves Deployment B's runtime façade GPU-free and stdlib-portable).
   The other two allocations are **new ADR-136 decisions, not resolutions of prior ADR-135 open
   decisions**: retrieval acceleration = RuVector HNSW behind the markdown (FR-8); gate attestation
-  = RuVector ProofGate/MutationLedger (FR-14). It cites RuVector ADR-004 (HNSW production),
+  = RuVector ProofGate/MutationLedger (FR-14). It cites RuVector ADR-001 (HNSW production),
   RuVector ADR-047 (ProofGate/MutationLedger), VisionClaw ADR-099 (Whelk-rs EL++ reasoner
   authority), and notes ruflo ADR-344 as Proposed/deferred.
 - **The DDD** (`ddd-ontology-loom-context.md`, revised in place) names the per-IRI markdown unit as
