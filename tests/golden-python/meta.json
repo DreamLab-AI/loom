@@ -1,0 +1,20 @@
+{
+ "prompt": "Explain how a knowledge graph uses a graph database",
+ "knobs": {
+  "budget_tokens_default": 1500,
+  "cases": {
+   "golden_default.txt": {},
+   "golden_hops0.txt": {
+    "hops": 0
+   },
+   "golden_budget60.txt": {
+    "budget_tokens": 60
+   },
+   "golden_irrelevant.txt": {
+    "prompt": "best sourdough starter recipe"
+   }
+  }
+ },
+ "generator": "app/ontology_scaffold.py",
+ "purpose": "EXP-002 byte-parity anchors for the Rust loom-scaffold port"
+}

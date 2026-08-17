@@ -1,0 +1,17 @@
+[ONTOLOGY CONTEXT]
+## Knowledge Graph (ai, maturity: mature)
+A knowledge graph represents entities and their relationships as a typed graph with formal semantics, enabling reasoning and structured retrieval.
+is-a: Graph; ancestors: Data Structure
+relations: hasPart: Ontology; uses: Graph Database
+- Ontology: A formal, explicit specification of a shared conceptualisation of a domain.
+
+## Graph Database (data, maturity: mature)
+A database optimised for storing and querying graph-structured data with native traversal.
+is-a: Data Structure
+relations: contrastsWith: Vector Database
+- Vector Database: A database optimised for similarity search over high-dimensional embedding vectors.
+
+## Graph (mathematics, maturity: mature)
+A graph is a set of vertices connected by edges.
+is-a: Data Structure
+[END ONTOLOGY CONTEXT]

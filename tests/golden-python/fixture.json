@@ -1,0 +1,109 @@
+{
+ "version": 1,
+ "generated": "2026-08-09T00:00:00Z",
+ "counts": {
+  "classes": 7
+ },
+ "classes": {
+  "knowledge-graph": {
+   "t": "Knowledge Graph",
+   "d": "A knowledge graph represents entities and their relationships as a typed graph with formal semantics, enabling reasoning and structured retrieval.",
+   "dom": "ai",
+   "q": 0.9,
+   "m": "mature",
+   "sup": [
+    "graph"
+   ],
+   "isup": [
+    "data-structure"
+   ],
+   "rel": {
+    "uses": [
+     "urn:ngm:class:graph-database"
+    ],
+    "hasPart": [
+     "ontology"
+    ]
+   },
+   "bl": [
+    "semantic-web"
+   ]
+  },
+  "graph": {
+   "t": "Graph",
+   "d": "A graph is a set of vertices connected by edges.",
+   "dom": "mathematics",
+   "q": 0.8,
+   "m": "mature",
+   "sup": [
+    "data-structure"
+   ],
+   "isup": [],
+   "bl": []
+  },
+  "data-structure": {
+   "t": "Data Structure",
+   "d": "An organisation of data for efficient access and modification.",
+   "dom": "computer-science",
+   "q": 0.8,
+   "m": "mature",
+   "sup": [],
+   "isup": [],
+   "bl": []
+  },
+  "graph-database": {
+   "t": "Graph Database",
+   "d": "A database optimised for storing and querying graph-structured data with native traversal.",
+   "dom": "data",
+   "q": 0.7,
+   "m": "mature",
+   "sup": [
+    "data-structure"
+   ],
+   "isup": [],
+   "rel": {
+    "contrastsWith": [
+     "vector-database"
+    ]
+   },
+   "bl": []
+  },
+  "ontology": {
+   "t": "Ontology",
+   "d": "A formal, explicit specification of a shared conceptualisation of a domain.",
+   "dom": "ai",
+   "q": 0.85,
+   "m": "mature",
+   "sup": [],
+   "isup": [],
+   "rel": {
+    "relatedTo": [
+     "knowledge-graph"
+    ]
+   },
+   "bl": []
+  },
+  "vector-database": {
+   "t": "Vector Database",
+   "d": "A database optimised for similarity search over high-dimensional embedding vectors.",
+   "dom": "data",
+   "q": 0.75,
+   "m": "emerging",
+   "sup": [
+    "data-structure"
+   ],
+   "isup": [],
+   "bl": []
+  },
+  "semantic-web": {
+   "t": "Semantic Web",
+   "d": "An extension of the web in which data is given well-defined, machine-readable meaning.",
+   "dom": "ai",
+   "q": 0.6,
+   "m": "established",
+   "sup": [],
+   "isup": [],
+   "bl": []
+  }
+ }
+}
