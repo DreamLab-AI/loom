@@ -31,7 +31,15 @@
   (default `.attest/ledger.jsonl`).
 - **verify_chain** re-derives the hash of every line and checks (a) dense
   monotonic `seq`, (b) the stored back-link equals the running chain head, and
-  (c) the recomputed hash equals the stored one. Any tampered byte diverges (c).
+  (c) the recomputed hash equals the stored one — any tampered byte within an
+  entry diverges at (c) — and then (d) requires the on-disk tail to equal an
+  atomically-written HEAD checkpoint sidecar (`<ledger>.head` = `{seq,
+  entry_sha256}` of the last entry). Step (d) was ADDED to close audit finding 4:
+  re-hashing alone accepts a **valid-prefix truncation** (delete the last line
+  and the surviving prefix still verifies), so the earlier "any tampered byte
+  diverges" claim overstated the guarantee for *trailing* deletion. With the
+  head checkpoint, truncating the last entry (tail ≠ head) and deleting the head
+  on a non-empty ledger both fail; an empty/missing ledger with no head is fresh.
 
 ## The ProofGate reality (the `attest` feature decision)
 

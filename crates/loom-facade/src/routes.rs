@@ -179,6 +179,16 @@ async fn search(State(st): State<AppState>, body: Bytes) -> Response {
 // --- POST /loom/search/semantic ---------------------------------------------
 
 async fn semantic_search(State(st): State<AppState>, body: Bytes) -> Response {
+    // Default-OFF (LOOM_SEMANTIC_DEBUG_SURFACE, audit finding 1): the labelled
+    // index-debug surface is disabled unless explicitly turned on, so a bare
+    // IRI+score shape can never be reached by default.
+    if !st.config.semantic_debug_surface {
+        return (
+            StatusCode::NOT_FOUND,
+            Json(json!({ "error": "semantic debug surface disabled" })),
+        )
+            .into_response();
+    }
     let j = parse_body(&body);
     let query = first_str(&j, &["q", "query", "prompt"]).unwrap_or_default();
     if query.is_empty() {

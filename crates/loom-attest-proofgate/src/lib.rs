@@ -10,9 +10,14 @@
 //! [`ChainedLedger::attest`] appends and returns the entry's
 //! [`LedgerEntryId`](loom_domain::LedgerEntryId); [`ChainedLedger::verify_chain`]
 //! re-hashes the file end-to-end and reports whether the chain is intact — a
-//! single flipped byte anywhere breaks a hash and fails the check. This is the
-//! DEFAULT path, always compiled, and it makes the `AttestationLedger` contract
-//! complete regardless of feature selection.
+//! single flipped byte anywhere breaks a hash and fails the check. Each
+//! [`attest`](ChainedLedger::attest) also advances an atomically-written HEAD
+//! checkpoint sidecar (`<ledger>.head` = `{seq, entry_sha256}` of the last
+//! entry); `verify_chain` requires the on-disk tail to match it, so truncating
+//! trailing entries — a valid-prefix attack the re-hash alone accepts — is
+//! detected too (audit finding 4). This is the DEFAULT path, always compiled,
+//! and it makes the `AttestationLedger` contract complete regardless of feature
+//! selection.
 //!
 //! # The `attest` feature and the ProofGate reality
 //!
@@ -114,6 +119,16 @@ pub struct LedgerEntry {
     pub entry_sha256: String,
 }
 
+/// The atomically-written HEAD checkpoint (`<ledger>.head`): the seq and hash of
+/// the last appended entry. `verify_chain` requires the on-disk tail to match it,
+/// so truncating trailing entries (a valid-prefix attack) is detected even though
+/// the surviving prefix re-hashes cleanly (audit finding 4).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+struct HeadCheckpoint {
+    seq: u64,
+    entry_sha256: String,
+}
+
 /// The hashed projection of an entry — everything except the two hash fields,
 /// in a fixed field order so `canonical-json` is deterministic.
 #[derive(Serialize)]
@@ -197,6 +212,45 @@ impl ChainedLedger {
         &self.path
     }
 
+    /// The HEAD checkpoint sidecar path — the ledger path with `.head` appended
+    /// (audit finding 4).
+    #[must_use]
+    pub fn head_path(&self) -> PathBuf {
+        let mut os = self.path.clone().into_os_string();
+        os.push(".head");
+        PathBuf::from(os)
+    }
+
+    /// Write the HEAD checkpoint atomically (tmp file + rename), so a reader never
+    /// observes a half-written head.
+    fn write_head(&self, seq: u64, entry_sha256: &str) -> Result<(), LoomError> {
+        let head = self.head_path();
+        let mut tmp_os = head.clone().into_os_string();
+        tmp_os.push(".tmp");
+        let tmp = PathBuf::from(tmp_os);
+        let checkpoint = HeadCheckpoint {
+            seq,
+            entry_sha256: entry_sha256.to_owned(),
+        };
+        let json = serde_json::to_string(&checkpoint)
+            .map_err(|e| LoomError::Attest(format!("serialise head: {e}")))?;
+        fs::write(&tmp, json.as_bytes())
+            .map_err(|e| LoomError::Attest(format!("write head tmp: {e}")))?;
+        fs::rename(&tmp, &head).map_err(|e| LoomError::Attest(format!("rename head: {e}")))
+    }
+
+    /// Read the HEAD checkpoint. A missing head is `None` (tamper vs fresh is
+    /// decided by `verify_chain` against the ledger's own emptiness).
+    fn read_head(&self) -> Result<Option<HeadCheckpoint>, LoomError> {
+        match fs::read_to_string(self.head_path()) {
+            Ok(s) => serde_json::from_str(&s)
+                .map(Some)
+                .map_err(|e| LoomError::Attest(format!("parse head: {e}"))),
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(None),
+            Err(e) => Err(LoomError::Attest(format!("open head: {e}"))),
+        }
+    }
+
     /// Read and parse every entry, in file order. A missing file is an empty
     /// (intact) chain. Blank lines are skipped.
     fn read_entries(&self) -> Result<Vec<LedgerEntry>, LoomError> {
@@ -275,6 +329,10 @@ impl AttestationLedger for ChainedLedger {
         file.write_all(line.as_bytes())
             .map_err(|e| LoomError::Attest(format!("append entry: {e}")))?;
 
+        // Advance the HEAD checkpoint to this entry (audit finding 4). Written
+        // under the same append lock, so head and tail never diverge.
+        self.write_head(seq, &entry_sha256)?;
+
         Ok(LedgerEntryId(entry_sha256))
     }
 
@@ -305,7 +363,18 @@ impl AttestationLedger for ChainedLedger {
             }
             prev.clone_from(&entry.entry_sha256);
         }
-        Ok(true)
+
+        // Terminal checkpoint (audit finding 4): a valid PREFIX is not enough —
+        // the on-disk tail must equal the HEAD checkpoint, else trailing entries
+        // were truncated. Empty/missing ledger with a missing head is fresh
+        // (intact); a non-empty ledger with a missing head is tamper.
+        match (entries.last(), self.read_head()?) {
+            (None, _) => Ok(true),
+            (Some(_), None) => Ok(false),
+            (Some(last), Some(head)) => {
+                Ok(last.seq == head.seq && last.entry_sha256 == head.entry_sha256)
+            }
+        }
     }
 }
 

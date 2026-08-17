@@ -95,6 +95,51 @@ async fn verify_chain_false_after_byte_flip_mid_file() {
 }
 
 #[tokio::test]
+async fn verify_chain_false_after_truncating_last_entry() {
+    // Audit finding 4: append 3, delete the FINAL line entirely. The surviving
+    // 2 lines are a valid prefix (they re-hash cleanly), but the HEAD checkpoint
+    // still pins seq 2 → the truncation is detected.
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("ledger.jsonl");
+    let ledger = ledger_at(path.clone(), 1_700_000_000);
+
+    ledger.attest(&verdict("p0", true)).await.unwrap();
+    ledger.attest(&verdict("p1", false)).await.unwrap();
+    ledger.attest(&verdict("p2", true)).await.unwrap();
+    assert!(ledger.verify_chain().await.unwrap());
+
+    let raw = fs::read_to_string(&path).unwrap();
+    let mut lines: Vec<&str> = raw.lines().filter(|l| !l.trim().is_empty()).collect();
+    lines.pop();
+    fs::write(&path, format!("{}\n", lines.join("\n"))).unwrap();
+
+    assert!(
+        !ledger.verify_chain().await.unwrap(),
+        "truncating the last entry must fail verification"
+    );
+}
+
+#[tokio::test]
+async fn verify_chain_false_when_head_missing_on_nonempty_ledger() {
+    // Deleting the HEAD checkpoint alone (leaving the ledger intact) is itself
+    // tamper for a non-empty ledger.
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("ledger.jsonl");
+    let ledger = ledger_at(path.clone(), 1_700_000_000);
+
+    ledger.attest(&verdict("p0", true)).await.unwrap();
+    ledger.attest(&verdict("p1", false)).await.unwrap();
+    assert!(ledger.verify_chain().await.unwrap());
+
+    fs::remove_file(ledger.head_path()).unwrap();
+
+    assert!(
+        !ledger.verify_chain().await.unwrap(),
+        "a non-empty ledger with a missing HEAD checkpoint must fail verification"
+    );
+}
+
+#[tokio::test]
 async fn attest_is_deterministic_given_fixed_inputs() {
     let dir = tempfile::tempdir().unwrap();
     // Two independent genesis ledgers, same fixed clock, same first verdict →

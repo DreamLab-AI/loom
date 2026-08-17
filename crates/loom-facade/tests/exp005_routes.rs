@@ -183,9 +183,25 @@ async fn search_missing_q_is_400() {
 }
 
 #[tokio::test]
-async fn semantic_search_reports_not_ready() {
-    // Vector stub defaults to not-ready ⇒ the debug surface says so, 200.
+async fn semantic_search_disabled_by_default_is_404() {
+    // Audit finding 1: the labelled index-debug surface is default-OFF, so a
+    // bare IRI+score shape can never be reached unless explicitly enabled.
     let env = TestEnvBuilder::new().build();
+    let (status, body) = call(
+        env.router(),
+        "POST",
+        "/loom/search/semantic",
+        Some(json!({ "q": "knowledge graph" })),
+    )
+    .await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
+    assert_eq!(body["error"], json!("semantic debug surface disabled"));
+}
+
+#[tokio::test]
+async fn semantic_search_enabled_reports_not_ready() {
+    // Enabled + vector stub not-ready ⇒ the debug surface says so honestly, 200.
+    let env = TestEnvBuilder::new().with_semantic_debug_surface(true).build();
     let (status, body) = call(
         env.router(),
         "POST",
@@ -196,6 +212,38 @@ async fn semantic_search_reports_not_ready() {
     assert_eq!(status, StatusCode::OK);
     assert_eq!(body["ready"], json!(false));
     assert_eq!(body["results"], json!([]));
+}
+
+#[tokio::test]
+async fn semantic_search_enabled_and_ready_returns_labelled_hits() {
+    use common::{generation_with_id, semantic_hit, StubVector};
+    use std::sync::Arc;
+    // A ready index with canned hits + a working embedder ⇒ bare IRI+score list
+    // (labelled as the index, never markdown — I-P1 safe).
+    let vector = Arc::new(StubVector::new(
+        true,
+        generation_with_id("gen-a"),
+        vec![semantic_hit("knowledge-graph", 0.91)],
+    ));
+    let env = TestEnvBuilder::new()
+        .with_semantic_debug_surface(true)
+        .with_vector(vector)
+        .build();
+    let (status, body) = call(
+        env.router(),
+        "POST",
+        "/loom/search/semantic",
+        Some(json!({ "q": "knowledge graph", "k": 3 })),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["ready"], json!(true));
+    let results = body["results"].as_array().expect("results array");
+    assert_eq!(results.len(), 1);
+    assert_eq!(results[0]["iri"], json!("urn:ngm:class:knowledge-graph"));
+    assert!(results[0]["score"].as_f64().is_some(), "bare cosine score present");
+    // The debug surface never emits an assembled markdown block.
+    assert!(body.get("scaffold").is_none());
 }
 
 #[tokio::test]

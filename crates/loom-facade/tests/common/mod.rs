@@ -142,6 +142,7 @@ pub struct TestEnvBuilder {
     embed_fail: bool,
     semantic_fallback: bool,
     semantic_min_inject: Option<f64>,
+    semantic_debug_surface: bool,
 }
 
 impl TestEnvBuilder {
@@ -153,6 +154,7 @@ impl TestEnvBuilder {
             embed_fail: false,
             semantic_fallback: false,
             semantic_min_inject: None,
+            semantic_debug_surface: false,
         }
     }
 
@@ -184,6 +186,13 @@ impl TestEnvBuilder {
         self
     }
 
+    /// Turn on the `/loom/search/semantic` debug surface (default-off, audit
+    /// finding 1). Off ⇒ the route answers 404.
+    pub fn with_semantic_debug_surface(mut self, enabled: bool) -> Self {
+        self.semantic_debug_surface = enabled;
+        self
+    }
+
     pub fn build(self) -> TestEnv {
         let dir = TempDir::new().expect("tempdir");
         let index_path = dir.path().join("scaffold-index.json");
@@ -209,6 +218,7 @@ impl TestEnvBuilder {
             backend_url: backend.endpoint().to_owned(),
             semantic_fallback: self.semantic_fallback,
             semantic_min_inject: self.semantic_min_inject,
+            semantic_debug_surface: self.semantic_debug_surface,
             ..Config::default()
         };
 

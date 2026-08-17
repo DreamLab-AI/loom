@@ -109,6 +109,83 @@ async fn floor_disabled_at_zero_leaves_body_untouched() {
 }
 
 #[tokio::test]
+async fn string_typed_ask_is_left_untouched() {
+    // Audit finding 2: a string `max_tokens` is NOT a JSON integer, so Python
+    // never floors it — and "999999" must not be lowered to the floor.
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/chat/completions"))
+        .and(body_json(json!({
+            "model": "m",
+            "messages": [{"role": "user", "content": "q"}],
+            "max_tokens": "999999"
+        })))
+        .respond_with(ResponseTemplate::new(200).set_body_json(OK_COMPLETION()))
+        .mount(&server)
+        .await;
+
+    backend(&server, 1536)
+        .chat(json!({
+            "model": "m",
+            "messages": [{"role": "user", "content": "q"}],
+            "max_tokens": "999999"
+        }))
+        .await
+        .expect("a string-typed max_tokens must pass through verbatim");
+}
+
+#[tokio::test]
+async fn negative_integer_is_floored() {
+    // Parity: `isinstance(-1, int)` is True in Python → max(-1, 1536) == 1536.
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/chat/completions"))
+        .and(body_json(json!({
+            "model": "m",
+            "messages": [{"role": "user", "content": "q"}],
+            "max_tokens": 1536
+        })))
+        .respond_with(ResponseTemplate::new(200).set_body_json(OK_COMPLETION()))
+        .mount(&server)
+        .await;
+
+    backend(&server, 1536)
+        .chat(json!({
+            "model": "m",
+            "messages": [{"role": "user", "content": "q"}],
+            "max_tokens": -1
+        }))
+        .await
+        .expect("a negative integer max_tokens (-1) must be floored to 1536");
+}
+
+#[tokio::test]
+async fn u64_overflow_number_is_left_untouched() {
+    // 2^64 overflows i64/u64 → serde parses it as an f64 number; as_i64/as_u64
+    // both fail, so it is not an integer we floor. It passes through unchanged.
+    // Built by parsing the literal so the value matches serde's own tokeniser.
+    let overflow: serde_json::Value =
+        serde_json::from_str("18446744073709551616").expect("parse 2^64");
+    let body = json!({
+        "model": "m",
+        "messages": [{"role": "user", "content": "q"}],
+        "max_tokens": overflow
+    });
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/chat/completions"))
+        .and(body_json(body.clone()))
+        .respond_with(ResponseTemplate::new(200).set_body_json(OK_COMPLETION()))
+        .mount(&server)
+        .await;
+
+    backend(&server, 1536)
+        .chat(body)
+        .await
+        .expect("a u64-overflow number must pass through verbatim");
+}
+
+#[tokio::test]
 async fn stream_is_stripped() {
     let server = MockServer::start().await;
     // The floored body must NOT contain `stream`; with floor 0 the only rewrite

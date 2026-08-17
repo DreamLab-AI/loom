@@ -33,6 +33,13 @@ pub struct Config {
     pub semantic_k: usize,                // LOOM_SEMANTIC_K (5)
     pub semantic_min_inject: Option<f64>, // LOOM_SEMANTIC_MIN_INJECT (unset — bench-set, no default)
     pub semantic_score_scale: Option<f64>, // LOOM_SEMANTIC_SCORE_SCALE (unset — bench-tuned)
+
+    // --- debug surfaces ---
+    /// LOOM_SEMANTIC_DEBUG_SURFACE (0). The `/loom/search/semantic` route is the
+    /// one labelled index-debug endpoint (RUST-ARCHITECTURE §9); it exposes bare
+    /// IRI+score and NEVER feeds `/v1/chat/completions`. Default-OFF ⇒ 404 (audit
+    /// finding 1). Turn on only for eval/debugging.
+    pub semantic_debug_surface: bool,
 }
 
 impl Config {
@@ -58,6 +65,7 @@ impl Config {
             semantic_k: env_parse("LOOM_SEMANTIC_K", d.semantic_k),
             semantic_min_inject: env_opt_f64("LOOM_SEMANTIC_MIN_INJECT"),
             semantic_score_scale: env_opt_f64("LOOM_SEMANTIC_SCORE_SCALE"),
+            semantic_debug_surface: env_bool("LOOM_SEMANTIC_DEBUG_SURFACE", d.semantic_debug_surface),
         }
     }
 
@@ -91,6 +99,7 @@ impl Default for Config {
             semantic_k: 5,
             semantic_min_inject: None,
             semantic_score_scale: None,
+            semantic_debug_surface: false, // default-OFF (audit finding 1)
         }
     }
 }

@@ -88,11 +88,16 @@ impl OpenAiBackend {
     }
 
     /// Apply the `max_tokens` floor and strip `stream`, in place, mirroring the
-    /// façade's pre-delegation rewrite. Floors BOTH `max_tokens` and
-    /// `max_completion_tokens` to `≥ min_max_tokens`, never lowering a higher
-    /// ask; if the floor is active and neither field is present, inserts
-    /// `max_tokens = floor` (parity with Python). A floor of `0` disables all
-    /// of this. `stream` is always popped.
+    /// façade's pre-delegation rewrite (`app/loom_facade.py:204-209`).
+    ///
+    /// Python floors ONLY fields that are JSON integers (`isinstance(v, int)`)
+    /// via `max(v, MIN)` — which raises sub-floor values (incl. negatives:
+    /// `max(-1, 1536) == 1536`) and leaves a higher ask untouched. Everything
+    /// else — strings, floats, `u64`-overflow numbers, `null` — is left EXACTLY
+    /// as sent (audit finding 2: the old code coerced any non-`u64` value to the
+    /// floor, which could LOWER a larger string-typed ask). Insertion of
+    /// `max_tokens = floor` happens only when BOTH keys are absent. A floor of
+    /// `0` disables all of this. `stream` is always popped.
     fn normalise_body(&self, body: &mut Value) {
         let Some(map) = body.as_object_mut() else {
             return;
@@ -104,27 +109,31 @@ impl OpenAiBackend {
         if self.min_max_tokens == 0 {
             return;
         }
-        let floor = self.min_max_tokens;
+        let floor = i128::from(self.min_max_tokens);
 
+        // Insertion guard is key-presence (Python `field in j`), independent of
+        // the value's type.
         let mut saw_any = false;
         for field in ["max_tokens", "max_completion_tokens"] {
-            if let Some(slot) = map.get_mut(field) {
-                saw_any = true;
-                // Never lower a higher ask; only raise sub-floor values.
-                if let Some(current) = slot.as_u64() {
-                    if current < floor {
-                        *slot = Value::from(floor);
-                    }
-                } else {
-                    // Present but non-integer (e.g. null) → treat as unset and
-                    // floor it, matching `max(j[field], FLOOR)` on a numeric
-                    // caller value while staying defensive on odd inputs.
-                    *slot = Value::from(floor);
+            let Some(slot) = map.get_mut(field) else {
+                continue;
+            };
+            saw_any = true;
+            // Only JSON integers are floored. `as_i64`/`as_u64` succeed exactly
+            // for serde integers; strings/floats/overflow numbers/null yield
+            // None and pass through verbatim.
+            let current = slot
+                .as_i64()
+                .map(i128::from)
+                .or_else(|| slot.as_u64().map(i128::from));
+            if let Some(current) = current {
+                if current < floor {
+                    *slot = Value::from(self.min_max_tokens);
                 }
             }
         }
         if !saw_any {
-            map.insert("max_tokens".to_owned(), Value::from(floor));
+            map.insert("max_tokens".to_owned(), Value::from(self.min_max_tokens));
         }
     }
 

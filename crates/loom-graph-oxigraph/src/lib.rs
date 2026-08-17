@@ -61,9 +61,23 @@ fn limit_re() -> &'static Regex {
     RE.get_or_init(|| Regex::new(r"(?i)\bLIMIT\s+\d+").unwrap())
 }
 
-fn select_prefix_re() -> &'static Regex {
+/// A SELECT whose first *effective* keyword is SELECT — i.e. SELECT after any
+/// leading SPARQL prologue (BASE/PREFIX declarations, `#` comments, whitespace).
+///
+/// DELIBERATE DIVERGENCE FROM PYTHON (audit finding 3, better-than-parity): the
+/// Python clamp anchors on `re.match(r"\s*SELECT")`, so a leading `PREFIX` block
+/// slips a SELECT past LIMIT injection and evaluates unbounded until the row cap.
+/// The LIMIT clamp is a SECURITY control, not a parity feature, so we consume the
+/// prologue and inject for those SELECTs too. ASK/CONSTRUCT/DESCRIBE (whose first
+/// effective keyword is not SELECT) still do not match.
+fn leading_select_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
-    RE.get_or_init(|| Regex::new(r"(?i)^\s*SELECT").unwrap())
+    RE.get_or_init(|| {
+        Regex::new(
+            r"(?is)^\s*(?:(?:BASE\s+<[^>]*>|PREFIX\s+[^\s:]*:\s*<[^>]*>|#[^\n]*\n)\s*)*SELECT",
+        )
+        .unwrap()
+    })
 }
 
 /// Reject writes/SERVICE and require a read form. Ports `LoomGraph.validate`;
@@ -82,13 +96,14 @@ pub fn validate(query: &str) -> Result<(), LoomError> {
     Ok(())
 }
 
-/// Inject a `LIMIT` on a SELECT that omitted one. Ports `LoomGraph._clamp`: the
-/// `re.match(r"\s*SELECT", …)` anchoring means the injection fires ONLY when the
-/// query *starts* with SELECT (a leading `PREFIX` block suppresses it, exactly
-/// as in Python), and only when no `LIMIT n` already appears.
+/// Inject a `LIMIT` on a SELECT that omitted one. Strengthens `LoomGraph._clamp`
+/// (audit finding 3): the injection fires when the first *effective* keyword is
+/// SELECT — after any leading `BASE`/`PREFIX`/comment prologue, which the Python
+/// `re.match(r"\s*SELECT")` anchoring lets bypass the clamp — and only when no
+/// `LIMIT n` already appears. Non-SELECT read forms are never LIMIT-injected.
 pub fn clamp(query: &str, default_limit: usize) -> String {
     if read_form_re().is_match(query)
-        && select_prefix_re().is_match(query)
+        && leading_select_re().is_match(query)
         && !limit_re().is_match(query)
     {
         // Python: query.rstrip().rstrip(";") — trim trailing whitespace, then
@@ -435,11 +450,42 @@ mod tests {
     }
 
     #[test]
-    fn limit_not_injected_when_select_is_not_leading() {
-        // re.match anchoring: a leading PREFIX block suppresses injection,
-        // exactly as in loom_graph.py.
+    fn limit_injected_for_prefix_led_select() {
+        // Better-than-Python (audit finding 3): a leading PREFIX no longer lets a
+        // SELECT bypass the clamp — LIMIT is injected exactly once.
         let q = "PREFIX ex: <urn:x#>\nSELECT ?s WHERE { ?s ?p ?o }";
-        assert_eq!(clamp(q, 10_000), q);
+        let out = clamp(q, 10_000);
+        assert!(out.contains("LIMIT 10000"), "expected injected LIMIT: {out}");
+        assert_eq!(out.matches("LIMIT").count(), 1, "exactly once: {out}");
+    }
+
+    #[test]
+    fn limit_not_injected_for_prefix_led_select_with_existing_limit() {
+        let q = "PREFIX ex: <urn:x#>\nSELECT ?s WHERE { ?s ?p ?o } LIMIT 5";
+        assert_eq!(clamp(q, 10_000), q, "explicit LIMIT must be left untouched");
+    }
+
+    #[test]
+    fn limit_injected_for_base_and_prefix_chain() {
+        // A BASE + multiple PREFIX + comment prologue is consumed; the effective
+        // leading keyword is SELECT, so the clamp fires.
+        let q = "BASE <urn:base#>\n# a comment\nPREFIX ex: <urn:x#>\nPREFIX : <urn:y#>\nSELECT ?s WHERE { ?s ?p ?o }";
+        let out = clamp(q, 10_000);
+        assert!(out.contains("LIMIT 10000"), "expected injected LIMIT: {out}");
+        assert_eq!(out.matches("LIMIT").count(), 1, "exactly once: {out}");
+    }
+
+    #[test]
+    fn limit_not_injected_for_prefix_led_non_select() {
+        // ASK/CONSTRUCT/DESCRIBE keep their no-LIMIT behaviour even behind a
+        // PREFIX prologue (their first effective keyword is not SELECT).
+        for q in [
+            "PREFIX ex: <urn:x#>\nASK { ?s ?p ?o }",
+            "PREFIX ex: <urn:x#>\nCONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }",
+            "PREFIX ex: <urn:x#>\nDESCRIBE <urn:x>",
+        ] {
+            assert_eq!(clamp(q, 10_000), q, "non-SELECT must not get LIMIT: {q}");
+        }
     }
 
     #[test]

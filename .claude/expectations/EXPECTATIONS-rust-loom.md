@@ -66,6 +66,10 @@ candidates reach the wire ONLY via LexicalIndex::assemble (the single gate);
 `LOOM_SEMANTIC_FALLBACK` defaults to 0 (off). Evidence: the port signatures +
 a fusion test proving semantic candidates flow through assemble and that
 disabling the flag yields lexical-only behaviour.
+Carve-out: the one labelled, default-off debug endpoint
+(`/loom/search/semantic`, gated by `LOOM_SEMANTIC_DEBUG_SURFACE`) may expose
+bare IRI+score BECAUSE it is labelled as the index and can never feed
+`/v1/chat/completions`; every ANSWER path goes through `assemble`.
 stabilized_by: fusion tests + compile-time port signatures
 
 ## EXP-008 — semantic artifact bootstrap + recall floor
@@ -73,7 +77,14 @@ category: partially_verifiable (needs live PG/Xinference) · regression_critical
 The exporter builds `ontology-corpus.rvdb` from the 8,146 verified embeddings
 in ruvector-postgres ontology-corpus (no re-embedding), and
 `VectorIndex::nearest(embed("rgb protocol"), 5)` surfaces IRI slug
-`rgb-protocol` with cosine ≥ 0.87 while an off-ontology decoy stays < 0.55.
+`rgb-protocol` while an off-ontology decoy stays < 0.55.
+The cosine ≥ 0.87 floor is the **PRECONDITION FOR DEFAULT-ON**, not a current
+pass: measured recall is **0.816** in the document-embedding regime, so the gate
+is **RED — the correct honest state** and `LOOM_SEMANTIC_FALLBACK` stays
+default-off (audit finding 5). The `recall_gate` test hard-asserts the floor
+when `LOOM_SEMANTIC_FALLBACK=1` (flip-on precondition) and asserts the gate is
+reported RED when off (staleness tripwire); override the floor via
+`LOOM_SEMANTIC_RECALL_FLOOR` once a query-shaped embedding lands.
 stabilized_by: recall_gate integration test (feature semantic-fallback)
 
 ## EXP-009 — generation parity guard (never-mixed-build)

@@ -15,9 +15,13 @@
 //! the design floor in §8.4 is cosine ≥ 0.87 for `rgb-protocol` on the query
 //! "rgb protocol". The stored vectors are concept-DOCUMENT embeddings, so a
 //! short query lands at cos ≈ 0.82 — `rgb-protocol` is reliably in the top-2 but
-//! does NOT clear 0.87. This test therefore hard-asserts the wiring + separation
-//! guarantees (which hold) and records the 0.87 design-floor as a printed
-//! verdict: it is currently RED, so the fallback correctly stays default-off.
+//! does NOT clear 0.87. This test hard-asserts the wiring + separation
+//! guarantees (which hold), and hard-asserts the design floor CONDITIONALLY
+//! (audit finding 5): with `LOOM_SEMANTIC_FALLBACK=1` the floor is the FLIP-ON
+//! precondition and the test fails RED below it; with the flag off (default) the
+//! test asserts the gate is REPORTED red — a staleness tripwire that fails the
+//! day recall improves, forcing the evidence + default to be refreshed. Override
+//! the floor for a future bench-set value via `LOOM_SEMANTIC_RECALL_FLOOR`.
 
 #![cfg(feature = "semantic-fallback")]
 
@@ -125,14 +129,42 @@ async fn recall_gate() {
         "in-domain ({rgb_score:.4}) must clearly beat the decoy ({decoy_top:.4})"
     );
 
-    // --- DESIGN-FLOOR verdict (ADR-136 D3): recorded, not a hard fail -------
-    let design_floor_met = rgb_score >= DESIGN_RECALL_FLOOR;
-    eprintln!(
-        "\nEXP-008 numbers: rgb-protocol cos={rgb_score:.4}, decoy cos={decoy_top:.4}"
+    // --- DESIGN-FLOOR gate (ADR-136 D3): hard-asserted, env-conditioned -------
+    // The floor is the PRECONDITION for default-on. Override for a future
+    // bench-set floor via LOOM_SEMANTIC_RECALL_FLOOR.
+    let floor = std::env::var("LOOM_SEMANTIC_RECALL_FLOOR")
+        .ok()
+        .and_then(|v| v.parse::<f32>().ok())
+        .unwrap_or(DESIGN_RECALL_FLOOR);
+    let design_floor_met = rgb_score >= floor;
+    // Match Config's env truthiness (0/false/no/unset ⇒ off).
+    let flip_on = matches!(
+        std::env::var("LOOM_SEMANTIC_FALLBACK").ok().as_deref(),
+        Some("1" | "true" | "yes")
     );
+    eprintln!("\nEXP-008 numbers: rgb-protocol cos={rgb_score:.4}, decoy cos={decoy_top:.4}");
     eprintln!(
-        "DESIGN FLOOR (>= {DESIGN_RECALL_FLOOR}): {} — LOOM_SEMANTIC_FALLBACK stays {} (ADR-136 D3)",
+        "DESIGN FLOOR (>= {floor}): {} — LOOM_SEMANTIC_FALLBACK={}",
         if design_floor_met { "MET" } else { "NOT MET (gate RED)" },
-        if design_floor_met { "eligible for 1" } else { "0" }
+        if flip_on { "1" } else { "0" }
     );
+
+    if flip_on {
+        // FLIP-ON precondition: enabling the fallback REQUIRES clearing the floor.
+        assert!(
+            design_floor_met,
+            "FLIP-ON PRECONDITION FAILED: rgb-protocol cos={rgb_score:.4} < floor {floor} — \
+             LOOM_SEMANTIC_FALLBACK must not be on until recall clears the floor"
+        );
+    } else {
+        // Default-off: the gate MUST currently be RED. This documents red as the
+        // present truth AND is a staleness tripwire — the day recall clears the
+        // floor this assert fails, forcing EXP-008 evidence + the default to be
+        // refreshed (audit finding 5).
+        assert!(
+            !design_floor_met,
+            "recall now clears the floor (cos={rgb_score:.4} >= {floor}): refresh EXP-008 \
+             evidence and reconsider the LOOM_SEMANTIC_FALLBACK default"
+        );
+    }
 }
