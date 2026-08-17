@@ -12,7 +12,7 @@ supersedes: "nothing wholesale — this plan schedules the doc changes ADR-137/P
 
 # DOC-REENGINEERING-PLAN — the Rust Loom documentation set
 
-**Status:** Proposed (planning artefact; changes no design decision — schedules the doc work ADR-137/PRD-027 land)
+**Status:** **Executed (2026-08-17)** — the doc re-engineering this plan schedules is done: README rewritten to the Rust ground truth; `docs/README.md` index created; ADR-137 marked Accepted+Implemented with ADR-135/136 implementation-notes; PRD-027 §10.1 status added (recall floor unmet → gated-off documented); errata folded in (ProofGate location, redb ro-mount hazard, ruvector-core feature trim, gpt-5.4 audit outcomes); agentbox ADR-051 de-vendored to a stub; `ONTOLOGY-UPLIFT-PLAN.md` + `MODEL-BENCHMARKS.md` retired to `legacy/`; `tools/ingest/README.md` created; `ONTOLOGY-LOOM-PIPELINE.md` retargeted to the consumer-side generation contract; Python serving code retired (§12 map). Where the plan and reality diverged, reality won and is annotated. Retained as the record of the intent. (Originally: Proposed — planning artefact; changes no design decision.)
 **Date:** 2026-08-17
 **Owner:** VisionFlow operator (Dr J. O'Hare, did:nostr:jjohare)
 **Scope:** every narrative document in `loom/` — `README.md`, `docs/`, `docs/design/*`, `docs/research/*`, `bench/*.md`, `legacy/*.md`, and the undocumented `tools/ingest/`. It assigns each a disposition (**keep / rewrite / supersede / retire / create**), fixes the cross-repo link map with per-target verification status, specifies the README rewrite, defines the docs index, and states the consistency checklist the implementation phase must pass before any doc is considered done.

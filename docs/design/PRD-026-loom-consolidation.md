@@ -7,6 +7,8 @@ authors: VisionFlow operator (did:nostr:jjohare) + opus consolidation mesh
 linked_adrs: [
   ADR-136 (loom tooling allocation — the decision record this PRD operationalises),
   ADR-135 (loom node boundary + façade + deferred distillation),
+  ADR-137 (Rust re-platform — the substrate this consolidation now runs on),
+  PRD-027 (Rust re-engineering — operationalises this consolidation on the Rust substrate),
   RuVector ADR-001 (HNSW production index),
   RuVector ADR-047 (ProofGate<T> / MutationLedger — proof-gated mutation),
   ruflo ADR-344 (KG index for ReasoningBank — Proposed, feature-flag-off, deferred),

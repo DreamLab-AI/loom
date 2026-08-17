@@ -4,6 +4,11 @@
 frames the design docs (`PRD-025`, `ADR-135`) and the research (`docs/research/`) around the
 actual product goal rather than an academic abstraction.*
 
+> **Substrate note (2026-08-17).** The Rust re-platform (`ADR-137` / `PRD-027`) changes the
+> *substrate* under the Loom — stdlib Python → a single Rust binary — not the goal below, the
+> multivariate bar, or the "curated corpus **vs** a generic web search" frame. Everything in
+> this note holds unchanged; only how the façade is built moved.
+
 ## The goal
 
 **Make any (swappable) model performant against large, important, *private* customer datasets,

@@ -25,6 +25,15 @@ precedent only, not the mechanism here*.
 > summarised in the Decision register (§4) and split into implementation ADRs as they land.
 > This ADR records the **architecture decision**; it does not re-derive the design brief.
 
+> **Extended by ADR-137 (Rust re-platform, 2026-08-17).** ADR-137 supersedes only D1's *stdlib-Python implementation choice* (→ a single static Rust binary) and resolves the open **D1-a** (reference deployment) to **both compose profiles**. Every other decision here stands unchanged.
+>
+> **Implementation note (2026-08-17) — the node boundary is now realised in the Rust workspace (ADR-137 / PRD-027).** The crates that realise each keystone decision:
+> - **D1** (deployment-agnostic, model-swappable façade; model identity rides in results, never the endpoint) → `loom-facade` (axum/tower composition root) + `loom-backend-openai` (`DISTILL_BACKEND_URL` is one config line; Qwen3.8-27B behind it today).
+> - **D1.3 / D1-a** (Deployment A/B) → **both** compose profiles ship from one static binary — Profile A host-colocated on HP `:8084` (reference), Profile B sidecar `:8080` on `visionclaw_network` (the email gateway's `REASONER_BASE_URL`). Generation parity across A≡B is a CI/health assertion.
+> - **D2 / D2.1** (corpus-lifecycle ownership, generation discipline, never-mixed-build) → the atomic generation-verified `mirror` (ported from `mirror.sh`) + `GenerationStore`; `/health` and `/loom/generation` carry the sha-addressable generation stamp.
+> - **D7** (server-side SPARQL clamp) → `loom-graph-oxigraph` (read-only, `SERVICE` forbidden, LIMIT clamp — strengthened beyond Python, RUST-ARCHITECTURE §8.1).
+> - **D8** (ADR-090 hexagonal ring for any Rust surface) → the eight-crate acyclic workspace: `loom-domain` core, five adapters, `loom-scaffold` policy, `loom-facade` binary.
+
 ---
 
 ## 1. Context

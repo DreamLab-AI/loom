@@ -14,6 +14,14 @@
 
 > This ADR does not re-derive the design brief (PRD-025 owns product goal; PRD-026 owns requirements and the build order). It records **which tool owns which capability**, with the evidence for each call, and it holds every allocation subordinate to the invariant below.
 
+> **Implementation note (2026-08-17) — these allocations are now realised in the Rust workspace (ADR-137 / PRD-027).** The tooling calls this ADR made are built and gate-green; the crate that realises each:
+> - **D1** (markdown is the canonical unit) → `loom-domain::CanonicalUnit` is the only type any port resolves to; the crate ring makes "accelerators behind the markdown" a *compile-time* fact (I-P1), not prose discipline.
+> - **D2** (keep oxigraph SPARQL, reject graph-node Cypher) → `loom-graph-oxigraph` over the **native** `oxigraph` crate — the `pyoxigraph` FFI is gone. Clamp strengthened beyond the Python original (PREFIX/BASE-prologue-aware LIMIT injection; RUST-ARCHITECTURE §8.1 Erratum D).
+> - **D3** (HNSW as benchmark-gated fallback, default-off) → `loom-vector-ruvector` (in-process `ruvector-core`, network-free). **Wired but honestly RED**: measured recall `0.816 < 0.87` floor, so `LOOM_SEMANTIC_FALLBACK` stays default-off (RUST-ARCHITECTURE §8.4 Erratum D).
+> - **D4** (one SSOT build, delta-diffed re-embed, HNSW index-law) → the atomic `mirror` + the `pg-write` off-turn write channel.
+> - **D5** (gate mechanics → attestation, predicates stay local) → `loom-attest-proofgate`. **See the D5 Erratum A**: the shipped substrate is Loom's own `sha2` ledger; the real RuVector `ProofGate` lives in `ruvector-graph-transformer`, not `ruvector-core`.
+> - **D6** (Whelk-rs build-time authority) → unchanged; the Loom runs no reasoner at query time.
+
 ---
 
 ## THE PRIZE (non-negotiable driver — quoted verbatim, governs every decision here)
@@ -104,6 +112,11 @@ The standing counter-example that makes this a hard gate, not a formality: **our
 ### D5 — Re-platform gate MECHANICS onto RuVector ProofGate/MutationLedger; keep domain PREDICATES local
 
 `conflicts.py` predicates (subclass-acyclicity, duplicate-label, type-match, relation-contradiction) are domain-semantic — *what a contradiction means for this ontology* — and stay Loom-owned. Their **attestation mechanics** re-platform onto RuVector ADR-047: the predicates become `ProofRequirement::InvariantPreserved` obligations routed through `ProofGate<T>`, and the current unattested Python `CheckResult` is replaced by a tamper-evident `MutationLedger` entry (FNV-1a/BLAKE3 hash-chain, HashChainGate/MerkleGate write receipts). ADR-047's types are domain-agnostic, so this is a straight upgrade with **zero domain-knowledge cost**. Enforcement (wiring the gate into CI — it is a library today, not a control) is a PRD-026 acceptance gate.
+
+> **Erratum A (2026-08-17, verified against RuVector source during the Rust implementation).** This decision names `ProofGate<T>`/`MutationLedger` as "RuVector ADR-047" as though they were reachable from the `ruvector-core` crate the serving Loom links. Two corrections, folded in without reopening the decision:
+> 1. **`ProofGate<T>` / `MutationLedger` live in `ruvector-graph-transformer` (`src/proof_gated.rs`, atop `ruvector-verified`), not in `ruvector-core`.** The decision — attest the *mechanics*, keep the *predicates* local — is unchanged and correct; only the crate that owns the real gate is different from what "ADR-047" implied here.
+> 2. **`ruvector-core`'s in-crate `agenticdb::WitnessLog` is unsound as an attestation anchor** — it chains with a non-cryptographic `DefaultHasher` despite a "SHA256" doc-comment, so it must not be used as if it were a hash-chain.
+> Consequently the **implemented `loom-attest-proofgate` ships Loom's own `sha2` head-checkpointed `ChainedLedger`** as the attestation substrate today (real SHA-256, truncation-proof — see RUST-ARCHITECTURE §11.5 and `.claude/evidence/AUDIT-gpt54.md` finding 4). Binding the real `ProofGate` from `ruvector-graph-transformer` is a one-line future rewiring behind the `attest` feature; the D5 decision stands, the substrate is honest and verifiable in the interim.
 
 - **Rejected alternative — keep the bespoke Python gate as-is.** Rejected: it has no attestation, no tamper-evidence, no proof composition — a thinner reimplementation of a pattern the ecosystem ships better. And it is **not enforced by any CI**, so an agent can write straight past it.
 - **Rejected alternative — move the domain predicates into RuVector too.** Rejected: RuVector's proof-gate has (and should have) zero opinion about ontology vocabulary. What a "duplicate concept" or "contradictory relation pair" means for *this* corpus is the Loom's authority and must not leak into a domain-agnostic substrate.

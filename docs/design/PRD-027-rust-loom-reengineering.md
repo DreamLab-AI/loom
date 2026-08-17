@@ -350,6 +350,25 @@ Each criterion is a pass/fail gate. AC-1 and AC-8 are the two that most directly
 | **AC-9** | **Single-binary portability.** The release artifact is a single static musl binary that runs with no interpreter and no wheel; cold start < 500 ms; Nix build reproducible. | Build + run on a bare container with only the binary + mounted generation; timing assertion. |
 | **AC-10** | **Model-swap seam.** Changing `DISTILL_BACKEND_URL` swaps the model with zero code and zero consumer change; a fresh completion stamps the new model identity in `loom:{...}`. | Swap backend URL; assert new model id in result; no consumer diff. |
 
+### 10.1 Implementation status (2026-08-17 — honest per-AC verdict)
+
+The eight-crate workspace is built, gate-green, and adversarially audited (gpt-5.4; `.claude/evidence/AUDIT-gpt54.md`). Status against each acceptance criterion — **met**, **gated-off (honest RED)**, or **operational tail** (code done, live-deploy assertion pending):
+
+| AC | Status | Evidence / honest note |
+|---|---|---|
+| AC-1 (Prize byte-identical) | ✅ **Met** | Golden byte-equality tests green (`loom-scaffold`; EXP-002). No block replaced by a vector/summary/encoding — enforced by the ring (AC-6). |
+| AC-2 (consumer contract) | ✅ **Met** | Router oneshot tests green (EXP-005); frozen `/v1/*`, `/loom/*` shapes preserved. |
+| AC-3 (lexical parity) | ✅ **Met** | Golden-fixture parity, constants ported verbatim (EXP-002/003). |
+| AC-4 (oxigraph parity + clamp) | ✅ **Met (clamp strengthened)** | Native `oxigraph`; `SERVICE`/`INSERT` rejected 400; LIMIT clamp made **PREFIX/BASE-prologue-aware** — a deliberate security divergence beyond Python (EXP-004, audit finding 3). |
+| **AC-5 (recall-gate on the fallback)** | ❌ **NOT MET — gated-off (honest RED)** | Measured `rgb-protocol 0.816` in the document-embedding regime, **below** the AC's `≥ 0.85` band and the `0.87` design floor. The recall gate is RED, so **`LOOM_SEMANTIC_FALLBACK` stays default-off** and the estate recall-gate is not cleared. This is the one criterion the implementation does **not** satisfy; the fix needs a query-shaped embedding (or a bench-justified floor), not a threshold fudge (EXP-008, audit finding 5). |
+| AC-6 (accelerator boundary structural) | ✅ **Met** | `cargo tree` acyclic inward-only ring; adapters cannot mint a `CanonicalUnit` (compile-time). The single-gate invariant survived audit finding 1 (semantic debug surface now default-off; EXP-007). |
+| AC-7 (generation parity across profiles) | ◑ **Operational tail** | Both compose profiles are authored and the descriptor/mirror logic is implemented; the **live cross-profile A≡B byte-identity health assertion** runs at deployment cutover (deploy layer), not yet asserted against running instances. |
+| AC-8 (fusion default-OFF, benchmark-gated) | ✅ **Met** | Default-off enforced; behaviour equals the lexical baseline; the −0.40 fixture is the standing guard. Cannot flip default-on until AC-5 clears and WS-W wins all axes. |
+| AC-9 (single-binary portability) | ◑ **Met (build); timing at deploy** | Static musl binary, no interpreter/wheel; the `< 500 ms` cold-start + Nix-reproducibility assertions are measured on the deploy target (WS-U/WS-X). |
+| AC-10 (model-swap seam) | ✅ **Met** | `DISTILL_BACKEND_URL` one config line; model id stamped into `loom:{...}` (EXP-006). |
+
+**Bottom line:** the substrate re-platform (AC-1/2/3/4/6/8/10) is **met and audited**; the semantic-fallback recall gate (**AC-5**) is **honestly unmet and correctly gated-off**; two deployment assertions (AC-7, AC-9 timing) are the **operational tail** the deploy layer closes at cutover. No criterion is reported met that is not.
+
 ---
 
 ## 11. Risks

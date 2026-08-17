@@ -1,18 +1,47 @@
-# Ontology Loom — Corpus-Build Stage & Generation Identity (logseq pipeline)
+# Ontology Loom — the Generation-Identity Contract the Mirror Consumes
 
-## Status: Draft
-## Date: 2026-08-11
-## Author: Loom capstone workstream (WS-A)
-## Depends on: OCP Revised Design Brief (2026-08-11, operator reframe); ADR-015 (jsonld-native-pipeline); ADR-NG-001 (explorer-architecture); PRD-008 (jsonld-publishing-pipeline)
-## Scope: `pipeline/` + `.github/workflows/publish.yml` + the HP/sidecar `mirror.sh`. WS-A only; consumer-side workstreams (WS-C…J) are referenced with repo qualifiers, not specified here.
+## Status: Contract (consumer-side). The **build authority moved upstream to `jjohare/logseq`**; this doc is the generation-identity contract the Rust `loom-facade` mirror consumes and verifies.
+## Date: 2026-08-11 (authored); retargeted 2026-08-17 (Rust re-platform)
+## Author: Loom capstone workstream (WS-A), retargeted for ADR-137 / PRD-027
+## Depends on: OCP Revised Design Brief (2026-08-11); ADR-135 (façade + generation discipline); ADR-136 D4 (SSOT + atomic mirror); ADR-137 (Rust re-platform)
+## Scope: **the contract** — `build-manifest.json`, `urn:ngm:generation:<sha>`, the atomic never-mixed generation, and how the Rust mirror verifies them. The *builder implementation* (`pipeline/*`, `publish.yml`) is **upstream in `jjohare/logseq`** and is reproduced below only as the contract the mirror relies on, not as Loom work.
 
 ---
 
+> **Retargeting note (2026-08-17).** This document was authored as the WS-A *build-stage* spec
+> back when the Loom vendored a `pipeline/` copy. That copy is retired (#21): the Loom is a
+> **serving mirror, not a builder**, and the canonical builder is `jjohare/logseq` (`publish.yml`
+> runs `pytest pipeline/tests` + `pipeline.validate` before deploy; `enrich-gate.yml` gates
+> enrichment PRs). So the *authority* for everything in §3–§8 lives upstream; those sections stay
+> here as the **contract the mirror consumes and verifies** — the manifest shape, the generation
+> identity, the atomic never-mixed guarantee — not as a build to run in this repo. The Rust
+> realisation of the consumer side is `app/mirror.sh` (still the shipped promote mechanism — the
+> Rust node implements the *read* side of this contract) and `loom-facade::mirror` /
+> `GenerationStore` (RUST-ARCHITECTURE §11.6): fetch the artifacts, verify their generation stamps
+> cluster within tolerance, verify per-artifact sha256, promote atomically, expose the stamp on
+> `/health` + `/loom/generation`. Read this doc as **"what a served generation guarantees, and how
+> the mirror proves it,"** and read the builder detail as the upstream contract it checks against.
+
 ## 1. Context
 
-The Loom is a portable VisionFlow node with a stable, model-swappable façade that **owns the corpus lifecycle**: sync from GitHub, compute atomic **generations**, reason, serve retrieval/scaffold/distillation, publish the cloud read-replica, and manage the GitHub write-back (OCP brief §0). This repo's existing pure-Python pipeline — `parse → validate → conflicts → turtle → webvowl → reason → page-api → search → graph-tiers → scaffold → prose` (`pipeline/build.py`) — is **already** the slow/authoritative corpus-build path the brief calls for. It is pure `rdflib` + stdlib, runs in CI, touches no LLM and no network at build time. That makes it the natural home for the Loom's **corpus-build + generation-identity stage**, and it satisfies agentbox ADR-112 (one-brain / no hot-path LLM) by construction: the pipeline is the authoritative slow path; in-process consumers keep their fast local paths and resolve authoritative state *from* the generation this pipeline emits, instead of re-deriving it (brief §0b).
+The Loom is a portable VisionFlow node with a stable, model-swappable façade. In the pre-Rust
+design it was described as *owning* the corpus lifecycle including the build; the Rust
+re-platform sharpens that (ADR-137 D7): **the build is upstream (`jjohare/logseq`) and the Loom
+is a serving mirror of its output.** What the Loom owns is the **consumer side** of the
+generation contract: pull the published generation, verify it is one whole never-mixed
+generation, serve it, and expose which generation it is serving. It satisfies agentbox ADR-112
+(one-brain / no hot-path LLM) by construction: the upstream pipeline is the authoritative slow
+path; the Loom's in-process retrieval reads *this* generation instead of re-deriving it.
 
-What is missing today is **generation identity**. Each emitter stamps its own wall-clock timestamp (`reason.py:196` `datetime.now`, `scaffold_index.py:96`, `prose_index.py:87`, `emit_graph_tiers.py:885/952` `date.today`), so a single `www/` build carries **several disagreeing timestamps and no commit anchor**. Nothing binds the emitted artifacts to the corpus commit they were built from, nothing lets a downstream distillation job pin the exact corpus it reasoned over, and the HP mirror copies `data/` file-by-file with no atomicity — a consumer can read a half-swapped, mixed-build `data/` directory. WS-A closes all three gaps: **one shared build context threaded through every emitter, a `build-manifest.json` that names the generation, and an atomic mirror that publishes `data/` as one verified generation.**
+The **generation-identity** the contract turns on: each upstream artifact must agree on one
+generation stamp and one commit anchor, bound by a `build-manifest.json`. Without it a single
+`www/` build carried several disagreeing timestamps and no commit anchor, nothing bound the
+artifacts to the corpus commit, and a file-by-file mirror could expose a half-swapped
+mixed-build `data/`. The contract closes all three: **one shared build context stamped into
+every artifact (upstream), a `build-manifest.json` that names the generation, and an atomic
+mirror that publishes `data/` as one verified generation (the Loom's job).** The Rust mirror's
+realisation of the verify-all-then-flip discipline is `app/mirror.sh` + `GenerationStore`
+(RUST-ARCHITECTURE §11.6); the sections below specify what it verifies against.
 
 This is the root fix in the brief's dependency order (§WS-A): *"no envelope rule is expressible without it."* The distillation result envelope's `corpusSha_used` / `corpus_generation` fields (brief §"Result envelope"), the `corpusSha_match` admission rule (§"Corpus identity & the mirror"), and the content-address identity core (`corpusSha` is a hashed field, brief §"Content-address identity core") all resolve to the identity this stage mints.
 

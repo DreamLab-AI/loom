@@ -1,3 +1,9 @@
+> **Status: Historical (2026-04-07 model-quality bench) — frozen, do not extend.** Retired to
+> `legacy/` on 2026-08-17 (DOC-REENGINEERING-PLAN §2.3). This is a pre-Qwen model-quality bench
+> on RTX 6000 Ada hardware that is **not** this host, and it is not ontology-related. For current
+> model facts see [`docs/QWEN3.8-CONNECTION.md`](../docs/QWEN3.8-CONNECTION.md); for the
+> ontology-uplift evidence see [`docs/research/`](../docs/research/).
+
 # LLM Model Benchmarks — XR Systems Local Server
 
 **Date:** 2026-04-07

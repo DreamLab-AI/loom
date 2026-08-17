@@ -7,6 +7,12 @@ Attention), native vision, Apache-2.0, served by llama.cpp over an OpenAI-compat
 Beats Muse Glimmer on every shared published benchmark (Terminal Bench 73.0 vs 51.7,
 SWE-bench Pro 61.7 vs 51.2, OSWorld 84.3 vs 65.9, GPQA 89.2 vs 83.5, IFBench 79.5 vs 77.0).
 
+> **Model-is-a-URL, unchanged by the Rust re-platform.** Under the Rust Loom façade
+> (`ADR-137` / `PRD-027`) the model is still just `DISTILL_BACKEND_URL` and the `loom-model`
+> container is unchanged — the re-platform swaps the *façade* substrate (stdlib Python → a Rust
+> binary), not the model behind it. Everything in this guide holds verbatim; swap the model and
+> no consumer changes.
+
 - **Model:** `Qwen/Qwen3.8-27B` — 27B dense, 64 layers (48 linear-attention DeltaNet +
   16 full-attention), vision encoder, MTP head embedded.
 - **Quant:** unsloth **`UD-Q8_K_XL`** (31.5 GB, Unsloth Dynamic v3 — maximal for 48 GB

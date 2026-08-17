@@ -22,7 +22,7 @@ A single Cargo workspace, `resolver = "2"`, tokio-async, deny-unsafe — matchin
 loom/                              # existing repo root; Rust lands alongside docs/, retires app/
 ├── Cargo.toml                     # [workspace]; shared lints + release profile
 ├── Cargo.lock                     # committed (binary crate)
-├── rust-toolchain.toml            # pinned stable (rust-version 1.88, matches solid-pod-rs)
+├── rust-toolchain.toml            # pinned stable (MSRV 1.89 — see §2.1 note; ruvector-core SIMD needs it)
 ├── deny.toml                      # cargo-deny: licences + advisories gate
 ├── flake.nix                      # Nix build (agentbox pattern); musl static target
 ├── crates/
@@ -82,7 +82,7 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.88"
+rust-version = "1.89"   # Erratum (2026-08-17): bumped 1.88→1.89 — ruvector-core's `simd` feature uses AVX-512 intrinsics stabilised in 1.89 (mesh commit 0c63a1d). The sibling repos' 1.88 floor no longer suffices with SIMD on.
 license = "AGPL-3.0-only"
 repository = "https://github.com/DreamLab-AI/loom"
 authors = ["DreamLab-AI contributors"]
@@ -117,12 +117,18 @@ pgvector    = { version = "0.4", features = ["postgres"] }
 # In-process HNSW: path-dep on the sibling workspace's core crate.
 # HNSW search in ruvector-core is behind the `hnsw` Cargo feature (which enables
 # the optional `hnsw_rs` dep); persistence is behind `storage` (redb + memmap2).
-# BOTH are in the crate's default feature set — verified against
-# ruvector/crates/ruvector-core/Cargo.toml: default = ["simd","storage","hnsw",
-# "api-embeddings","parallel"]. Rely on defaults; do NOT set
-# default-features=false, and do NOT spell the feature "hnsw_rs" (that is the
-# dep alias, not the documented feature name).
-ruvector-core = { path = "../ruvector/crates/ruvector-core" }
+#
+# Erratum (2026-08-17): this block originally said "rely on the crate's default
+# feature set". The implemented workspace does NOT — it takes an EXPLICIT feature
+# list and turns defaults off, because ruvector-core's default set pulls in
+# `api-embeddings`, which drags `reqwest 0.11` and the RUSTSEC advisories that
+# trips `cargo deny`. The serving path needs only `hnsw`+`storage` (read) and
+# `simd`+`parallel` (speed); it never calls ruvector-core's own embedding client
+# (we own `loom-embed-xinference`). Trimming to the four features below is what
+# keeps the supply-chain gate green (commit aefa831 — "trim ruvector-core
+# features, justify residual advisories"). Do NOT spell the feature "hnsw_rs"
+# (that is the dep alias, not the feature name).
+ruvector-core = { path = "../ruvector/crates/ruvector-core", default-features = false, features = ["hnsw", "storage", "simd", "parallel"] }
 
 [profile.release]
 lto = "thin"          # sibling convention (solid-pod-rs); the static-binary win
@@ -140,10 +146,10 @@ panic = "abort"       # façade has no unwinding contract to preserve; smaller b
 | `loom-domain` | `serde`, `thiserror`, `async-trait` | Pure. `async-trait` because ports are async (adapters do I/O); `thiserror` for the typed error enum; `serde` because `CanonicalUnit`/`Generation` cross the wire. **No tokio, no framework** — keeps the core testable in milliseconds and un-coupled to the runtime. |
 | `loom-scaffold` | `serde_json`, `regex` | Direct port of `ontology_scaffold.py`. `regex` for the word/slug tokenisers (`_WORD_RE`, `_SLUG_RE`); `serde_json` to load `scaffold-index.json` + `prose-index.json`. **No network deps** — this crate is the LLM-free/network-free hot path. |
 | `loom-graph-oxigraph` | `oxigraph`, `regex` | `oxigraph` native store replaces `pyoxigraph` (the clean win). `regex` for the read-only SPARQL clamp (`_FORBIDDEN`/`_READ_FORM`/LIMIT injection, carried verbatim from `loom_graph.py`). |
-| `loom-vector-ruvector` | `ruvector-core` (default features: `hnsw` + `storage`), `tokio-postgres`, `pgvector` | `ruvector-core::VectorDB` for the in-process HNSW read (hot path) — HNSW behind the crate's `hnsw` feature, file persistence behind `storage`, both default-on. `tokio-postgres` + `pgvector` **only** for the build/off-turn write channel to `ruvector-postgres` — feature-gated (`pg-write`) so the serving binary need not link it. |
+| `loom-vector-ruvector` | `ruvector-core` (explicit `hnsw`+`storage`+`simd`+`parallel`, defaults **off** — Erratum C above), `tokio-postgres`, `pgvector` | `ruvector-core::VectorDB` for the in-process HNSW read (hot path) — HNSW behind the crate's `hnsw` feature, file persistence behind `storage`; the workspace turns the crate's *defaults* off to shed `api-embeddings`→`reqwest 0.11`. `tokio-postgres` + `pgvector` **only** for the build/off-turn write channel to `ruvector-postgres` — feature-gated (`pg-write`) so the serving binary need not link it. |
 | `loom-embed-xinference` | `reqwest`, `serde` | Thin OpenAI-embeddings client to `XINFERENCE_URL`. `rustls-tls` (no OpenSSL system dep — keeps the musl static build clean). |
 | `loom-backend-openai` | `reqwest`, `serde_json` | The `DISTILL_BACKEND_URL` delegate. Streams disabled (parity with Python, which pops `stream`); `max_tokens` floor logic lives here. |
-| `loom-attest-proofgate` | `ruvector-core` (proofgate feature) or `sha2` fallback | Re-platforms the gate verdict onto RuVector `ProofGate<T>`/`MutationLedger` (ADR-047, ADR-136 D5). Build/CI-time only; behind `attest` feature so serving builds omit it. |
+| `loom-attest-proofgate` | `sha2` (own `ChainedLedger`) | **Erratum A (2026-08-17):** `ProofGate<T>`/`MutationLedger` are **not** in `ruvector-core` (they live in `ruvector-graph-transformer::proof_gated`, atop `ruvector-verified`), and `ruvector-core::agenticdb::WitnessLog` is unsound as an attestation anchor (see §11.5). The implemented adapter therefore ships **Loom's own `sha2` head-checkpointed `ChainedLedger`** as the attestation substrate; binding the real `ProofGate` is a one-line future rewiring. Build/CI-time only; behind `attest` feature so serving builds omit it. |
 | `loom-facade` | `axum`, `tower`, `tower-http`, `tokio`, `tracing*`, `serde_json`, `anyhow` | Composition root + router. `tower-http::limit` for body caps, `tower::timeout` for the long distill timeout, `tracing` for structured logs. |
 
 ---
@@ -574,7 +580,7 @@ Three layers, all under `cargo test --all-features` + `cargo clippy --all-target
 
 - `loom-scaffold`: **port the entire `_selftest()` fixture** (the 7-class inline fixture + all its assertions — wrapper present, seed section, is-a line, relations line, 1-hop neighbour defs, seed-not-repeated, hops=0 suppression, irrelevant→empty, budget clamp trims sections, impossible budget→empty, `scaffold_messages` insert/merge/parts/no-match) as Rust `#[test]`s. This is the correctness anchor: **Rust output must be byte-identical to Python** on the fixture. A golden-file test pins the exact `[ONTOLOGY CONTEXT]` block string.
 - `policy.rs`: table-test `effective_budget` across (`confidence_injection` on/off × top_score below/at/above thresholds) — proves the gate math matches Python's branch exactly.
-- `loom-graph-oxigraph`: the SPARQL clamp — `_FORBIDDEN` rejects INSERT/DELETE/LOAD/CLEAR/DROP/SERVICE; `_READ_FORM` requires SELECT/ASK/CONSTRUCT/DESCRIBE; LIMIT injection on unclamped SELECT; row cap truncation flag.
+- `loom-graph-oxigraph`: the SPARQL clamp — `_FORBIDDEN` rejects INSERT/DELETE/LOAD/CLEAR/DROP/SERVICE; `_READ_FORM` requires SELECT/ASK/CONSTRUCT/DESCRIBE; LIMIT injection on unclamped SELECT; row cap truncation flag. **Erratum D (2026-08-17, audit finding 3, EXP-004):** the implemented clamp is *stronger than the Python original by design* — a naive `^\s*SELECT` test let a `PREFIX ex:<…> SELECT …` (or `BASE`/comment-prologue-led) query slip past LIMIT injection and evaluate unbounded until the post-hoc row cap. The clamp is a **security control, not a parity feature**, so the Rust version consumes any leading `BASE`/`PREFIX`/comment prologue and injects LIMIT for those SELECTs too — a deliberate, documented divergence from Python (`crates/loom-graph-oxigraph/src/lib.rs`; 4 new clamp tests).
 - `Iri::slug` / `Iri::from_slug` round-trips; `_ref_to_slug` equivalence for `urn:ngm:class:<slug>` and bare slug.
 
 ### 8.2 Integration — adapters against real deps (feature-gated, CI services)
@@ -591,6 +597,8 @@ Three layers, all under `cargo test --all-features` + `cargo clippy --all-target
 ### 8.4 The recall-gate integration test (the ground-truth wiring gate)
 
 This is the test that governs whether the semantic fallback may go default-on. Lives in `loom-vector-ruvector/tests/recall_gate.rs`, feature `semantic-fallback`, run against a live `ontology-corpus` namespace (or a checked-in HNSW artifact fixture).
+
+> **Erratum D (2026-08-17, audit finding 5, EXP-008) — the recall gate is honestly RED; the `0.87` below is the flip-on precondition, not a measured pass.** The fixture asserts `rgb-protocol ≥ 0.87` as the *design floor*, but the measured recall in the current document-embedding regime is **`0.816`**. That is below floor, so the gate is **RED** and `LOOM_SEMANTIC_FALLBACK` stays **default-off** — the correct, honest state. The evidence verdict was corrected from a misleading "PASS" to **"WIRING PASS — DESIGN FLOOR NOT MET (recall gate RED)"**, and the test was hardened accordingly: with `LOOM_SEMANTIC_FALLBACK=1` it fails RED unless `rgb_score ≥ LOOM_SEMANTIC_RECALL_FLOOR` (default `0.87`); with the flag off it asserts the wiring invariants **and** that the gate is *reported red* — a staleness tripwire that will fail the day recall improves, forcing the evidence to be refreshed. Closing the gap needs a query-shaped embedding (or a bench-justified floor), not a threshold fudge (see `.claude/evidence/EXP-008.evidence.md`, `AUDIT-gpt54.md` finding 5).
 
 ```rust
 /// ADR-136 D3 / D8 verification, mechanised. The semantic fallback ships
@@ -658,7 +666,7 @@ Handler notes (parity-critical):
 - `chat_completions`: read `messages`, run `build_scaffold` (§6) on the **last user message**, merge the block into the system message (or insert one at position 0), floor `max_tokens`/`max_completion_tokens` ≥ `LOOM_MIN_MAX_TOKENS` (never lower a higher ask), strip `stream`, delegate via `ModelBackend::chat`, then annotate the 200 JSON with `loom: { mode, injected_tokens, grounding, fusion_path, generation }` — the fail-labelled honesty block Python emits.
 - `scaffold`: returns `{ scaffold, engaged, approx_tokens, seeds:[{iri,score,provenance}], fusion_path, generation }`. New over Python: `seeds` + `fusion_path` expose which IRIs grounded the answer and by which engine (audit surface for THE PRIZE).
 - `health`: `{ ok, facet, mode, backend, backend_reachable, index_classes, graph:{available,triples,loaded_files,error}, semantic:{ready,generation}, generation }` — superset of Python's, adding the semantic-index readiness + generation-parity fields.
-- `semantic_search` (new): returns a **list of IRIs + cosine scores only** — deliberately *not* markdown, because it is a debugging/eval surface, and it is the one endpoint where the raw index shape is allowed to show precisely because it is labelled as the index, not as an answer. It never feeds `/v1/chat/completions`; that path always goes through the gate.
+- `semantic_search` (new): returns a **list of IRIs + cosine scores only** — deliberately *not* markdown, because it is a debugging/eval surface, and it is the one endpoint where the raw index shape is allowed to show precisely because it is labelled as the index, not as an answer. It never feeds `/v1/chat/completions`; that path always goes through the gate. **Erratum D (2026-08-17, audit finding 1, EXP-007):** as first implemented this endpoint returned raw `nearest()` hits *always*, which technically put a second surface next to the single gate. It is now **default-OFF** (`LOOM_SEMANTIC_DEBUG_SURFACE=0`) — the route answers `404 {"error":"semantic debug surface disabled"}` unless explicitly enabled, so the single-gate invariant (I-P1) holds by default and the labelled index-debug view is opt-in.
 
 ---
 
@@ -715,9 +723,18 @@ Two channels, hard-separated by feature flag:
 
 `OpenAiBackend` is a `reqwest::Client` (rustls, connection-pooled) to `DISTILL_BACKEND_URL`. `chat()` posts the scaffold-injected body, applies the `max_tokens` floor, strips `stream`, returns `BackendResponse{ status, body, content_type }`. `models()` and `reachable()` port the `/v1/models` passthrough + 5s probe. **Model identity never appears in `endpoint()`** — it rides in the response body (ADR-135 D1.2), so swapping Qwen3.8-27B for the next model is one env-var change, zero consumer change.
 
+**Erratum D (2026-08-17, audit finding 2, EXP-006) — the floor is integer-only, matching Python parity.** A first cut floored *any* present `max_tokens`/`max_completion_tokens` to `MIN`, so a higher string-typed ask (`"999999"`), a `-1`, and a `2^64` all collapsed to `1536` — which both diverges from `loom_facade.py` and violates "never lower a higher ask". The implemented `normalise_body` floors **only JSON integers** via an `i128` `max(v, MIN)` (so `-1` floors up, a large `u64` is preserved), leaves strings/floats/overflow/`null` untouched, inserts `max_tokens = MIN` only when **both** keys are absent, and no-ops entirely when `MIN == 0` — byte-for-byte the Python guard (`crates/loom-backend-openai/src/lib.rs`; wiremock counter-examples cover each case).
+
 ### 11.5 `loom-attest-proofgate` (re-platform, build/CI-time)
 
-`ProofGateLedger` implements `AttestationLedger` over RuVector `ProofGate<T>`/`MutationLedger` (ADR-047, ADR-136 D5). Domain predicates (class-count parity, no-mixed-generation, SSOT/conflict checks) stay **Loom-owned** in `loom-domain`; only their *attestation* becomes chain-hashed ledger entries. Behind the `attest` feature; not linked into the serving binary. `verify_chain()` is the tamper check the CI gate runs.
+`ChainedLedger` implements `AttestationLedger`. Domain predicates (class-count parity, no-mixed-generation, SSOT/conflict checks) stay **Loom-owned** in `loom-domain`; only their *attestation* becomes chain-hashed ledger entries. Behind the `attest` feature; not linked into the serving binary. `verify_chain()` is the tamper check the CI gate runs.
+
+> **Erratum A (2026-08-17) — the attestation substrate is Loom's own `sha2` ledger, not `ruvector-core`.** This section (and ADR-136 D5, ADR-137 D9) originally read `ProofGate<T>`/`MutationLedger` "in RuVector, ADR-047" as if they were reachable from the `ruvector-core` crate the serving path already links. Verified against source this is wrong on two counts, and the honest ground truth is:
+>
+> 1. **`ProofGate<T>` / `MutationLedger` live in `ruvector-graph-transformer` (`src/proof_gated.rs`), built atop `ruvector-verified` — not in `ruvector-core`.** Binding them means pulling in the graph-transformer crate (and its dependency cone), which the build-time `attest` path could do, but the serving path deliberately does not.
+> 2. **`ruvector-core`'s own in-crate ledger, `agenticdb::WitnessLog`, is unsound as an attestation anchor**: despite a doc-comment claiming "SHA256", it chains with the non-cryptographic `std::collections::hash_map::DefaultHasher`. A `DefaultHasher` chain is trivially forgeable and gives no tamper evidence — using it *as if* it were SHA-256 would be attestation theatre. (Verified by reconstruction through vector-search of the crate source.)
+>
+> The Loom therefore **ships its own `sha2` `ChainedLedger`** as the attestation substrate: real SHA-256 entry hashing, a HEAD checkpoint sidecar written tmp+rename under the append lock (added remediating audit finding 4 — truncation-proofing, see `.claude/evidence/AUDIT-gpt54.md`), and a `verify_chain()` that fails on any tampered *or truncated* ledger. Binding the *real* `ProofGate` (from `ruvector-graph-transformer`) behind the `attest` feature is a **one-line future rewiring** — the `AttestationLedger` port already isolates the choice — and does not touch the serving binary either way. This is an honest, verifiable substrate today, not a placeholder; the RuVector `ProofGate` is a later upgrade, not a missing dependency.
 
 ### 11.6 Mirror (port of `mirror.sh` → `loom-facade::mirror`)
 
@@ -785,6 +802,8 @@ networks:
 ```
 Required (not CI-only) because the **email gateway binds `REASONER_BASE_URL=http://loom:8080/v1`** — an in-network consumer that must reach a Loom on `visionclaw_network`, not behind a DNAT — and because the **ruvector-postgres + Xinference write channel** needs an in-network home. B is GPU-free and delegates the model by URL.
 
+> **Erratum B (2026-08-17) — the redb read-only-mount hazard.** Both profile blocks above mount the corpus `volumes: [ ./data:/app/data:ro ]` — correct for the JSON/TTL projections (the Loom only reads them) but a trap for `LOOM_HNSW_ARTIFACT` (`ontology-corpus.rvdb`). The `.rvdb` is a **redb** database, and redb **mutates the file on open** (lock page, WAL/commit bookkeeping) even for a read-only workload — so opening the artifact directly off a read-only bind mount fails at startup (redb cannot acquire its write lock), and a read-write bind mount would let the running node scribble into the shared generation and break byte-parity across A and B. The deploy layer resolves this at the entrypoint: it **copies `ontology-corpus.rvdb` from the read-only `./data` mount to a writable node-private path (`/run/loom/…`, tmpfs) with a sha256 verify against `.generation.json`**, and points `LOOM_HNSW_ARTIFACT` at the copy. The read-only mount stays the immutable source of truth; the mutable redb working file is a verified, per-node copy. (See `deploy/` for the entrypoint realisation — owned by the deploy layer, not this crate.)
+
 **Obligation both profiles carry (ADR-137 consequence 3):** the mirrored generation — including the HNSW artifact — is promoted into **both** deployments under the ADR-136 D4 atomic discipline, and **generation parity across A and B is a CI/health assertion**: `/health.generation` must be byte-identical for the same `commitSha`. The `pg-write`/MCP path is build/off-turn only and never the query hot path, so an A instance cut off from the docker network still serves (the whole point of keeping A network-free).
 
 ---
@@ -813,7 +832,7 @@ Matching the sibling repos' bar:
 - **[ddd-ontology-loom-context.md](./ddd-ontology-loom-context.md)** — the bounded context; `CanonicalUnit` maps to the aggregate root, BC24 I11 (published-ontology-only), §6.1 (RuVector access model). The port names above (`LexicalIndex`/`VectorIndex`/`GraphStore`/`EmbeddingProvider`/`ModelBackend`) are this document's ubiquitous language, held verbatim.
 - **agentbox — ADR-051** ([agentbox-ADR-051-loom-client-and-deferred-distillation.md](./agentbox-ADR-051-loom-client-and-deferred-distillation.md)) — the loom client + deferred distillation consumer; the façade contract this binary must keep stable.
 - **VisionClaw — ADR-099** (Whelk-rs EL++ reasoner) and **ADR-090/PRD-016** (hexagonal ring placement) — the reasoner is build-time authority; this workspace is the ADR-090 ring realised for the Loom surface.
-- **ruvector — ADR-001** (HNSW production index), **ADR-047** (ProofGate/MutationLedger) — the in-process `ruvector-core` HNSW read (behind the default-on `hnsw` feature) + the attestation substrate.
+- **ruvector — ADR-001** (HNSW production index) — the in-process `ruvector-core` HNSW read (behind the `hnsw` feature, explicitly enabled with defaults off; Erratum C §2.1). **ADR-047** (`ProofGate<T>`/`MutationLedger`) is the *design target* for attestation but is realised in `ruvector-graph-transformer::proof_gated`, **not** `ruvector-core`; the Loom ships its own `sha2` `ChainedLedger` today and rewires to the real `ProofGate` behind the `attest` feature later (Erratum A, §11.5).
 - **logseq (`jjohare/logseq`)** — the canonical corpus builder + CI-enforced gate; the Loom serves its output, never rebuilds it (the dropped `pipeline/`).
 
 ---

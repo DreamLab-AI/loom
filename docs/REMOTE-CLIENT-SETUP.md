@@ -9,9 +9,16 @@ Full model reference: [`QWEN3.8-CONNECTION.md`](QWEN3.8-CONNECTION.md).
 | Endpoint | Use when |
 |---|---|
 | `http://10.10.10.1:8085/v1` | **Default.** Raw model API (OpenAI-compatible): chat, tools, vision, streaming. |
-| `http://10.10.10.1:8084/v1` | **Ontology-grounded.** Same API, but the Loom façade injects knowledge-graph context for on-ontology queries (responses carry a `loom` provenance block). Prefer for narrativegoldmine-domain work. |
+| `http://10.10.10.1:8084/v1` | **Ontology-grounded (Profile A).** Same API, but the Loom façade injects knowledge-graph context for on-ontology queries (responses carry a `loom` provenance block). Host-colocated with the model on HP; prefer for narrativegoldmine-domain work. |
+| `http://loom:8080/v1` | **Ontology-grounded (Profile B).** Same façade, run as a sidecar on `visionclaw_network` (docker-network consumers only, e.g. the email gateway's `REASONER_BASE_URL`). GPU-free; delegates the model by URL. |
 
-Model id (both): **`qwen3.8-27B`**. Health checks: `GET /health` on either port.
+Model id (both): **`qwen3.8-27B`**. Health checks: `GET /health` on any port.
+
+> **Profile A and Profile B serve byte-identical generations.** Both run the same Rust binary
+> (`ADR-137` D8) over the same mirrored, sha-addressable corpus generation; `GET /loom/generation`
+> returns the same descriptor on both for the same `commitSha` (a CI/health assertion). Pick A for
+> LAN clients (via the `10.10.10.1` DNAT) and B for in-`visionclaw_network` consumers — the
+> grounded answer is the same either way.
 
 ```bash
 # smoke test from any LAN machine

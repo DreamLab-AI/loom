@@ -4,9 +4,11 @@ title: "Ontology Loom & Connector Platform: A Portable Reasoning Node, One Corpu
 status: proposed
 date: 2026-08-11
 authors: VisionFlow operator (did:nostr:jjohare) + opus exploration mesh
-linked_adrs: [ADR-135 (loom façade + deferred distillation decisions)]
+linked_adrs: [ADR-135 (loom façade + deferred distillation decisions), ADR-137 (Rust re-platform)]
 linked_ddd: docs/ddd/ddd-ontology-connector-context.md
 relates: [
+  PRD-026 (loom consolidation),
+  PRD-027 (Rust re-engineering — extends this capstone onto the Rust substrate),
   PRD-020 (pervasive ontology augmentation),
   VisionClaw PRD-022 (semantic-trust-layer),
   PRD-023 (gap-close),

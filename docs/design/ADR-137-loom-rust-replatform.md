@@ -1,7 +1,7 @@
 # ADR-137 — Re-platform the Loom to Rust (axum/tokio, hexagonal crates, oxigraph-native, in-process HNSW) and resolve deployment to both compose profiles
 
-**Status:** Proposed (design-only; direct-to-target end state. Implementation is a later phase — this ADR records the architecture decision, it does not ship code)
-**Date:** 2026-08-17
+**Status:** **Accepted + Implemented** (2026-08-17 — mesh implementation landed; eight-crate Rust workspace built, `cargo test --workspace --all-features` / clippy / `cargo deny` green, adversarially audited by gpt-5.4 with all five findings remediated — `.claude/evidence/AUDIT-gpt54.md`). Originally recorded Proposed/design-only; the implementation phase (PRD-027) has since executed. Two honest caveats survive implementation and are load-bearing: **(i)** the HNSW semantic fallback is wired but **default-OFF** because the recall gate is RED (measured `0.816 < 0.87`, §D5 + Erratum D below); **(ii)** the production reference-deployment cutover and the live A≡B generation-parity health assertion are the operational tail — the *code* implements both profiles, the *running* promote is a deploy-layer step.
+**Date:** 2026-08-17 (implemented); decision recorded 2026-08-17
 **Decision-type:** Architecture (substrate re-platform — language/runtime change + semantic-fallback wiring + deployment resolution)
 **Deciders:** Dr John O'Hare (operator)
 **Extends:** ADR-135 (Ontology Loom node — keystone; node boundary, generation discipline, model-swap seam, Deployment A/B **unchanged**), ADR-136 (tooling allocation — RuVector behind the markdown, pyoxigraph→oxigraph SPARQL, Whelk-rs build-time, gate on ProofGate, mesh deferred **unchanged**).
@@ -140,6 +140,8 @@ The Rust rewrite is exactly what tips this from ADR-135 D1-a's "ship A, keep B g
 
 `loom-attest-proofgate` re-platforms the gate verdict onto RuVector `ProofGate<T>`/`MutationLedger` (ADR-047, per ADR-136 D5), but strictly at build/CI time. Domain predicates (subclass-acyclicity, dupe-label, type-match, relation-contradiction) stay Loom-owned in `loom-domain`; only their *attestation mechanics* (verdict → chain-hashed tamper-evident ledger entry) move to RuVector. The serving hot path never depends on it.
 
+> **Erratum A (2026-08-17, implementation).** "onto RuVector `ProofGate<T>`/`MutationLedger` (ADR-047)" implied the gate is reachable from `ruvector-core`. Verified against source it is not: `ProofGate<T>`/`MutationLedger` live in **`ruvector-graph-transformer`** (`src/proof_gated.rs`, atop `ruvector-verified`), and `ruvector-core`'s in-crate `agenticdb::WitnessLog` is **unsound** (non-crypto `DefaultHasher` behind a "SHA256" doc-comment). The implemented `loom-attest-proofgate` therefore ships **Loom's own `sha2` head-checkpointed `ChainedLedger`** (real SHA-256, truncation-proof — audit finding 4) as the attestation substrate; binding the real `ProofGate` is a one-line rewiring behind the `attest` feature. The D9 decision (attest the mechanics, build/CI-time only, off the serving path) stands; only the substrate crate differs from what "ADR-047" implied. See RUST-ARCHITECTURE §11.5 and ADR-136 D5 Erratum A.
+
 - **Rejected alternative — attest on the serving path / per request.** Rejected: attestation records *that the gate ran* at write time; putting it on the read path adds a dependency to a path that must stay LLM-free and network-free for no serving benefit.
 - **Prize impact:** *help.* A tamper-evident gate blocks a bad write before the canonical corpus; the markdown a human reviews is what it protects.
 
@@ -169,11 +171,20 @@ The Rust rewrite is exactly what tips this from ADR-135 D1-a's "ship A, keep B g
 ### Negative / honest caveats
 - **We give up ADR-135 D1's exact portability property** (any operator reads all 260 lines; runs anywhere Python 3.10+ runs) in exchange for a *different, better* portability (one static musl binary, no interpreter) plus a compile/cross-compile/Nix toolchain and slower edit-run iteration. This is a real cost on the developer-ergonomics axis; it is justified because the durable value is on the substrate axis and D1's actual *goal* (portable model-swappable façade) is improved, not lost (D1). Stated so no downstream doc reads the tradeoff as free.
 - **HNSW fusion remains OFF until the WS-O bench passes** — the −0.40 over-retrieval result is the standing regression guard (D5). Landing the retrieval recall (0.87) is *not* the same as landing answer-quality; the re-platform makes the wiring *possible*, the bench makes it *default*. No doc may write HNSW-fusion as on-by-default until the bench clears all axes.
-- **Everything in this ADR is Aspirational** — the Rust node is design-only; the Python Loom is what is Shipped today. This is honoured in the shared honesty table (ADR-136 §1 / DDD §1); implementation is PRD-027's phased build.
+- **~~Everything in this ADR is Aspirational — the Rust node is design-only~~** — *superseded by the implementation (2026-08-17).* The eight-crate Rust workspace is **built and audited** (gates green; gpt-5.4 findings 1–5 remediated). What remains genuinely not-yet-on: the **semantic fallback stays default-OFF** (recall gate RED, `0.816 < 0.87`) and the **production reference-deployment cutover + live A≡B parity assertion** are the operational tail. The shared honesty table's "Shipped (Py) / Aspirational (Rust)" split reflected design time; post-implementation the honest split is "**implemented + audited (Rust)** vs **gated-off (semantic fusion) / operational-tail (cutover)**". Substrate, not served-unit: THE PRIZE is unchanged.
 - **The DL-reasoner story still has nothing to catch** (zero `owl:disjointWith` axioms, ADR-136 D6); Whelk is authority for closure/subsumption only. Unchanged by this ADR; noted so it is not over-claimed.
 
 ### Neutral
 - The model-swap seam, generation discipline, and served-unit identity are byte-for-byte the same contract across the re-platform and across both profiles.
+
+### Implementation errata (2026-08-17 — folded in from the build, verified in-session)
+
+Ground truth that surfaced during implementation/audit and refines (does not reverse) the decisions above:
+
+- **Erratum A — the attestation substrate.** `ProofGate<T>`/`MutationLedger` are in `ruvector-graph-transformer`, not `ruvector-core`; the interim substrate is Loom's own `sha2` `ChainedLedger`. Full detail at §D9 Erratum A.
+- **Erratum B — the redb read-only-mount hazard (refines §D8 consequence 3).** `LOOM_HNSW_ARTIFACT` (`ontology-corpus.rvdb`) is a **redb** file, and redb **mutates on open** even read-only. Both compose profiles mount `./data` read-only (correct for the JSON/TTL projections), so the deploy entrypoint must **copy the `.rvdb` to a writable node-private path (`/run/loom`, tmpfs) with a sha256 verify against `.generation.json`** and point the env var at the copy — never open it in place off the ro mount, never mount `data` rw. This preserves both invariants at once: the ro mount stays the immutable byte-parity source, the mutable working file is a verified per-node copy. (RUST-ARCHITECTURE §13 Erratum B; realised in `deploy/`.)
+- **Erratum C — the `ruvector-core` feature trim.** The workspace links `ruvector-core` with explicit `hnsw`+`storage`+`simd`+`parallel` and **defaults off**, to shed `api-embeddings`→`reqwest 0.11` and keep `cargo deny` green (RUST-ARCHITECTURE §2.1 Erratum C).
+- **Erratum D — the gpt-5.4 audit remediations.** Four design assertions were refuted and remediated (`.claude/evidence/AUDIT-gpt54.md`): the SPARQL LIMIT clamp is now **PREFIX/BASE-prologue-aware** (stronger than Python, a deliberate security divergence — EXP-004); the `max_tokens` floor is **integer-only, Python-parity** (a higher string ask is not lowered — EXP-006); the `/loom/search/semantic` debug surface is **default-OFF** (single-gate invariant holds by default — EXP-007); and the **recall gate is honestly RED** (`0.816 < 0.87`, so `LOOM_SEMANTIC_FALLBACK` stays default-off — EXP-008). None touches THE PRIZE or the model-swap seam.
 
 ---
 

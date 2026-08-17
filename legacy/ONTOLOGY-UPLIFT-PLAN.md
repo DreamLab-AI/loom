@@ -1,3 +1,11 @@
+> **Status: Historical (2026-08-11 HP toolkit guide) — frozen, do not extend.** Retired to
+> `legacy/` on 2026-08-17 (DOC-REENGINEERING-PLAN §2.1). It documents the `legacy/scripts/`
+> bench drivers and the now-retired vendored `app/pipeline/`. Its live content — the retrieval
+> recipe and the bench ask — is subsumed by [`PRD-027`](../docs/design/PRD-027-rust-loom-reengineering.md)
+> and [`bench/UPLIFT-BENCH-PROTOCOL.md`](../bench/UPLIFT-BENCH-PROTOCOL.md). The `ontology_scaffold.py`
+> / `ontology_proxy.py` it references were retired with the Python serving code; their behaviour
+> lives in the Rust `loom-scaffold` crate and the frozen goldens in `tests/golden-python/`.
+
 # Ontology Uplift Toolkit — Plan & Usage (for the agent running model tests on HP-Desktop)
 
 **Deployed:** 2026-08-11 by the workspace Claude session (via `ssh hp`).
