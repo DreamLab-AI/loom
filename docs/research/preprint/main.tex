@@ -34,7 +34,7 @@
 \title{\vspace{-1.2cm}\bfseries Private Knowledge, Faithfully Served:\\[2pt]
 Grounding Swappable Language Models in a Curated Ontology,\\ Measured Against a Copy Ceiling}
 \author{Dr John O'Hare\\ \small DreamLab AI \and \small The Loom / VisionFlow neurosymbolic stack}
-\date{\today\\[4pt]\small\textit{Pre-print. Numbers marked \textcolor{burnt}{[SWEEP]} are finalised from the 10-model run.}}
+\date{\today\\[4pt]\small\textit{Pre-print v1. All figures from the finalised seed-42 ten-model run (2026-08-16).}}
 
 \begin{document}
 \maketitle
@@ -47,9 +47,9 @@ a curated, human-vetted, provenance-tracked ontology---class definitions, typed 
 taxonomy---into a swappable model's context at query time, and ask what it actually delivers.
 Using a knowledge graph as its own oracle we auto-generate 510 in-domain questions with
 graph-derived gold and score a paired \{raw, scaffold\} design across ten contemporary models
-from five providers, under one deterministic configuration. Unaided, models score $\approx0.36$:
+from five providers, under one deterministic configuration. Unaided, models score $\approx0.26$:
 the domain is genuinely private, absent from their parametric memory. Given the curated context
-they reach $\approx0.94$. To characterise \emph{what} that grounded score is, we introduce a
+they reach $\approx0.92$. To characterise \emph{what} that grounded score is, we introduce a
 per-item \textbf{copy ceiling}---the recall a no-op extractor of the injected context would
 obtain---and treat proximity to it as a measure of \emph{delivery fidelity}, not a defect: on
 Gemini~3.7~Flash the scaffold recall (0.943) tracks its copy ceiling (0.964) closely, i.e.\ the
@@ -58,11 +58,13 @@ authoritative source is the product for private-knowledge grounding: the answer 
 because the source is, and it is attributable and cheap---the rigorous curation is amortised, not
 re-paid per query. The signed \emph{gain over copy} (recall $-$ ceiling) turns delivery fidelity
 into a model-discriminating metric:
-\textcolor{burnt}{[SWEEP: spread across the ten models, X to Y]}. We position this against the
+across the ten models it spans $-0.067$ to $-0.022$---negative for every one, each restating
+marginally less than a perfect extractor of its context, with the newest models (the Gemini~3.x
+family, Claude~Haiku~4.5) closest to the ceiling. We position this against the
 right alternative---grounding the same model in a generic web search rather than the bare
 model---and lay out the multivariate bar such a system must clear: excellent in-domain recall
 \emph{and} no ``jaggedness'' (regression) on general, out-of-domain questions. We release the
-hardened harness, the frozen question set, and all per-row artefacts.
+harness, the frozen question set, and all per-row artefacts.
 \end{abstract}
 
 % =====================================================================
@@ -80,7 +82,7 @@ relations, taxonomy---into a \emph{swappable} model's context, and characterise 
 in an authoritative private corpus actually buys.
 
 The unaided-vs-grounded gap is stark and is the point: on in-domain questions our models score
-$\approx0.36$ from parametric memory and $\approx0.94$ with the curated context. The domain is
+$\approx0.26$ from parametric memory and $\approx0.92$ with the curated context. The domain is
 genuinely private; the ontology supplies what the model lacks. Because we derive both questions
 and gold from the graph and then inject a slice of that graph, the injected context
 \emph{contains} the answers. Rather than hide this, we measure it. For every question we compute
@@ -119,12 +121,12 @@ first axis rigorously and specifies the rest.
 \textbf{copy ceiling} that measures delivery fidelity, and a signed gain-over-copy metric
 (\S\ref{sec:method}).
 \item A ten-model, five-provider paired sweep under one deterministic configuration: grounding a
-private ontology lifts every model from $\approx0.36$ to $\approx0.94$ in-domain, and gain over
+private ontology lifts every model from $\approx0.26$ to $\approx0.92$ in-domain, and gain over
 copy---not raw uplift---is what separates the models (\S\ref{sec:results}).
 \item The multivariate evaluation design a deployable system must pass (in-domain fidelity;
 no jaggedness on out-of-domain; a web-search grounding baseline; attribution), and where the
 present study sits within it (\S\ref{sec:multivariate}).
-\item An open, hardened harness (paired bootstrap with domain-clustered intervals,
+\item An open harness (paired bootstrap with domain-clustered intervals,
 intention-to-treat, per-row truncation/token/retry provenance) and a frozen artefact set.
 \end{enumerate}
 
@@ -235,13 +237,13 @@ breakdown and retry counts so truncation and transport flakiness are auditable, 
 \section{Results}\label{sec:results}
 
 \subsection{In-domain: high-fidelity delivery of private knowledge}
-On Gemini~3.7~Flash the paired design gives a large, tight uplift---raw recall 0.359,
-scaffold recall 0.943, paired delta $\mathbf{+0.584}$, naive 95\% CI $[+0.549,+0.619]$,
-domain-clustered 95\% CI $[+0.536,+0.632]$ over $n=510$ with zero errors and zero truncated
+On Gemini~3.7~Flash the paired design gives a large, tight uplift---raw recall 0.375,
+scaffold recall 0.942, paired delta $\mathbf{+0.567}$, naive 95\% CI $[+0.532,+0.603]$,
+domain-clustered 95\% CI $[+0.524,+0.611]$ over $n=510$ with zero errors and zero truncated
 responses. The raw score confirms the domain is private---parametric memory answers barely a
 third. The copy ceiling then \emph{characterises} the grounded score: the mean fraction of gold
-already present in the injected scaffold is \textbf{0.964}, and the model's recall (0.943) tracks
-it within $-0.021$. The system is doing exactly what a private-knowledge grounding layer should:
+already present in the injected scaffold is \textbf{0.964}, and the model's recall (0.942) tracks
+it within $-0.022$. The system is doing exactly what a private-knowledge grounding layer should:
 the curated ontology carries the answers, and the model delivers them back with high fidelity. The
 tiny negative gain says the model restates almost everything it is shown and fabricates almost
 nothing---faithful, attributable delivery, not free-associating from parametric memory. Whether a
@@ -254,29 +256,74 @@ model does more than restate---recovering gold the lexical check missed, or conv
   ylabel={Mean recall}, symbolic x coords={raw,scaffold,copy ceiling},
   xtick=data, enlarge x limits=0.3, nodes near coords,
   nodes near coords style={font=\footnotesize}]
-\addplot[rawstyle] coordinates {(raw,0.359)};
-\addplot[scafstyle] coordinates {(scaffold,0.943)};
+\addplot[rawstyle] coordinates {(raw,0.375)};
+\addplot[scafstyle] coordinates {(scaffold,0.942)};
 \addplot[copystyle] coordinates {(copy ceiling,0.964)};
 \end{axis}\end{tikzpicture}
-\caption{Gemini~3.7~Flash. The scaffold arm (0.943) lands just under the \emph{copy ceiling}
+\caption{Gemini~3.7~Flash. The scaffold arm (0.942) lands just under the \emph{copy ceiling}
 (0.964)---the recall a no-op extractor of the injected context would already achieve. The
-$+0.58$ raw$\to$scaffold uplift is almost entirely answer exposure.}
+$+0.57$ raw$\to$scaffold uplift is almost entirely answer exposure.}
 \label{fig:anchor}
 \end{figure}
 
 \subsection{Ten models: gain over copy separates them}\label{sec:multi-model}
-% ===================================================================
-% [SWEEP] Fill from bench/sweep/analyse.py (sweep-analysis.md):
-%   - Table: model | raw | scaffold | uplift [clustered CI] | copy ceiling | gain over copy
-%   - Figure: grouped bars raw/scaffold/copy-ceiling per model, sorted by gain over copy
-%   - Figure: signed gain-over-copy per model (the discriminating axis)
-% ===================================================================
-\textcolor{burnt}{[SWEEP] Multi-model table and figures inserted here once the 10-model run
-completes. Every model shows a large raw$\to$scaffold uplift; the discriminating quantity is
-gain over copy---whether a model merely restates exposed gold (gain $\approx 0$), falls short of
-it (negative: it loses surfaced facts, a delivery-fidelity failure that matters for a
-private-knowledge system), or exceeds it (positive: it recovers gold the lexical exposure check
-missed, via paraphrase or inference).}
+Table~\ref{tab:sweep} runs the identical paired design across ten models from five providers under
+one deterministic configuration. Every model shows a large raw$\to$scaffold uplift
+($+0.57$ to $+0.78$) and every model lands just under the copy ceiling: scaffold recall spans
+0.897--0.942 against a ceiling of \textbf{0.964} that is a property of the questions and the
+injected context---not the model---and is therefore identical across the row. The raw uplift is a
+near-constant restatement of exposed gold; it does not separate the models.
+
+The signed \textbf{gain over copy} does. It is negative for all ten (Figure~\ref{fig:gain}), from
+$-0.067$ (Gemini~2.5~Flash-Lite) to $-0.022$ (Gemini~3.7~Flash): on this lexical metric no model
+recovers gold \emph{beyond} what the exposure check already finds, so they differ only in how much
+surfaced gold they \emph{drop}. The ordering is interpretable and tracks recency and capability
+rather than provider---the newest, strongest models (Gemini~3.7 and 3.5~Flash, Claude~Haiku~4.5)
+sit closest to the ceiling (most faithful restatement), while older or smaller models
+(Gemini~2.5~Flash-Lite, GPT-4.1-mini, Mistral-Small-24B) lose measurably more. Two models carried
+transport-level truncations under the fixed 2048-token budget (GLM-4.6: 174 truncated, 5 retried;
+Gemini~2.5~Flash-Lite: 16 truncated), recorded per row rather than hidden.
+
+\begin{table}[t]\centering\small
+\caption{Ten models, one deterministic configuration, $n=510$ (seed 42), sorted by gain over copy
+(scaffold recall $-$ copy ceiling). The copy ceiling (0.964) is a property of the questions and
+the injected context and is identical across models. The interval shown is the domain-clustered
+block bootstrap (the wider, primary one).}
+\label{tab:sweep}
+\begin{tabular}{lccccc}
+\toprule
+Model & Raw & Scaffold & Uplift [clustered 95\% CI] & Ceiling & Gain \\
+\midrule
+Gemini 3.7 Flash      & 0.375 & 0.942 & $+0.567$ $[+0.524,+0.611]$ & 0.964 & \gainneg{-0.022} \\
+Gemini 3.5 Flash-Lite & 0.323 & 0.938 & $+0.615$ $[+0.565,+0.667]$ & 0.964 & \gainneg{-0.026} \\
+Claude Haiku 4.5      & 0.151 & 0.934 & $+0.783$ $[+0.741,+0.827]$ & 0.964 & \gainneg{-0.031} \\
+GLM-4.6               & 0.243 & 0.928 & $+0.685$ $[+0.641,+0.727]$ & 0.964 & \gainneg{-0.036} \\
+DeepSeek-Chat         & 0.347 & 0.924 & $+0.578$ $[+0.532,+0.622]$ & 0.964 & \gainneg{-0.040} \\
+Llama-3.3-70B         & 0.227 & 0.916 & $+0.688$ $[+0.632,+0.738]$ & 0.964 & \gainneg{-0.049} \\
+Qwen-2.5-72B          & 0.309 & 0.914 & $+0.605$ $[+0.562,+0.649]$ & 0.964 & \gainneg{-0.050} \\
+Mistral-Small-24B     & 0.285 & 0.906 & $+0.621$ $[+0.558,+0.682]$ & 0.964 & \gainneg{-0.058} \\
+GPT-4.1-mini          & 0.162 & 0.905 & $+0.743$ $[+0.697,+0.787]$ & 0.964 & \gainneg{-0.060} \\
+Gemini 2.5 Flash-Lite & 0.227 & 0.897 & $+0.670$ $[+0.623,+0.716]$ & 0.964 & \gainneg{-0.067} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]\centering
+\begin{tikzpicture}
+\begin{axis}[xbar,width=12.5cm,height=6.4cm,bar width=9pt,xmin=-0.078,xmax=0,
+  xlabel={Gain over copy (scaffold recall $-$ copy ceiling)}, enlarge y limits=0.09,
+  symbolic y coords={Gemini 2.5 FL,GPT-4.1-mini,Mistral 24B,Qwen 72B,Llama 70B,DeepSeek,GLM-4.6,Haiku 4.5,Gemini 3.5 FL,Gemini 3.7 F},
+  ytick=data, nodes near coords, nodes near coords style={font=\footnotesize},
+  every node near coord/.append style={anchor=east},
+  every axis plot/.append style={fill=burnt!80,draw=burnt}]
+\addplot coordinates {(-0.067,Gemini 2.5 FL) (-0.060,GPT-4.1-mini) (-0.058,Mistral 24B) (-0.050,Qwen 72B) (-0.049,Llama 70B) (-0.040,DeepSeek) (-0.036,GLM-4.6) (-0.031,Haiku 4.5) (-0.026,Gemini 3.5 FL) (-0.022,Gemini 3.7 F)};
+\end{axis}\end{tikzpicture}
+\caption{Signed gain over copy for all ten models---negative throughout. No model exceeds the copy
+ceiling on the lexical metric; the spread ($-0.067$ to $-0.022$) is the axis that separates them
+where the near-identical raw uplift does not. Models nearest zero (top) restate the vetted facts
+most faithfully.}
+\label{fig:gain}
+\end{figure}
 
 % =====================================================================
 \section{The Multivariate Bar}\label{sec:multivariate}
@@ -322,8 +369,15 @@ evidence is gain over copy, and negative controls (irrelevant, shuffled-target, 
 scaffolds) that we flag as required future work.
 
 \paragraph{Gain over copy as a faithfulness axis.}
-\textcolor{burnt}{[SWEEP] interpretation of the cross-model spread: which providers/models
-under-utilise surfaced structure, which recover beyond it.}
+Across ten models the gain is uniformly negative ($-0.067$ to $-0.022$): none exceeds the copy
+ceiling, so on this lexical metric no model demonstrably recovers gold beyond what its injected
+context already exposes---the behaviour is faithful extraction, not inference over structure. The
+spread is small but ordered, and it tracks recency and capability rather than provider: the newest
+Gemini models and Claude~Haiku~4.5 restate the surfaced facts most completely (gain nearest zero),
+while older or smaller models drop more of what they were shown. For a private-knowledge system
+this is the operative quality signal---not ``does grounding help'' (it always does, and hugely)
+but ``how faithfully does this model deliver the vetted facts''---and the copy ceiling is what lets
+that be read off directly rather than inferred from an uplift that mostly measures exposure.
 
 % =====================================================================
 \section{Limitations and Threats to Validity}\label{sec:limits}
@@ -350,12 +404,12 @@ content produced under human direction---an ontology testbed, not an authoritati
 
 % =====================================================================
 \section{Conclusion}
-Ontology-scaffold grounding produces a large, statistically robust recall uplift for every model
-tested---but on the strongest model that uplift is, to within measurement, exactly what a copy of
-the injected context would score. The honest quantity is not the uplift but the \emph{gain over
-copy}, and it is small, sometimes negative, and \textcolor{burnt}{[SWEEP: it is what separates the
-ten models]}. Grounding evaluations that inject graph-derived gold should report a copy ceiling as
-standard. We release the harness, the frozen seed-42 question set, and all per-row artefacts.
+Ontology-scaffold grounding produces a large recall uplift for every model
+tested, tight under a domain-clustered bootstrap---but on the strongest model that uplift is, to
+within measurement, exactly what a copy of the injected context would score. The honest quantity is not the uplift but the \emph{gain over
+copy}, and across all ten models tested it is small and uniformly negative ($-0.067$ to
+$-0.022$)---the axis that separates them where the near-identical raw uplift cannot. Grounding
+evaluations that inject graph-derived gold should report a copy ceiling as standard. We release the harness, the frozen seed-42 question set, and all per-row artefacts.
 
 \paragraph{Reproducibility.} Harness, sweep drivers and per-row outputs:
 \texttt{github.com/DreamLab-AI/loom} (\texttt{bench/}). Every run ships its honesty notes and its
