@@ -1,0 +1,15 @@
+# LaTeX build intermediates — the source (main.tex, refs.bib) and the built
+# main.pdf are tracked; everything below regenerates on `latexmk -pdf main.tex`.
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.run.xml
+*.fdb_latexmk
+*.fls
+*-blx.bib
+p1.log
+p2.log
+p3.log
+pb.log

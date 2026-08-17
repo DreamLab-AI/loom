@@ -1,0 +1,153 @@
+% =====================================================================
+% paper-v2 — fresh scaffold per the structural survey (survey-structure.md)
+% and the differentiation verdict (differentiation.md).
+%
+% SINGULAR CONTRIBUTION (stake everything here): the copy ceiling as a
+% measurement instrument — a per-item, graph-derived input-exposure baseline
+% and signed gain-over-copy; the first standing control separating faithful
+% delivery of injected facts from reasoning over structure in graph-grounded
+% generation. Nearest neighbour to cite AND distinguish: arXiv 2606.05633
+% (answer-presence interventions); input-only baselines exist for RC/NLI
+% classifiers (Kaushik & Lipton 1808.04926; Gururangan 1803.02324; Poliak
+% 1805.01042) but never per-item/continuous for RAG.
+%
+% Section skeleton (metric-first pattern: FActScore §3 / ALCE §3.4 precedent):
+%   1 Intro — contribution sentence in first third
+%   2 The Private-Corpus Setting — requirements arc (from differentiation.md):
+%     business need → curation amortised → auditability (THE PRIZE) →
+%     accelerator boundary → privacy/LAN → model-swap → LLM-free retrieval →
+%     confidence gate → provenance. Each requirement one sentence + design
+%     consequence, ADR-sourced, with repo links.
+%   3 Related Work — clusters: KG-RAG systems (no exposure control);
+%     baseline-reframing papers; faithfulness metrics; private/enterprise RAG.
+%   4 The Ontology Scaffold — system, now the shipped Rust node (8-crate
+%     hexagonal; I-P1 port-type enforcement; repo links; 2ms lexical match;
+%     282k-triple closure; production deployment on LAN GPU host).
+%   5 The Copy Ceiling — OWN SECTION (promoted): definition, assumptions,
+%     gain-over-copy, and the negative-control design (true / shuffled /
+%     masked / irrelevant scaffolds).
+%   6 Method — paired within-model design; v1 ten-model sweep (cherry-picked);
+%     NEW live-ecosystem paired run (loom vs raw, model constant, Qwen3.8-27B
+%     production node); semantic judge (cross-family, reference-guided);
+%     statistics: paired bootstrap CIs, Wilcoxon, Cliff's delta, Holm; TOST
+%     for the equivalence claims.
+%   7 Results — 7.1 in-domain delivery fidelity (v1: raw 0.26 → scaffold 0.92,
+%     ceiling 0.964); 7.2 ten models, gain-over-copy −0.067..−0.022 uniformly
+%     negative (+ rank-correlation of gain vs capability); 7.3 negative
+%     controls (NEW: the lexical-artefact defence); 7.4 OOD gate non-jaggedness
+%     (v1 60-question judged arm + NEW general-set pairs).
+%   8 Analysis — "uplift is exposure, not reasoning" (Stronger-Baselines §4
+%     move): what the instrument reveals across all arms.
+%   9 The Multivariate Bar — shrunk scorecard (frame introduced in §2).
+%   10 Limitations — incl. single-corpus, judge-family, doc-embedding recall
+%     gate red (honest), lexical scorer for v1 axes (semantic judge for new).
+%   11 Conclusion — lead with "report a copy ceiling as standard".
+% =====================================================================
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{microtype}
+\usepackage{pgfplots}\pgfplotsset{compat=1.18}
+\usepackage{booktabs,array,tabularx,multirow}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\usepackage[backend=bibtex,style=numeric-comp,sorting=nyt,maxnames=4,giveninits=true]{biblatex}
+\addbibresource{refs.bib}
+
+\definecolor{teal0}{RGB}{0,110,110}
+\definecolor{burnt}{RGB}{192,80,0}
+\definecolor{ink}{RGB}{25,28,32}
+\definecolor{softgreen}{RGB}{46,139,87}
+\definecolor{grayln}{RGB}{200,200,200}
+\color{ink}
+\hypersetup{colorlinks=true,linkcolor=teal0,citecolor=teal0,urlcolor=teal0}
+\captionsetup{font=small,labelfont={bf}}
+\pgfplotsset{
+  every axis/.append style={font=\small,axis line style={grayln},tick style={grayln},
+    grid=major,major grid style={grayln!35},label style={color=ink},tick label style={color=ink}},
+  rawstyle/.style={fill=burnt!85,draw=burnt},
+  scafstyle/.style={fill=teal0!85,draw=teal0},
+  copystyle/.style={fill=gray!35,draw=gray!60},
+}
+\newcommand{\gainpos}[1]{\textcolor{softgreen}{$+#1$}}
+\newcommand{\gainneg}[1]{\textcolor{burnt}{$#1$}}
+
+\title{\vspace{-1.2cm}\bfseries The Copy Ceiling:\\[2pt]
+An Input-Exposure Control for Ontology-Grounded Generation\\
+over Private Corpora}
+\author{Dr John O'Hare\\ \small DreamLab AI \and \small The Loom / VisionFlow neurosymbolic stack}
+\date{\today\\[4pt]\small\textit{Pre-print v2 (restructured). Supersedes v1; adds the
+negative-control arms and the production-node paired study.}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+[ABSTRACT — written last. One-paragraph arc: private-corpus requirements;
+the instrument (copy ceiling, gain-over-copy); the uniformly negative
+ten-model result; the negative-control attribution; the OOD non-regression;
+the standard we propose.]
+\end{abstract}
+
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+% Contribution sentence within the first third. Contribution list:
+%  C1 the copy ceiling + signed gain-over-copy (the instrument) — SINGULAR
+%  C2 evidence: ten models uniformly negative; negative controls attribute
+%     the gain to scaffold content; production-node paired study
+%  C3 the multivariate protocol as organising frame (secondary)
+%  C4 released artefacts: harness, frozen sets, per-row data, the served
+%     system itself (repo links)
+[TODO]
+
+\section{The Private-Corpus Setting}\label{sec:setting}
+% The requirements arc, ADR-sourced, one design consequence each.
+% Repo links: github.com/DreamLab-AI/loom (+ ruvector, logseq corpus builder,
+% agentbox consumer). Table: requirement -> consequence -> where enforced.
+[TODO]
+
+\section{Related Work}\label{sec:related}
+% Clusters from survey-structure.md; distinguish 2606.05633 explicitly.
+[TODO]
+
+\section{The Ontology Scaffold}\label{sec:system}
+% The shipped Rust node. THE PRIZE invariant (I-P1) as architecture.
+[TODO]
+
+\section{The Copy Ceiling}\label{sec:ceiling}
+% Definition; assumptions; gain-over-copy; negative-control design.
+[TODO]
+
+\section{Method}\label{sec:method}
+[TODO]
+
+\section{Results}\label{sec:results}
+\subsection{In-domain: delivery fidelity}\label{sec:indomain}
+[TODO — cherry-pick v1 §Results in-domain]
+\subsection{Ten models: gain over copy}\label{sec:tenmodel}
+[TODO — cherry-pick v1 table + figure; add rank correlation]
+\subsection{Negative controls: attributing the gain}\label{sec:controls}
+[TODO — NEW: true / shuffled / masked / irrelevant arms]
+\subsection{Out-of-domain: the gate holds}\label{sec:ood}
+[TODO — cherry-pick v1 OOD + NEW general pairs]
+
+\section{Analysis: Exposure, not Reasoning}\label{sec:analysis}
+[TODO]
+
+\section{The Multivariate Bar}\label{sec:bar}
+[TODO — shrunk scorecard]
+
+\section{Limitations and Threats to Validity}\label{sec:limits}
+[TODO]
+
+\section{Conclusion}\label{sec:conclusion}
+[TODO]
+
+\printbibliography
+
+\end{document}
