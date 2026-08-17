@@ -14,7 +14,11 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.88"
+# MSRV 1.89, NOT 1.88: ruvector-core's `simd` feature (enabled in our explicit
+# feature set below) uses AVX-512 intrinsics (_mm512_*) that only stabilised in
+# 1.89 — rust:1.88 fails with E0658 (verified in the deploy image build,
+# 2026-08-17). Host machinelearn has 1.89.0; this container 1.97.0.
+rust-version = "1.89"
 license = "AGPL-3.0-only"
 repository = "https://github.com/DreamLab-AI/loom"
 authors = ["DreamLab-AI contributors"]

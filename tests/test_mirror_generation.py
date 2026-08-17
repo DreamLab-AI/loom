@@ -2,10 +2,16 @@
 """Behavioural tests for the mirror.sh generation verifier — the SSOT-boundary
 guarantee that the Loom never serves a mixed-build set (ADR-136 D4 / ADR-135 D2.1).
 
-Run (from the app/ dir, `pipeline` importable as a package):
-    <venv python> -m pytest pipeline/tests/test_mirror_generation.py -q
+`app/mirror.sh` STAYS: it is the promote mechanism the Rust Loom reads (the Rust
+node implements only the read side of the generation contract). This test was
+relocated here from the retired `app/pipeline/tests/` when the vendored Python
+serving/build code was retired (RUST-ARCHITECTURE §12 deprecation map); it is the
+one pipeline test that survives because its subject — `app/mirror.sh` — survives.
 
-The verifier is the inline python block inside ../../mirror.sh. These tests extract
+Run (from the repo root, no package import needed):
+    python3 -m pytest tests/test_mirror_generation.py -q
+
+The verifier is the inline python block inside ../app/mirror.sh. These tests extract
 that exact block (no copy that can drift from the shipped code) and drive it as a
 subprocess against synthetic staging/live sets, asserting:
   * a mixed-build candidate (stamps spanning > GEN_TOL) is REJECTED (exit 2) and the
@@ -25,7 +31,8 @@ from pathlib import Path
 
 import pytest
 
-MIRROR = Path(__file__).resolve().parents[2] / "mirror.sh"
+# Relocated to tests/ : repo-root is parents[1]; mirror.sh lives under app/.
+MIRROR = Path(__file__).resolve().parents[1] / "app" / "mirror.sh"
 ARTIFACTS = ["scaffold-index.json", "prose-index.json", "ontology.ttl", "ontology-inferred.ttl"]
 
 
