@@ -12,10 +12,22 @@ description = "VectorIndex adapter: in-process ruvector-core HNSW read (hot path
 loom-domain = { path = "../loom-domain" }
 # In-process HNSW read (hot path). Default features carry hnsw + storage.
 ruvector-core = { workspace = true }
+# The domain VectorIndex port is `#[async_trait]`; the read path is async.
+async-trait = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
 # Off-turn / build-time write channel to ruvector-postgres ONLY — feature-gated
 # so the serving binary never links Postgres on the query hot path.
 tokio-postgres = { workspace = true, optional = true }
 pgvector = { workspace = true, optional = true }
+
+[dev-dependencies]
+# Recall-gate integration test embeds via Xinference over HTTP.
+reqwest = { workspace = true }
+# Unit tests build throwaway ruvector-core DBs in a tempdir.
+tempfile = "3"
 
 [features]
 default = []
@@ -23,6 +35,13 @@ default = []
 pg-write = ["dep:tokio-postgres", "dep:pgvector"]
 # Master gate for the semantic fallback code path (recall-gate governed).
 semantic-fallback = []
+
+# The exporter links Postgres — only compilable under `pg-write`, so the default
+# serving build (and `--no-default-features`) never pulls it in (EXP-001).
+[[bin]]
+name = "export_corpus"
+path = "src/bin/export_corpus.rs"
+required-features = ["pg-write"]
 
 [lints]
 workspace = true
