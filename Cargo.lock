@@ -1658,14 +1658,25 @@ name = "loom-facade"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-trait",
  "axum",
+ "http-body-util",
+ "loom-backend-openai",
  "loom-domain",
+ "loom-embed-xinference",
+ "loom-graph-oxigraph",
+ "loom-scaffold",
+ "loom-vector-ruvector",
+ "serde",
  "serde_json",
+ "sha2 0.10.9",
+ "tempfile",
  "tokio",
  "tower",
  "tower-http",
  "tracing",
  "tracing-subscriber",
+ "wiremock",
 ]
 
 [[package]]
@@ -3390,6 +3401,7 @@ dependencies = [
  "http-body 1.1.0",
  "http-body-util",
  "pin-project-lite",
+ "tokio",
  "tower",
  "tower-layer",
  "tower-service",

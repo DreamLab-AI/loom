@@ -8,20 +8,45 @@ repository.workspace = true
 authors.workspace = true
 description = "The Ontology Loom serving node: axum/tower composition root + the two deploy profiles."
 
+[lib]
+name = "loom_facade"
+path = "src/lib.rs"
+
 [[bin]]
 name = "loom-facade"
 path = "src/main.rs"
 
 [dependencies]
 loom-domain = { path = "../loom-domain" }
+# The adapters — the composition root binds one concrete impl per port.
+loom-scaffold = { path = "../loom-scaffold" }
+loom-graph-oxigraph = { path = "../loom-graph-oxigraph" }
+loom-vector-ruvector = { path = "../loom-vector-ruvector" }
+loom-embed-xinference = { path = "../loom-embed-xinference" }
+loom-backend-openai = { path = "../loom-backend-openai" }
+
 axum = { workspace = true }
 tower = { workspace = true }
-tower-http = { workspace = true }
+# `timeout` added on top of the workspace features so tower_http maps the
+# distill timeout to a 408 response (keeps the service error Infallible for axum).
+tower-http = { workspace = true, features = ["timeout"] }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+serde = { workspace = true }
 serde_json = { workspace = true }
 anyhow = { workspace = true }
+async-trait = { workspace = true }
+# Re-hash artifact shas in the mirror's verify_atomicity (§11.6).
+sha2 = { workspace = true }
+
+[dev-dependencies]
+# In-memory oneshot router tests + a mock model backend for the chat path.
+wiremock = "0.6"
+tempfile = "3"
+tokio = { workspace = true }
+serde_json = { workspace = true }
+http-body-util = "0.1"
 
 [lints]
 workspace = true
