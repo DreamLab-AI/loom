@@ -82,7 +82,7 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.89"   # Erratum (2026-08-17): bumped 1.88→1.89 — ruvector-core's `simd` feature uses AVX-512 intrinsics stabilised in 1.89 (mesh commit 0c63a1d). The sibling repos' 1.88 floor no longer suffices with SIMD on.
+rust-version = "1.89"   # Erratum (2026-08-17): bumped 1.88→1.89. ruvector-core's `simd` feature (in our explicit feature set since aefa831, §2.1 Erratum C) uses AVX-512 intrinsics (`_mm512_*`) stabilised only in Rust 1.89; on 1.88 the deploy image build fails with E0658 (verified by the deploy agent). Toolchain facts: MSRV floor 1.89; host `machinelearn` = 1.89.0; the container's plain cargo = 1.97.0 (no rustup, ignores rust-toolchain.toml); deploy builder image = `rust:1.97-bookworm`. The sibling repos' 1.88 floor no longer suffices with SIMD on.
 license = "AGPL-3.0-only"
 repository = "https://github.com/DreamLab-AI/loom"
 authors = ["DreamLab-AI contributors"]
