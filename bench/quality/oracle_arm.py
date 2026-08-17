@@ -75,11 +75,23 @@ def oracle_context(topic, question, pages, si, hops=1, max_chars=24000):
     preload the neighbourhood's dfull markdown ranked by relevance to the
     question, up to a large budget. This is the design under test: efficient
     ontology traversal feeding a large context window (no vector search yet)."""
-    want = set(norm(topic).split()) | (set(norm(question).split()) - STOP)
-    # 1. seeds: pages whose title tokens overlap the topic most
-    seeds = sorted(pages, key=lambda s: -(len(pages[s]["toks"] & want)
-                   + (2 if norm(pages[s]["title"]) in norm(topic + " " + question) else 0)))
-    seeds = [s for s in seeds if pages[s]["toks"] & want][:4]
+    topic_toks = set(norm(topic).split()) - STOP
+    want = topic_toks | (set(norm(question).split()) - STOP)
+    # 1. seeds: PRECISE concept match — rank by Jaccard(title, topic), require a
+    # strong overlap so generic classes ("AI Core") can't hitch on a shared word.
+    # A proxy for the deferred vector-search layer's semantic concept-finding.
+    def title_sim(s):
+        tt = pages[s]["toks"]
+        if not tt or not topic_toks:
+            return 0.0
+        inter = len(tt & topic_toks)
+        jac = inter / len(tt | topic_toks)
+        exact = 0.5 if norm(pages[s]["title"]) in norm(topic) else 0.0
+        return jac + exact
+    scored = sorted(pages, key=lambda s: -title_sim(s))
+    seeds = [s for s in scored if title_sim(s) >= 0.34][:3]  # strong-match seeds only
+    if not seeds:  # fall back to the single best title match
+        seeds = scored[:1] if title_sim(scored[0]) > 0 else []
     if not seeds:
         return "", []
     # 2. traverse the neighbourhood
