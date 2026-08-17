@@ -103,28 +103,380 @@ the standard we propose.]
 %  C3 the multivariate protocol as organising frame (secondary)
 %  C4 released artefacts: harness, frozen sets, per-row data, the served
 %     system itself (repo links)
-[TODO]
+A recurring enterprise requirement is a language model that answers accurately over a large,
+private, domain-specific corpus---a customer's product data, an organisation's internal
+knowledge, a curated scientific ontology---that the model cannot have memorised because it was
+never in pretraining. Retrieval-augmented generation is the standard remedy for this gap between
+parametric memory and the knowledge an answer requires~\cite{lewis2020rag,gao2023ragsurvey}, and
+it helps most where parametric memory is weakest: long-tail and proprietary
+facts~\cite{mallen2023trust}. Structured, graph-based retrieval sharpens it
+further~\cite{edge2024graphrag,guo2024lightrag,baek2023kaping,pan2024unifying}. But evaluating such
+a system faces a measurement problem the headline ``grounding uplift'' hides: when the gold
+answers are themselves derived from the corpus that is injected, a large raw-to-grounded gain
+conflates two very different behaviours---faithfully \emph{delivering} the exposed facts, and
+\emph{reasoning} over the injected structure. Published knowledge-graph grounding reports the gain
+without a standing control that separates them.
+
+\textbf{We introduce the \emph{copy ceiling}---a per-item, graph-derived input-exposure
+baseline---and the signed \emph{gain over copy}, the first control that separates faithful delivery
+of injected facts from reasoning over ontological structure in graph-grounded generation.} For each
+question the copy ceiling is the recall a no-op extractor of \emph{exactly} the text the model was
+shown would already score; the gain over copy is the model's grounded recall minus that ceiling.
+It is the retrieval-augmented, per-item, continuous generalisation of the discrete input-only
+baselines long used to interpret reading comprehension~\cite{kaushik2018reading} and
+natural-language inference~\cite{gururangan2018artifacts,poliak2018hypothesis}. Its rhetorical role
+is a control the reader calibrates the headline number against, and the claim we draw from it is
+methodological: grounding evaluations whose gold is derived from the injected corpus should report
+a copy ceiling as standard~\cite{laitenberger2025stronger,min2023factscore}.
+
+The setting makes the control load-bearing. Unaided, the models we test score $\approx0.26$ on
+in-domain questions---the domain is genuinely private, absent from parametric memory---and
+$\approx0.92$ given the curated context. Almost the whole of that uplift is exposure: across ten
+contemporary models from five providers the gain over copy is small and \emph{uniformly negative}
+($-0.067$ to $-0.022$), so no model recovers gold beyond what a copy of its context already
+exposes, and they differ only in how much surfaced gold they drop. This is not a defect to explain
+away. High-fidelity delivery of an authoritative, human-vetted source \emph{is} the product for
+private-knowledge grounding: the answer is trustworthy because the source is, attributable to a
+named generation, and cheap because the expensive curation is amortised once rather than re-paid
+per query.
+
+\paragraph{Contributions.}
+\begin{enumerate}[topsep=2pt,itemsep=1pt]
+\item \textbf{The instrument (C1, singular).} The per-item copy ceiling and the signed gain over
+copy: a formal definition, an explicit assumptions list, and an interpretation that reads delivery
+fidelity, lossy restatement and reasoning-over-structure off a single signed quantity
+(\S\ref{sec:ceiling}).
+\item \textbf{The evidence (C2).} Ten models are uniformly negative on gain over copy; a four-arm
+negative-control design (true / shuffled / masked / irrelevant scaffolds) attributes the gain to
+scaffold \emph{content}; and a production-node paired study isolates the ecosystem feature by
+holding the model constant and varying only the serving path (\S\ref{sec:method}; results in
+\S\ref{sec:results}).
+\item \textbf{The organising frame (C3).} A conjunctive, multivariate bar---in-domain delivery
+fidelity \emph{and} out-of-domain non-regression, measured on two different instruments---within
+which the copy ceiling is the in-domain axis (\S\ref{sec:setting}, \S\ref{sec:bar}).
+\item \textbf{The artefacts (C4).} An open harness (paired bootstrap, Wilcoxon, Cliff's delta,
+Holm), the frozen question sets, all per-row data, and the served system
+itself.\footnote{The Loom serving node: \url{https://github.com/DreamLab-AI/loom}.}
+\end{enumerate}
 
 \section{The Private-Corpus Setting}\label{sec:setting}
 % The requirements arc, ADR-sourced, one design consequence each.
 % Repo links: github.com/DreamLab-AI/loom (+ ruvector, logseq corpus builder,
 % agentbox consumer). Table: requirement -> consequence -> where enforced.
-[TODO]
+The design decisions this paper measures are not preferences; they are forced by a chain of
+deployment requirements. We state the chain so that the evaluation bar---and the system in
+\S\ref{sec:system}---read as constraints rather than choices. Each requirement carries one design
+consequence and its architectural decision record (ADR); Table~\ref{tab:req} records where each is
+enforced. The object of study is a served node\footnote{The served node
+\url{https://github.com/DreamLab-AI/loom} (code under the repository licence; corpus terms per the
+sibling knowledgeGraph repository).} over a corpus built by a separate, CI-gated
+pipeline\footnote{The canonical builder \url{https://github.com/jjohare/logseq} runs
+\texttt{pytest pipeline/tests} and \texttt{pipeline.validate} before publishing each generation.}
+and accelerated by an in-process HNSW index\footnote{RuVector:
+\url{https://github.com/ruvnet/ruvector}.}.
+
+\begin{enumerate}[topsep=3pt,itemsep=2pt,leftmargin=1.5em]
+\item \textbf{Private-knowledge need $\Rightarrow$ curated, amortised corpus.} The model must
+answer over a corpus it cannot have memorised (raw $\approx0.26$ is the proof of privacy); the
+answer is grounded in a human-directed, provenance-tracked ontology whose expensive curation is
+paid once and reused per query. The copy ceiling is the evaluation-time expression of ``the
+curation, not the model, carries the answer'' (ADR-135~D2; ADR-136~D4).
+\item \textbf{Trust $\Rightarrow$ human auditability at single-entity granularity.} A grounded
+answer is trustworthy only if a human can read and audit the served knowledge end-to-end; the
+canonical served unit is therefore one per-IRI markdown-with-ontology block---curated prose headed
+by its typed relations---and every retrieval port returns, or resolves to, an \texttt{Iri}
+addressing that unit (Invariant~I-P1, ``the prize''; RUST-ARCHITECTURE~\S0, ADR-136~D1).
+\item \textbf{Auditability $\Rightarrow$ accelerators strictly behind the markdown.} Nothing a
+machine indexes may become the thing a human trusts instead of the markdown; the lexical index,
+HNSW, oxigraph SPARQL and the attestation ledger are projections that find, rank or attest the unit
+and resolve back to its IRI, enforced by an acyclic crate ring rather than reviewer vigilance
+(ADR-136~D1--D3; RUST-ARCHITECTURE~\S0--1).
+\item \textbf{Privacy / LAN-confinement $\Rightarrow$ local delegation, no cloud on the hot path.}
+Content and answers must stay on the local network; generation is delegated to a LAN/local backend
+by URL and the augmentation hot path is fully in-process (ADR-135~D1; ADR-136~\S3).
+\item \textbf{Local-model churn $\Rightarrow$ model swap without consumer change.} Local models
+change often (Gemma $\to$ Muse-Glimmer $\to$ Qwen3.8-27B); a stable OpenAI-compatible façade makes
+the backend one configuration line and lets model identity ride in the result, never the
+endpoint---which is exactly what lets this study hold grounding constant while varying the model
+under test (ADR-135~D1).
+\item \textbf{Bounded latency $\Rightarrow$ retrieval works with no model, fast.} Retrieval cannot
+depend on a model call: the scaffold, SPARQL and search endpoints need no model, and the lexical
+inverted index resolves in \textbf{2.02\,ms} at the median over 8{,}146 class titles (ADR-136~\S3).
+\item \textbf{Injection interference $\Rightarrow$ confidence-gated, benchmark-first injection.}
+Injected context can displace correct parametric knowledge on off-ontology
+queries~\cite{shi2023distracted,yoran2024robust,longpre2021entity}; a single injection authority
+scales the budget to the retrieval score and skips below a threshold~\cite{mallen2023trust}, and
+features that could add noise are benchmark-gated (ADR-136~D3).
+\item \textbf{Never-mixed provenance $\Rightarrow$ attestation and boundary discipline.} Every
+grounded answer must trace to a named, versioned generation; each response carries a \texttt{loom}
+telemetry block and \texttt{corpusNature} honesty metadata, and the node serves only the published
+ontology, never the working graph (ADR-135~D6/D7; ADR-136~D5).
+\end{enumerate}
+
+The bar these requirements imply is multivariate and conjunctive: excellent, attributable recall
+where the corpus is authoritative, \emph{and} no regression on the general questions a model
+already answers. We introduce that framing here and reconcile the axes in \S\ref{sec:bar}.
+
+\begin{table}[t]\centering\small
+\caption{The private-corpus requirements arc: each business requirement, the design consequence it
+forces, and the point at which the consequence is enforced (not merely intended). ADR = the
+governing architectural decision record.}
+\label{tab:req}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{4.3cm}@{}}
+\toprule
+Requirement & Design consequence & Enforcement point \\
+\midrule
+Private, unmemorised corpus & Human-curated ontology, curation amortised once & Sha-addressable generation; raw $\approx$ 0.26 (ADR-135 D2) \\
+Human auditability & Per-IRI markdown-with-ontology as the served unit & Ports resolve to \texttt{Iri} $\to$ \texttt{CanonicalUnit} (I-P1) \\
+Accelerators behind the unit & Indexes only find/rank/attest the markdown & Acyclic crate ring; adapter cannot mint the unit \\
+LAN confinement & Model delegated by URL; in-process hot path & \texttt{DISTILL\_BACKEND\_URL}; Profile~A network-free \\
+Model churn & Stable façade; model identity in the result & OpenAI-compatible \texttt{/v1}; one config line \\
+Bounded latency & No-model retrieval path & Lexical index 2.02\,ms p50; scaffold needs no model \\
+Injection interference & Confidence-gated selective injection & Single injection authority; skip below threshold \\
+Never-mixed provenance & Per-answer attestation; ontology-only boundary & \texttt{loom} block $+$ \texttt{corpusNature}; working graph never served \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Related Work}\label{sec:related}
 % Clusters from survey-structure.md; distinguish 2606.05633 explicitly.
-[TODO]
+\paragraph{Knowledge-graph and private-corpus grounding.}
+From the original RAG formulation~\cite{lewis2020rag} to graph-structured
+retrieval~\cite{edge2024graphrag,guo2024lightrag}, zero-shot knowledge-graph triple
+prompting~\cite{baek2023kaping}, and the unifying roadmap and
+surveys~\cite{pan2024unifying,peng2024graphragsurvey}, the family grounds generation in retrieved
+graph content; GraphRAG motivates precisely our setting---answering over ``private and/or
+previously unseen'' collections~\cite{edge2024graphrag}---and enterprise variants foreground the
+amortised-curation constraint~\cite{jiang2025practicalgraphrag}. Two features distinguish our object
+of study. Published work typically injects \emph{instance} triples or opaque
+encodings---community summaries~\cite{edge2024graphrag} or a GNN soft-prompt over a retrieved
+subgraph~\cite{he2024gretriever}---whereas we inject \emph{schema-level} content (class definitions,
+typed relations, taxonomy) and keep the served unit a human-readable markdown block; and none of
+these reports an input-exposure control, so their uplift is uncontrolled for what the injected
+context already contains.
+
+\paragraph{Baselines that reframe a result.}
+A recurring genre installs a simple control and overturns the naive reading of a headline: a strong,
+simple RAG baseline matches elaborate pipelines under matched token
+budgets~\cite{laitenberger2025stronger}; a controlled comparison reverses a prior ``RAG wins''
+finding and adds a confidence router~\cite{li2024ragorlongcontext}; apparent argument comprehension
+is shown to be spurious-cue exploitation~\cite{niven2019probing}. Our paper belongs to this genre:
+the copy ceiling is the control, and ``uplift is exposure, not reasoning'' is the reframing. The
+confidence router of~\textcite{li2024ragorlongcontext} and selective retrieval more
+broadly~\cite{asai2024selfrag,jeong2024adaptiverag,mallen2023trust} are the design precedent for our
+injection gate---they route retrieve-versus-not; we gate inject-versus-abstain.
+
+\paragraph{Input-only baselines and faithfulness metrics.}
+The intellectual root of the copy ceiling is the input-only baseline: passage-only / question-only
+baselines reveal that much apparent competence is shortcut exploitation of what the input already
+exposes~\cite{kaushik2018reading}, as do hypothesis-only baselines in natural-language
+inference~\cite{gururangan2018artifacts,poliak2018hypothesis}. Where these are discrete, per-task
+classifiers, the copy ceiling is per-item and continuous, for graph-grounded generation. On the
+metric side, faithfulness is separately measurable from
+correctness~\cite{es2023ragas,adlakha2024evaluating,zhou2023contextfaithful}, and metric-first
+evaluations give the metric a formal definition with an explicit assumptions
+list~\cite{min2023factscore} and a shortcut-robustness subsection~\cite{gao2023alce}. FActScore's
+precision-against-a-source and Adlakha's token-overlap K-Precision are cousins of our exposure
+count; ALCE treats ``copy the passage'' as a shortcut to \emph{reject}, whereas we make that copy
+the metric's reference point. Contamination audits~\cite{sainz2023contamination,golchin2024timetravel}
+measure how much of a score is visible in the input post hoc; we make the deliberate exposure the
+reference a priori.
+
+\paragraph{The nearest neighbour, and how we differ.}
+The closest prior work establishes, by controlled removal and injection of the gold answer, that
+answer presence drives retrieval-augmented gains~\cite{answerpresence2026}; a parallel line defines
+an accuracy-given-gold-context upper bound to filter leakage out of
+benchmarks~\cite{seedrg2026}. These prove the \emph{phenomenon} and use gold-context as a
+benchmark-cleaning device. We differ in the artefact and its use: the copy ceiling is a per-item
+recall of a no-op extractor of \emph{exactly} the shown text, reported as a standing control rather
+than a cleaning step, and the signed gain over copy is read \emph{across models} as a faithfulness
+axis on which raw uplift cannot separate them. We keep the exposure and measure against it; they
+remove it. Judged arms use a cross-family judge to avoid
+self-preference~\cite{zheng2023judging,panickssery2024selfpreference}.
 
 \section{The Ontology Scaffold}\label{sec:system}
 % The shipped Rust node. THE PRIZE invariant (I-P1) as architecture.
-[TODO]
+The system measured here is the shipped serving node: a single static Rust binary organised as an
+eight-crate hexagonal workspace---a pure \texttt{loom-domain} core holding the port traits, five
+adapters, a \texttt{loom-scaffold} policy crate and a thin \texttt{axum} façade. The crate ring is
+the enforcement mechanism for the audit invariant of \S\ref{sec:setting}: only the domain crate
+mints a \texttt{CanonicalUnit}, so an adapter physically cannot return its own row, triple or vector
+as the served payload (Invariant~I-P1). The node was adversarially audited by a different model
+family (gpt-5.4) with all findings remediated, and the Rust port is pinned byte-for-byte to the
+retired Python original by golden fixtures.
+
+\paragraph{The canonical unit and the corpus.} The served, reviewable unit is one per-IRI
+markdown-with-ontology block: curated research prose headed by its typed relations
+(\texttt{subClassOf}, \texttt{requires}, \texttt{enables}, \texttt{uses}, \texttt{relatedTo},
+\texttt{contrastsWith}). The corpus is one sha-addressable \emph{generation}---\textbf{8{,}146
+concept classes} and \textbf{282{,}492 triples} in the Whelk-reasoned closure at the generation
+evaluated here---mirrored atomically so the node always serves a known, mixed-build-free generation;
+it is not baked into the binary. We explicitly reject the trajectory in which knowledge degrades
+into opaque community summaries or GNN-encoded subgraphs~\cite{edge2024graphrag,he2024gretriever};
+the reviewable markdown is the moat, and the accelerators below only find, rank or attest
+it~\cite{garcez2023neurosymbolic}.
+
+\begin{table}[t]\centering\small
+\caption{The request pipeline. Retrieval, gating and the scaffold serialisation need no model; only
+the final delegation calls one. The single injection authority (match $+$ gate) is the sole path by
+which any candidate---lexical or, when enabled, semantic---reaches the model.}
+\label{tab:pipeline}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.7cm} >{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{2.2cm}@{}}
+\toprule
+Stage & Mechanism & Model? \\
+\midrule
+Match & Lexical inverted index over 8{,}146 class titles; 2.02\,ms p50 $\to$ seed classes & no \\
+Gate & Single injection authority: budget scaled to retrieval score, skip below threshold & no \\
+Scaffold & Budget-clamped serialisation of the matched units' markdown-with-ontology & no \\
+SPARQL / search & Read-only, prologue-aware LIMIT-clamped oxigraph over the reasoned closure & no \\
+Semantic fallback & In-process HNSW over 384-d embeddings; fires on lexical miss $\to$ candidate seeds into the same gate & \emph{default-off} \\
+Delegate & Inject scaffold into the last user message; call \texttt{DISTILL\_BACKEND\_URL} & yes \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The lexical matcher and the confidence gate are the \emph{sole} injection authority: every
+candidate flows through one policy that scales the scaffold budget to the retrieval score and
+injects nothing below a threshold---the mechanism by which the node avoids ``going jagged'' on
+off-ontology queries (\S\ref{sec:ood}). The graph store answers read-only, LIMIT-clamped SPARQL over
+the reasoned closure with no model call. An in-process HNSW semantic fallback over 384-dimensional
+embeddings is wired for out-of-vocabulary queries but ships \emph{default-off}: its measured
+document-embedding recall (0.816) is below the 0.87 design floor, so it stays disabled pending a
+query-shaped embedding that clears a multivariate benchmark rather than a threshold relaxation---an
+honest red gate we return to in \S\ref{sec:limits}. Finally the model-swap seam: generation is
+delegated to whatever backend \texttt{DISTILL\_BACKEND\_URL} names (Qwen3.8-27B today), model
+identity rides in the response, and swapping the model changes no consumer---which is what lets
+\S\ref{sec:method} hold grounding constant and vary the model, or hold the model constant and vary
+the serving path.
 
 \section{The Copy Ceiling}\label{sec:ceiling}
 % Definition; assumptions; gain-over-copy; negative-control design.
-[TODO]
+The copy ceiling is the paper's primary contribution, so we give it a formal definition, an
+explicit assumptions list, and a robustness design of its own, following the metric-first
+precedent~\cite{min2023factscore,gao2023alce}.
+
+\subsection{Definition and assumptions}
+Fix a question $q_i$ with gold target set $G_i$ (the \{slug, title\} pairs the graph asserts as its
+answer), the exact scaffold text $S_i$ shown to the model, and the model's answer $a_i$. Let
+$\mathrm{m}(t,X)\in\{0,1\}$ be the deterministic surface matcher: $\mathrm{m}(t,X)=1$ when the
+normalised title of gold item $t$, or at least $80\%$ of its length-$\geq4$ words, appears in text
+$X$. Define the exposed count and the per-item \textbf{copy ceiling}
+\[
+  e_i=\sum_{t\in G_i}\mathrm{m}(t,S_i),\qquad
+  c_i=\frac{e_i}{|G_i|},
+\]
+and the grounded recall $r_i=\bigl(\sum_{t\in G_i}\mathrm{m}(t,a_i)\bigr)/|G_i|$. The copy ceiling
+is the recall of the no-op extractor that returns $S_i$ verbatim as its answer: that answer scores
+exactly $c_i$ by construction. For the raw arm $S_i$ is empty, so $c_i\approx0$.
+
+\paragraph{Assumptions (when the instrument applies).}
+\begin{enumerate}[label=(A\arabic*),topsep=2pt,itemsep=1pt,leftmargin=2.4em]
+\item \textbf{Deliberate exposure.} Questions, gold and scaffold derive from one graph, so the gold
+is present in the injected text by design. The ceiling \emph{measures} this exposure; it is not a
+leak to remove.
+\item \textbf{Shared matcher.} $c_i$ and $r_i$ use the same matcher, so both are lower bounds under
+paraphrase, but their difference is first-order robust to the matcher's under-counting; where
+paraphrase is a live threat we re-score with a semantic judge (\S\ref{sec:method}).
+\item \textbf{Per-item, model-free ceiling.} $c_i$ is a property of $(q_i,S_i)$ only; for a fixed
+scaffold it is identical across models, which is what makes gain over copy comparable across a model
+sweep.
+\item \textbf{Graph-derived gold.} The ceiling is informative only when gold is derived from the
+injected corpus. Where gold is authored independently of the scaffold (the out-of-domain arm),
+$c_i\approx0$ and a different instrument---judged quality---carries the axis.
+\end{enumerate}
+
+\subsection{Gain over copy}
+The signed \textbf{gain over copy} is $g_i=r_i-c_i$, with headline $\bar g=\bar r-\bar c$. It turns
+delivery fidelity into a signed, model-discriminating quantity and reads directly:
+\begin{itemize}[topsep=2pt,itemsep=1pt,leftmargin=1.4em]
+\item $g\approx0$ --- \emph{delivery fidelity}: the model restates the exposed facts and fabricates
+almost nothing. For private-knowledge grounding this is the target behaviour, not a shortfall.
+\item $g<0$ --- \emph{lossy restatement}: the model drops surfaced gold, a faithfulness failure; the
+magnitude ranks models where near-identical raw uplift cannot.
+\item $g>0$ --- would evidence \emph{reasoning over structure}: recovering gold the exposure check
+missed, for example by composing a relation the scaffold implies but does not state. We observe none
+in-domain; it is the signal a multi-hop arm would target.
+\end{itemize}
+A near-ceiling result therefore licenses ``faithful delivery'' and forbids the inference ``reasoning
+over ontological structure''---the distinction the rest of the paper turns on.
+
+\subsection{Negative controls: what would move the gain}\label{sec:ceiling-controls}
+A single objection can sink the instrument: that a positive-looking delivery is lexical overlap
+between answer and scaffold, not knowledge transfer. We answer it with four arms that hold the model
+and the question fixed and perturb only the injected block (defined here; results in
+\S\ref{sec:controls}):
+\begin{description}[topsep=2pt,itemsep=1pt,leftmargin=0pt,font=\normalfont\itshape]
+\item[true] the block the node actually served, injected into the bare model. It should reproduce
+the live loom arm, proving the serving path adds nothing beyond the block itself.
+\item[shuffled] the same block with its body sentences shuffled (wrapper kept, seeded). Same tokens,
+destroyed structure: if the gain survives, it was lexical soup.
+\item[masked] the same block with every seed-class title replaced by \texttt{Entity-$k$}. Structure
+intact, entity names gone: if the gain survives, the score was matching names, not knowledge.
+\item[irrelevant] the well-formed, on-corpus scaffold of a \emph{different} question (a fixed
+derangement over the engaged items). If the gain survives, any ontology-shaped text would do.
+\end{description}
+The logic is differential. If gain over copy stays near zero under \textbf{shuffled},
+\textbf{masked} and \textbf{irrelevant}, the ceiling is tracking exposure faithfully and the
+delivery is content-bound; if it moves, the ceiling was leaking through surface form or position.
+This is the experiment that turns the instrument from plausible to confirmed, and it is the direct
+analogue of a shortcut-robustness check for a faithfulness metric~\cite{gao2023alce}.
 
 \section{Method}\label{sec:method}
-[TODO]
+\paragraph{Design.} Both studies are paired within-model: every comparison is between two answers to
+the \emph{same} question by the \emph{same} model, so between-question difficulty variance cancels
+and the estimand is a paired per-question difference. The two studies isolate different
+variables---the ten-model sweep varies the \emph{model} with grounding fixed; the new study varies
+the \emph{serving path} with the model fixed.
+
+\paragraph{Study 1 --- the ten-model sweep (v1, summarised).} Using the knowledge graph as its own
+oracle we template three question types from every sufficiently-defined class---\textbf{T-REL} (what
+a class requires / uses / depends on / enables; its parts), \textbf{T-TAX} (immediate and ancestral
+parents) and \textbf{T-COMMON} (a pair's shared ancestor)---with gold the \{slug, title\} targets
+the graph asserts. Seed~42 yields \textbf{510 questions} over 15 domains (285 T-REL, 180 T-TAX, 45
+T-COMMON). Each is asked \emph{raw} and \emph{scaffold} (a 1{,}500-token budget-clamped ontology
+extract prepended), across ten models from five providers under one deterministic configuration
+(\texttt{temperature}=0, \texttt{max\_tokens}=2048; \texttt{reasoning\_effort}=low only where
+thinking cannot be disabled, so a mandatory pass does not truncate the answer). Scoring is the
+lexical matcher of \S\ref{sec:ceiling}: a gold item is a hit when its normalised title, or
+$\geq80\%$ of its long words, appears in the answer. This under-counts paraphrase, so absolute
+recall is a lower bound and we treat the \emph{paired} delta---same question, scorer and model---as
+the signal, flagged honestly as a lexical estimand.
+
+\paragraph{Study 2 --- the production-node paired study (new).} To isolate the ecosystem feature
+rather than the model, we hold the model constant (Qwen3.8-27B on the reference GPU host) and vary
+only the serving path. The \emph{loom} arm calls the production Rust node's
+\texttt{/v1/chat/completions}, which retrieves, confidence-gates and injects the scaffold and returns
+per-answer telemetry (engagement, injected tokens, fusion path) in the response \texttt{loom} block;
+the \emph{raw} arm calls the same model backend directly with no scaffold. Both use
+\texttt{temperature}=0 and \texttt{max\_tokens}=1536, below which the reasoning backend truncates to
+empty. Questions are three frozen sets---\emph{arcane} (deep in-domain), \emph{thin}
+(sparsely-covered) and \emph{general} (out-of-domain)---of \textbf{117} questions in total
+([N-ARCANE] arcane, [N-THIN] thin, [N-GENERAL] general), reused from the v1 sweep so the arms are
+judge-comparable. The four negative-control arms of \S\ref{sec:ceiling-controls} run against the
+same node: scaffolds are fetched from the LLM-free \texttt{/loom/scaffold} endpoint---so every
+control injects exactly the block the loom arm served---and presented to the bare model as a system
+message.
+
+\paragraph{Cross-family semantic judge.} Because Study~2 spans in-domain and out-of-domain questions
+and must survive the paraphrase objection, answers are scored not lexically but by a reference-guided
+\textbf{0--5 rubric} judge. The judge is a different model family from the candidate---an OpenRouter
+GPT judge grading the Qwen candidate, never the candidate's own family---to avoid
+self-preference~\cite{zheng2023judging,panickssery2024selfpreference}; the gold references are the
+graph-derived targets in-domain and frontier-authored key points out-of-domain.
+
+\paragraph{Statistics.} The headline per set and pooled is the paired mean difference with a seeded
+\textbf{10{,}000-resample bootstrap} 95\% percentile interval~\cite{efron1979bootstrap,koehn2004significance},
+complemented by a two-sided \textbf{Wilcoxon signed-rank} test and \textbf{Cliff's delta} as a
+distribution-free effect size. Because the three sets are reported together, set-level $p$-values
+carry a \textbf{Holm--Bonferroni} correction~\cite{dror2018hitchhiker}. Where the claim is
+\emph{equivalence} rather than difference---the out-of-domain non-regression axis---we use two
+one-sided tests (TOST) against a pre-registered margin~\cite{lakens2017equivalence} of
+[DELTA-EQUIV], rather than reading a non-significant difference as no effect. In-domain,
+graph-derived questions cluster by class and domain~\cite{dror2018hitchhiker}; following v1 we report
+a domain-clustered block bootstrap alongside the naive interval and an intention-to-treat delta that
+retains questions on which the gate did not engage~\cite{hollis1999itt}.
 
 \section{Results}\label{sec:results}
 \subsection{In-domain: delivery fidelity}\label{sec:indomain}

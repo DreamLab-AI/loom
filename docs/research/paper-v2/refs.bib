@@ -253,3 +253,62 @@
   title={{LLM} Evaluators Recognize and Favor Their Own Generations},
   author={Panickssery, Arjun and Bowman, Samuel R. and Feng, Shi},
   journal={arXiv preprint arXiv:2404.13076}, year={2024}}
+
+%% ===== paper-v2 additions (survey/differentiation comparanda) =====
+%% --- metric-first evaluation (the §5 template) ---
+@inproceedings{min2023factscore,
+  title={{FActScore}: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation},
+  author={Min, Sewon and Krishna, Kalpesh and Lyu, Xinxi and Lewis, Mike and Yih, Wen-tau and Koh, Pang Wei and Iyyer, Mohit and Zettlemoyer, Luke and Hajishirzi, Hannaneh},
+  booktitle={EMNLP}, year={2023},
+  eprint={2305.14251}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2305.14251}}
+%% --- baseline-reframing genre ---
+@misc{laitenberger2025stronger,
+  title={Stronger Baselines for Retrieval-Augmented Generation with Long-Context Language Models},
+  year={2025},
+  eprint={2506.03989}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2506.03989}}
+@inproceedings{niven2019probing,
+  title={Probing Neural Network Comprehension of Natural Language Arguments},
+  author={Niven, Timothy and Kao, Hung-Yu},
+  booktitle={ACL}, year={2019},
+  eprint={1907.07355}, archivePrefix={arXiv}, url={https://arxiv.org/abs/1907.07355}}
+%% --- input-only baselines (NLI) ---
+@inproceedings{gururangan2018artifacts,
+  title={Annotation Artifacts in Natural Language Inference Data},
+  author={Gururangan, Suchin and Swayamdipta, Swabha and Levy, Omer and Schwartz, Roy and Bowman, Samuel R. and Smith, Noah A.},
+  booktitle={NAACL-HLT}, year={2018},
+  eprint={1803.02324}, archivePrefix={arXiv}, url={https://arxiv.org/abs/1803.02324}}
+@inproceedings{poliak2018hypothesis,
+  title={Hypothesis Only Baselines in Natural Language Inference},
+  author={Poliak, Adam and Naradowsky, Jason and Haldar, Aparajita and Rudinger, Rachel and Van Durme, Benjamin},
+  booktitle={*SEM}, year={2018},
+  eprint={1805.01042}, archivePrefix={arXiv}, url={https://arxiv.org/abs/1805.01042}}
+%% --- KG-RAG comparators ---
+@inproceedings{he2024gretriever,
+  title={{G-Retriever}: Retrieval-Augmented Generation for Textual Graph Understanding and Question Answering},
+  author={He, Xiaoxin and Tian, Yijun and Sun, Yifei and Chawla, Nitesh V. and Laurent, Thomas and LeCun, Yann and Bresson, Xavier and Hooi, Bryan},
+  booktitle={NeurIPS}, year={2024},
+  eprint={2402.07630}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2402.07630}}
+@article{peng2024graphragsurvey,
+  title={Graph Retrieval-Augmented Generation: A Survey},
+  author={Peng, Boci and Zhu, Yun and Liu, Yongchao and Bo, Xiaohe and Shi, Haizhou and Hong, Chuntao and Zhang, Yan and Tang, Siliang},
+  journal={arXiv preprint}, year={2024},
+  eprint={2408.08921}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2408.08921}}
+@misc{jiang2025practicalgraphrag,
+  title={Towards Practical {GraphRAG}: Efficient Knowledge Graph Construction and Retrieval in Enterprise Environments},
+  year={2025},
+  eprint={2507.03226}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2507.03226}}
+%% --- the nearest neighbour + upper-bound cousin ---
+@misc{answerpresence2026,
+  title={Answer Presence Drives Retrieval-Augmented Generation Rewriting Gains},
+  year={2026},
+  eprint={2606.05633}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2606.05633}}
+@misc{seedrg2026,
+  title={{SeedRG}: Leakage-Free Benchmarks and a Gold-Context Upper Bound for Retrieval-Augmented Generation},
+  year={2026},
+  eprint={2605.08838}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2605.08838}}
+%% --- equivalence testing (TOST) ---
+@article{lakens2017equivalence,
+  title={Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses},
+  author={Lakens, Dani\"{e}l},
+  journal={Social Psychological and Personality Science}, volume={8}, number={4}, pages={355--362}, year={2017},
+  doi={10.1177/1948550617697177}}
