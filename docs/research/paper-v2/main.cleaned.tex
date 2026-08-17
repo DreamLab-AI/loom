@@ -433,7 +433,7 @@ exactly $c_i$ by construction. For the raw arm $S_i$ is empty, so $c_i\approx0$.
 is present in the injected text by design. The ceiling \emph{measures} this exposure; it is not a
 leak to remove.
 \item \textbf{Shared matcher.} $c_i$ and $r_i$ use the same matcher, so both are lower bounds under
-paraphrase, but their difference is first-order insensitive to the matcher's under-counting; where
+paraphrase, but their difference is first-order robust to the matcher's under-counting; where
 paraphrase is a live threat we re-score with a semantic judge (\S\ref{sec:method}).
 \item \textbf{Per-item, model-free ceiling.} $c_i$ is a property of $(q_i,S_i)$ only; for a fixed
 scaffold it is identical across models, which is what makes gain over copy comparable across a model
@@ -834,7 +834,7 @@ suspect, un-diagnosed serving-regime exposure; the ceiling is the cheap test tha
 before a team builds the expensive apparatus.
 
 \paragraph{Consequence 2: value concentrates at curation, and the instrument doubles as a promotion
-gate.} If the model contributes delivery and the corpus contributes the answer, then the place to invest is
+gate.} If the model contributes delivery and the corpus contributes the answer, then the leverage is
 upstream, at curation time---which is where the economics of a private corpus already put it, since the
 curation is amortised once and re-paid on no query. This gives the instrument a second use. An
 automated extraction candidate (for example a block proposed by OntoCast~\cite{ontocast}, analysed here
