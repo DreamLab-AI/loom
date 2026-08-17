@@ -9,7 +9,7 @@ linked_adrs: [
   ADR-136 (loom tooling allocation — RuVector behind the markdown, pyoxigraph stays, gate re-platformed),
   ADR-135 (loom node boundary + model-swappable façade + deferred distillation),
   RuVector ADR-001 (ruvector-core architecture — vector database core with HNSW indexing),
-  RuVector ADR-0027 (hnsw-parameterized-query-fix),
+  RuVector ADR-001 (hnsw-parameterized-query-fix),
   RuVector ADR-047 (ProofGate<T> / MutationLedger — proof-gated mutation),
   VisionClaw ADR-099 (Whelk-rs EL++ reasoner authority),
   VisionClaw ADR-090 (hexagonal crate ring),
@@ -63,7 +63,7 @@ supersedes: "Extends PRD-025 and PRD-026; supersedes nothing wholesale. Supersed
 
 > **EXECUTION NOTE (read first).** This is a **design + workstream plan**, not a code change. It writes no Rust and deletes no Python by itself; implementation is the WS-R…WS-Y build order in §12, each gated by the evidence bars in §10. This is a **dev/test estate**, so we build the target end-state directly (a single Rust binary, no dual-language transitional shim) rather than staging a live migration. Every requirement below is testable, and every capability is tagged **shipped** (in the Python Loom today) or **target** (this re-platform) — the §3 honesty table is the single source of truth for that split and no other section may contradict it.
 
-> **Citation discipline (mandatory — inherited from PRD-025/026).** Two `PRD-022`s and two `ADR-050`s exist across repos. Every cross-repo citation is repo-qualified: **VisionClaw PRD-022** = *semantic-trust-layer*; **agentbox PRD-022** = *semantic-integrity-provenance-decisions*. **VisionClaw ADR-050** = *pod-backed-kgnode-schema*; **agentbox ADR-050** = *decision-elevation-inverse-corpus-path*. RuVector and ruflo ADRs are always repo-prefixed (**RuVector ADR-001/ADR-0027/ADR-047**, **ruflo ADR-344**). ADR-090/099/112/135/136 without a repo prefix are VisionClaw's. An unqualified `PRD-022`, `ADR-050`, or a bare `ADR-001/0027/047/344` is a defect.
+> **Citation discipline (mandatory — inherited from PRD-025/026).** Two `PRD-022`s and two `ADR-050`s exist across repos. Every cross-repo citation is repo-qualified: **VisionClaw PRD-022** = *semantic-trust-layer*; **agentbox PRD-022** = *semantic-integrity-provenance-decisions*. **VisionClaw ADR-050** = *pod-backed-kgnode-schema*; **agentbox ADR-050** = *decision-elevation-inverse-corpus-path*. RuVector and ruflo ADRs are always repo-prefixed (**RuVector ADR-001/ADR-047**, **ruflo ADR-344**). ADR-090/099/112/135/136 without a repo prefix are VisionClaw's. An unqualified `PRD-022`, `ADR-050`, or a bare `ADR-001/0027/047/344` is a defect.
 
 ---
 
@@ -264,7 +264,7 @@ The clamp (which `loom_facade.py` today applies loosely) is formalised in `loom-
 | Lexical match over 8,146 titles | **< 50 ms** (p99) | matches today's self-tested `ontology_scaffold.py` |
 | Scaffold serialise (`/loom/scaffold`, no LLM) | **< 80 ms** (p99) end-to-end | lexical + link→seed→expand→serialise |
 | in-context oxigraph SPARQL (typical class query) | **< 30 ms** (p99) | native store, in-memory reasoned closure |
-| Semantic-fallback path (Xinference embed + ANN), **only on lexical miss** | **< 250 ms** (p99) added latency | dominated by the Xinference round-trip; ANN itself is sub-ms at 8,146 records (RuVector ADR-001/ADR-0027); triggered only below `MIN_INJECT_SCORE`, never on the common path |
+| Semantic-fallback path (Xinference embed + ANN), **only on lexical miss** | **< 250 ms** (p99) added latency | dominated by the Xinference round-trip; ANN itself is sub-ms at 8,146 records (RuVector ADR-001); triggered only below `MIN_INJECT_SCORE`, never on the common path |
 | `/v1/chat/completions` total | model-bound | unchanged; the model dominates; augmentation is < 80 ms of it |
 
 The re-platform must not regress the lexical path. A Rust matcher over 8,146 titles is expected to beat the Python one comfortably; the < 50 ms budget is a floor, not a target.

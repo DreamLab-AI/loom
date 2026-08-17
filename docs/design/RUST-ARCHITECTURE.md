@@ -807,7 +807,7 @@ Matching the sibling repos' bar:
 - **[ddd-ontology-loom-context.md](./ddd-ontology-loom-context.md)** — the bounded context; `CanonicalUnit` maps to the aggregate root, BC24 I11 (published-ontology-only), §6.1 (RuVector access model). The port names above (`LexicalIndex`/`VectorIndex`/`GraphStore`/`EmbeddingProvider`/`ModelBackend`) are this document's ubiquitous language, held verbatim.
 - **agentbox — ADR-051** ([agentbox-ADR-051-loom-client-and-deferred-distillation.md](./agentbox-ADR-051-loom-client-and-deferred-distillation.md)) — the loom client + deferred distillation consumer; the façade contract this binary must keep stable.
 - **VisionClaw — ADR-099** (Whelk-rs EL++ reasoner) and **ADR-090/PRD-016** (hexagonal ring placement) — the reasoner is build-time authority; this workspace is the ADR-090 ring realised for the Loom surface.
-- **ruvector — ADR-001 / ADR-0027** (HNSW production index), **ADR-047** (ProofGate/MutationLedger) — the in-process `ruvector-core` HNSW read (behind the `hnsw_rs` feature) + the attestation substrate.
+- **ruvector — ADR-001** (HNSW production index), **ADR-047** (ProofGate/MutationLedger) — the in-process `ruvector-core` HNSW read (behind the `hnsw_rs` feature) + the attestation substrate.
 - **logseq (`jjohare/logseq`)** — the canonical corpus builder + CI-enforced gate; the Loom serves its output, never rebuilds it (the dropped `pipeline/`).
 
 ---

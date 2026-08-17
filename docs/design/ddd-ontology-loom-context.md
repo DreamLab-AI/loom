@@ -236,7 +236,7 @@ The one arrow to read carefully is still `GATE -->|resolve winning IRI → rende
 
 ### 6.1 `loom-domain` → `loom-vector-ruvector`: Anti-Corruption Layer (the load-bearing seam, now a type boundary)
 
-**Relationship:** Customer/Supplier with a **hard Anti-Corruption Layer**, realised as the `loom-vector-ruvector` crate seam. The Loom domain is the customer; the RuVector HNSW index (ruvector ADR-001 / ADR-0027 — HNSW production index) is a downstream supplier. The ACL exists so RuVector's index shape never leaks into the canonical markdown — and in the Rust rev the ACL is the `VectorIndex` trait: it can return `Vec<(Iri, Score)>` and nothing else. There is no signature by which a vector, an HNSW node handle, or a postgres row can cross into a `CanonicalUnit`.
+**Relationship:** Customer/Supplier with a **hard Anti-Corruption Layer**, realised as the `loom-vector-ruvector` crate seam. The Loom domain is the customer; the RuVector HNSW index (ruvector ADR-001 — HNSW production index) is a downstream supplier. The ACL exists so RuVector's index shape never leaks into the canonical markdown — and in the Rust rev the ACL is the `VectorIndex` trait: it can return `Vec<(Iri, Score)>` and nothing else. There is no signature by which a vector, an HNSW node handle, or a postgres row can cross into a `CanonicalUnit`.
 
 Binding obligations of the ACL (unchanged in intent from the 2026-08-16 rev; now compiler-checked):
 
@@ -366,7 +366,7 @@ Citations are repo-qualified to avoid the two-PRD-022 / two-ADR-050 ambiguity PR
 | **ADR-090 / PRD-016** | VisionClaw | The hexagonal acyclic crate ring the workspace conforms to (§5). |
 | **ADR-099** | VisionClaw | Whelk-rs EL++ build-time reasoner (§6.3). |
 | **ADR-050 (pod-backed-kgnode)** | VisionClaw | Generation-consumer / shadow-swap precedent (ADR-135 D2.3). Distinct from agentbox ADR-050. |
-| **ADR-001 / ADR-0027** | ruvector | HNSW production index. The Semantic Fallback engine behind `loom-vector-ruvector` (§6.1). |
+| **ADR-001** | ruvector | HNSW production index. The Semantic Fallback engine behind `loom-vector-ruvector` (§6.1). |
 | **ADR-047** | ruvector | `ProofGate<T>` / `MutationLedger`. The attestation mechanics behind `loom-attest-proofgate` (§6.4). |
 | **ADR-344** | ruflo | `hybridRetrieve()`. Status **Proposed**, flag-off, benchmark-gated. Cited as **deferred**, not adopted (§6.5). |
 | **ADR-051** | agentbox | Loom client + deferred distillation (harness side). The downstream consumer (§6.7). Distinct from agentbox ADR-050 (decision-elevation). |
