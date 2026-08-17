@@ -12,6 +12,11 @@ description = "GraphStore adapter over native oxigraph: read-only clamped SPARQL
 loom-domain = { path = "../loom-domain" }
 oxigraph = { workspace = true }
 regex = { workspace = true }
+async-trait = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+tempfile = "3"
 
 [lints]
 workspace = true
