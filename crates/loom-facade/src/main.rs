@@ -1,5 +1,5 @@
 //! loom-facade — the composition root + axum router (RUST-ARCHITECTURE §9).
-//! STAGE-1 PLACEHOLDER: Stage 2 replaces this file with the AppState port
+//! STAGE-1 PLACEHOLDER: Stage 2 replaces this file with the `AppState` port
 //! bundle, the fusion pipeline (§6), the router, and the two deploy profiles.
 
 fn main() {
