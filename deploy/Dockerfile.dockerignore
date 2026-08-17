@@ -1,0 +1,42 @@
+# BuildKit honours <dockerfile>.dockerignore (this file) IN PREFERENCE to a
+# context-root .dockerignore. Patterns are relative to the BUILD CONTEXT ROOT,
+# which for this Dockerfile is the PARENT of the loom repo (/home/devuser/workspace)
+# — a huge tree (~160 entries, all of ruvector's ~120 crates, node_modules, VMs).
+# So we ALLOWLIST: ignore everything, then re-include ONLY loom/ and the single
+# ruvector-core crate the facade path-depends on. Last match wins.
+
+# 1) Ignore every top-level entry in the parent context.
+*
+
+# 2) Re-include the two trees we vendor.
+!loom
+!ruvector
+
+# 3) Trim ruvector down to just the core crate (drop the other ~120 crates,
+#    examples, node bindings, .git, the real 120-member root — the Dockerfile
+#    COPYs our trimmed workspace root over it instead).
+ruvector/*
+!ruvector/crates
+ruvector/crates/*
+!ruvector/crates/ruvector-core
+ruvector/crates/ruvector-core/target
+ruvector/crates/ruvector-core/**/*.rvdb
+
+# 4) Trim the vendored loom of build output, VCS, and heavy non-build assets.
+#    (app/data + data ARE kept — the smoke stage bakes the real generation.)
+loom/target
+loom/.git
+loom/.github
+loom/uplift-results
+loom/bench/out
+loom/bench/results
+loom/legacy
+loom/model
+loom/tests/target
+loom/.agentic-qe
+loom/.claude-flow
+loom/node_modules
+loom/**/__pycache__
+loom/**/*.pyc
+loom/**/.DS_Store
+loom/**/*.log

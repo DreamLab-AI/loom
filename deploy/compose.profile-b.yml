@@ -1,0 +1,57 @@
+# Ontology Loom — Profile B: sidecar on visionclaw_network (RUST-ARCHITECTURE §13).
+# The consumer-facing DOOR + the off-turn write channel. REQUIRED (not CI-only):
+# the email gateway binds REASONER_BASE_URL=http://loom:8080/v1 — an in-network
+# consumer that must reach a Loom on visionclaw_network, not behind a DNAT. GPU-free;
+# the model is delegated by URL (model-is-a-URL). Generation parity with Profile A
+# is a CI/health assertion (§13 ADR-137 consequence 3): /health.generation must be
+# byte-identical for the same commitSha.
+#
+#   docker build -f loom/deploy/Dockerfile -t loom:rust /home/devuser/workspace
+#   docker compose -f loom/deploy/compose.profile-b.yml up -d
+#   curl http://127.0.0.1:8080/health
+services:
+  loom:
+    image: loom:rust
+    container_name: loom-facade-b
+    hostname: loom                      # so consumers can bind http://loom:8080/v1
+    networks:
+      - visionclaw_network
+    ports:
+      - "8080:8080"
+    environment:
+      LOOM_FACADE_PORT: "8080"
+      LOOM_DEPLOY_PROFILE: "b"
+      # Model delegated by URL — GPU-free sidecar reaches loom-model over the docker net.
+      DISTILL_BACKEND_URL: "http://loom-model:8085/v1"
+      # bge-small-en-v1.5/384 (LOCKED model) for the semantic fallback's query embed.
+      XINFERENCE_URL: "http://xinference:9997/v1"
+      LOOM_SEMANTIC_FALLBACK: "0"       # gated OFF until the recall bench clears (§8.4)
+      LOOM_MIN_MAX_TOKENS: "1536"
+      ONTOLOGY_BUDGET: "1500"
+      RUST_LOG: "info"
+      # --- pg-write / off-turn write channel — BUILD/OFF-TURN ONLY, never the query
+      # hot path (§10 boundary rule). The serving binary is compiled WITHOUT the
+      # pg-write feature, so this var is inert for the default image and is left
+      # commented; uncomment ONLY when running a pg-write-featured build to (re)stage
+      # the corpus into ruvector-postgres. A Profile-B node serves fully without it.
+      # RUVECTOR_PG_CONNINFO: "${RUVECTOR_PG_CONNINFO}"
+    # Mirrored generation incl. ontology-corpus.rvdb — READ-ONLY; the entrypoint
+    # copies the rvdb to a writable /run/loom before opening it (see entrypoint.sh).
+    # Relative to this compose file (loom/deploy/): the fully mirrored generation dir.
+    volumes:
+      - ../data:/app/data:ro
+    tmpfs:
+      - /run/loom                       # writable home for the mutating redb copy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+networks:
+  # Provisioned outside this stack (the VisionClaw docker network the email gateway,
+  # loom-model, and xinference already share).
+  visionclaw_network:
+    external: true

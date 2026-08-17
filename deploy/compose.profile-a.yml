@@ -1,0 +1,45 @@
+# Ontology Loom — Profile A: host-colocated on HP (RUST-ARCHITECTURE §13).
+# The REFERENCE serving deployment. Loom + model share one host; :8084 is DNAT'd
+# to the LAN by hp-nat.service. Serves FULLY with NO docker-network access —
+# lexical + in-process HNSW + in-context oxigraph are all network-free; the model
+# is the only outbound, over the host loopback (ADR-137). GPU-colocated model.
+#
+#   docker build -f loom/deploy/Dockerfile -t loom:rust /home/devuser/workspace
+#   docker compose -f loom/deploy/compose.profile-a.yml up -d
+#   curl http://127.0.0.1:8084/health          # facade
+#   curl http://127.0.0.1:8085/health          # loom-model (Qwen3.8-27B, separate unit)
+services:
+  loom:
+    image: loom:rust
+    container_name: loom-facade-a
+    # :8084 DNAT'd to the LAN by hp-nat.service; model reached at 127.0.0.1:8085.
+    network_mode: host
+    environment:
+      LOOM_FACADE_PORT: "8084"
+      LOOM_DEPLOY_PROFILE: "a"
+      # The model-swap seam: loom-model Qwen3.8-27B on the host loopback, GPU-colocated.
+      DISTILL_BACKEND_URL: "http://127.0.0.1:8085/v1"
+      # In-proc HNSW artifact is present but gated OFF until the recall bench clears (§8.4).
+      LOOM_SEMANTIC_FALLBACK: "0"
+      # Reasoning backends truncate to empty below 1536 max_tokens (§10 the 400→empty trap).
+      LOOM_MIN_MAX_TOKENS: "1536"
+      ONTOLOGY_BUDGET: "1500"
+      RUST_LOG: "info"
+    # Mirrored generation incl. ontology-corpus.rvdb — READ-ONLY (the entrypoint
+    # copies the rvdb to a writable /run/loom before opening it; see entrypoint.sh).
+    # Path is relative to THIS compose file (loom/deploy/). Point it at the fully
+    # mirrored generation dir: scaffold-index.json + prose-index.json + the TTLs +
+    # ontology-corpus.rvdb(+.generation.json). `../data` is the repo's mirror dir.
+    volumes:
+      - ../data:/app/data:ro
+    # tmpfs for the writable rvdb copy — keeps the mutating redb off any bind mount
+    # and out of the writable image layer (fast, ephemeral, right-sized).
+    tmpfs:
+      - /run/loom
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8084/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3

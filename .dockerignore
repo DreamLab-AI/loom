@@ -1,0 +1,42 @@
+# Loom repo .dockerignore.
+#
+# NOTE ON CONTEXT: the deploy image (deploy/Dockerfile) is built from the PARENT
+# directory (/home/devuser/workspace), NOT this repo, because the facade
+# path-depends on the sibling ../ruvector/crates/ruvector-core. For that build,
+# BuildKit uses deploy/Dockerfile.dockerignore (the allowlist against the parent
+# tree) IN PREFERENCE to this file. This file governs a context=loom build (e.g.
+# a future self-contained image) and documents what never belongs in any context.
+
+# Rust / build output
+target
+**/target
+**/*.rs.bk
+
+# VCS + CI + agent scratch
+.git
+.github
+.claude
+.claude-flow
+.agentic-qe
+.agentbox-data
+
+# Benchmark + experiment outputs (large, never needed at build)
+uplift-results
+bench/out
+bench/results
+bench/**/*.parquet
+
+# Legacy Python deployment + model weights (the Rust image ships neither)
+legacy
+model
+
+# Python / editor / OS cruft
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.DS_Store
+**/*.log
+**/.ipynb_checkpoints
+
+# Node (if any tooling drags it in)
+node_modules
