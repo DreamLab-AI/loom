@@ -52,7 +52,7 @@ the domain is genuinely private, absent from their parametric memory. Given the 
 they reach $\approx0.92$. To characterise \emph{what} that grounded score is, we introduce a
 per-item \textbf{copy ceiling}---the recall a no-op extractor of the injected context would
 obtain---and treat proximity to it as a measure of \emph{delivery fidelity}, not a defect: on
-Gemini~3.7~Flash the scaffold recall (0.943) tracks its copy ceiling (0.964) closely, i.e.\ the
+Gemini~3.7~Flash the scaffold recall (0.942) tracks its copy ceiling (0.964) closely, i.e.\ the
 model faithfully restates the vetted facts it was given. High extractive fidelity to an
 authoritative source is the product for private-knowledge grounding: the answer is trustworthy
 because the source is, and it is attributable and cheap---the rigorous curation is amortised, not
@@ -60,11 +60,15 @@ re-paid per query. The signed \emph{gain over copy} (recall $-$ ceiling) turns d
 into a model-discriminating metric:
 across the ten models it spans $-0.067$ to $-0.022$---negative for every one, each restating
 marginally less than a perfect extractor of its context, with the newest models (the Gemini~3.x
-family, Claude~Haiku~4.5) closest to the ceiling. We position this against the
-right alternative---grounding the same model in a generic web search rather than the bare
-model---and lay out the multivariate bar such a system must clear: excellent in-domain recall
-\emph{and} no ``jaggedness'' (regression) on general, out-of-domain questions. We release the
-harness, the frozen question set, and all per-row artefacts.
+family, Claude~Haiku~4.5) closest to the ceiling. We then establish the second axis of the
+multivariate bar directly: on 60 general, out-of-domain questions judged 0--5 against
+frontier-authored gold by a cross-family judge, the confidence-gated harness is \emph{non-jagged}
+---every paired harness$-$bare delta's 95\% interval includes zero (all questions $-0.05$,
+$[-0.11,0.00]$; worst-case off-domain gate mis-fire $-0.23$, $[-0.63,+0.05]$)---because the gate
+injects nothing when it judges a query out-of-domain. Grounding thus clears two axes together:
+high-fidelity delivery where the corpus is authoritative, and no regression where it is not, leaving
+a web-search grounding baseline as the remaining comparison. We release the harness, the frozen
+question sets, and all per-row artefacts.
 \end{abstract}
 
 % =====================================================================
@@ -113,7 +117,7 @@ retrieval (internet-research agents) for out-of-domain queries. And the right \e
 for an in-domain answer is not the bare model but the same model grounded in a generic web
 search: the claim is that a curated, vetted corpus is higher-precision and cheaper per query
 than open-web results, with the expensive curation amortised once. This paper establishes the
-first axis rigorously and specifies the rest.
+first two axes rigorously and specifies the rest.
 
 \paragraph{Contributions.}
 \begin{enumerate}[topsep=2pt,itemsep=1pt]
@@ -123,9 +127,13 @@ first axis rigorously and specifies the rest.
 \item A ten-model, five-provider paired sweep under one deterministic configuration: grounding a
 private ontology lifts every model from $\approx0.26$ to $\approx0.92$ in-domain, and gain over
 copy---not raw uplift---is what separates the models (\S\ref{sec:results}).
-\item The multivariate evaluation design a deployable system must pass (in-domain fidelity;
-no jaggedness on out-of-domain; a web-search grounding baseline; attribution), and where the
-present study sits within it (\S\ref{sec:multivariate}).
+\item A second axis established directly: on 60 general, out-of-domain questions judged against
+frontier-authored gold by a cross-family judge, the confidence-gated harness is \emph{non-jagged}
+across five models---every paired harness$-$bare delta's 95\% interval includes zero---so grounding
+does not degrade the questions the model already answers (\S\ref{sec:ood}).
+\item The full multivariate evaluation design a deployable system must pass (in-domain fidelity;
+no jaggedness on out-of-domain; a web-search grounding baseline; attribution), with the first two
+axes met here and the remaining two specified (\S\ref{sec:multivariate}).
 \item An open harness (paired bootstrap with domain-clustered intervals,
 intention-to-treat, per-row truncation/token/retry provenance) and a frozen artefact set.
 \end{enumerate}
@@ -233,6 +241,19 @@ wider and the interval we treat as primary. We report an \textbf{intention-to-tr
 keeps non-engaged questions~\cite{hollis1999itt}, and per-row \texttt{finish\_reason}, token
 breakdown and retry counts so truncation and transport flakiness are auditable, not hidden.
 
+\paragraph{Out-of-domain arm (jaggedness).}
+The second axis needs a different instrument. We use a separate set of \textbf{60 general
+questions}---20 each \emph{off-domain} (unrelated to the ontology), \emph{in-domain-general} (the
+corpus's subject areas but answerable without it) and \emph{adjacent}---with gold authored by a
+frontier model \emph{without} the ontology (key-point references). Each question is asked
+\emph{bare} and under the \emph{harness}: the live, confidence-gated Loom scaffold, which returns
+structure only when its retrieval score clears a threshold and injects nothing otherwise. Answers
+are graded 0--5 against the frontier gold by a \emph{cross-family} judge---never the model's own
+family, to avoid self-preference~\cite{panickssery2024selfpreference,zheng2023judging}---and we
+record the gate-engagement flag per question so non-jaggedness (the gate correctly skipping) is
+measurable. Five models are run bare and harnessed. The estimand is the paired harness$-$bare
+quality delta; a non-jagged system holds it at zero on questions the ontology does not cover.
+
 % =====================================================================
 \section{Results}\label{sec:results}
 
@@ -325,6 +346,45 @@ most faithfully.}
 \label{fig:gain}
 \end{figure}
 
+\subsection{Out-of-domain: the gate prevents jaggedness}\label{sec:ood}
+The in-domain result says grounding delivers; the deployment question is whether it \emph{costs}
+anything on the general, novel questions a model already handles. On the 60-question out-of-domain
+set, judged 0--5 against frontier gold by a cross-family judge across five models, it does not.
+Bare and harnessed scores sit near the ceiling in every stratum, and every paired harness$-$bare
+delta's 95\% interval includes zero (Table~\ref{tab:ood}): all questions $-0.05$, $[-0.11,0.00]$;
+off-domain $-0.09$, $[-0.25,+0.02]$; and even the pre-specified worst case---off-domain questions
+on which the gate mis-fired and injected anyway---$-0.23$, $[-0.63,+0.05]$, still spanning zero.
+
+The mechanism is visible in the data. When the gate correctly judges a query off-domain and
+\emph{skips} (60 of 100 off-domain gradings), the harnessed answer is identical to bare
+($\Delta=+0.00$): with nothing injected there is nothing to distract. The only degradation appears
+when the gate over-fires (40 gradings, $\Delta=-0.23$), and it concentrates on the weakest model
+(Gemini~2.5~Flash-Lite, $-0.50$) while the stronger models absorb the irrelevant context unharmed.
+Confidence-gated injection is thus doing its job: the second axis is met not by models heroically
+ignoring bad context, but by the gate mostly not supplying it. We report ``no jaggedness detected''
+rather than ``zero effect''---20 questions per stratum and 40 gate-engaged gradings give wide
+intervals, so this bounds the regression near zero, it does not prove its absence.
+
+\begin{table}[t]\centering\small
+\caption{Out-of-domain non-regression: paired harness$-$bare quality delta (judge 0--5 vs frontier
+gold), five models, seeded paired bootstrap 95\% CI. Every interval includes zero. The worst case
+is off-domain questions where the confidence gate mis-fired and injected context anyway; the last
+row is where it correctly skipped (nothing injected, so identical to bare).}
+\label{tab:ood}
+\begin{tabular}{lccc}
+\toprule
+Subset & Mean $\Delta$ & 95\% CI & $n$ pairs \\
+\midrule
+All general questions              & $-0.05$ & $[-0.11,\ 0.00]$ & 300 \\
+\quad adjacent                     & $+0.01$ & $[-0.02,\ 0.05]$ & 100 \\
+\quad in-domain-general            & $-0.06$ & $[-0.14,\ 0.00]$ & 100 \\
+\quad off-domain                   & $-0.09$ & $[-0.25,\ 0.02]$ & 100 \\
+Off-domain, gate mis-fired (worst) & $-0.23$ & $[-0.63,\ 0.05]$ & 40 \\
+Off-domain, gate skipped (correct) & $+0.00$ & ---              & 60 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 % =====================================================================
 \section{The Multivariate Bar}\label{sec:multivariate}
 In-domain fidelity is one axis of a deployable private-knowledge system, not the whole target.
@@ -335,14 +395,15 @@ claim.
 \item \textbf{In-domain recall / delivery fidelity (this paper).} Excellent, faithful,
 attributable recall on questions the curated corpus covers---measured against the copy ceiling so
 ``faithful'' is quantified, not assumed. Established here across ten models.
-\item \textbf{No jaggedness on out-of-domain (designed, not yet run).} Injecting ontology context
-must not \emph{degrade} the general, novel questions a model already answers well; irrelevant
-context is known to distract and to displace correct parametric
+\item \textbf{No jaggedness on out-of-domain (established here, \S\ref{sec:ood}).} Injecting
+ontology context must not \emph{degrade} the general, novel questions a model already answers well;
+irrelevant context is known to distract and to displace correct parametric
 knowledge~\cite{shi2023distracted,yoran2024robust,longpre2021entity}. The mitigation is
 confidence-gated selective injection---inject in proportion to retrieval score, skip below a
-threshold~\cite{mallen2023trust}---evaluated by running an \emph{off-ontology} question set
-raw-vs-scaffold and requiring no regression. The harness supports this gate today; the paired
-off-ontology run is the open experiment.
+threshold~\cite{mallen2023trust}. On the 60-question out-of-domain set the gated harness holds the
+paired quality delta at zero across five models---every 95\% interval includes zero---degrading
+only mildly and non-significantly when the gate over-fires, and not at all when it correctly skips.
+The gate, not model heroics, is what carries the axis.
 \item \textbf{The right baseline is web search, not the bare model (designed).} For an in-domain
 question the meaningful comparison is the same model grounded in live web-search results versus
 the curated scaffold. The hypothesis is that a vetted, structured corpus is higher-precision and
@@ -379,6 +440,16 @@ this is the operative quality signal---not ``does grounding help'' (it always do
 but ``how faithfully does this model deliver the vetted facts''---and the copy ceiling is what lets
 that be read off directly rather than inferred from an uplift that mostly measures exposure.
 
+\paragraph{Two axes, held together.} The deployment claim is conjunctive: a private-knowledge
+system must deliver in-domain \emph{and} not regress out-of-domain, and the two are measured on
+different instruments---lexical recall against a copy ceiling, and judged quality against frontier
+gold. Both hold here: near-ceiling in-domain delivery across ten models, and no detected jaggedness
+across five, carried by the confidence gate declining to inject when it judges a query
+out-of-domain. That conjunction is the property a single in-domain number cannot establish. What
+remains to close the bar is the right \emph{baseline}---the same model grounded in a web search
+rather than the bare model---and an attribution-precision metric; both are specified in
+\S\ref{sec:multivariate} and neither is measured here.
+
 % =====================================================================
 \section{Limitations and Threats to Validity}\label{sec:limits}
 \begin{itemize}[topsep=2pt,itemsep=1pt]
@@ -394,6 +465,11 @@ replicates and a pre-registered equivalence margin.
 \item \textbf{Non-independence.} Multiple questions share a class/domain; we report a
 domain-clustered interval but 15 domains is a small cluster count, so domain-level generalisation
 is uncertain.
+\item \textbf{Out-of-domain arm is near-ceiling and small.} The jaggedness test uses judged 0--5
+quality on 60 general questions (20 per stratum, five models); bare scores already sit near~5, so it
+bounds \emph{regression} near zero rather than demonstrating \emph{help}, and the wide intervals
+(40 gate-engaged gradings) warrant ``no jaggedness detected,'' not proof of no effect. Gold and
+judge are single frontier models; cross-family judging mitigates but does not eliminate judge bias.
 \item \textbf{Population.} Eligibility filters (dense, well-defined classes) select cases
 favourable to grounding; sparse classes, aliases, ambiguous phrasing, multi-hop and off-ontology
 queries are untested. Prompts name canonical titles, easing retrieval.
