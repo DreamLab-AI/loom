@@ -4,7 +4,20 @@
 [advisories]
 version = 2
 yanked = "deny"
-ignore = []
+ignore = [
+    # quick-xml DoS pair — reachable only via oxigraph's RDF/XML parser
+    # (oxrdfxml). The Loom loads exclusively the two LOCAL, allowlisted
+    # Turtle files (ontology.ttl + ontology-inferred.ttl); there is no
+    # untrusted-XML input surface. Re-evaluate when oxigraph moves to
+    # quick-xml >= 0.38.
+    "RUSTSEC-2026-0194",
+    "RUSTSEC-2026-0195",
+    # bincode is unmaintained — pulled by the ruvector-core sibling for its
+    # internal serialisation of local, trusted storage artifacts (no network
+    # deserialisation surface in the Loom). Upstream swap tracked in the
+    # ruvector repo; the Loom itself never depends on bincode directly.
+    "RUSTSEC-2025-0141",
+]
 
 [licenses]
 version = 2
@@ -25,8 +38,18 @@ allow = [
     "CC0-1.0",
     "BSL-1.0",
     "OpenSSL",
+    # webpki-roots: the Mozilla CA-bundle DATA licence (permissive,
+    # attribution-style). Pulled by reqwest 0.12/rustls on the serving path.
+    "CDLA-Permissive-2.0",
 ]
 confidence-threshold = 0.9
+
+# oxrocksdb-sys declares the deprecated SPDX form "GPL-2.0 OR Apache-2.0";
+# we elect the Apache-2.0 branch of the disjunction. The exception exists
+# only because the deprecated "GPL-2.0" identifier trips the parser.
+[[licenses.exceptions]]
+name = "oxrocksdb-sys"
+allow = ["GPL-2.0", "Apache-2.0"]
 
 [bans]
 multiple-versions = "warn"

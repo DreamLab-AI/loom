@@ -47,13 +47,13 @@ async-trait = "0.1"
 tokio-postgres = "0.7"
 pgvector    = { version = "0.4", features = ["postgres"] }
 # In-process HNSW: path-dep on the sibling workspace's core crate.
-# HNSW search in ruvector-core is behind the `hnsw` Cargo feature (which enables
-# the optional `hnsw_rs` dep); persistence is behind `storage` (redb + memmap2).
-# BOTH are in the crate's default feature set (verified against
-# ruvector/crates/ruvector-core/Cargo.toml:89 —
-# default = ["simd","storage","hnsw","api-embeddings","parallel"]). Rely on
-# defaults; do NOT set default-features=false, do NOT spell the feature "hnsw_rs".
-ruvector-core = { path = "../ruvector/crates/ruvector-core" }
+# HNSW search is behind the `hnsw` feature (aliasing the optional `hnsw_rs`
+# dep); persistence behind `storage` (redb + memmap2). We take an EXPLICIT
+# feature set rather than defaults: the default `api-embeddings` feature pulls
+# reqwest 0.11 → rustls 0.21/rustls-webpki 0.101, which carry three RUSTSEC
+# advisories — and the Loom never uses ruvector-core's embedding client
+# (loom-embed-xinference owns embeddings). cargo-deny gates this.
+ruvector-core = { path = "../ruvector/crates/ruvector-core", default-features = false, features = ["hnsw", "storage", "simd", "parallel"] }
 
 [profile.release]
 lto = "thin"          # sibling convention (solid-pod-rs); the static-binary win
