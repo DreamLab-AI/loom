@@ -115,9 +115,14 @@ async-trait = "0.1"
 tokio-postgres = "0.7"
 pgvector    = { version = "0.4", features = ["postgres"] }
 # In-process HNSW: path-dep on the sibling workspace's core crate.
-# HNSW search in ruvector-core is behind the OPTIONAL `hnsw_rs` Cargo feature —
-# it MUST be enabled or `VectorDB::search` has no ANN index to run against.
-ruvector-core = { path = "../ruvector/crates/ruvector-core", features = ["hnsw_rs"] }
+# HNSW search in ruvector-core is behind the `hnsw` Cargo feature (which enables
+# the optional `hnsw_rs` dep); persistence is behind `storage` (redb + memmap2).
+# BOTH are in the crate's default feature set — verified against
+# ruvector/crates/ruvector-core/Cargo.toml: default = ["simd","storage","hnsw",
+# "api-embeddings","parallel"]. Rely on defaults; do NOT set
+# default-features=false, and do NOT spell the feature "hnsw_rs" (that is the
+# dep alias, not the documented feature name).
+ruvector-core = { path = "../ruvector/crates/ruvector-core" }
 
 [profile.release]
 lto = "thin"          # sibling convention (solid-pod-rs); the static-binary win
@@ -126,7 +131,7 @@ strip = "symbols"
 panic = "abort"       # façade has no unwinding contract to preserve; smaller binary
 ```
 
-**`ruvector-core` as a path dependency, deliberately.** It is the **in-process Rust crate `ruvector-core`** — *not* the npm-scoped `@ruvector/core` package (an unrelated JS artefact); the serving path links the Rust crate only, and the Cargo manifest above is the single source of truth for that name. It is not published to crates.io and the ecosystem convention is intra-monorepo path/git deps. The build assumes the `ruvector` sibling repo is checked out beside `loom` (as it is on `machinelearn` and in the Nix build inputs). If the mesh prefers hermetic builds, pin it as a git dep with a rev — either way it is an **in-process** dependency, never a network client (ADR-136 §3: the HNSW read must be network-free on the hot path). Its in-process HNSW (`VectorDB::search`) is gated behind the crate's optional `hnsw_rs` feature, enabled in the workspace dependency above.
+**`ruvector-core` as a path dependency, deliberately.** It is the **in-process Rust crate `ruvector-core`** — *not* the npm-scoped `@ruvector/core` package (an unrelated JS artefact); the serving path links the Rust crate only, and the Cargo manifest above is the single source of truth for that name. It is not published to crates.io and the ecosystem convention is intra-monorepo path/git deps. The build assumes the `ruvector` sibling repo is checked out beside `loom` (as it is on `machinelearn` and in the Nix build inputs). If the mesh prefers hermetic builds, pin it as a git dep with a rev — either way it is an **in-process** dependency, never a network client (ADR-136 §3: the HNSW read must be network-free on the hot path). Its in-process HNSW (`VectorDB::search`) is gated behind the crate's `hnsw` feature and its file persistence behind `storage` — both in the default feature set, so the plain path-dep above suffices.
 
 ### 2.2 Per-crate dependency sketch (rationale attached)
 
@@ -135,7 +140,7 @@ panic = "abort"       # façade has no unwinding contract to preserve; smaller b
 | `loom-domain` | `serde`, `thiserror`, `async-trait` | Pure. `async-trait` because ports are async (adapters do I/O); `thiserror` for the typed error enum; `serde` because `CanonicalUnit`/`Generation` cross the wire. **No tokio, no framework** — keeps the core testable in milliseconds and un-coupled to the runtime. |
 | `loom-scaffold` | `serde_json`, `regex` | Direct port of `ontology_scaffold.py`. `regex` for the word/slug tokenisers (`_WORD_RE`, `_SLUG_RE`); `serde_json` to load `scaffold-index.json` + `prose-index.json`. **No network deps** — this crate is the LLM-free/network-free hot path. |
 | `loom-graph-oxigraph` | `oxigraph`, `regex` | `oxigraph` native store replaces `pyoxigraph` (the clean win). `regex` for the read-only SPARQL clamp (`_FORBIDDEN`/`_READ_FORM`/LIMIT injection, carried verbatim from `loom_graph.py`). |
-| `loom-vector-ruvector` | `ruvector-core` (feature `hnsw_rs`), `tokio-postgres`, `pgvector` | `ruvector-core::VectorDB` for the in-process HNSW read (hot path) — HNSW lives behind the crate's optional `hnsw_rs` feature, which this crate enables. `tokio-postgres` + `pgvector` **only** for the build/off-turn write channel to `ruvector-postgres` — feature-gated (`pg-write`) so the serving binary need not link it. |
+| `loom-vector-ruvector` | `ruvector-core` (default features: `hnsw` + `storage`), `tokio-postgres`, `pgvector` | `ruvector-core::VectorDB` for the in-process HNSW read (hot path) — HNSW behind the crate's `hnsw` feature, file persistence behind `storage`, both default-on. `tokio-postgres` + `pgvector` **only** for the build/off-turn write channel to `ruvector-postgres` — feature-gated (`pg-write`) so the serving binary need not link it. |
 | `loom-embed-xinference` | `reqwest`, `serde` | Thin OpenAI-embeddings client to `XINFERENCE_URL`. `rustls-tls` (no OpenSSL system dep — keeps the musl static build clean). |
 | `loom-backend-openai` | `reqwest`, `serde_json` | The `DISTILL_BACKEND_URL` delegate. Streams disabled (parity with Python, which pops `stream`); `max_tokens` floor logic lives here. |
 | `loom-attest-proofgate` | `ruvector-core` (proofgate feature) or `sha2` fallback | Re-platforms the gate verdict onto RuVector `ProofGate<T>`/`MutationLedger` (ADR-047, ADR-136 D5). Build/CI-time only; behind `attest` feature so serving builds omit it. |
@@ -677,7 +682,7 @@ One `Config` struct (`loom-facade/src/config.rs`), `figment`- or hand-parsed fro
 | `LOOM_SPARQL_LIMIT` | `10000` | graph | injected LIMIT on unclamped SELECT |
 | `LOOM_SPARQL_MAX_ROWS` | `10000` | graph | server-side row cap |
 | `LOOM_SEMANTIC_FALLBACK` | `0` | facade | **master switch for the HNSW fallback.** Stays `0` until the recall-gate test (§8.4) clears. |
-| `LOOM_HNSW_ARTIFACT` | `/app/data/ontology-corpus.hnsw` | vector | in-process HNSW artifact (mirrored per generation) |
+| `LOOM_HNSW_ARTIFACT` | `/app/data/ontology-corpus.rvdb` | vector | **ruvector-core storage DB path** (redb), mirrored per generation. `VectorDB::new(DbOptions{storage_path,..})` auto-rebuilds the HNSW index from the persisted vectors on open (verified in `vector_db.rs`) — it is NOT a serialised HNSW graph file. |
 | `LOOM_SEMANTIC_K` | `5` | vector | ANN k for the fallback |
 | `LOOM_SEMANTIC_MIN_INJECT` | *(unset)* | facade | normalised cosine gate for fallback candidates; **must be set by the bench**, no default |
 | `LOOM_SEMANTIC_SCORE_SCALE` | *(unset)* | facade | lexical↔cosine normalisation; bench-tuned |
@@ -698,7 +703,8 @@ One `Config` struct (`loom-facade/src/config.rs`), `figment`- or hand-parsed fro
 ### 11.2 `loom-vector-ruvector` (new — the ground-truth wiring)
 
 Two channels, hard-separated by feature flag:
-- **Query hot path (default):** `HnswIndex` holds a `ruvector_core::VectorDB` built from `LOOM_HNSW_ARTIFACT` (the mirrored, generation-stamped HNSW projection of the ontology-corpus namespace). `nearest()` calls `VectorDB::search(SearchQuery{ vector, k, metric: DistanceMetric::Cosine })` and maps each `SearchResult` → `ConceptMatch { iri: <primary key>, score: cosine, provenance: SemanticHnsw }`. **In-process, network-free.** HNSW search in `ruvector-core` is behind the crate's **optional `hnsw_rs` Cargo feature**, which this crate enables (§2.1); without it there is no ANN index to query. The IRI is the record's primary key, so the index can never leak its own row shape back as an answer (anti-corruption).
+- **Query hot path (default):** `HnswIndex` holds a `ruvector_core::VectorDB` opened on `LOOM_HNSW_ARTIFACT` — a **ruvector-core storage DB** (redb; the crate's `storage` feature), generation-stamped and mirrored like the JSON indices. On open, `VectorDB::new` reads the stored config, then **auto-rebuilds the HNSW index from the persisted vectors** (verified in `vector_db.rs`) — sub-second at 8,146×384. `nearest()` calls `VectorDB::search(SearchQuery{ vector, k, metric: DistanceMetric::Cosine })` and maps each `SearchResult` → `ConceptMatch { iri: <record id>, score: cosine, provenance: SemanticHnsw }`. **In-process, network-free.** The IRI is the record's ID, so the index can never leak its own row shape back as an answer (anti-corruption).
+- **Artifact bootstrap (the bulk-embedding plan, done once per generation):** the initial DB is built by an off-turn exporter (`loom-vector-ruvector` bin, `pg-write` feature) that **reads the 8,146 already-verified embeddings from the `ontology-corpus` namespace in ruvector-postgres** (ingested 2026-08-16 via Xinference; 0 NULL, all unit-norm) and inserts them into the `VectorDB` keyed by IRI. No re-embedding on bootstrap — embeddings are only recomputed for delta-touched IRIs at promote time (below). If PG is unreachable the exporter can fall back to re-embedding `concept-records.jsonl` through Xinference (`bge-small-en-v1.5`/384, the locked model) — never through any other embedder.
 - **Build/off-turn write channel (`pg-write` feature):** `PgWriter` connects via `tokio-postgres`+`pgvector` to `ruvector-postgres`, used at promote-time to **delta-diff touched IRIs** and re-embed only those (ADR-136 D4 re-embed-on-promote), honouring the HNSW index-law: **non-concurrent** rebuild `m=16, ef_construction=128`; **never `CREATE INDEX CONCURRENTLY`** on the ruvector HNSW AM (double-insertion, verified). This channel is never linked into the serving binary.
 
 ### 11.3 `loom-embed-xinference` (new)
@@ -755,7 +761,7 @@ services:
       DISTILL_BACKEND_URL: http://127.0.0.1:8085/v1   # loom-model Qwen3.8-27B, GPU-colocated
       LOOM_DEPLOY_PROFILE: a
       LOOM_SEMANTIC_FALLBACK: 0        # in-proc HNSW artifact present, gated off until bench
-    volumes: [ ./data:/app/data:ro ]   # mirrored generation incl. ontology-corpus.hnsw
+    volumes: [ ./data:/app/data:ro ]   # mirrored generation incl. ontology-corpus.rvdb
 ```
 Serves fully with **no docker-network access** — lexical + in-process HNSW + in-context oxigraph, all network-free. This is the demo/reference path and the GPU-colocated model path.
 
@@ -807,7 +813,7 @@ Matching the sibling repos' bar:
 - **[ddd-ontology-loom-context.md](./ddd-ontology-loom-context.md)** — the bounded context; `CanonicalUnit` maps to the aggregate root, BC24 I11 (published-ontology-only), §6.1 (RuVector access model). The port names above (`LexicalIndex`/`VectorIndex`/`GraphStore`/`EmbeddingProvider`/`ModelBackend`) are this document's ubiquitous language, held verbatim.
 - **agentbox — ADR-051** ([agentbox-ADR-051-loom-client-and-deferred-distillation.md](./agentbox-ADR-051-loom-client-and-deferred-distillation.md)) — the loom client + deferred distillation consumer; the façade contract this binary must keep stable.
 - **VisionClaw — ADR-099** (Whelk-rs EL++ reasoner) and **ADR-090/PRD-016** (hexagonal ring placement) — the reasoner is build-time authority; this workspace is the ADR-090 ring realised for the Loom surface.
-- **ruvector — ADR-001** (HNSW production index), **ADR-047** (ProofGate/MutationLedger) — the in-process `ruvector-core` HNSW read (behind the `hnsw_rs` feature) + the attestation substrate.
+- **ruvector — ADR-001** (HNSW production index), **ADR-047** (ProofGate/MutationLedger) — the in-process `ruvector-core` HNSW read (behind the default-on `hnsw` feature) + the attestation substrate.
 - **logseq (`jjohare/logseq`)** — the canonical corpus builder + CI-enforced gate; the Loom serves its output, never rebuilds it (the dropped `pipeline/`).
 
 ---

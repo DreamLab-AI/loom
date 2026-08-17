@@ -104,7 +104,7 @@ The Rust rewrite changes the *substrate under* these invariants. It changes none
 
 ### 2.1 The decision
 
-**Framework: axum + tower on the tokio runtime**, with **oxigraph as a direct crate dependency** (replacing the pyoxigraph binding) and **`ruvector-core` HNSW embedded in-process** (via its `hnsw_rs` feature). This is the ecosystem norm (VisionClaw ADR-090 hexagonal ring; the four sibling Rust repos are all tokio workspaces, resolver = 2, deny-unsafe, thin-LTO release). The artifact is a **single static musl binary** (a few MB, no interpreter, no wheel), built with Nix (the agentbox pattern), shipped in two compose profiles (§8).
+**Framework: axum + tower on the tokio runtime**, with **oxigraph as a direct crate dependency** (replacing the pyoxigraph binding) and **`ruvector-core` HNSW embedded in-process** (via its default-on `hnsw` + `storage` features). This is the ecosystem norm (VisionClaw ADR-090 hexagonal ring; the four sibling Rust repos are all tokio workspaces, resolver = 2, deny-unsafe, thin-LTO release). The artifact is a **single static musl binary** (a few MB, no interpreter, no wheel), built with Nix (the agentbox pattern), shipped in two compose profiles (§8).
 
 ### 2.2 The honest technical wins (all on the substrate axis)
 
