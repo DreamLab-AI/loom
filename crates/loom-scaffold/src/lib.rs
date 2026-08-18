@@ -21,6 +21,7 @@
 #![allow(clippy::cast_possible_truncation)]
 #![allow(clippy::cast_sign_loss)]
 
+pub mod exposure;
 pub mod index;
 pub mod match_;
 pub mod policy;
@@ -163,7 +164,11 @@ pub fn message_text(content: &serde_json::Value) -> String {
         let texts: Vec<&str> = parts
             .iter()
             .filter(|p| p.get("type").and_then(serde_json::Value::as_str) == Some("text"))
-            .map(|p| p.get("text").and_then(serde_json::Value::as_str).unwrap_or(""))
+            .map(|p| {
+                p.get("text")
+                    .and_then(serde_json::Value::as_str)
+                    .unwrap_or("")
+            })
             .collect();
         return texts.join(" ");
     }
@@ -195,17 +200,31 @@ pub fn scaffold_messages(
         return out;
     };
 
-    let outcome = scaffold_block(idx, &text, budget_tokens, max_seeds, hops, prose, prose_index, policy);
+    let outcome = scaffold_block(
+        idx,
+        &text,
+        budget_tokens,
+        max_seeds,
+        hops,
+        prose,
+        prose_index,
+        policy,
+    );
     if outcome.block.is_empty() {
         return out;
     }
     let injection = format!("{SYSTEM_PREAMBLE}\n\n{}", outcome.block);
 
-    let sys_pos = out.iter().position(|m| {
-        m.get("role").and_then(serde_json::Value::as_str) == Some("system")
-    });
+    let sys_pos = out
+        .iter()
+        .position(|m| m.get("role").and_then(serde_json::Value::as_str) == Some("system"));
     match sys_pos {
-        Some(i) if out[i].get("content").and_then(serde_json::Value::as_str).is_some() => {
+        Some(i)
+            if out[i]
+                .get("content")
+                .and_then(serde_json::Value::as_str)
+                .is_some() =>
+        {
             let existing = out[i]["content"].as_str().unwrap().trim_end().to_owned();
             out[i]["content"] = serde_json::Value::String(format!("{existing}\n\n{injection}"));
         }
@@ -428,7 +447,10 @@ impl LexicalIndex for LexicalRetriever {
             .filter(|(_, targets)| !targets.is_empty())
             .map(|(k, targets)| Relation {
                 predicate: relation_kind_from_camel(k),
-                targets: targets.iter().map(|t| Iri::from_slug(&ref_to_slug(t))).collect(),
+                targets: targets
+                    .iter()
+                    .map(|t| Iri::from_slug(&ref_to_slug(t)))
+                    .collect(),
             })
             .collect();
         Some(CanonicalUnit {
@@ -441,10 +463,22 @@ impl LexicalIndex for LexicalRetriever {
             maturity: e.m.clone().filter(|s| !s.is_empty()),
             #[allow(clippy::cast_possible_truncation)]
             quality: e.q.map(|q| q as f32),
-            is_a: e.sup.iter().map(|r| Iri::from_slug(&ref_to_slug(r))).collect(),
-            ancestors: e.isup.iter().map(|r| Iri::from_slug(&ref_to_slug(r))).collect(),
+            is_a: e
+                .sup
+                .iter()
+                .map(|r| Iri::from_slug(&ref_to_slug(r)))
+                .collect(),
+            ancestors: e
+                .isup
+                .iter()
+                .map(|r| Iri::from_slug(&ref_to_slug(r)))
+                .collect(),
             relations,
-            backlinks: e.bl.iter().map(|r| Iri::from_slug(&ref_to_slug(r))).collect(),
+            backlinks: e
+                .bl
+                .iter()
+                .map(|r| Iri::from_slug(&ref_to_slug(r)))
+                .collect(),
             corpus_nature: CorpusNature::SyntheticAiGeneratedHumanDirected,
             generation: self.generation.id.clone(),
         })
