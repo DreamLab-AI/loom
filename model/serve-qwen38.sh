@@ -48,6 +48,16 @@ DRAFT_N_MAX="${DRAFT_N_MAX:-3}"
 REASONING_EFFORT="${REASONING_EFFORT:-medium}"
 REASONING_BUDGET="${REASONING_BUDGET:--1}"
 REASONING_PRESERVE="${REASONING_PRESERVE:-1}"
+# Thought-tag extraction: none | deepseek. Finetunes whose chat template llama.cpp
+# does not recognise as reasoning-capable (e.g. qwen38-ara/Heretic — chat_format
+# "Content-only") leak raw <think> blocks into message.content; "deepseek" parses
+# <think>…</think> into message.reasoning_content instead (2026-08-18 cutover).
+REASONING_FORMAT="${REASONING_FORMAT:-}"
+# Override template for GGUFs shipped WITHOUT tokenizer.chat_template (the Heretic
+# abliteration strips it — llama.cpp then falls back to generic ChatML and ALL
+# reasoning controls dead-end). Point at the base Qwen3.8 template extracted from
+# the reference GGUF (chat-template.jinja beside the weights).
+CHAT_TEMPLATE_FILE="${CHAT_TEMPLATE_FILE:-}"
 
 VISION="${VISION:-1}"
 
@@ -70,6 +80,13 @@ ARGS=(
 )
 if [[ -n "$REASONING_EFFORT" && "$REASONING_EFFORT" != "default" ]]; then
     ARGS+=(--chat-template-kwargs "{\"reasoning_effort\":\"$REASONING_EFFORT\"}")
+fi
+if [[ -n "$REASONING_FORMAT" ]]; then
+    ARGS+=(--reasoning-format "$REASONING_FORMAT")
+fi
+if [[ -n "$CHAT_TEMPLATE_FILE" ]]; then
+    [[ -f "$CHAT_TEMPLATE_FILE" ]] || { echo "Error: CHAT_TEMPLATE_FILE not found: $CHAT_TEMPLATE_FILE" >&2; exit 1; }
+    ARGS+=(--chat-template-file "$CHAT_TEMPLATE_FILE")
 fi
 # Unified KV: all slots share one pool so a single request can use the full -c.
 if [[ "$KV_UNIFIED" == "1" ]]; then
