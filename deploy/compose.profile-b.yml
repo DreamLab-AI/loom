@@ -28,6 +28,17 @@ services:
       LOOM_SEMANTIC_FALLBACK: "0"       # gated OFF until the recall bench clears (§8.4)
       LOOM_MIN_MAX_TOKENS: "1536"
       ONTOLOGY_BUDGET: "1500"
+      # --- findings-driven serving features (defaults OFF = current behaviour) ----
+      # This consumer-facing DOOR keeps full generative delegation by default; the
+      # HP reference (Profile A) enables verbatim/no-think. Uncomment to opt in.
+      # F1 verbatim serving (delivery-lookup on a high-confidence scaffold, no backend call):
+      # LOOM_VERBATIM_MODE: "1"
+      # LOOM_VERBATIM_THRESHOLD: "8.0"    # exact-title match on the lexical additive scale
+      # F3 thinking + budget control (engaged delegations only):
+      # LOOM_BACKEND_NO_THINK: "1"        # add chat_template_kwargs.enable_thinking=false
+      # LOOM_THINK_TOKEN_FLOOR: "1536"    # raise sub-floor max_tokens when thinking active (0 disables)
+      # F2 exposure telemetry is always emitted when injected; this only appends the line:
+      # LOOM_EXPOSURE_APPEND: "0"
       RUST_LOG: "info"
       # --- pg-write / off-turn write channel — BUILD/OFF-TURN ONLY, never the query
       # hot path (§10 boundary rule). The serving binary is compiled WITHOUT the

@@ -24,6 +24,27 @@ services:
       # Reasoning backends truncate to empty below 1536 max_tokens (§10 the 400→empty trap).
       LOOM_MIN_MAX_TOKENS: "1536"
       ONTOLOGY_BUDGET: "1500"
+      # --- findings-driven serving features (paper measured on THIS node) --------
+      # F1 verbatim serving: for a delivery-lookup on a HIGH-confidence scaffold,
+      # serve the curated markdown directly (no 60–170s generative re-encode of a
+      # scaffold the model can only restate; context-utilisation 0.90–0.955,
+      # beyond-exposure recovery 3/11,360). Threshold 8.0 == an EXACT title match
+      # on the LEXICAL additive scale (conservative — paraphrase-only hits still
+      # delegate). Per-request opt-out: {"loom_options":{"verbatim":false}}.
+      LOOM_VERBATIM_MODE: "1"
+      LOOM_VERBATIM_THRESHOLD: "8.0"
+      # F3 no-think: an engaged (scaffold-injected) delegation asks the backend to
+      # skip thinking — matches quality for delivery-shaped tasks at ~5.5× less
+      # wall-clock (smoke test), and stops think-tokens exhausting the budget on
+      # long scaffolds. Only applied when the client did not set chat_template_kwargs.
+      LOOM_BACKEND_NO_THINK: "1"
+      # F3 think-token floor (when thinking IS active): raise a sub-floor integer
+      # max_tokens so reasoning does not truncate the answer. 0 disables.
+      LOOM_THINK_TOKEN_FLOOR: "1536"
+      # F2 exposure telemetry is ALWAYS on when injected (the loom.exposure block);
+      # LOOM_EXPOSURE_APPEND additionally appends a "Not covered above" line to the
+      # answer — left off here (telemetry only, no content mutation by default).
+      # LOOM_EXPOSURE_APPEND: "0"
       RUST_LOG: "info"
     # Mirrored generation incl. ontology-corpus.rvdb — READ-ONLY (the entrypoint
     # copies the rvdb to a writable /run/loom before opening it; see entrypoint.sh).

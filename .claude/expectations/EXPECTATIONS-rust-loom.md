@@ -107,6 +107,77 @@ warn), `unsafe_code = "deny"` workspace-wide, `cargo test --workspace
 --all-features` fully green.
 stabilized_by: CI gate
 
+## EXP-012 — F1 verbatim serving mode
+category: executable · regression_critical: true
+env: LOOM_VERBATIM_MODE (default 0 = current behaviour), LOOM_VERBATIM_THRESHOLD
+(default 8.0). When verbatim mode is ON **and** the injection gate engages **and**
+the scaffold `top_score` (lexical additive scale; `EXACT_TITLE_WEIGHT`=8.0/word,
+`MIN_SEED_SCORE`=2.0 floor, `STRONG_MATCH_SCORE`=8.0) clears the threshold **and**
+the request is a delivery-lookup shape (last message user, no assistant turns)
+**and** it is not streaming **and** not opted out, `/v1/chat/completions` returns
+a valid OpenAI chat completion WITHOUT calling the backend: `model:"loom-verbatim"`,
+`object:"chat.completion"`, `choices[0].finish_reason:"stop"`, zero `usage`,
+message content = the scaffold's canonical markdown (wrapper stripped, one-line
+provenance header naming the generation), and `loom.served_mode:"verbatim"`.
+Design decision: a NEW `ServedMode {Delegated|Verbatim}` domain enum carries the
+marker rather than a `FusionPath::Verbatim` variant — `FusionPath` is the
+RETRIEVAL axis (which index produced candidates) and a verbatim serve is still a
+`LexicalHit`; overloading it would conflate retrieval with delivery and perturb
+every existing `FusionPath` serialisation/test. Threshold default 8.0 = an exact
+single-word title match (conservative: paraphrase/overlap-only hits score below 8
+and delegate). Opt-out `{"loom_options":{"verbatim":false}}` is a properly-parsed
+request field, stripped before delegation so a strict backend never sees it.
+Streaming and multi-turn bypass verbatim (delegate as today). Default OFF preserves
+current behaviour EXACTLY (proven by the unchanged EXP-006 suite).
+evidenced by: exp012_serving.rs (`f1_*`) — serves-without-backend (200 vs 503 the
+retrieval-only backend would give on delegate), opt-out/multi-turn/streaming
+bypass, threshold boundary (below→delegate, above→verbatim), default-off delegates;
+serving.rs unit tests (shape, wrapper strip, eligibility).
+stabilized_by: loom-facade exp012 + serving unit tests
+
+## EXP-013 — F2 exposure telemetry
+category: executable · regression_critical: true
+env: LOOM_EXPOSURE_APPEND (default 0). Whenever a scaffold was injected, the 200
+response's `loom` block carries `exposure:{targets:N, delivered:M, dropped:[...]}`
+(dropped capped at 12) — the count of served titles (class titles + serialised
+relation-target titles that survived the budget clamp), how many the answer
+restated, and the served-but-omitted ones. The matcher is a pure port of the
+paper's deterministic `normalise`/`gold_hit` (tools/paper/decompose_exposure.py):
+normalise = lowercase + collapse non-`[a-z0-9\s]` to spaces + trim; hit = substring
+OR ≥80% of the title's length-≥4 words present. Semantic parity (not byte parity)
+is the bar. Served titles are the seeds' resolved titles filtered to those present
+in the served block (same matcher) — "what the model saw", without markdown
+parsing. O(targets × answer). With LOOM_EXPOSURE_APPEND=1 a single
+`Not covered above: X, Y, Z.` line is appended to the answer content on drops;
+default off = telemetry only, zero content change. Not engaged ⇒ `exposure:null`.
+evidenced by: loom-scaffold exposure.rs unit tests (normalise/title_hit/report
+dedupe+cap fixtures); exp012_serving.rs (`f2_*`) — drops reported against a
+wiremock answer, append line present under the flag, null when not engaged.
+stabilized_by: loom-scaffold exposure tests + loom-facade exp012
+
+## EXP-014 — F3 thinking + budget control
+category: executable · regression_critical: true
+env: LOOM_BACKEND_NO_THINK (default 0), LOOM_THINK_TOKEN_FLOOR (default 0 = OFF;
+Profile A sets 1536). Audit remediation (finding 1): the code default is 0, NOT
+1536 — with F3 unconfigured the backend's LOOM_MIN_MAX_TOKENS remains the sole
+token floor, so a deployment that set LOOM_MIN_MAX_TOKENS=0 is never silently
+re-floored (defaults preserve current behaviour EXACTLY). For an ENGAGED
+(scaffold-injected) delegation ONLY: with NO_THINK on and
+the client NOT having set `chat_template_kwargs`, add
+`chat_template_kwargs:{"enable_thinking":false}` to the delegated body; NEVER add it
+to a non-engaged passthrough request. When thinking stays active (NO_THINK off, or
+the client overrode `chat_template_kwargs`) and a think-floor > 0 is set, raise a
+sub-floor INTEGER `max_tokens` the client sent up to the floor — reusing the backend
+adapter's audited integer-only floor primitive (`raise_integer_token_floor`,
+single-sourced from the LOOM_MIN_MAX_TOKENS remediation): only serde integers are
+raised (negatives too), higher asks / strings / floats / overflow / null pass
+through, no key is inserted. Defaults OFF preserve current behaviour.
+evidenced by: loom-backend-openai backend.rs (`raise_integer_token_floor_semantics`);
+serving.rs unit tests (`thinking_controls_*`); exp012_serving.rs (`f3_*`) — kwargs
+injected when engaged, NEVER on passthrough, client-override keeps thinking + floors,
+floor not applied to passthrough.
+stabilized_by: loom-backend-openai + loom-facade serving/exp012 tests
+
 ---
 
 Evidence lands in `.claude/evidence/EXP-NNN.evidence.md`. Audit verdicts in
