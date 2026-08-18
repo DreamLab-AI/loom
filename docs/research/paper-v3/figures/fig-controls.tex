@@ -1,0 +1,50 @@
+\begin{figure}[t]\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.2cm,
+  xmin=-0.85, xmax=2.35,
+  ymin=0.4, ymax=4.6,
+  xlabel={Paired judged-quality contrast against the bare model (arm $-$ raw), points $0$--$5$},
+  ytick={1,2,3,4},
+  yticklabels={\emph{irrelevant} ($n{=}28$),\emph{shuffled} ($n{=}36$),\emph{masked} ($n{=}33$),\emph{true} ($n{=}32$)},
+  xtick={-0.5,0,0.5,1.0},
+  clip=false,
+]
+% zero reference line
+\draw[ink!55] (axis cs:0,0.4) -- (axis cs:0,4.6);
+% content-bound served block (the one significant contrast): teal
+\addplot[only marks, mark=*, mark size=2.8pt, color=teal0, mark options={fill=teal0,draw=teal0},
+  error bars/.cd, x dir=both, x explicit, error bar style={teal0,line width=0.7pt}, error mark options={rotate=90,mark size=3pt,teal0}]
+coordinates {
+  (0.5938,4) += (0.4687,0) -= (0.4376,0)
+};
+% degraded / placebo arms (ns): gray
+\addplot[only marks, mark=*, mark size=2.6pt, color=gray!55!ink, mark options={fill=gray!55!ink,draw=gray!55!ink},
+  error bars/.cd, x dir=both, x explicit, error bar style={gray!60!ink,line width=0.7pt}, error mark options={rotate=90,mark size=3pt,gray!60!ink}]
+coordinates {
+  (0.4242,3) += (0.5152,0) -= (0.5151,0)
+  (0.2500,2) += (0.6389,0) -= (0.6389,0)
+  (0.0357,1) += (0.5357,0) -= (0.5714,0)
+};
+% right-hand value column
+\node[anchor=west,font=\footnotesize] at (axis cs:1.15,4) {\emph{true}: $+0.59\ [+0.16,+1.06]$,\ $p{=}0.026$};
+\node[anchor=west,font=\footnotesize] at (axis cs:1.15,3) {\emph{masked}: $+0.42\ [-0.09,+0.94]$, ns};
+\node[anchor=west,font=\footnotesize] at (axis cs:1.15,2) {\emph{shuffled}: $+0.25\ [-0.39,+0.89]$, ns};
+\node[anchor=west,font=\footnotesize] at (axis cs:1.15,1) {\emph{irrelevant}: $+0.04\ [-0.54,+0.57]$, ns};
+\end{axis}
+\end{tikzpicture}
+\caption{Negative-control decomposition (Study~2, pooled arcane\,$+$\,thin, judged $0$--$5$ by the
+cross-family GPT judge), each arm holding the model and question fixed and perturbing only the injected
+block, read as a paired contrast against the bare model (arm\,$-$\,raw) with seeded bootstrap 95\%
+intervals. Read top to bottom the ladder is the paper's central negative control: the served block lifts
+quality (\emph{true}\,$-$\,raw $+0.59$, the one significant contrast, in teal), masking the seed-class
+names ($+0.42$) or shuffling the body sentences ($+0.25$) costs comparatively little, and an equally
+well-formed, on-corpus scaffold drawn from a \emph{different} question shows a near-zero point estimate
+(\emph{irrelevant}\,$-$\,raw $+0.04$). That near-zero placebo is consistent with the lift being specific
+to scaffold \emph{content} rather than the mere presence of ontology-shaped text, though its wide
+interval under attrition means inertness is not demonstrated by equivalence; the content-specific residual is
+\emph{true}\,$-$\,\emph{irrelevant} $=+0.35$ $[0.00,+0.78]$. The arms are complete-case over unequal
+survivor sets and all but \emph{true} are non-significant with wide intervals, so the attribution rests
+on the pattern across arms, not any single contrast (\S\ref{sec:controls}).}
+\label{fig:controls}
+\end{figure}
