@@ -6,8 +6,8 @@
 
 use std::time::Duration;
 
-use loom_domain::{LoomError, ModelBackend};
 use loom_backend_openai::OpenAiBackend;
+use loom_domain::{LoomError, ModelBackend};
 use serde_json::json;
 use wiremock::matchers::{body_json, method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
@@ -293,7 +293,10 @@ async fn models_passes_through() {
         .mount(&server)
         .await;
 
-    let out = backend(&server, 1536).models().await.expect("models passthrough");
+    let out = backend(&server, 1536)
+        .models()
+        .await
+        .expect("models passthrough");
     assert_eq!(out, catalogue);
 }
 
@@ -306,7 +309,10 @@ async fn reachable_true_on_2xx() {
         .mount(&server)
         .await;
 
-    assert!(backend(&server, 1536).reachable().await, "2xx /models → reachable");
+    assert!(
+        backend(&server, 1536).reachable().await,
+        "2xx /models → reachable"
+    );
 }
 
 #[tokio::test]
@@ -336,4 +342,44 @@ async fn empty_endpoint_is_retrieval_only() {
         Err(LoomError::NoBackend)
     ));
     assert!(matches!(be.models().await, Err(LoomError::NoBackend)));
+}
+
+/// The F3 shared floor primitive (`raise_integer_token_floor`) — the SAME
+/// integer-only semantics the façade's `LOOM_THINK_TOKEN_FLOOR` reuses. Only
+/// serde integers are raised (`max(v, floor)`, so negatives raise too); a higher
+/// ask, a string, a float and `null` all pass through verbatim; no key is
+/// inserted (the return flag reports presence, insertion is the caller's job).
+#[test]
+fn raise_integer_token_floor_semantics() {
+    use loom_backend_openai::raise_integer_token_floor;
+
+    // Sub-floor integer raised; higher ask untouched.
+    let mut m = serde_json::Map::new();
+    m.insert("max_tokens".to_owned(), json!(256));
+    assert!(raise_integer_token_floor(&mut m, 1536));
+    assert_eq!(m["max_tokens"], json!(1536));
+
+    let mut m2 = serde_json::Map::new();
+    m2.insert("max_tokens".to_owned(), json!(4096));
+    let _ = raise_integer_token_floor(&mut m2, 1536);
+    assert_eq!(m2["max_tokens"], json!(4096), "higher ask untouched");
+
+    // Negative raises (Python max(-1, floor)); max_completion_tokens covered too.
+    let mut m3 = serde_json::Map::new();
+    m3.insert("max_completion_tokens".to_owned(), json!(-1));
+    let _ = raise_integer_token_floor(&mut m3, 1536);
+    assert_eq!(m3["max_completion_tokens"], json!(1536));
+
+    // Non-integers pass through verbatim; absent key ⇒ no insertion, flag false.
+    let mut m4 = serde_json::Map::new();
+    m4.insert("max_tokens".to_owned(), json!("512"));
+    assert!(raise_integer_token_floor(&mut m4, 1536));
+    assert_eq!(m4["max_tokens"], json!("512"), "string ask verbatim");
+
+    let mut m5 = serde_json::Map::new();
+    assert!(!raise_integer_token_floor(&mut m5, 1536), "no key present");
+    assert!(
+        !m5.contains_key("max_tokens"),
+        "no insertion by the primitive"
+    );
 }

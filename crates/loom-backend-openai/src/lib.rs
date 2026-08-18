@@ -78,7 +78,11 @@ impl OpenAiBackend {
             .ok()
             .and_then(|s| s.parse::<u64>().ok())
             .unwrap_or(DEFAULT_MIN_MAX_TOKENS);
-        Self::new(endpoint, Duration::from_secs_f64(timeout_secs), min_max_tokens)
+        Self::new(
+            endpoint,
+            Duration::from_secs_f64(timeout_secs),
+            min_max_tokens,
+        )
     }
 
     /// True when no `DISTILL_BACKEND_URL` is configured.
@@ -109,29 +113,13 @@ impl OpenAiBackend {
         if self.min_max_tokens == 0 {
             return;
         }
-        let floor = i128::from(self.min_max_tokens);
+
+        // Raise any sub-floor integer ask (never lowering, never touching
+        // non-integers); returns whether either token key was present at all.
+        let saw_any = raise_integer_token_floor(map, self.min_max_tokens);
 
         // Insertion guard is key-presence (Python `field in j`), independent of
-        // the value's type.
-        let mut saw_any = false;
-        for field in ["max_tokens", "max_completion_tokens"] {
-            let Some(slot) = map.get_mut(field) else {
-                continue;
-            };
-            saw_any = true;
-            // Only JSON integers are floored. `as_i64`/`as_u64` succeed exactly
-            // for serde integers; strings/floats/overflow numbers/null yield
-            // None and pass through verbatim.
-            let current = slot
-                .as_i64()
-                .map(i128::from)
-                .or_else(|| slot.as_u64().map(i128::from));
-            if let Some(current) = current {
-                if current < floor {
-                    *slot = Value::from(self.min_max_tokens);
-                }
-            }
-        }
+        // the value's type: only when BOTH keys were absent do we insert one.
         if !saw_any {
             map.insert("max_tokens".to_owned(), Value::from(self.min_max_tokens));
         }
@@ -143,6 +131,39 @@ impl OpenAiBackend {
     fn url(&self, sub: &str) -> String {
         format!("{}{sub}", self.endpoint)
     }
+}
+
+/// Raise any sub-`floor` INTEGER `max_tokens`/`max_completion_tokens` in `map`
+/// to `floor`, in place; return whether either key was present (of any type).
+///
+/// Integer-only, audit-remediation semantics (loom-backend-openai audit finding
+/// 2), single-sourced here so the façade's F3 think-token floor
+/// (`LOOM_THINK_TOKEN_FLOOR`) applies IDENTICAL rules: only serde integers are
+/// floored (via `max(v, floor)`, so negatives raise too and a higher ask is left
+/// untouched); strings, floats, `u64`-overflow numbers and `null` pass through
+/// verbatim (Python `isinstance(v, int)` parity). This function does NOT insert a
+/// missing key and does NOT strip `stream` — those are `normalise_body`'s
+/// concerns; the F3 floor only ever RAISES an ask a client actually sent.
+#[must_use]
+pub fn raise_integer_token_floor(map: &mut serde_json::Map<String, Value>, floor: u64) -> bool {
+    let floor_i = i128::from(floor);
+    let mut saw_any = false;
+    for field in ["max_tokens", "max_completion_tokens"] {
+        let Some(slot) = map.get_mut(field) else {
+            continue;
+        };
+        saw_any = true;
+        let current = slot
+            .as_i64()
+            .map(i128::from)
+            .or_else(|| slot.as_u64().map(i128::from));
+        if let Some(current) = current {
+            if current < floor_i {
+                *slot = Value::from(floor);
+            }
+        }
+    }
+    saw_any
 }
 
 #[async_trait::async_trait]
