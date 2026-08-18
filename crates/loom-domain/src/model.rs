@@ -227,6 +227,41 @@ pub enum FusionPath {
     NoMatch,
 }
 
+/// How the answer was DELIVERED — orthogonal to `FusionPath` (which records how
+/// candidates were RETRIEVED). A verbatim serve still arrives via `LexicalHit`
+/// retrieval; overloading `FusionPath` with a `Verbatim` variant would conflate
+/// the retrieval axis with the delivery axis (and perturb every existing
+/// `FusionPath` serialisation/test). A distinct type keeps the two concerns
+/// separable in the telemetry — the paper's finding is precisely that these are
+/// different decisions (retrieve-and-restate vs serve-the-scaffold).
+///
+/// Serialises lowercase (`"delegated"`/`"verbatim"`) to sit beside the existing
+/// lowercase `loom.mode` telemetry rather than the CamelCase enum-variant form.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ServedMode {
+    /// The scaffold was injected and the request delegated to the model backend
+    /// (the current, default behaviour).
+    Delegated,
+    /// The high-confidence scaffold was served verbatim WITHOUT calling the
+    /// backend — the paper's serving-regime finding realised (F1).
+    Verbatim,
+}
+
+/// Exposure telemetry (F2): after an answer returns, how many of the injected
+/// scaffold's titles the answer actually restated. `targets` is the count of
+/// distinct served titles (class titles + serialised relation-target titles that
+/// survived the budget clamp), `delivered` how many of those appear in the
+/// answer, and `dropped` the (capped) list of served-but-omitted titles. This is
+/// the paper's copy-fidelity deficit made observable per request (~1 in 14
+/// exposed items dropped, n10).
+#[derive(Clone, Debug, Default, serde::Serialize)]
+pub struct ExposureReport {
+    pub targets: usize,
+    pub delivered: usize,
+    pub dropped: Vec<String>,
+}
+
 /// Knobs for a scaffold assembly (the Python `scaffold()` arguments, typed).
 /// `path` is threaded so the assembled `Scaffold` records which fusion route
 /// produced it; use `with_path` to stamp it inside the fusion pipeline.
@@ -485,6 +520,35 @@ mod tests {
         };
         assert_eq!(base("g1", Some(10)), base("g1", Some(9999)));
         assert_ne!(base("g1", Some(10)), base("g2", Some(10)));
+    }
+
+    #[test]
+    fn served_mode_serialises_lowercase() {
+        assert_eq!(
+            serde_json::to_string(&ServedMode::Delegated).unwrap(),
+            "\"delegated\""
+        );
+        assert_eq!(
+            serde_json::to_string(&ServedMode::Verbatim).unwrap(),
+            "\"verbatim\""
+        );
+    }
+
+    #[test]
+    fn exposure_report_shape() {
+        let r = ExposureReport {
+            targets: 3,
+            delivered: 2,
+            dropped: vec!["Graph Database".to_owned()],
+        };
+        let v = serde_json::to_value(&r).unwrap();
+        assert_eq!(v["targets"], 3);
+        assert_eq!(v["delivered"], 2);
+        assert_eq!(v["dropped"], serde_json::json!(["Graph Database"]));
+        // Default is the honest empty report.
+        let d = ExposureReport::default();
+        assert_eq!(d.targets, 0);
+        assert!(d.dropped.is_empty());
     }
 
     #[test]
