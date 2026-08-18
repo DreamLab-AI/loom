@@ -49,7 +49,7 @@ corpus that is injected, uplift conflates faithful \emph{delivery} of exposed fa
 \emph{reasoning} over injected structure. We introduce the \emph{copy ceiling}, the recall a verbatim
 copy of the shown context would already achieve, and the signed \emph{gain over copy}. The control is
 deterministic, judge-free and per-item, reported as a standing column beside generation recall, and
-paired with a placebo verified inert by seed-disjointness; together they separate exposure from
+paired with a placebo verified irrelevant by seed-disjointness; together they separate exposure from
 reasoning before an architecture is chosen. On a production ontology-serving node, unaided models score
 $\approx0.26$ in-domain and grounded $\approx0.92$, yet across ten models from five providers the gain
 over copy is uniformly negative ($-0.067$ to $-0.022$). A direct exposure/recovery decomposition of
@@ -57,8 +57,9 @@ over copy is uniformly negative ($-0.067$ to $-0.022$). A direct exposure/recove
 spans 0.900--0.955, and models differ only in how much exposed gold they drop. The uplift is delivery,
 measured rather than inferred. A paired study on the same node, holding the model constant and varying
 only the serving path, lifts judged quality by $+0.27$ pooled ($p=0.004$) and $+0.79$ where curation is
-deepest; a four-arm control study binds the lift to scaffold content (the served block lifts quality,
-$+0.59$; the verified placebo does not, $+0.04$). Out of domain the gated node does not regress: the
+deepest; a four-arm control study is consistent with content-specific transfer (the served block lifts
+quality, $+0.59$; the verified-irrelevant placebo's point estimate is near zero, $+0.04$, though
+differential attrition leaves the contrast imprecise). Out of domain the gated node does not regress: the
 general-set delta ($+0.05$, $[0.00,+0.13]$) lies inside a pre-specified $\pm0.25$ equivalence margin.
 Grounding evaluations whose gold derives from the injected corpus should report a copy ceiling as
 standard.
@@ -100,8 +101,9 @@ The setting makes the control load-bearing. Unaided, the models we test score $\
 in-domain questions (the domain is genuinely private, absent from parametric memory) and
 $\approx0.92$ given the curated context. Almost the whole of that uplift is exposure: across ten
 contemporary models from five providers the gain over copy is small and \emph{uniformly negative}
-($-0.067$ to $-0.022$), so no model recovers gold beyond what a copy of its context already
-exposes, and they differ only in how much surfaced gold they drop. This is not a defect to explain
+($-0.067$ to $-0.022$), and beyond-exposure recovery, measured directly at item level, is negligible
+(three items in 11{,}360; \S\ref{sec:tenmodel}), so models differ almost entirely in how much surfaced
+gold they drop. This is not a defect to explain
 away. High-fidelity delivery of an authoritative, human-vetted source \emph{is} the product for
 private-knowledge grounding: the answer is trustworthy because the source is, attributable to a
 named generation, and cheap because the expensive curation is amortised once rather than re-paid
@@ -109,10 +111,11 @@ per query.
 
 \paragraph{Contributions.}
 \begin{enumerate}[topsep=2pt,itemsep=1pt]
-\item \textbf{The instrument (C1, singular).} The per-item copy ceiling and the signed gain over
-copy: a formal definition, an explicit assumptions list, and an interpretation that reads delivery
-fidelity, lossy restatement and reasoning-over-structure off a single signed quantity
-(\S\ref{sec:ceiling}).
+\item \textbf{The protocol (C1, singular).} A deterministic per-item exposure reference (the copy
+ceiling and its signed gain over copy), the item-level exposure/recovery decomposition that interprets
+it, and a placebo verified irrelevant by construction, with a formal definition and an explicit
+assumptions list (\S\ref{sec:ceiling}). The signed quantity re-centres recall against exposure; the
+decomposition is what separates dropped exposed facts from beyond-exposure recovery.
 \item \textbf{The evidence (C2).} Ten models are uniformly negative on gain over copy; a four-arm
 negative-control design (true / shuffled / masked / irrelevant scaffolds) attributes the gain to
 scaffold \emph{content}; and a production-node paired study isolates the ecosystem feature by
@@ -284,7 +287,8 @@ pairs and applying type-constrained entity replacement under a reasoning-graph c
 leakage filter~\cite{seedrg2026}; that operates at corpus-construction time, whereas the copy ceiling
 is a per-item measurement. On the metric side, RAGChecker decomposes RAG quality into claim-level
 retrieval and generation metrics by LLM-extracting and grading claims~\cite{ragchecker2024}; our
-context utilisation is the deterministic, judge-free analogue of its claim-recall family. MIRAGE scores
+context utilisation is, plainly, a deterministic surface-matched instantiation of RAGChecker's
+context-utilisation metric, and we claim no ownership of the decomposition idea. MIRAGE scores
 reader behaviour against oracle context across retriever--model pairings as benchmark-level
 adaptability~\cite{mirage2025}, and the RAGAS \emph{library}'s ``context recall'' (a later addition to
 the library, not a metric of the RAGAS paper~\cite{es2023ragas}) is an LLM-judged, retrieval-side
@@ -539,8 +543,9 @@ the injected scaffold is \textbf{0.964}, and the model's recall (0.942) tracks i
 The system does exactly what a private-knowledge grounding layer should: the curated ontology carries
 the answers and the model delivers them back with high fidelity. The tiny negative gain says the
 model restates nearly everything it is shown; recall measures omission, not fabrication, so what it
-adds beyond the gold is unmeasured here. What the ceiling licenses is faithful, attributable delivery
-of the exposed facts, not free-association from parametric memory. Whether a model does more than
+adds beyond the gold is unmeasured here. What the ceiling licenses is high-recall delivery of the
+exposed targets (attribution precision is itself an unmeasured axis, \S\ref{sec:bar}), not
+free-association from parametric memory. Whether a model does more than
 restate (recovering gold the lexical check missed, or conversely \emph{dropping} surfaced
 facts) is the axis \S\ref{sec:tenmodel} turns on.
 
@@ -569,15 +574,16 @@ model), and is therefore identical across the row. The raw uplift is a near-cons
 exposed gold; it does not separate the models.
 
 The signed \textbf{gain over copy} does. It is negative for all ten (Figure~\ref{fig:gain}), from
-$-0.067$ (Gemini~2.5~Flash-Lite) to $-0.022$ (Gemini~3.7~Flash): on this lexical metric no model
-recovers gold \emph{beyond} what the exposure check already finds, so they differ only in how much
-surfaced gold they \emph{drop}. Because the ceiling is a single constant (0.964) across the row,
+$-0.067$ (Gemini~2.5~Flash-Lite) to $-0.022$ (Gemini~3.7~Flash): on this lexical metric
+beyond-exposure recovery is negligible (the decomposition below counts 3 unexposed items recovered
+out of 11{,}360), so the models differ almost entirely in how much surfaced gold they \emph{drop}. Because the ceiling is a single constant (0.964) across the row,
 ranking by gain is arithmetically the same as ranking by scaffold recall ($g_m=R_m-0.964$); the
 ceiling introduces no new ordering. What it introduces is a \emph{scale}: reading recall against a copy
 of the context rather than against the bare model turns ten near-identical raw uplifts into an
-interpretable fidelity spread, on which the newest, strongest models (Gemini~3.7 and 3.5~Flash,
+interpretable fidelity spread, on which the most recent models (Gemini~3.7 and 3.5~Flash,
 Claude~Haiku~4.5) sit closest to the ceiling and older or smaller ones (Gemini~2.5~Flash-Lite,
-GPT-4.1-mini, Mistral-Small-24B) fall further below it. Two models carried transport-level truncations
+GPT-4.1-mini, Mistral-Small-24B) fall further below it; the ordering is specific to this task, not a
+general capability ranking. Two models carried transport-level truncations
 under the fixed 2048-token budget (GLM-4.6: 174 truncated, 5 retried, the remainder scored as received
 and treated as a lower-confidence row; Gemini~2.5~Flash-Lite: 16 truncated), recorded per row rather
 than hidden.
@@ -633,7 +639,9 @@ Gemini 2.5 Flash-Lite & 0.227 & 0.897 & $+0.670$ $[+0.623,+0.716]$ & 0.964 & \ga
 $11{,}360$ pooled), sorted by context utilisation. Utilisation is $n_{11}/(n_{11}+n_{10})$, the
 fraction of \emph{exposed} gold the answer recovers; $n_{10}$ is exposed gold the answer omitted;
 $n_{01}$ is gold recovered though the scaffold did not expose it. Across all ten models $n_{01}$ never
-exceeds 1, and is 3 pooled: recovery beyond exposure is empirically negligible.}
+exceeds 1, and is 3 pooled: recovery beyond exposure is empirically negligible. Counts are pooled over
+gold items (micro-averaged), whereas the headline recall and ceiling average per-question ratios
+(macro-averaged), so these counts do not reconstruct those numbers directly.}
 \label{tab:decomp}
 \begin{tabular}{lccc}
 \toprule
@@ -711,9 +719,9 @@ sparsely-covered \emph{thin} set it is a positive but non-significant $+0.30$ ($
 on the out-of-domain \emph{general} set it is a negligible $+0.05$ whose interval $[0.00,+0.13]$ sits
 entirely inside the pre-specified $\pm0.25$ equivalence margin: non-regression established by
 CI-inclusion, not merely by a non-significant difference (the TOST reading; \S\ref{sec:ood}). The
-gradient (large where curation is deep, vanishing where the corpus is thin or the question is
-off-domain) is exactly the signature a genuine grounding effect should show, and the opposite of what
-a uniform prompt-formatting artefact would produce. Figure~\ref{fig:forest} shows the
+point estimates (large where curation is deep, vanishing where the corpus is thin or the question is
+off-domain) are consistent with the hypothesised signature of a grounding effect, and run opposite
+to what a uniform prompt-formatting artefact would produce. Figure~\ref{fig:forest} shows the
 gradient and the equivalence band together.
 
 \input{figures/fig-forest}
@@ -766,24 +774,26 @@ through the bare model (\emph{true}) reproduces the live \emph{loom} arm (loom\,
 $-0.06$ $[-0.38,+0.25]$, indistinguishable from zero), confirming the serving path adds nothing beyond
 the block it injects. Second, the \textbf{content effect is real}: true\,$-$\,raw is $+0.59$
 $[+0.16,+1.06]$ ($p=0.026$). Injecting the served block lifts judged quality well above the bare
-model. Third, and most strongly, the \textbf{placebo collapses}: an equally well-formed, on-corpus
-scaffold drawn from a \emph{different} question (\emph{irrelevant}) moves nothing, and irrelevant\,$-$\,raw
-is $+0.04$ $[-0.54,+0.57]$ ($p=0.73$). This collapse is the strong result of the four: a well-formed
-but wrong block adds nothing, so the lift is not a generic effect of ontology-shaped text. Subtracting
+model. Third, the \textbf{placebo's point estimate collapses}: an equally well-formed, on-corpus
+scaffold drawn from a \emph{different} question (\emph{irrelevant}) shows irrelevant\,$-$\,raw
+$+0.04$ $[-0.54,+0.57]$ ($p=0.73$). The near-zero point estimate is the qualitative anchor of the
+four, suggesting the lift is not a generic effect of ontology-shaped text; but the interval is wide
+under attrition, so the placebo is verified irrelevant by construction, not demonstrated empirically
+inert by equivalence. Subtracting
 the placebo from the content arm isolates the content-specific component,
 true\,$-$\,irrelevant\,$=+0.35$ $[0.00,+0.78]$ ($p=0.091$): a residual consistent with content-specific
 transfer, suggestive rather than established at conventional significance given the wide interval and
 $n=23$ surviving pairs.
 
-\paragraph{The placebo had to be verified inert.} This conclusion depends entirely on the irrelevant
+\paragraph{The placebo had to be verified irrelevant.} This conclusion depends entirely on the irrelevant
 arm being a true placebo, and our first attempt was not. Constructing the ``different question'' donor
 by a shift-by-one derangement over the engaged items left donors in the \emph{same} domain cluster as
 their targets, so the ``irrelevant'' scaffold routinely shared vocabulary and neighbouring concepts
 with the gold, and behaved like a weak content arm rather than a placebo. We rebuilt the derangement
 under a seed-IRI-disjointness constraint (every donor scaffold verified to share no seed IRI, and thus
-no seed class, with its target's gold) and only then did the arm collapse to $\approx0$. A placebo that
-is assumed inert rather than verified inert silently inflates the very baseline it is meant to
-control; the fix was cheap and the lesson is general.
+no seed class, with its target's gold) and only then did the arm's point estimate collapse to
+$\approx0$. A placebo assumed irrelevant rather than verified irrelevant silently inflates the very
+baseline it is meant to control; the fix was cheap and the lesson is general.
 
 Masking and shuffling lose comparatively little. Replacing every seed-class \emph{name} with
 \texttt{Entity-$k$} (\emph{masked}) still beats raw by $+0.42$ (ns, wide CI), and shuffling the block's
@@ -791,7 +801,10 @@ sentences (\emph{shuffled}) by $+0.25$ (ns): the graded facts, not the surface n
 carry most of the signal, consistent with a judge grading factual content over lexical form. Both are
 weak probes by construction (shuffling whole sentences preserves the facts within each sentence;
 masking only seed-class titles leaves the answer-bearing target names intact), so their small costs
-bound the surface-form contribution loosely rather than exactly. Finally,
+bound the surface-form contribution loosely rather than exactly. The arm-versus-raw contrasts also run
+over different survivor sets, so direct common-pair contrasts are the comparable reading:
+true\,$-$\,shuffled $+0.30$ $[-0.10,+0.73]$ ($n=30$) and true\,$-$\,masked $+0.15$ $[-0.19,+0.44]$
+($n=27$), both non-significant, point the same way while remaining imprecise. Finally,
 the effect is a \textbf{curation-depth gradient}: per set, true\,$-$\,raw is $+0.95$ $[+0.37,+1.63]$
 ($p=0.018$) on the deep arcane set but only $+0.08$ $[-0.46,+0.62]$ (ns) on the thin set. Where the
 corpus is rich the served block transfers real knowledge; where it is sparse there is little to
@@ -815,6 +828,8 @@ masked $-$ raw            & 33 & \gainpos{0.42} & $[-0.09,+0.94]$ & 0.15 \\
 shuffled $-$ raw          & 36 & \gainpos{0.25} & $[-0.39,+0.89]$ & 0.42 \\
 irrelevant $-$ raw        & 28 & \gainpos{0.04} & $[-0.54,+0.57]$ & 0.73 \\
 true $-$ irrelevant       & 23 & \gainpos{0.35} & $[\phantom{+}0.00,+0.78]$ & 0.091 \\
+true $-$ shuffled         & 30 & \gainpos{0.30} & $[-0.10,+0.73]$ & 0.209 \\
+true $-$ masked           & 27 & \gainpos{0.15} & $[-0.19,+0.44]$ & 0.398 \\
 \midrule
 \multicolumn{5}{@{}l@{}}{\emph{Per set (true $-$ raw):} arcane $+0.95$ $[+0.37,+1.63]$, $p=0.018$; thin $+0.08$ $[-0.46,+0.62]$, ns.}\\
 \bottomrule
@@ -872,14 +887,16 @@ The number the field would report as the achievement (the uplift) is the number 
 information about the model; the number that discriminates (gain over copy) is invisible without the
 ceiling. That inversion is the whole case for reporting the ceiling as standard.
 
-\paragraph{The live decomposition confirms it is content, not form.} The production controls take the
+\paragraph{The live controls point to content, not form.} The production controls take the
 same conclusion from headline to mechanism. The served block lifts judged quality (true\,$-$\,raw
-$+0.59$); a same-shaped, on-corpus but wrong block does not (irrelevant\,$-$\,raw $+0.04$); the
-content-specific residual is $+0.35$; and masking names ($+0.42$) or shuffling sentences ($+0.25$)
-costs comparatively little. The facts carry the effect; the entity names and their order do not. Three
+$+0.59$); a same-shaped, on-corpus but wrong block shows a near-zero point estimate
+(irrelevant\,$-$\,raw $+0.04$); the content-specific residual is $+0.35$; and masking names ($+0.42$)
+or shuffling sentences ($+0.25$) costs comparatively little. On these controls the graded facts appear
+to carry most of the effect, though the available arms do not isolate the contributions of names and
+order precisely. Three
 caveats keep this honest: the arms are complete-case over unequal survivor sets, the contrasts do not
 sum arithmetically (different survivors per arm), and several are non-significant with wide intervals.
-But the qualitative pattern (content-specific lift present, verified-inert placebo absent) is exactly
+But the qualitative pattern (content-specific lift present, verified-irrelevant placebo near zero) is exactly
 what ``exposure, faithfully delivered'' predicts and what ``any ontology-shaped text primes the model''
 does not. The placebo episode is the load-bearing methodological point: the effect only appeared clean
 once the irrelevant donor was \emph{verified} seed-IRI-disjoint; a placebo assumed inert had leaked
@@ -891,8 +908,9 @@ representative question set \emph{before} choosing an architecture. A near-1 cei
 0.964) means the answer's entity names are already exposed in the injected context; it does not by
 itself show that the relation needed to answer is present or understood, so the regime framing below is
 a heuristic, not a theorem. Where the ceiling is high the setting is a \emph{serving regime}, in which
-verbatim retrieval wins and generative re-encoding can only lose fidelity, so the engineering target is
-faithful delivery and the metric is gain over copy. A low ceiling means the answer is \emph{not}
+retrieval already supplies most of the target coverage and generative re-encoding risks losing
+fidelity (though generation may still add selection, relevance and presentation), so the engineering
+target is faithful delivery and the metric is gain over copy. A low ceiling means the answer is \emph{not}
 present as-is and must be composed across retrieved pieces: a \emph{synthesis regime}, where
 GraphRAG-style machinery (community summaries, multi-hop traversal, GNN soft-prompts) can earn its
 keep. The essential discipline is that in a synthesis regime that machinery must be measured
@@ -919,7 +937,7 @@ gates rather than replacing any of them.
 first, saw large uplift, and worried we had merely reinvented GraphRAG with a nicer provenance story.
 The copy ceiling began as an adversarial question we put to our own result---\emph{is any of this
 reasoning, or is it all exposure?}---and the honest answer, uniformly negative gain over copy across
-ten models and a placebo that collapses once verified inert, is that it is exposure. For a
+ten models and a placebo whose point estimate collapses once verified irrelevant, is that it is exposure. For a
 private-knowledge product that is not a disappointment but the specification met: trustworthy because
 the source is vetted, attributable because the generation is named, and cheap because the curation is
 paid once. The contribution is the instrument that let us tell the difference, and the discipline of
@@ -1005,15 +1023,16 @@ worth running.
 \section{Conclusion}\label{sec:conclusion}
 Grounding evaluations whose gold is derived from the injected corpus should \textbf{report a copy
 ceiling as standard.} It is a cheap, per-item, model-free quantity (the recall a verbatim copy of the
-shown context already achieves), and the signed gain over copy it defines separates faithful delivery
-of exposed facts from reasoning over injected structure, a distinction a bare-model baseline cannot
+shown context already achieves); the signed gain over copy it defines re-centres recall against
+exposure, and the exposure/recovery decomposition it anchors separates dropped exposed facts from
+beyond-exposure recovery, a distinction a bare-model baseline cannot
 make. Across ten models the gain is uniformly negative, and an exposure/recovery decomposition over
 11{,}360 gold items measures the item-level claim directly: only 3 unexposed gold items are recovered
 and per-model context utilisation is $0.900$--$0.955$, so recovery beyond exposure is negligible. A
 production paired study lifts judged quality by $+0.27$ pooled and $+0.79$ where curation is deep; and a
-negative-control decomposition binds that lift to scaffold \emph{content}, with the placebo collapsing
-once verified seed-disjoint. The reusable
-method is the pair: \emph{the ceiling plus a verified-inert placebo}, computed before architecting to
+four-arm control study is consistent with that lift being content-specific, the placebo's point
+estimate collapsing once verified seed-disjoint. The reusable
+method is the pair: \emph{the ceiling plus a verified-irrelevant placebo}, computed before architecting to
 tell a serving regime (verbatim retrieval wins) from a synthesis regime (where heavier machinery must
 be measured above the ceiling, not above the bare model). And the economics follow the measurement:
 value concentrates upstream at curation, where the same instrument doubles as a promotion gate for
