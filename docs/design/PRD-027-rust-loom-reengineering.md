@@ -37,7 +37,7 @@ supersedes: "Extends PRD-025 and PRD-026; supersedes nothing wholesale. Supersed
 **Status:** Proposed (design + workstream plan; grounded in the 2026-08 re-platform mesh and the newly-landed ontology-corpus RuVector namespace)
 **Date:** 2026-08-17
 **Owner:** VisionFlow operator (Dr J. O'Hare, did:nostr:jjohare)
-**Decision authority:** [ADR-137](./ADR-137-loom-rust-re-platform.md) — this PRD cites ADR-137 for every substrate and deployment decision and does not re-derive them.
+**Decision authority:** [ADR-137](./ADR-137-loom-rust-replatform.md): this PRD cites ADR-137 for every substrate and deployment decision and does not re-derive them.
 **Builds on:** [PRD-026](./PRD-026-loom-consolidation.md) (single-source build, semantic fallback, enforced admission control) and [PRD-025](./PRD-025-ontology-loom-and-connector-platform.md) (the serving + distillation loop). PRD-027 re-platforms the *substrate under* those two; it does not restate their product goal or their consolidation requirements.
 **Audience:** VisionFlow engineering.
 
@@ -214,6 +214,8 @@ The Rust `loom-facade` serves the exact wire contract of `loom_facade.py`. No co
 | `POST /loom/sparql`, `POST /loom/search` | Preserved from today's façade; SPARQL clamped per FR-5. |
 
 `/loom/distill` (the deferred-distillation submit/collect surface, ADR-135 D4 / PRD-025) is **out of scope for this PRD's serving binary** and stays as specified in ADR-135/ADR-051 — PRD-027 does not re-home it, but the axum facade reserves the route and MUST NOT break its contract when it lands.
+
+> **Addendum (2026-08-18).** The `/v1/chat/completions` row above describes unconditional delegation. Since the copy-ceiling measurement ([`docs/research/paper-v2/main.pdf`](../research/paper-v2/main.pdf)), the flow gained an opt-in `LOOM_VERBATIM_MODE`: on a gate-engaged high-confidence lookup it may return the canonical markdown block **with no backend call** (per-request opt-out `"loom_options":{"verbatim":false}`; multi-turn and streaming bypass). Two more default-off knobs landed: `LOOM_EXPOSURE_APPEND` (per-answer `exposure` telemetry in the `loom` block) and `LOOM_BACKEND_NO_THINK` / `LOOM_THINK_TOKEN_FLOOR` (thinking and budget control). Canonical table: `RUST-ARCHITECTURE.md` §10 addendum. Backend today is Qwen3.8-27B Heretic Q8_0 (see `../QWEN3.8-CONNECTION.md`).
 
 ### FR-2 — Lexical primary retrieval, ported exactly
 

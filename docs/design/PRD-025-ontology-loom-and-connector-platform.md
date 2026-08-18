@@ -35,8 +35,8 @@ supersedes: "PRD-025 connector-platform draft (pre-Loom reframe); this is the op
 **Status:** Proposed (adversarially reviewed; operator-reframed 2026-08-11 — see §12)
 **Date:** 2026-08-11
 **Owner:** VisionFlow operator (Dr J. O'Hare, did:nostr:jjohare)
-**Companion decisions:** VisionClaw [ADR-135](../adr/ADR-135-ontology-loom-facade-and-deferred-distillation.md); agentbox ADR-051 (harness-side loom-client decisions, proposed)
-**Bounded context:** [ddd-ontology-connector-context.md](../ddd/ddd-ontology-connector-context.md) (BC24 — OntologyConnector)
+**Companion decisions:** VisionClaw [ADR-135](./ADR-135-ontology-loom-node.md); agentbox ADR-051 (harness-side loom-client decisions, proposed)
+**Bounded context:** [ddd-ontology-loom-context.md](./ddd-ontology-loom-context.md) (BC24, OntologyConnector)
 
 > **EXECUTION NOTE (read first).** This is a **design + workstream plan**. It changes no
 > VisionClaw / agentbox / logseq / HP code by itself; implementation is the WS-A…WS-J build
@@ -197,6 +197,17 @@ Three findings, all load-bearing for this design (Gemma cross-check in flight):
    exploration** — the benchmark says the model should be *fed*, not sent traversing. The
    live-lan traversal tools (`kg_neighbors`/`kg_pathfind`) remain available but are
    *secondary* to scaffold injection for grounding.
+
+> **Addendum (2026-08-18).** This subsection reads the raw→scaffold gap as the scaffold "doing
+> the work". The later measurement in [`docs/research/paper-v2/main.pdf`](../research/paper-v2/main.pdf)
+> (*The Copy Ceiling*) re-centres that reading: the ~3.5× is faithful **delivery** of facts the
+> scaffold already exposes, measured against a verbatim-copy ceiling (0.964 on this node), not
+> reasoning over structure. Across ten models from five providers the gain *over that ceiling* is
+> uniformly negative (−0.067 to −0.022), and an item-level decomposition of 11,360 gold items
+> recovers three unexposed items in total (context utilisation 0.900 to 0.955). The three findings
+> above (structured scaffold is the product, prose adds ~nothing, feed-don't-traverse) stand; what
+> changes is the interpretation of the number, and the benchmark model is now Qwen3.8-27B Heretic
+> Q8_0, not Muse-Glimmer-30B. Evidence index: [`docs/research/README.md`](../research/README.md).
 
 ---
 

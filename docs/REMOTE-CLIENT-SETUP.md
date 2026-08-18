@@ -4,6 +4,12 @@ How to point any machine on the LAN at the network's model endpoint (Qwen3.8-27B
 Loom docker stack). No auth, no client-side install beyond an OpenAI-compatible library.
 Full model reference: [`QWEN3.8-CONNECTION.md`](QWEN3.8-CONNECTION.md).
 
+> **Current backend (2026-08-18):** the deployed variant is the Heretic abliterated
+> Qwen3.8-27B Q8_0 (~19.5 tok/s), served on the same `:8085` port and model id as before; nothing
+> in this guide changes. Details and the chat-template/reasoning-format serving fix are in
+> [`QWEN3.8-CONNECTION.md`](QWEN3.8-CONNECTION.md). For ontology-grounded answers use the Loom
+> façade on `:8084` (Profile A) or `http://loom:8080` (Profile B), below.
+
 ## 1. Pick your endpoint
 
 | Endpoint | Use when |

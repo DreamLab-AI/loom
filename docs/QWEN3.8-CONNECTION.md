@@ -13,10 +13,29 @@ SWE-bench Pro 61.7 vs 51.2, OSWorld 84.3 vs 65.9, GPQA 89.2 vs 83.5, IFBench 79.
 > binary), not the model behind it. Everything in this guide holds verbatim; swap the model and
 > no consumer changes.
 
+> **Addendum (2026-08-18): the deployed variant is now Heretic abliterated Qwen3.8-27B Q8_0.**
+> The `loom-model` container serves
+> [`0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF`](https://huggingface.co/0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF)
+> at Q8_0 on `:8085` (262 K context, q8_0 KV, ~19.5 tok/s), the same façade and port as before.
+> The base unsloth `UD-Q8_K_XL` weights below are retained on disk as rollback. Model id and every
+> route in this guide are unchanged. Two serving knobs were needed and added to the serve script
+> (`model/serve-qwen38.sh`, commit `5a4d24e`):
+>
+> - The Heretic GGUF **ships with no embedded chat template**, so llama.cpp fell back to generic
+>   ChatML and leaked raw `<think>` blocks into `message.content` (and every reasoning control
+>   dead-ended). The fix serves it with `--chat-template-file` pointed at the base Qwen3.8
+>   template (`CHAT_TEMPLATE_FILE` knob) so the template and its reasoning controls are live again.
+> - `--reasoning-format deepseek` (`REASONING_FORMAT` knob) parses `<think>…</think>` into
+>   `message.reasoning_content` instead of leaking it into `.content`. With both knobs set,
+>   `reasoning_content` is populated separately and `enable_thinking:false` is honoured, exactly
+>   as §3 describes. Both knobs default empty (base weights need neither); the compose env sets
+>   them for the Heretic variant.
+
 - **Model:** `Qwen/Qwen3.8-27B` — 27B dense, 64 layers (48 linear-attention DeltaNet +
   16 full-attention), vision encoder, MTP head embedded.
-- **Quant:** unsloth **`UD-Q8_K_XL`** (31.5 GB, Unsloth Dynamic v3 — maximal for 48 GB
-  with full context). Vision: `mmproj-BF16`.
+- **Quant:** deployed variant **Heretic abliterated Q8_0** (see addendum above); base
+  unsloth **`UD-Q8_K_XL`** (31.5 GB, Unsloth Dynamic v3, maximal for 48 GB with full context)
+  retained as rollback. Vision: `mmproj-BF16`.
 - **Backend:** llama.cpp `llama-server` (pinned commit `030ebb55`, CUDA sm_75) in the
   `loom-model` container (`~/githubs/loom/docker-compose.yml`).
 - **Hardware:** 2× Quadro RTX 6000 (Turing, 24 GB each), layer-split.

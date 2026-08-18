@@ -9,6 +9,16 @@ actual product goal rather than an academic abstraction.*
 > multivariate bar, or the "curated corpus **vs** a generic web search" frame. Everything in
 > this note holds unchanged; only how the façade is built moved.
 
+> **Measurement note (2026-08-18).** The copy-ceiling framing below (faithful delivery is the
+> product, not a confound) is now the measured result, not a forecast:
+> [`docs/research/paper-v2/main.pdf`](../research/paper-v2/main.pdf) (*The Copy Ceiling*) reports
+> a 0.964 ceiling, a uniformly negative gain over copy across ten models, an exposure/recovery
+> decomposition of 11,360 gold items, and a production paired study (loom−raw +0.27 pooled, +0.79
+> where curation is deepest) with an out-of-domain equivalence result inside a ±0.25 margin. The
+> "what this means for evaluation" plan below (axes 2–4) is partly superseded: axis 1 and the
+> paired study are done; the web-search baseline (axis 3) and attribution precision (axis 4)
+> remain open. Evidence index: [`docs/research/README.md`](../research/README.md).
+
 ## The goal
 
 **Make any (swappable) model performant against large, important, *private* customer datasets,

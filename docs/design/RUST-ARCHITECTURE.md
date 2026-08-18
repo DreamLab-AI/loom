@@ -700,6 +700,18 @@ One `Config` struct (`loom-facade/src/config.rs`), `figment`- or hand-parsed fro
 
 **Boundary rule encoded in config:** `RUVECTOR_PG_CONNINFO` is read **only** by the `pg-write` feature of `loom-vector-ruvector`, which is compiled out of the serving binary by default. A Profile-A node cut off from the docker network still serves fully because the query path never touches Postgres — it reads `LOOM_HNSW_ARTIFACT` in-process (ADR-136 §3, DDD §6.1).
 
+**Addendum (2026-08-18), findings-driven serving controls.** The measurement in [`docs/research/paper-v2/main.pdf`](../research/paper-v2/main.pdf) (*The Copy Ceiling*) adds three config knobs, all default-off (so the §9 flow above is unchanged unless a deployment opts in). Implemented in `loom-facade/src/config.rs` (`serving.rs`, `loom-scaffold/src/exposure.rs`); names below are as landed.
+
+| Env var | Default | Owner crate | Meaning |
+|---|---|---|---|
+| `LOOM_VERBATIM_MODE` | `0` | facade/scaffold | on a gate-engaged lookup whose `top_score` clears `LOOM_VERBATIM_THRESHOLD`, `/v1/chat/completions` serves the canonical markdown block **with no backend call**; multi-turn and streaming bypass it; per-request opt-out `"loom_options":{"verbatim":false}` (serving-regime finding) |
+| `LOOM_VERBATIM_THRESHOLD` | `8.0` | facade/scaffold | lexical `top_score` floor for the short-circuit; 8.0 is the exact-title weight, so the default admits only full exact-title matches and paraphrase/overlap hits still delegate |
+| `LOOM_EXPOSURE_APPEND` | `0` | facade | the `exposure` object (targets/delivered/dropped, deterministic matcher) is emitted in the `loom` block on any injected answer **regardless**; this knob *additionally* appends a `Not covered above: …` line to the answer content when titles were dropped (copy-fidelity finding) |
+| `LOOM_BACKEND_NO_THINK` | `0` | facade/backend | on an engaged delegation where the client did not set `chat_template_kwargs`, add `{"enable_thinking":false}`; never applied to a passthrough request (budget-interaction finding) |
+| `LOOM_THINK_TOKEN_FLOOR` | `1536` | facade/backend | on an engaged delegation with thinking active, raise a sub-floor integer `max_tokens` up to this floor so reasoning cannot starve the answer; `0` disables (complements `LOOM_MIN_MAX_TOKENS`) |
+
+With `LOOM_VERBATIM_MODE` engaged the §9 `chat_completions` path may resolve to the canonical markdown block and return without calling `ModelBackend::chat`; the `loom` annotation still attaches (`mode` reflects the verbatim path).
+
 ---
 
 ## 11. Adapters — realisation notes
