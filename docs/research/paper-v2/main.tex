@@ -49,8 +49,8 @@ corpus that is injected, uplift conflates faithful \emph{delivery} of exposed fa
 \emph{reasoning} over injected structure. We introduce the \emph{copy ceiling}, the recall a verbatim
 copy of the shown context would already achieve, and the signed \emph{gain over copy}. The control is
 deterministic, judge-free and per-item, reported as a standing column beside generation recall, and
-paired with a placebo verified irrelevant by seed-disjointness; together they separate exposure from
-reasoning before an architecture is chosen. On a production ontology-serving node, unaided models score
+paired with a placebo verified irrelevant by seed-disjointness; together they distinguish exposure
+coverage from beyond-exposure recovery before an architecture is chosen. On a production ontology-serving node, unaided models score
 $\approx0.26$ in-domain and grounded $\approx0.92$, yet across ten models from five providers the gain
 over copy is uniformly negative ($-0.067$ to $-0.022$). A direct exposure/recovery decomposition of
 11{,}360 gold items shows why: three unexposed gold items are recovered in total, context utilisation
@@ -117,8 +117,8 @@ it, and a placebo verified irrelevant by construction, with a formal definition 
 assumptions list (\S\ref{sec:ceiling}). The signed quantity re-centres recall against exposure; the
 decomposition is what separates dropped exposed facts from beyond-exposure recovery.
 \item \textbf{The evidence (C2).} Ten models are uniformly negative on gain over copy; a four-arm
-negative-control design (true / shuffled / masked / irrelevant scaffolds) attributes the gain to
-scaffold \emph{content}; and a production-node paired study isolates the ecosystem feature by
+negative-control design (true / shuffled / masked / irrelevant scaffolds) probes whether the gain is
+content-specific; and a production-node paired study isolates the ecosystem feature by
 holding the model constant and varying only the serving path (\S\ref{sec:method}; results in
 \S\ref{sec:results}).
 \item \textbf{The organising frame (C3).} A conjunctive, multivariate bar (in-domain delivery
@@ -296,8 +296,8 @@ coverage number. What we have not found reported elsewhere is the specific combi
 deterministic, judge-free, per-item and continuous exposure ceiling on a schema-level ontology corpus,
 printed as a standing control beside the generation recall it bounds and paired with a verified
 seed-disjoint placebo. We keep the exposure and measure against it rather than removing it, and read
-the signed gain over copy \emph{across models} as a faithfulness axis on which raw uplift cannot
-separate them. Judged arms use a cross-family judge to avoid
+the signed gain over copy \emph{across models} as an exposure-normalised recall scale on which raw
+uplift cannot separate them. Judged arms use a cross-family judge to avoid
 self-preference~\cite{zheng2023judging,panickssery2024selfpreference}.
 
 \section{The Ontology Scaffold}\label{sec:system}
@@ -398,8 +398,8 @@ ceiling is therefore a recall reference point against which delivery fidelity is
 recommendation to dump context into the answer.
 
 \subsection{Gain over copy}
-The signed \textbf{gain over copy} is $g_i=r_i-c_i$, with headline $\bar g=\bar r-\bar c$. It turns
-delivery fidelity into a signed, model-discriminating quantity and reads directly:
+The signed \textbf{gain over copy} is $g_i=r_i-c_i$, with headline $\bar g=\bar r-\bar c$. It
+re-centres grounded recall against the exposure reference and reads directly:
 \begin{itemize}[topsep=2pt,itemsep=1pt,leftmargin=1.4em]
 \item $g\approx0$, \emph{delivery fidelity}: the model restates nearly everything it is shown. Recall
 measures omission, not fabrication, so what the model adds \emph{beyond} the exposed gold is unmeasured
@@ -441,7 +441,7 @@ derangement over the engaged items). If the gain survives, any ontology-shaped t
 The logic is differential. If gain over copy stays near zero under \textbf{shuffled},
 \textbf{masked} and \textbf{irrelevant}, the ceiling is tracking exposure faithfully and the
 delivery is content-bound; if it moves, the ceiling was leaking through surface form or position.
-This is the experiment that turns the instrument from plausible to confirmed, and it is the direct
+This is the experiment that tests whether the observed lift is content-specific, and it is the direct
 analogue of a shortcut-robustness check for a faithfulness metric~\cite{gao2023alce}.
 
 \section{Method}\label{sec:method}
