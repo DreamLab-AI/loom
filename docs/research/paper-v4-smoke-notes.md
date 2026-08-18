@@ -68,10 +68,17 @@ python3 tools/paper/rewrite_v4.py --no-think \
     --outdir docs/research/paper-v4
 ```
 
-Outputs `docs/research/paper-v4/{main.tex, refs.bib, figures/, rewrite-cache.jsonl,
-REWRITE-REPORT.md}`. The `(block_index, sha256(source))` cache absorbs the pending
-adversarial-pass-2 edits incrementally: only paragraphs whose text changed are re-rewritten on
-rerun. Post-run: `latexmk` the v4 (expect 0 errors) and Layer-A scan
+Input must be the CURRENT `docs/research/paper-v2/main.tex` (now at commit `c2a9922`; it gained
+adversarial-pass-2 edits after the smoke). Outputs `docs/research/paper-v4/{main.tex, refs.bib,
+figures/, rewrite-cache.jsonl, REWRITE-REPORT.md}`.
+
+Cache behaviour: the overnight run starts with a **fresh** `paper-v4/rewrite-cache.jsonl` (the
+smoke caches live in the scratchpad and predate the diversity-retry patch, so they are not
+reused — this is deliberate, so idx2 and friends get the patched re-voicing rather than the old
+near-verbatim output). It therefore rewrites all 48 paragraphs once (~18–20 min). Thereafter the
+`(block_index, sha256(source))` cache makes any re-run incremental: if `main.tex` gains further
+small edits, only paragraphs whose text actually changed are re-rewritten; unchanged paragraphs
+hit the cache and are skipped. Post-run: `latexmk` the v4 (expect 0 errors) and Layer-A scan
 (`prose-sanitiser/inspect_text.py`, expect Suspicious: 0). Do not commit; orchestrator stages.
 
 ## Smoke segmentation (frozen `main.tex`, commit `c2a9922`)
