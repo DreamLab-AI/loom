@@ -1,0 +1,321 @@
+{
+  "meta": {
+    "budget_tokens": 1500,
+    "seed": 42,
+    "resamples": 10000,
+    "scaffold_engine": "ontology_scaffold_v1.py (git blob c7b8fb1)",
+    "index": "app/data/scaffold-index.json",
+    "n_questions": 510
+  },
+  "sanity": {
+    "mean_ceiling_over_questions": 0.964477,
+    "pooled_ceiling_over_items": 0.933099,
+    "ceiling_gate_0.964": true,
+    "exposure_regeneration": "byte-identical to stored n_gold_exposed",
+    "errors": []
+  },
+  "per_model": {
+    "gemini-3.7-flash-t0": {
+      "display": "gemini-3.7-flash",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 1012,
+      "n10_exposed_omitted": 48,
+      "n01_unexposed_recovered": 0,
+      "n00_unexposed_omitted": 76,
+      "context_utilisation": 0.9547169811320755,
+      "unexposed_recovery_rate": 0.0,
+      "item_level_recall": 0.8908450704225352,
+      "headline_recall": 0.9423,
+      "stored_recall": 0.9423,
+      "raw_recall": 0.3749,
+      "gain_over_copy": -0.0222,
+      "gain_ci95": [
+        -0.0292,
+        -0.0157
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "gemini-3.5-flash-lite": {
+      "display": "gemini-3.5-flash-lite",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 1004,
+      "n10_exposed_omitted": 56,
+      "n01_unexposed_recovered": 0,
+      "n00_unexposed_omitted": 76,
+      "context_utilisation": 0.9471698113207547,
+      "unexposed_recovery_rate": 0.0,
+      "item_level_recall": 0.8838028169014085,
+      "headline_recall": 0.938,
+      "stored_recall": 0.938,
+      "raw_recall": 0.3226,
+      "gain_over_copy": -0.0264,
+      "gain_ci95": [
+        -0.0357,
+        -0.0184
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "gemini-2.5-flash-lite": {
+      "display": "gemini-2.5-flash-lite",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 954,
+      "n10_exposed_omitted": 106,
+      "n01_unexposed_recovered": 0,
+      "n00_unexposed_omitted": 76,
+      "context_utilisation": 0.9,
+      "unexposed_recovery_rate": 0.0,
+      "item_level_recall": 0.8397887323943662,
+      "headline_recall": 0.8971,
+      "stored_recall": 0.8971,
+      "raw_recall": 0.2274,
+      "gain_over_copy": -0.0674,
+      "gain_ci95": [
+        -0.0858,
+        -0.0499
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "claude-haiku-4.5": {
+      "display": "claude-haiku-4.5",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 1003,
+      "n10_exposed_omitted": 57,
+      "n01_unexposed_recovered": 1,
+      "n00_unexposed_omitted": 75,
+      "context_utilisation": 0.9462264150943396,
+      "unexposed_recovery_rate": 0.013157894736842105,
+      "item_level_recall": 0.8838028169014085,
+      "headline_recall": 0.9338,
+      "stored_recall": 0.9338,
+      "raw_recall": 0.1513,
+      "gain_over_copy": -0.0307,
+      "gain_ci95": [
+        -0.0422,
+        -0.0204
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "gpt-4.1-mini": {
+      "display": "gpt-4.1-mini",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 962,
+      "n10_exposed_omitted": 98,
+      "n01_unexposed_recovered": 0,
+      "n00_unexposed_omitted": 76,
+      "context_utilisation": 0.9075471698113208,
+      "unexposed_recovery_rate": 0.0,
+      "item_level_recall": 0.846830985915493,
+      "headline_recall": 0.9049,
+      "stored_recall": 0.9049,
+      "raw_recall": 0.1617,
+      "gain_over_copy": -0.0596,
+      "gain_ci95": [
+        -0.0766,
+        -0.0439
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "deepseek-chat": {
+      "display": "deepseek-chat",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 987,
+      "n10_exposed_omitted": 73,
+      "n01_unexposed_recovered": 0,
+      "n00_unexposed_omitted": 76,
+      "context_utilisation": 0.9311320754716981,
+      "unexposed_recovery_rate": 0.0,
+      "item_level_recall": 0.8688380281690141,
+      "headline_recall": 0.9245,
+      "stored_recall": 0.9245,
+      "raw_recall": 0.3465,
+      "gain_over_copy": -0.04,
+      "gain_ci95": [
+        -0.0526,
+        -0.0285
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "glm-4.6": {
+      "display": "glm-4.6",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 1002,
+      "n10_exposed_omitted": 58,
+      "n01_unexposed_recovered": 0,
+      "n00_unexposed_omitted": 76,
+      "context_utilisation": 0.9452830188679245,
+      "unexposed_recovery_rate": 0.0,
+      "item_level_recall": 0.8820422535211268,
+      "headline_recall": 0.9281,
+      "stored_recall": 0.9281,
+      "raw_recall": 0.2431,
+      "gain_over_copy": -0.0363,
+      "gain_ci95": [
+        -0.049,
+        -0.025
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "qwen-2.5-72b": {
+      "display": "qwen-2.5-72b",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 979,
+      "n10_exposed_omitted": 81,
+      "n01_unexposed_recovered": 1,
+      "n00_unexposed_omitted": 75,
+      "context_utilisation": 0.9235849056603773,
+      "unexposed_recovery_rate": 0.013157894736842105,
+      "item_level_recall": 0.8626760563380281,
+      "headline_recall": 0.9142,
+      "stored_recall": 0.9142,
+      "raw_recall": 0.3089,
+      "gain_over_copy": -0.0503,
+      "gain_ci95": [
+        -0.0658,
+        -0.0363
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "llama-3.3-70b": {
+      "display": "llama-3.3-70b",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 990,
+      "n10_exposed_omitted": 70,
+      "n01_unexposed_recovered": 0,
+      "n00_unexposed_omitted": 76,
+      "context_utilisation": 0.9339622641509434,
+      "unexposed_recovery_rate": 0.0,
+      "item_level_recall": 0.8714788732394366,
+      "headline_recall": 0.9156,
+      "stored_recall": 0.9156,
+      "raw_recall": 0.2272,
+      "gain_over_copy": -0.0489,
+      "gain_ci95": [
+        -0.0648,
+        -0.034
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    },
+    "mistral-small-24b": {
+      "display": "mistral-small-24b",
+      "n_questions_scored": 510,
+      "n_gold_items": 1136,
+      "n11_exposed_recovered": 972,
+      "n10_exposed_omitted": 88,
+      "n01_unexposed_recovered": 1,
+      "n00_unexposed_omitted": 75,
+      "context_utilisation": 0.9169811320754717,
+      "unexposed_recovery_rate": 0.013157894736842105,
+      "item_level_recall": 0.8565140845070423,
+      "headline_recall": 0.9061,
+      "stored_recall": 0.9061,
+      "raw_recall": 0.2847,
+      "gain_over_copy": -0.0583,
+      "gain_ci95": [
+        -0.0756,
+        -0.0421
+      ],
+      "n_exposed_items": 1060,
+      "n_unexposed_items": 76
+    }
+  },
+  "pooled_2x2": {
+    "n11_exposed_recovered": 9865,
+    "n10_exposed_omitted": 735,
+    "n01_unexposed_recovered": 3,
+    "n00_unexposed_omitted": 757,
+    "n_gold_items": 11360,
+    "context_utilisation": 0.9306603773584906,
+    "unexposed_recovery_rate": 0.003947368421052632
+  },
+  "ordering": {
+    "by_headline_recall": [
+      "gemini-3.7-flash-t0",
+      "gemini-3.5-flash-lite",
+      "claude-haiku-4.5",
+      "glm-4.6",
+      "deepseek-chat",
+      "llama-3.3-70b",
+      "qwen-2.5-72b",
+      "mistral-small-24b",
+      "gpt-4.1-mini",
+      "gemini-2.5-flash-lite"
+    ],
+    "by_context_utilisation": [
+      "gemini-3.7-flash-t0",
+      "gemini-3.5-flash-lite",
+      "claude-haiku-4.5",
+      "glm-4.6",
+      "llama-3.3-70b",
+      "deepseek-chat",
+      "qwen-2.5-72b",
+      "mistral-small-24b",
+      "gpt-4.1-mini",
+      "gemini-2.5-flash-lite"
+    ],
+    "orderings_identical": false
+  },
+  "study2_rank_biserial": {
+    "arcane": {
+      "n_pairs": 24,
+      "n_nonzero": 13,
+      "T_plus": 76.0,
+      "T_minus": 15.0,
+      "rank_biserial_r": 0.6703,
+      "cliffs_delta": 0.2917,
+      "wins": 10,
+      "losses": 3,
+      "ties": 11
+    },
+    "general": {
+      "n_pairs": 60,
+      "n_nonzero": 2,
+      "T_plus": 3.0,
+      "T_minus": 0,
+      "rank_biserial_r": 1.0,
+      "cliffs_delta": 0.0333,
+      "wins": 2,
+      "losses": 0,
+      "ties": 58
+    },
+    "thin": {
+      "n_pairs": 30,
+      "n_nonzero": 17,
+      "T_plus": 109.5,
+      "T_minus": 43.5,
+      "rank_biserial_r": 0.4314,
+      "cliffs_delta": 0.2333,
+      "wins": 12,
+      "losses": 5,
+      "ties": 13
+    },
+    "pooled": {
+      "n_pairs": 114,
+      "n_nonzero": 32,
+      "T_plus": 419.5,
+      "T_minus": 108.5,
+      "rank_biserial_r": 0.589,
+      "cliffs_delta": 0.1404,
+      "wins": 24,
+      "losses": 8,
+      "ties": 82
+    }
+  }
+}

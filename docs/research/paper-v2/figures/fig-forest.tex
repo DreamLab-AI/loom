@@ -1,0 +1,50 @@
+\begin{figure}[t]\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13cm, height=5.6cm,
+  xmin=-0.35, xmax=2.75,
+  ymin=0.4, ymax=4.6,
+  xlabel={Paired judged-quality difference (loom $-$ raw), points $0$--$5$},
+  ytick={1,2,3,4},
+  yticklabels={pooled ($n{=}114$),general ($n{=}60$),thin ($n{=}30$),arcane ($n{=}24$)},
+  xtick={-0.25,0,0.25,0.5,0.75,1.0,1.25,1.5},
+  clip=false,
+]
+% pre-specified +-0.25 TOST equivalence margin (the out-of-domain / general-set reading)
+\fill[softgreen!16] (axis cs:-0.25,0.4) rectangle (axis cs:0.25,4.6);
+\node[softgreen!55!ink,font=\scriptsize,anchor=south] at (axis cs:0,4.58) {$\pm0.25$ equivalence margin};
+% zero reference line
+\draw[ink!55] (axis cs:0,0.4) -- (axis cs:0,4.6);
+% per-set deltas with bootstrap 95% CIs (asymmetric)
+\addplot[only marks, mark=*, mark size=2.6pt, color=teal0, mark options={fill=teal0,draw=teal0},
+  error bars/.cd, x dir=both, x explicit, error bar style={teal0,line width=0.7pt}, error mark options={rotate=90,mark size=3pt,teal0}]
+coordinates {
+  (0.7917,4) += (0.6250,0) -= (0.6250,0)
+  (0.3000,3) += (0.3333,0) -= (0.3333,0)
+  (0.0500,2) += (0.0833,0) -= (0.0500,0)
+};
+% pooled summary (diamond)
+\addplot[only marks, mark=diamond*, mark size=3.6pt, color=ink, mark options={fill=ink,draw=ink},
+  error bars/.cd, x dir=both, x explicit, error bar style={ink,line width=0.7pt}, error mark options={rotate=90,mark size=3pt,ink}]
+coordinates {
+  (0.2719,1) += (0.1755,0) -= (0.1666,0)
+};
+% right-hand value column
+\node[anchor=west,font=\footnotesize] at (axis cs:1.60,4) {$+0.79\ [+0.17,+1.42]$,\ $p{=}0.033$};
+\node[anchor=west,font=\footnotesize] at (axis cs:1.60,3) {$+0.30\ [-0.03,+0.63]$};
+\node[anchor=west,font=\footnotesize] at (axis cs:1.60,2) {$+0.05\ [\phantom{+}0.00,+0.13]$};
+\node[anchor=west,font=\footnotesize] at (axis cs:1.60,1) {$+0.27\ [+0.11,+0.45]$,\ $p{=}0.004$};
+\end{axis}
+\end{tikzpicture}
+\caption{Study~2 paired judged-quality deltas (Qwen3.8-27B, model held constant, loom versus raw
+serving path; cross-family GPT judge), per set and pooled, with seeded 10{,}000-resample bootstrap
+95\% intervals. The three sets are ordered by curation depth: the effect is largest on the deep
+\emph{arcane} set ($+0.79$), attenuates on the sparsely-covered \emph{thin} set ($+0.30$), and is
+negligible out-of-domain on \emph{general} ($+0.05$). That monotone gradient, large where curation is
+deep and vanishing where the corpus is thin or the question off-domain, is the signature a genuine
+grounding effect should show and not what a uniform prompt-formatting artefact would produce. The
+shaded band is the pre-specified $\pm0.25$ TOST equivalence margin: the general-set interval
+$[0.00,+0.13]$ sits wholly inside it, so out-of-domain non-regression is read by CI-inclusion, not
+from a non-significant difference (\S\ref{sec:live}, \S\ref{sec:ood}).}
+\label{fig:forest}
+\end{figure}

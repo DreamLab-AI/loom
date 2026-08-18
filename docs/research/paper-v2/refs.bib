@@ -262,10 +262,11 @@
   booktitle={EMNLP}, year={2023},
   eprint={2305.14251}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2305.14251}}
 %% --- baseline-reframing genre ---
-@misc{laitenberger2025stronger,
+@inproceedings{laitenberger2025stronger,
   title={Stronger Baselines for Retrieval-Augmented Generation with Long-Context Language Models},
-  year={2025},
-  eprint={2506.03989}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2506.03989}}
+  author={Laitenberger, Alex and Manning, Christopher D. and Liu, Nelson F.},
+  booktitle={EMNLP}, pages={32559--32569}, year={2025},
+  doi={10.18653/v1/2025.emnlp-main.1656}, eprint={2506.03989}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2506.03989}}
 @inproceedings{niven2019probing,
   title={Probing Neural Network Comprehension of Natural Language Arguments},
   author={Niven, Timothy and Kao, Hung-Yu},
@@ -299,13 +300,35 @@
   eprint={2507.03226}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2507.03226}}
 %% --- the nearest neighbour + upper-bound cousin ---
 @misc{answerpresence2026,
-  title={Answer Presence Drives Retrieval-Augmented Generation Rewriting Gains},
+  title={Answer Presence Drives {RAG} Rewriting Gains},
+  author={Li, Yuejie and Hua, Yueying and Yang, Ke and Zhang, Li and He, Yueping and Li, Ruiqi and Chen, Bolin and Wang, Tao and Li, Bowen and Mao, Chengjun},
   year={2026},
-  eprint={2606.05633}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2606.05633}}
+  eprint={2606.05633}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2606.05633},
+  note={Withdrawn 2026-08-03 by the authors after identifying errors in the experimental analysis that undermine the main conclusions.}}
 @misc{seedrg2026,
-  title={{SeedRG}: Leakage-Free Benchmarks and a Gold-Context Upper Bound for Retrieval-Augmented Generation},
+  title={Generating Leakage-Free Benchmarks for Robust {RAG} Evaluation},
+  author={Liu, Jiayi and Zhang, Jiaxing and Jin, Bowen and Neville, Jennifer},
   year={2026},
-  eprint={2605.08838}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2605.08838}}
+  eprint={2605.08838}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2605.08838},
+  note={Introduces {SeedRG}, a semi-synthetic leakage-free benchmark generator; extracts a reasoning graph and applies type-constrained entity replacement.}}
+%% --- RAG evaluation frameworks (metric-level comparanda) ---
+@inproceedings{ragchecker2024,
+  title={{RAGChecker}: A Fine-grained Framework for Diagnosing Retrieval-Augmented Generation},
+  author={Ru, Dongyu and Qiu, Lin and Hu, Xiangkun and Zhang, Tianhang and Shi, Peng and Chang, Shuaichen and Jiayang, Cheng and Wang, Cunxiang and Sun, Shichao and Li, Huanyu and Zhang, Zizhao and Wang, Binjie and Jiang, Jiarong and He, Tong and Wang, Zhiguo and Liu, Pengfei and Zhang, Yue and Zhang, Zheng},
+  booktitle={NeurIPS (Datasets and Benchmarks)}, year={2024},
+  eprint={2408.08067}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2408.08067}}
+@inproceedings{mirage2025,
+  title={{MIRAGE}: A Metric-Intensive Benchmark for Retrieval-Augmented Generation Evaluation},
+  author={Park, Chanhee and Moon, Hyeonseok and Park, Chanjun and Lim, Heuiseok},
+  booktitle={Findings of NAACL}, pages={2883--2900}, year={2025},
+  doi={10.18653/v1/2025.findings-naacl.157}, eprint={2504.17137}, archivePrefix={arXiv}, url={https://aclanthology.org/2025.findings-naacl.157/}}
+%% --- terminology collision: "copy ceiling" in an editing/decoding context (withdrawn) ---
+@misc{copyasdecode2026,
+  title={Copy-as-Decode: Grammar-Constrained Parallel Prefill for {LLM} Editing},
+  author={Liu, Ziyang},
+  year={2026},
+  eprint={2604.18170}, archivePrefix={arXiv}, url={https://arxiv.org/abs/2604.18170},
+  note={Uses ``copy ceiling'' for token reachability under a copy/generate editing grammar (unrelated to graph-grounded RAG). Withdrawn 2026-05-24 over an authorship dispute; cited only to disambiguate terminology.}}
 %% --- equivalence testing (TOST) ---
 @article{lakens2017equivalence,
   title={Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses},

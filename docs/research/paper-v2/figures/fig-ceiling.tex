@@ -1,0 +1,54 @@
+\begin{figure}[t]\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\footnotesize,
+  >={Stealth[length=2mm]},
+  inp/.style={draw=ink,fill=ink!3,rounded corners=2pt,align=center,inner sep=4pt,minimum height=8mm},
+  proc/.style={draw=ink!70,fill=white,rounded corners=2pt,align=center,inner sep=4pt,minimum height=8mm},
+  ceil/.style={draw=gray!60,fill=gray!18,rounded corners=2pt,align=center,inner sep=4pt,minimum height=8mm},
+  rec/.style={draw=teal0,fill=teal0!10,rounded corners=2pt,align=center,inner sep=4pt,minimum height=8mm},
+  gain/.style={draw=ink,line width=0.9pt,fill=softgreen!8,rounded corners=2pt,align=center,inner sep=5pt},
+  flow/.style={->,ink!75,line width=0.7pt},
+  ref/.style={->,gray!70,dash pattern=on 2pt off 2pt,line width=0.6pt},
+]
+% inputs
+\node[inp] (scaf) {Scaffold $S_i$\\(shown context)};
+\node[inp,above=5mm of scaf] (q) {Question $q_i$};
+\node[inp,below=5mm of scaf] (gold) {Gold set $G_i$\\\{slug, title\}};
+% top path: no-op extractor -> copy ceiling
+\node[proc,right=10mm of scaf,yshift=9mm] (noop) {no-op extractor\\return $S_i$ verbatim};
+\node[ceil,right=12mm of noop] (ci) {copy ceiling\\$c_i=e_i/|G_i|$};
+% bottom path: model -> answer -> recall
+\node[proc,right=10mm of scaf,yshift=-9mm] (model) {model};
+\node[proc,right=8mm of model] (ans) {answer $a_i$};
+\node[rec,right=8mm of ans] (ri) {grounded recall\\$r_i$};
+% flows
+\draw[flow] (scaf.east) -- (noop.west);
+\draw[flow] (q.east) -- ++(6mm,0) |- (model.west);
+\draw[flow] (scaf.east) -- ++(4mm,0) |- (model.west);
+\draw[flow] (noop) -- (ci);
+\draw[flow] (model) -- (ans);
+\draw[flow] (ans) -- (ri);
+% gold is the shared matcher reference for both scores
+\draw[ref] (gold.east) -- ++(6mm,0) |- (ci.south) node[pos=0.75,below,font=\scriptsize]{match $\mathrm{m}(t,S_i)$};
+\draw[ref] (gold.east) -- ++(6mm,0) |- (ri.south) node[pos=0.75,above,font=\scriptsize]{match $\mathrm{m}(t,a_i)$};
+% gain over copy
+\node[gain,right=12mm of ci,yshift=-9mm] (g) {\textbf{gain over copy}\\[1pt]$g_i=r_i-c_i$\\[3pt]
+  \begin{tabular}{@{}l@{\ }l@{}}
+    $g{\approx}0$ & delivery fidelity\\
+    $g{<}0$ & lossy restatement\\
+    $g{>}0$ & reasoning over structure\\
+  \end{tabular}};
+\draw[flow] (ci.east) -- ++(4mm,0) |- (g.west);
+\draw[flow] (ri.east) -- ++(4mm,0) |- (g.west);
+\end{tikzpicture}}
+\caption{The copy ceiling and the signed gain over copy on one panel. The same shown context $S_i$ feeds
+two extractors: a no-op extractor that returns $S_i$ verbatim, whose recall against the gold set $G_i$
+is the per-item \emph{copy ceiling} $c_i$; and the model, whose answer $a_i$ scores the grounded recall
+$r_i$. Both scores use the identical surface matcher $\mathrm{m}(t,\cdot)$ with $G_i$ as reference
+(dashed), so their difference, the \emph{gain over copy} $g_i=r_i-c_i$, is first-order insensitive to
+the matcher's under-counting. The sign reads directly: $g\approx0$ is faithful delivery (the target
+behaviour for private-knowledge grounding), $g<0$ is lossy restatement of surfaced gold, and $g>0$
+would evidence recovery of gold beyond what the exposure check finds (\S\ref{sec:ceiling}).}
+\label{fig:ceiling}
+\end{figure}
