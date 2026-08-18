@@ -27,12 +27,13 @@ use tower_http::limit::RequestBodyLimitLayer;
 use tower_http::timeout::TimeoutLayer;
 use tower_http::trace::TraceLayer;
 
-use loom_domain::{FusionPath, ScaffoldOpts};
+use loom_domain::{FusionPath, Scaffold, ScaffoldOpts, ServedMode};
 use loom_scaffold::message_text;
 use loom_scaffold::tuning::SYSTEM_PREAMBLE;
 
 use crate::error::ApiError;
 use crate::fusion::build_scaffold;
+use crate::serving;
 use crate::state::AppState;
 
 /// Build the full §9 router around an `AppState`, with the tower layer stack:
@@ -241,6 +242,15 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
         .cloned()
         .unwrap_or_default();
 
+    // F1 preconditions read from the ORIGINAL request, before any rewrite:
+    // per-request opt-out, streaming, and the delivery-lookup shape (last message
+    // user, no assistant turns). Then strip the Loom-private field so the backend
+    // never sees it.
+    let opted_out = serving::verbatim_opted_out(&body_obj);
+    let streaming = serving::is_streaming(&body_obj);
+    let delivery_shape = serving::is_delivery_lookup_shape(&messages);
+    serving::strip_loom_options(&mut body_obj);
+
     // Scaffold knobs for the chat path (Python `ontology_budget`/`ontology_prose`).
     let budget = body_obj
         .get("ontology_budget")
@@ -270,23 +280,11 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
 
     let before = content_sum(&messages);
     let mut new_msgs = messages;
-    let mut fusion_path = FusionPath::NoMatch;
-    let mut grounding = Value::Null;
+    let mut scaffold: Option<Scaffold> = None;
 
     if let Some(text) = last_user_text {
         match build_scaffold(&st, &text, opts).await {
-            Ok(s) => {
-                fusion_path = s.fusion_path;
-                if !s.block.is_empty() {
-                    merge_scaffold(&mut new_msgs, &s.block);
-                    grounding = json!({
-                        "seeds": s.seeds,
-                        "top_score": s.top_score,
-                        "effective_budget": s.effective_budget,
-                        "engaged": true,
-                    });
-                }
-            }
+            Ok(s) => scaffold = Some(s),
             Err(e) => {
                 // Parity with Python: a scaffold failure skips injection and
                 // still delegates the raw prompt (never 500s the chat path).
@@ -295,37 +293,143 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
         }
     }
 
+    let engaged = scaffold.as_ref().is_some_and(|s| !s.block.is_empty());
+    let fusion_path = scaffold
+        .as_ref()
+        .map_or(FusionPath::NoMatch, |s| s.fusion_path);
+    let grounding = grounding_value(scaffold.as_ref());
+
+    // --- F1: VERBATIM SERVING — high-confidence scaffold, no backend call. -----
+    if engaged && st.config.verbatim_mode && !opted_out && !streaming && delivery_shape {
+        let s = scaffold.as_ref().unwrap();
+        if f64::from(s.top_score) >= st.config.verbatim_threshold {
+            return verbatim_response(&st, s, &grounding, fusion_path);
+        }
+    }
+
+    // --- DELEGATE PATH ---------------------------------------------------------
+    if engaged {
+        merge_scaffold(&mut new_msgs, &scaffold.as_ref().unwrap().block);
+    }
     let after = content_sum(&new_msgs);
     let injected = after.saturating_sub(before).div_ceil(4);
-
     body_obj.insert("messages".to_owned(), Value::Array(new_msgs));
-    // NB: `stream` stripping and the `max_tokens` floor live in the backend
-    // adapter (do NOT re-do here — the floor logic is single-sourced there).
+
+    // F3: thinking + budget control — only for an ENGAGED delegation. Mutates the
+    // body in place (chat_template_kwargs and/or the think-token floor); never
+    // touches a passthrough request. `stream` stripping and the general
+    // `max_tokens` floor still happen in the backend adapter (single-sourced).
+    if engaged {
+        serving::apply_thinking_controls(
+            &mut body_obj,
+            st.config.backend_no_think,
+            st.config.think_token_floor,
+        );
+    }
     let delegated = Value::Object(body_obj);
 
     match st.backend.chat(delegated).await {
         Ok(resp) => {
             let status = StatusCode::from_u16(resp.status).unwrap_or(StatusCode::OK);
             let mut out = resp.body;
-            // Annotate the 200 JSON with the fail-labelled honesty block.
+            // Annotate the 200 JSON with the fail-labelled honesty block (incl. F2).
             if resp.status == 200 {
-                if let Value::Object(ref mut map) = out {
-                    map.insert(
-                        "loom".to_owned(),
-                        json!({
-                            "mode": "scaffold",
-                            "injected_tokens": injected,
-                            "grounding": grounding,
-                            "fusion_path": fusion_path,
-                            "generation": to_value(&st.generation.current()),
-                        }),
-                    );
-                }
+                annotate_delegated(
+                    &st,
+                    &mut out,
+                    scaffold.as_ref(),
+                    &grounding,
+                    fusion_path,
+                    injected,
+                );
             }
             (status, Json(out)).into_response()
         }
         Err(e) => ApiError(e).into_response(), // NoBackend→503; unreachable/http→502
     }
+}
+
+/// The `grounding` telemetry object for an engaged scaffold (else `null`).
+fn grounding_value(scaffold: Option<&Scaffold>) -> Value {
+    match scaffold {
+        Some(s) if !s.block.is_empty() => json!({
+            "seeds": s.seeds,
+            "top_score": s.top_score,
+            "effective_budget": s.effective_budget,
+            "engaged": true,
+        }),
+        _ => Value::Null,
+    }
+}
+
+/// Build the F1 verbatim 200 response: the scaffold served as the answer, with the
+/// `served_mode: verbatim` + exposure telemetry. No backend is called.
+fn verbatim_response(
+    st: &AppState,
+    s: &Scaffold,
+    grounding: &Value,
+    fusion_path: FusionPath,
+) -> Response {
+    let gen = st.generation.current();
+    let content = serving::verbatim_content(&s.block, &gen.id.0);
+    // F2: the served content IS the answer, so exposure is honest here too.
+    let exposure = serving::compute_exposure(st.retriever.as_ref(), s, &content);
+    let loom_block = json!({
+        "mode": "scaffold",
+        "served_mode": ServedMode::Verbatim,
+        "injected_tokens": est_block_tokens(&s.block),
+        "grounding": grounding,
+        "fusion_path": fusion_path,
+        "exposure": exposure,
+        "generation": to_value(&gen),
+    });
+    let out = serving::verbatim_completion(&content, &loom_block);
+    (StatusCode::OK, Json(out)).into_response()
+}
+
+/// Attach the `loom` telemetry block to a delegated 200 response, computing F2
+/// exposure (and optionally appending the "Not covered" line) when engaged.
+fn annotate_delegated(
+    st: &AppState,
+    out: &mut Value,
+    scaffold: Option<&Scaffold>,
+    grounding: &Value,
+    fusion_path: FusionPath,
+    injected: usize,
+) {
+    let exposure = match scaffold {
+        Some(s) if !s.block.is_empty() => {
+            let answer = serving::answer_text(out);
+            let report = serving::compute_exposure(st.retriever.as_ref(), s, &answer);
+            // LOOM_EXPOSURE_APPEND: append a single "Not covered" line on drops.
+            if st.config.exposure_append {
+                serving::append_not_covered(out, &report);
+            }
+            to_value(&report)
+        }
+        _ => Value::Null,
+    };
+    if let Value::Object(ref mut map) = out {
+        map.insert(
+            "loom".to_owned(),
+            json!({
+                "mode": "scaffold",
+                "served_mode": ServedMode::Delegated,
+                "injected_tokens": injected,
+                "grounding": grounding,
+                "fusion_path": fusion_path,
+                "exposure": exposure,
+                "generation": to_value(&st.generation.current()),
+            }),
+        );
+    }
+}
+
+/// Estimate token count of a served block for the `injected_tokens` telemetry on
+/// the verbatim path (no message-merge delta is available there). Mirrors the
+/// façade's `chars/4` heuristic used on the delegate path.
+fn est_block_tokens(block: &str) -> usize {
+    block.chars().count().div_ceil(4)
 }
 
 // --- GET /v1/models ---------------------------------------------------------

@@ -135,6 +135,7 @@ pub struct TestEnv {
 /// Builder for a `TestEnv` — sensible defaults (fixture index, not-ready vector,
 /// working embedder, retrieval-only backend, graph over an empty dir); override
 /// the pieces a given EXP needs.
+#[allow(clippy::struct_excessive_bools)] // a test builder of independent knobs
 pub struct TestEnvBuilder {
     ttl: Option<String>,
     backend: Option<OpenAiBackend>,
@@ -143,6 +144,11 @@ pub struct TestEnvBuilder {
     semantic_fallback: bool,
     semantic_min_inject: Option<f64>,
     semantic_debug_surface: bool,
+    verbatim_mode: bool,
+    verbatim_threshold: f64,
+    exposure_append: bool,
+    backend_no_think: bool,
+    think_token_floor: u64,
 }
 
 impl TestEnvBuilder {
@@ -155,7 +161,32 @@ impl TestEnvBuilder {
             semantic_fallback: false,
             semantic_min_inject: None,
             semantic_debug_surface: false,
+            verbatim_mode: false,
+            verbatim_threshold: 8.0,
+            exposure_append: false,
+            backend_no_think: false,
+            think_token_floor: 0, // matches Config::default — F3 off unless a test opts in
         }
+    }
+
+    /// F1: turn on verbatim serving with an explicit top-score threshold.
+    pub fn with_verbatim(mut self, enabled: bool, threshold: f64) -> Self {
+        self.verbatim_mode = enabled;
+        self.verbatim_threshold = threshold;
+        self
+    }
+
+    /// F2: append the `Not covered above` line to answer content on drops.
+    pub fn with_exposure_append(mut self, enabled: bool) -> Self {
+        self.exposure_append = enabled;
+        self
+    }
+
+    /// F3: no-think + think-token floor knobs.
+    pub fn with_thinking(mut self, no_think: bool, think_floor: u64) -> Self {
+        self.backend_no_think = no_think;
+        self.think_token_floor = think_floor;
+        self
     }
 
     /// Load a small ontology into the graph store (writes `ontology.ttl`, which
@@ -204,9 +235,9 @@ impl TestEnvBuilder {
         let retriever = LexicalRetriever::from_json_str(FIXTURE).expect("fixture retriever");
         let lexical_generation_id = retriever.generation().id.0.clone();
 
-        let vector: Arc<StubVector> = self
-            .vector
-            .unwrap_or_else(|| Arc::new(StubVector::new(false, generation_with_id("none"), vec![])));
+        let vector: Arc<StubVector> = self.vector.unwrap_or_else(|| {
+            Arc::new(StubVector::new(false, generation_with_id("none"), vec![]))
+        });
         let vector_calls = Arc::clone(&vector.calls);
 
         let backend = self
@@ -219,6 +250,11 @@ impl TestEnvBuilder {
             semantic_fallback: self.semantic_fallback,
             semantic_min_inject: self.semantic_min_inject,
             semantic_debug_surface: self.semantic_debug_surface,
+            verbatim_mode: self.verbatim_mode,
+            verbatim_threshold: self.verbatim_threshold,
+            exposure_append: self.exposure_append,
+            backend_no_think: self.backend_no_think,
+            think_token_floor: self.think_token_floor,
             ..Config::default()
         };
 
@@ -269,7 +305,8 @@ pub async fn call(
     let mut req = Request::builder().method(method).uri(uri);
     let request = if let Some(b) = body {
         req = req.header("content-type", "application/json");
-        req.body(Body::from(serde_json::to_vec(&b).unwrap())).unwrap()
+        req.body(Body::from(serde_json::to_vec(&b).unwrap()))
+            .unwrap()
     } else {
         req.body(Body::empty()).unwrap()
     };

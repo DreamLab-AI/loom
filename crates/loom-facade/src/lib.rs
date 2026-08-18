@@ -14,6 +14,7 @@ pub mod error;
 pub mod fusion;
 pub mod mirror;
 pub mod routes;
+pub mod serving;
 pub mod state;
 
 use std::sync::Arc;
@@ -65,8 +66,7 @@ pub fn app_state_from_env() -> AppState {
                 path = %config.index_path,
                 "lexical index NOT loaded; serving on an empty floor (degraded)"
             );
-            LexicalRetriever::from_json_str(EMPTY_INDEX_JSON)
-                .expect("static empty index parses")
+            LexicalRetriever::from_json_str(EMPTY_INDEX_JSON).expect("static empty index parses")
         }
     };
 
