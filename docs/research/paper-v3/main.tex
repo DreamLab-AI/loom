@@ -1,5 +1,5 @@
-\documentclass[11pt]{article}
-\usepackage[a4paper,margin=2.3cm]{geometry}
+\documentclass[10pt,twocolumn]{article}
+\usepackage[a4paper,margin=2cm,columnsep=0.6cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
@@ -32,9 +32,8 @@
 \newcommand{\gainpos}[1]{\textcolor{softgreen}{$+#1$}}
 \newcommand{\gainneg}[1]{\textcolor{burnt}{$#1$}}
 
-\title{\vspace{-1.2cm}\bfseries The Copy Ceiling:\\[2pt]
-An Input-Exposure Control for Ontology-Grounded Generation\\
-over Private Corpora}
+\title{\vspace{-1.2cm}\bfseries An Input-Exposure Control for Ontology\\
+Grounded Generation over Private Corpora}
 \author{Dr John O'Hare\\ \small DreamLab AI \and \small The Loom / VisionFlow neurosymbolic stack}
 \date{\today}
 
@@ -122,7 +121,7 @@ ontology, never the working graph (ADR-135~D6/D7; ADR-136~D5).
 
 Excellent, attributable recall on questions where the corpus is authoritative, combined with no regression on general questions the model already answers, defines the multivariate and conjunctive bar implied by these requirements. We introduce this framing here and reconcile the axes in \S\ref{sec:bar}.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{The private-corpus requirements arc: each business requirement, the design consequence it
 forces, and the point at which the consequence is enforced (not merely intended). ADR = the
 governing architectural decision record.}
@@ -142,7 +141,7 @@ Injection interference & Confidence-gated selective injection & Single injection
 Never-mixed provenance & Per-answer attestation; ontology-only boundary & \texttt{loom} block $+$ \texttt{corpusNature}; working graph never served \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 \section{Related Work}\label{sec:related}
 \paragraph{Knowledge-graph and private-corpus grounding.}
@@ -162,7 +161,7 @@ The system under measurement is the deployed serving node, implemented as a sing
 
 \paragraph{The canonical unit and the corpus.} The unit of service, and thus of review, is a single markdown-with-ontology block scoped to one IRI. Each block presents curated research prose preceded by its typed relations, specifically \texttt{subClassOf}, \texttt{requires}, \texttt{enables}, \texttt{uses}, \texttt{relatedTo}, and \texttt{contrastsWith}. The underlying corpus constitutes a single sha-addressable \emph{generation}. At the generation evaluated here, this comprises \textbf{8{,}146 concept classes} and \textbf{282{,}492 triples} within the Whelk-reasoned closure. The node mirrors this generation atomically, ensuring it always serves a known, mixed-build-free version without baking the data into the binary. We deliberately avoid the path where knowledge reduces to opaque community summaries or GNN-encoded subgraphs~\cite{edge2024graphrag,he2024gretriever}. Here, the reviewable markdown remains the durable asset; the accelerators described below merely locate, rank, or attest to it~\cite{garcez2023neurosymbolic}.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{The request pipeline. Retrieval, gating and the scaffold serialisation need no model; only
 the final delegation calls one. The single injection authority (match $+$ gate) is the sole path by
 which any candidate reaches the model, whether lexical or, when enabled, semantic.}
@@ -180,7 +179,7 @@ Semantic fallback & In-process HNSW over 384-d embeddings; fires on lexical miss
 Delegate & Inject scaffold into the last user message; call \texttt{DISTILL\_BACKEND\_URL} & yes \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 The lexical matcher and the confidence gate act as the exclusive injection authority. All candidates pass through a single policy that scales the scaffold budget according to the retrieval score, injecting nothing below a defined threshold. This mechanism prevents the node from producing erratic outputs on off-ontology queries (\S\ref{sec:ood}). The graph store processes read-only, LIMIT-clamped SPARQL over the reasoned closure without invoking any model call. An in-process HNSW semantic fallback, built over 384-dimensional embeddings, is connected for out-of-vocabulary queries but ships disabled by default. Its measured document-embedding recall of 0.816 falls short of the 0.87 design floor. Consequently, it remains disabled until a query-shaped embedding clears a multivariate benchmark, rather than through a relaxation of the threshold. We revisit this honest red gate in \S\ref{sec:limits}. The final component is the model-swap seam: generation is delegated to the backend specified by \texttt{DISTILL\_BACKEND\_URL} (currently Qwen3.8-27B). Model identity is included in the response, and swapping the model affects no consumer. This design allows \S\ref{sec:method} to hold grounding constant while varying the model, or to hold the model constant while varying the serving path.
 
@@ -277,7 +276,7 @@ The logic is differential. If the gain over copy remains near zero under \textbf
 \subsection{In-domain: delivery fidelity}\label{sec:indomain}
 On Gemini~3.7~Flash, the paired design yields a substantial and precise uplift: raw recall is 0.375, scaffold recall is 0.942, the paired delta is $\mathbf{+0.567}$, with a naive 95\% CI of $[+0.532,+0.603]$ and a domain-clustered 95\% CI of $[+0.524,+0.611]$ across $n=510$ items, showing zero errors and zero truncated responses (Figure~\ref{fig:anchor}). The low raw score aligns with expectations for a genuinely private domain, where parametric memory answers only a third of queries, consistent with absence from pretraining. The copy ceiling then \emph{characterises} the grounded score: the mean fraction of gold already present in the injected scaffold is \textbf{0.964}, and the model's recall (0.942) sits within $-0.022$ of this value. The system performs exactly what a private-knowledge grounding layer should: the curated ontology holds the answers, and the model returns them with high fidelity. The small negative gain indicates the model restates nearly everything shown; recall measures omission rather than fabrication, so any additions beyond the gold remain unmeasured here. The ceiling supports high-recall delivery of exposed targets (attribution precision is an unmeasured axis, \S\ref{sec:bar}), not free-association from parametric memory. Whether a model exceeds mere restatement, by recovering gold the lexical check missed or \emph{dropping} surfaced facts, is the axis \S\ref{sec:tenmodel} examines.
 
-\begin{figure}[t]\centering
+\begin{figure*}[t]\centering
 \begin{tikzpicture}
 \begin{axis}[ybar,width=12cm,height=5.4cm,bar width=22pt,ymin=0,ymax=1.05,
   ylabel={Mean recall}, symbolic x coords={raw,scaffold,copy ceiling},
@@ -291,7 +290,7 @@ On Gemini~3.7~Flash, the paired design yields a substantial and precise uplift: 
 (0.964), the recall a no-op extractor of the injected context would already achieve. The $+0.57$
 raw$\to$scaffold uplift is almost entirely answer exposure, not reasoning over structure.}
 \label{fig:anchor}
-\end{figure}
+\end{figure*}
 
 \subsection{Ten models: gain over copy}\label{sec:tenmodel}
 Table~\ref{tab:sweep} applies the same paired design to ten models from five providers, all running under a single deterministic configuration. Each model exhibits a substantial raw$\to$scaffold uplift, ranging from $+0.57$ to $+0.78$. In every case, the scaffold recall falls slightly below the copy ceiling. These recall values span 0.897--0.942, while the ceiling stands at \textbf{0.964}. This ceiling is defined by the questions and the injected context, not the model, so it remains constant across the row. The raw uplift essentially restates exposed gold and does not distinguish between the models.
@@ -320,7 +319,7 @@ utilises exposed context marginally better than deepseek-chat, $0.934$ versus $0
 headline recall, $0.916$ versus $0.924$). The divergence is that single transposition, so ``uses the
 context best'' and ``scores highest'' nearly, but not exactly, coincide.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Ten models, one deterministic configuration, $n=510$ (seed 42), sorted by gain over copy
 (scaffold recall $-$ copy ceiling). The copy ceiling (0.964) is a property of the questions and the
 injected context and is identical across models. The interval shown is the domain-clustered block
@@ -342,9 +341,9 @@ GPT-4.1-mini          & 0.162 & 0.905 & $+0.743$ $[+0.697,+0.787]$ & 0.964 & \ga
 Gemini 2.5 Flash-Lite & 0.227 & 0.897 & $+0.670$ $[+0.623,+0.716]$ & 0.964 & \gainneg{-0.067} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Exposure/recovery decomposition over the 510-question sweep ($1{,}136$ gold items per model;
 $11{,}360$ pooled), sorted by context utilisation. Utilisation is $n_{11}/(n_{11}+n_{10})$, the
 fraction of \emph{exposed} gold the answer recovers; $n_{10}$ is exposed gold the answer omitted;
@@ -371,9 +370,9 @@ Gemini 2.5 Flash-Lite & 0.900 & 106 & 0 \\
 \textbf{Pooled}       & \textbf{0.931} & \textbf{735} & \textbf{3} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]\centering
+\begin{figure*}[t]\centering
 \begin{tikzpicture}
 \begin{axis}[xbar,width=13cm,height=6.6cm,bar width=9pt,xmin=-0.098,xmax=0.052,
   xlabel={Gain over copy (scaffold recall $-$ copy ceiling)}, enlarge y limits=0.09,
@@ -411,7 +410,7 @@ interval. No model's interval crosses zero, and none exceeds the copy ceiling on
 the spread ($-0.067$ to $-0.022$) is the axis that separates them where the near-identical raw uplift
 does not. Models nearest zero (top) restate the vetted facts most faithfully.}
 \label{fig:gain}
-\end{figure}
+\end{figure*}
 
 \subsection{The production-node paired study}\label{sec:live}
 The ten-model sweep changes the model while keeping the offline scaffold fixed; the deployment question is whether the \emph{shipped} node (live retrieval, confidence gate, injection authority and all) moves answer quality when the model is held constant. Study~2 answers it: Qwen3.8-27B on the reference host, identical decoding, the only difference being whether the request passes through the Loom node (\emph{loom}) or hits the backend directly (\emph{raw}), scored $0$--$5$ by the cross-family GPT judge of \S\ref{sec:method}. Table~\ref{tab:live} reports the paired result per set and pooled.
@@ -422,7 +421,7 @@ Pooled across $n=114$ items, the loom path raises judged quality by $\mathbf{+0.
 
 The telemetry confirms the gate operates as intended. Injection engagement stands at $95.8\%$ on arcane, $100\%$ on thin, and $78.3\%$ on general. This strengthens the interpretation of the general-set null result: the scaffold was injected on over three-quarters of off-domain questions, yet judged quality did not regress; the gate’s refusal to inject on the remaining $21.7\%$ is a secondary mechanism, not the primary explanation. Median injected context spans $\approx1{,}200$--$1{,}300$ tokens across sets. Latency is at parity on the sets critical to the claim: arcane medians are $89.8$\,s (loom) versus $93.4$\,s (raw), and general is $66.0$ versus $65.7$\,s. The thin set alone runs slower under loom ($172.4$ versus $145.2$\,s), consistent with its full engagement and longer scaffolds. We report this discrepancy rather than averaging it away.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Study~2, the production-node paired study: Qwen3.8-27B, model held constant, loom versus raw
 serving path, judged $0$--$5$ by a cross-family GPT judge. Paired mean difference with seeded
 10{,}000-resample bootstrap 95\% CI, two-sided Wilcoxon $p$ (Holm-adjusted across the three sets), the
@@ -442,7 +441,7 @@ general          & 60  & \gainpos{0.05} & $[\phantom{+}0.00,+0.13]$ & 0.180 (0.2
 \end{tabular}
 \\[2pt]{\footnotesize $^{\dagger}$ The general-set $r$ rests on 2 non-tied pairs (58 ties); read it as
 directional only, not as a magnitude.}
-\end{table}
+\end{table*}
 
 \subsection{Negative controls: attributing the gain}\label{sec:controls}
 The observed live lift and the ten-model delivery results invite a single objection: the gain reflects lexical overlap between the answer and the injected block, rather than knowledge transfer. The four control arms detailed in \S\ref{sec:ceiling-controls} test this directly. Each arm holds the model and question fixed, perturbing only the injected scaffold, which is fetched verbatim from the LLM-free \texttt{/loom/scaffold} endpoint. Table~\ref{tab:controls} reports the pooled (arcane\,$+$\,thin) contrasts. We interpret these as lower-confidence, complete-case comparisons, consistent with the attrition reasons in \S\ref{sec:results}. Figure~\ref{fig:controls} plots the ladder of contrasts.
@@ -455,7 +454,7 @@ Three distinct outcomes support the attribution. The first serves as a sanity ch
 
 The masking and shuffling arms show only modest losses. Substituting \texttt{Entity-$k$} for every seed-class \emph{name} (\emph{masked}) still yields a $+0.42$ advantage over raw (ns, wide CI), and shuffling the block's sentences (\emph{shuffled}) produces $+0.25$ (ns). This suggests that graded facts, rather than surface names or their order, carry most of the signal, which is consistent with a judge evaluating factual content over lexical form. Both probes are weak by construction: shuffling whole sentences preserves the facts within each sentence, and masking only seed-class titles leaves the answer-bearing target names intact. Consequently, their small costs bound the surface-form contribution loosely rather than exactly. Because the arm-versus-raw contrasts involve different survivor sets, direct common-pair contrasts provide the comparable reading: true\,$-$\,shuffled $+0.30$ $[-0.10,+0.73]$ ($n=30$) and true\,$-$\,masked $+0.15$ $[-0.19,+0.44]$ ($n=27$). Both are non-significant, pointing in the same direction while remaining imprecise. Finally, the effect follows a \textbf{curation-depth gradient}. Per set, true\,$-$\,raw is $+0.95$ $[+0.37,+1.63]$ ($p=0.018$) on the deep arcane set, but only $+0.08$ $[-0.46,+0.62]$ (ns) on the thin set. Where the corpus is rich, the served block transfers real knowledge; where it is sparse, there is little to transfer. This mirrors the gradient shown in the live study, recovered independently through the controls.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Negative-control contrasts, pooled arcane\,$+$\,thin, judged $0$--$5$, paired mean difference
 with seeded bootstrap 95\% CI and two-sided Wilcoxon $p$. Complete-case over surviving pairs; the
 control arms were not retried at the larger budget, so $n$ varies by arm (\S\ref{sec:results}). Read
@@ -479,12 +478,12 @@ true $-$ masked           & 27 & \gainpos{0.15} & $[-0.19,+0.44]$ & 0.398 \\
 \multicolumn{5}{@{}l@{}}{\emph{Per set (true $-$ raw):} arcane $+0.95$ $[+0.37,+1.63]$, $p=0.018$; thin $+0.08$ $[-0.46,+0.62]$, ns.}\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Out-of-domain: the gate holds}\label{sec:ood}
 The two instruments jointly show that grounding imposes no penalty on general questions the model can already handle. In the five-model judged arm (\S\ref{sec:method}), a cross-family judge scored the 60-question out-of-domain set $0$--$5$ against frontier gold. Every paired harness$-$bare delta’s 95\% interval includes zero: all questions $-0.05$ $[-0.11,0.00]$; off-domain $-0.09$ $[-0.25,+0.02]$; and the pre-specified worst case, off-domain questions where the gate mis-fired and injected anyway, $-0.23$ $[-0.63,+0.05]$ (Table~\ref{tab:ood}). The mechanism is the gate: in 60 of 100 off-domain gradings it correctly judged a query off-domain and skipped, making the harnessed answer identical to bare. The only degradation surfaced when it over-fired, concentrating on the weakest model. Study~2 contributes the equivalence reading the judged arm lacked. The general-set $\Delta=+0.05$ $[0.00,+0.13]$ sits entirely within the pre-specified $\pm0.25$ TOST margin, establishing non-regression through CI-inclusion rather than inferring it from a non-significant difference. On both instruments we report ``no jaggedness detected'' rather than ``zero effect'': the intervals are wide and bound the regression near zero, but they do not prove its absence.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Out-of-domain non-regression (five-model judged arm): paired harness$-$bare quality delta (judge
 $0$--$5$ vs frontier gold), five models, seeded paired bootstrap 95\% CI. Every interval includes
 zero. The worst case is off-domain questions where the confidence gate mis-fired and injected anyway;
@@ -502,7 +501,7 @@ Off-domain, gate mis-fired (worst) & $-0.23$ & $[-0.63,\ 0.05]$ & 40 \\
 Off-domain, gate skipped (correct) & $+0.00$ & n/a              & 60 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \section{Analysis: Exposure, not Reasoning}\label{sec:analysis}
 Both studies point to the same conclusion, expressed in different ways: the uplift from a graph-grounding layer over a private corpus is almost entirely \emph{exposure} (the faithful delivery of curated facts presented to the model), rather than \emph{reasoning} over injected structure. This section derives that claim from the instrument, then outlines the two engineering implications for how such a system should be constructed and evaluated.
@@ -522,7 +521,7 @@ gate.} When the model handles delivery while the corpus supplies the answer, inv
 \section{The Multivariate Bar}\label{sec:bar}
 Table~\ref{tab:bar} details the four axes that define the deployable bar from \S\ref{sec:setting}, listing the measurement instrument for each and the current status of this work. We present a scorecard that shrinks rather than inflates: two axes are measured here, while two remain specified but not yet closed. No single number serves as the deployable target; the bar is conjunctive across all four axes.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{The multivariate bar and this work's status. A deployable private-knowledge system must clear
 all four \emph{together}; the axes are measured on different instruments, so no single number
 establishes the conjunction.}
@@ -538,7 +537,7 @@ Axis & Instrument \& evidence & Status \\
 4. Attribution precision & Per-answer generation $+$ confidence already emitted; precision metric to close ``faithful'' $\to$ ``attributable'' & Specified; not measured \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 Axes~1 and~2 form the conjunction this paper establishes: excellent, attributable delivery where the corpus is authoritative, \emph{and} no detected regression where it is not. We measure these on two different instruments so that the pairing does not arise as an artefact of a single metric. Axis~3 (which requires a web-grounded arm on the same questions, rather than the bare model, as the correct baseline) and axis~4 (a reported attribution-precision figure) are designed but remain unmeasured. We name them as open items rather than implying the bar is cleared. Stating the full bar matters because it stops the in-domain number from being read as the entire claim, which is the failure mode the copy ceiling exists to prevent.
 

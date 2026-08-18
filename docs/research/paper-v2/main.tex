@@ -1,5 +1,5 @@
-\documentclass[11pt]{article}
-\usepackage[a4paper,margin=2.3cm]{geometry}
+\documentclass[10pt,twocolumn]{article}
+\usepackage[a4paper,margin=2cm,columnsep=0.6cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
@@ -32,9 +32,8 @@
 \newcommand{\gainpos}[1]{\textcolor{softgreen}{$+#1$}}
 \newcommand{\gainneg}[1]{\textcolor{burnt}{$#1$}}
 
-\title{\vspace{-1.2cm}\bfseries The Copy Ceiling:\\[2pt]
-An Input-Exposure Control for Ontology-Grounded Generation\\
-over Private Corpora}
+\title{\vspace{-1.2cm}\bfseries An Input-Exposure Control for Ontology\\
+Grounded Generation over Private Corpora}
 \author{Dr John O'Hare\\ \small DreamLab AI \and \small The Loom / VisionFlow neurosymbolic stack}
 \date{\today}
 
@@ -212,7 +211,7 @@ The bar these requirements imply is multivariate and conjunctive: excellent, att
 where the corpus is authoritative, \emph{and} no regression on the general questions a model
 already answers. We introduce that framing here and reconcile the axes in \S\ref{sec:bar}.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{The private-corpus requirements arc: each business requirement, the design consequence it
 forces, and the point at which the consequence is enforced (not merely intended). ADR = the
 governing architectural decision record.}
@@ -232,7 +231,7 @@ Injection interference & Confidence-gated selective injection & Single injection
 Never-mixed provenance & Per-answer attestation; ontology-only boundary & \texttt{loom} block $+$ \texttt{corpusNature}; working graph never served \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 \section{Related Work}\label{sec:related}
 \paragraph{Knowledge-graph and private-corpus grounding.}
@@ -320,7 +319,7 @@ into opaque community summaries or GNN-encoded subgraphs~\cite{edge2024graphrag,
 the reviewable markdown is the durable asset, and the accelerators below only find, rank or attest
 it~\cite{garcez2023neurosymbolic}.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{The request pipeline. Retrieval, gating and the scaffold serialisation need no model; only
 the final delegation calls one. The single injection authority (match $+$ gate) is the sole path by
 which any candidate reaches the model, whether lexical or, when enabled, semantic.}
@@ -338,7 +337,7 @@ Semantic fallback & In-process HNSW over 384-d embeddings; fires on lexical miss
 Delegate & Inject scaffold into the last user message; call \texttt{DISTILL\_BACKEND\_URL} & yes \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 The lexical matcher and the confidence gate are the \emph{sole} injection authority: every
 candidate flows through one policy that scales the scaffold budget to the retrieval score and
@@ -549,7 +548,7 @@ free-association from parametric memory. Whether a model does more than
 restate (recovering gold the lexical check missed, or conversely \emph{dropping} surfaced
 facts) is the axis \S\ref{sec:tenmodel} turns on.
 
-\begin{figure}[t]\centering
+\begin{figure*}[t]\centering
 \begin{tikzpicture}
 \begin{axis}[ybar,width=12cm,height=5.4cm,bar width=22pt,ymin=0,ymax=1.05,
   ylabel={Mean recall}, symbolic x coords={raw,scaffold,copy ceiling},
@@ -563,7 +562,7 @@ facts) is the axis \S\ref{sec:tenmodel} turns on.
 (0.964), the recall a no-op extractor of the injected context would already achieve. The $+0.57$
 raw$\to$scaffold uplift is almost entirely answer exposure, not reasoning over structure.}
 \label{fig:anchor}
-\end{figure}
+\end{figure*}
 
 \subsection{Ten models: gain over copy}\label{sec:tenmodel}
 Table~\ref{tab:sweep} runs the identical paired design across ten models from five providers under one
@@ -610,7 +609,7 @@ utilises exposed context marginally better than deepseek-chat, $0.934$ versus $0
 headline recall, $0.916$ versus $0.924$). The divergence is that single transposition, so ``uses the
 context best'' and ``scores highest'' nearly, but not exactly, coincide.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Ten models, one deterministic configuration, $n=510$ (seed 42), sorted by gain over copy
 (scaffold recall $-$ copy ceiling). The copy ceiling (0.964) is a property of the questions and the
 injected context and is identical across models. The interval shown is the domain-clustered block
@@ -632,9 +631,9 @@ GPT-4.1-mini          & 0.162 & 0.905 & $+0.743$ $[+0.697,+0.787]$ & 0.964 & \ga
 Gemini 2.5 Flash-Lite & 0.227 & 0.897 & $+0.670$ $[+0.623,+0.716]$ & 0.964 & \gainneg{-0.067} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Exposure/recovery decomposition over the 510-question sweep ($1{,}136$ gold items per model;
 $11{,}360$ pooled), sorted by context utilisation. Utilisation is $n_{11}/(n_{11}+n_{10})$, the
 fraction of \emph{exposed} gold the answer recovers; $n_{10}$ is exposed gold the answer omitted;
@@ -661,9 +660,9 @@ Gemini 2.5 Flash-Lite & 0.900 & 106 & 0 \\
 \textbf{Pooled}       & \textbf{0.931} & \textbf{735} & \textbf{3} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure}[t]\centering
+\begin{figure*}[t]\centering
 \begin{tikzpicture}
 \begin{axis}[xbar,width=13cm,height=6.6cm,bar width=9pt,xmin=-0.098,xmax=0.052,
   xlabel={Gain over copy (scaffold recall $-$ copy ceiling)}, enlarge y limits=0.09,
@@ -701,7 +700,7 @@ interval. No model's interval crosses zero, and none exceeds the copy ceiling on
 the spread ($-0.067$ to $-0.022$) is the axis that separates them where the near-identical raw uplift
 does not. Models nearest zero (top) restate the vetted facts most faithfully.}
 \label{fig:gain}
-\end{figure}
+\end{figure*}
 
 \subsection{The production-node paired study}\label{sec:live}
 The ten-model sweep varies the model with a fixed offline scaffold; the deployment question is whether
@@ -736,7 +735,7 @@ claim: arcane medians $89.8$\,s (loom) versus $93.4$\,s (raw), general $66.0$ ve
 thin set alone runs slower under loom ($172.4$ versus $145.2$\,s), consistent with its full engagement
 and longer scaffolds, and we report it rather than average it away.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Study~2, the production-node paired study: Qwen3.8-27B, model held constant, loom versus raw
 serving path, judged $0$--$5$ by a cross-family GPT judge. Paired mean difference with seeded
 10{,}000-resample bootstrap 95\% CI, two-sided Wilcoxon $p$ (Holm-adjusted across the three sets), the
@@ -756,7 +755,7 @@ general          & 60  & \gainpos{0.05} & $[\phantom{+}0.00,+0.13]$ & 0.180 (0.2
 \end{tabular}
 \\[2pt]{\footnotesize $^{\dagger}$ The general-set $r$ rests on 2 non-tied pairs (58 ties); read it as
 directional only, not as a magnitude.}
-\end{table}
+\end{table*}
 
 \subsection{Negative controls: attributing the gain}\label{sec:controls}
 The live lift and the ten-model delivery both invite one objection: that the gain is lexical overlap
@@ -810,7 +809,7 @@ the effect is a \textbf{curation-depth gradient}: per set, true\,$-$\,raw is $+0
 corpus is rich the served block transfers real knowledge; where it is sparse there is little to
 transfer. This is the same gradient the live study shows, recovered independently through the controls.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Negative-control contrasts, pooled arcane\,$+$\,thin, judged $0$--$5$, paired mean difference
 with seeded bootstrap 95\% CI and two-sided Wilcoxon $p$. Complete-case over surviving pairs; the
 control arms were not retried at the larger budget, so $n$ varies by arm (\S\ref{sec:results}). Read
@@ -834,7 +833,7 @@ true $-$ masked           & 27 & \gainpos{0.15} & $[-0.19,+0.44]$ & 0.398 \\
 \multicolumn{5}{@{}l@{}}{\emph{Per set (true $-$ raw):} arcane $+0.95$ $[+0.37,+1.63]$, $p=0.018$; thin $+0.08$ $[-0.46,+0.62]$, ns.}\\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Out-of-domain: the gate holds}\label{sec:ood}
 Two instruments agree that grounding does not cost anything on the general questions a model already
@@ -851,7 +850,7 @@ non-regression is established by CI-inclusion rather than inferred from a non-si
 On both instruments we report ``no jaggedness detected'' rather than ``zero effect'': the intervals are wide and
 bound the regression near zero, they do not prove its absence.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Out-of-domain non-regression (five-model judged arm): paired harness$-$bare quality delta (judge
 $0$--$5$ vs frontier gold), five models, seeded paired bootstrap 95\% CI. Every interval includes
 zero. The worst case is off-domain questions where the confidence gate mis-fired and injected anyway;
@@ -869,7 +868,7 @@ Off-domain, gate mis-fired (worst) & $-0.23$ & $[-0.63,\ 0.05]$ & 40 \\
 Off-domain, gate skipped (correct) & $+0.00$ & n/a              & 60 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \section{Analysis: Exposure, not Reasoning}\label{sec:analysis}
 The results across both studies say one thing in several registers: the uplift a graph-grounding layer
@@ -949,7 +948,7 @@ across four axes; Table~\ref{tab:bar} states each, the instrument that measures 
 honest status against it. We shrink rather than inflate the scorecard: two axes are measured here, two
 are specified and not yet closed.
 
-\begin{table}[t]\centering\small
+\begin{table*}[t]\centering\small
 \caption{The multivariate bar and this work's status. A deployable private-knowledge system must clear
 all four \emph{together}; the axes are measured on different instruments, so no single number
 establishes the conjunction.}
@@ -965,7 +964,7 @@ Axis & Instrument \& evidence & Status \\
 4. Attribution precision & Per-answer generation $+$ confidence already emitted; precision metric to close ``faithful'' $\to$ ``attributable'' & Specified; not measured \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 Axes~1 and~2 are the conjunction this paper establishes: excellent, attributable delivery where the
 corpus is authoritative, \emph{and} no detected regression where it is not, measured on two different
