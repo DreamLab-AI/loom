@@ -19,6 +19,10 @@
 
 ---
 
+> **Your LLM doesn't know your data — Loom makes any LLM answer from it, verifiably.** Point any OpenAI-compatible client at one URL and every answer is grounded in your curated, reasoner-checked private corpus: recall on in-domain questions rises from as low as 0.15 to ~0.94, faster than the bare model, with every claim traceable to a corpus generation. The model is just a URL behind the door — swap it for the next one and nothing else changes, because the knowledge lives in the corpus you govern, not the weights you rent.
+
+---
+
 ## What is Loom?
 
 Loom is the **grounding door**: a single-binary Rust node that serves a reasoned ontology into an LLM's context at query time, behind a stable, model-swappable façade. Three verbs describe what it exists to give an operator — **ground** an LLM's answers in checked formal semantics rather than parametric guesses, **swap** the model behind the door without any consumer change, and **measure** the value of that grounding against a reproducible benchmark with bootstrap confidence intervals.
