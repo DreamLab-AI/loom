@@ -48,6 +48,64 @@ Loom is one component of **[VisionFlow](https://github.com/DreamLab-AI/VisionFlo
 | [dreamlab-ai-website](https://github.com/DreamLab-AI/dreamlab-ai-website) | DreamLab AI company website — the commercial face, a thin consumer of the forum kit |
 | [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Logseq→OWL pipeline, 8,100+ pages, ODbL-1.0 |
 
+Each sibling in its own words:
+
+<details>
+<summary><b>VisionFlow</b> — <em>Ecosystem canon</em></summary>
+<br/>
+
+> **Six honest systems can still assemble one collective lie — VisionFlow is the canon that stops that.** It holds the ADRs, PRDs, compatibility matrix and honest status ledger for a seven-repo human–AI mesh built on one wager: AI collapses the cost of routing information, so the human is promoted from router to judgment broker. This repo ships words, not runtime — and it is graded on their accuracy.
+
+</details>
+
+<details>
+<summary><b>VisionClaw</b> — <em>Flagship engine</em></summary>
+<br/>
+
+> **Agent swarms are invisible; VisionClaw makes them something you can stand inside and watch.** It reasons over a curated corpus with an OWL 2 EL engine (Whelk, 5,975 classes), settles the result as a 3D graph under GPU physics, and renders agents acting inside it — desktop and Quest 3 alike, every agent action drawn as a beam to the concept it touched. It observes and never signs: the engine you can watch is deliberately not the surface that can commit.
+
+</details>
+
+<details>
+<summary><b>agentbox</b> — <em>Sovereign agent runtime</em></summary>
+<br/>
+
+> **An agent runtime you can't reproduce is an audit you can't run — Agentbox is a byte-for-byte reproducible Nix container driven by one TOML manifest.** Every agent is minted its own `did:nostr` key at spawn, every durable write passes a privacy filter into a cryptographic audit trail, and what agents may touch is bounded by explicit fail-closed gates. Reproduce the runtime, audit every action, control every capability.
+
+</details>
+
+<details>
+<summary><b>solid-pod-rs</b> — <em>Rust Solid pod server</em></summary>
+<br/>
+
+> **Your data's exit right should sit in the floor, not be granted at the door — solid-pod-rs gives every human and agent a self-owned RDF pod under their own key.** A Rust-native Solid Protocol server with WAC access control and `did:nostr` identity; every write is a git-mark commit and high-value writes anchor to Bitcoin. Standards-based sovereignty: leave at any time, and take everything with you.
+
+</details>
+
+<details>
+<summary><b>nostr-rust-forum</b> — <em>Nostr-native forum + relay</em></summary>
+<br/>
+
+> **Machine coordination is cheap; accountable decisions are not — this forum is the one place in the mesh where a decision gets signed.** Humans and agents are the same kind of participant: each holds a `did:nostr` keypair and publishes Schnorr-signed events to an immutable log, so every governance outcome carries a human signature by construction. The kit ships vanilla — one TOML file stands up a community, no forking.
+
+</details>
+
+<details>
+<summary><b>dreamlab-ai-website</b> — <em>DreamLab AI company website</em></summary>
+<br/>
+
+> **The commercial face of the mesh, running on the mesh's own rails.** A React marketing site and a Rust/Leptos WASM community forum share one Cloudflare-edge origin, end-to-end encrypted where it matters. It is deliberately a thin consumer of the nostr-rust-forum kit — branding and zone config live here, the protocol lives upstream — living proof the kit stands up a real community without a fork.
+
+</details>
+
+<details>
+<summary><b>knowledgeGraph</b> — <em>The published corpus</em></summary>
+<br/>
+
+> **8,100+ ordinary Logseq markdown pages that compile losslessly into a formal OWL 2 ontology — pure TBox, every page a class, zero individuals by design.** Corpus, pipeline, viewer and method ship as one open release (ODbL-1.0 data, AGPL-3.0 pipeline) published at narrativegoldmine.com; siblings reason over it (VisionClaw) and serve it as measured LLM grounding (Loom, ~0.94 grounded recall). Rigorous curation is amortised once and reused per query — this repo is the once.
+
+</details>
+
 ```
 knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned closure + indexes)
  (corpus + pipeline + method)         │
