@@ -233,6 +233,25 @@ Both profiles serve **byte-identical generations** for the same `commitSha`. The
 
 Since 2026-08-14 the reference deployment ships the model engine **inside this stack**: the `loom-model` container serves **Qwen3.8-27B** (Heretic abliterated Q8_0, ~19.5 tok/s) via llama.cpp on `:8085` (262 K native context, embedded-MTP speculative decoding n=3). Model reference: [`docs/QWEN3.8-CONNECTION.md`](docs/QWEN3.8-CONNECTION.md). Connect a LAN machine: [`docs/REMOTE-CLIENT-SETUP.md`](docs/REMOTE-CLIENT-SETUP.md).
 
+> **⚠️ Canonical artefact dir is `data/` at the repo root — the "empty floor" trap.**
+> Both compose profiles bind-mount `../data` (i.e. `<repo>/data/`) to `/app/data:ro`. The
+> generation artefacts (`scaffold-index.json`, `prose-index.json`, `ontology.ttl`,
+> `ontology-inferred.ttl`, `ontology-corpus.rvdb`) **must live in `<repo>/data/`.**
+> `app/data/` is a **legacy Python-layout path** and is **not mounted** — anything there is invisible
+> to the container.
+>
+> **Mirror discrepancy (root cause, not yet fixed in code):** `app/mirror.sh` resolves its target as
+> `dirname(mirror.sh)/data` → it writes to **`app/data/`**, *not* the mounted `<repo>/data/`. So a
+> fresh mirror populates the legacy dir while the container reads the (empty) canonical dir. Until
+> `mirror.sh` is repointed at `<repo>/data/`, run it and then copy/sync the four artefacts into
+> `<repo>/data/` before `up`. **Do not edit `mirror.sh` as part of this note** — the fix is tracked
+> separately; this is the operational workaround.
+>
+> **Failure fingerprint:** logs say `lexical index NOT loaded; serving on an empty floor` **while
+> `/health` still returns 200**. That combination is an **artefact-path problem, not a dead
+> container** — the process is up and answering; it just found no corpus in `data/`. Fix the path,
+> restart; do not rebuild or replace the container.
+
 ---
 
 ## Architecture

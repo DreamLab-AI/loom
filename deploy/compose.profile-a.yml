@@ -53,6 +53,10 @@ services:
     # ontology-corpus.rvdb(+.generation.json). `../data` is the repo's mirror dir.
     volumes:
       - ../data:/app/data:ro
+    # CANONICAL artefact dir is `<repo>/data/` (this `../data`); `app/data/` is LEGACY & UNMOUNTED.
+    # NB: app/mirror.sh writes to app/data/ — sync artefacts into ../data before `up`, or the log
+    # says "lexical index NOT loaded ... empty floor" while /health still 200s (a path bug, not a
+    # dead container). See README Deploy → "empty floor trap".
     # tmpfs for the writable rvdb copy — keeps the mutating redb off any bind mount
     # and out of the writable image layer (fast, ephemeral, right-sized).
     # uid/gid MUST match the image's non-root user (65532) or the entrypoint's
