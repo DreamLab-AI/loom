@@ -534,11 +534,10 @@ On 2026-08-22 we ran the production extraction prompt, unmodified, over ten epis
 technology news podcast (November 2025--August 2026) across ten serving arms: the node's local
 Qwen3.8-27B both \emph{through the Loom} (scaffold injected at the default 1{,}500-token budget,
 verbatim short-circuit disabled) and \emph{bare}; and eight frontier or near-frontier cloud
-models, all bare, since the Loom grounds only the model behind its own fa\c{c}ade. Sampling was
-held at temperature 0.2 and 12{,}288 max tokens where the serving path allowed;
-the GPT-5.6 and Claude arms ran inside agent harnesses that fix their own sampling, a recorded
-deviation. One DeepSeek call returned an empty body and one Loom call yielded three assertions;
-both are retained in the totals.
+models, all bare, since the Loom grounds only the model behind its own fa\c{c}ade. All arms ran
+as direct chat-completion calls under identical sampling (temperature 0.2, 12{,}288 max tokens);
+the Claude and GPT arms were served through a model router, the rest through their providers'
+own APIs. One Loom call yielded three assertions on one episode; it is retained in the totals.
 
 \begin{table*}[t]\centering\small
 \caption{Assertion extraction across ten serving arms, ten episodes (2026-08-22). \emph{Ground}
@@ -553,17 +552,17 @@ families.}
 \toprule
 Arm & $n$ & Conf. & Ground & Artif. & s/episode \\
 \midrule
-\textbf{Loom + Qwen3.8-27B (local)} & 125 & 0.83 & \textbf{0.55} & 0 & 174 \\
+\textbf{Loom + Qwen3.8-27B (local)} & 125 & 0.83 & \textbf{0.55} & 0 & 173 \\
 Qwen3.8-27B bare (local)            & 170 & 0.81 & 0.17 & 1 & 346 \\
 \midrule
 Gemini 3 Flash (preview)            & 107 & 0.80 & 0.42 & 1 & 13 \\
 GLM-4.7                             & 181 & 0.80 & 0.39 & 7 & 17 \\
-DeepSeek v4 Flash                   & 120 & 0.85 & 0.28 & 3 & 66 \\
-GPT-5.6 (agent harness)             & 167 & 0.85 & 0.25 & 0 & 141 \\
-Claude Haiku 4.5 (agent harness)    & 320 & 0.85 & 0.24 & 10 & --- \\
+DeepSeek v4 Flash                   & 131 & 0.86 & 0.28 & 3 & 66 \\
+Claude Opus 4.8                     & 171 & 0.75 & 0.27 & 3 & 51 \\
+Claude Haiku 4.5                    & 295 & 0.82 & 0.22 & 0 & 242 \\
+GPT-5.6                             & 133 & 0.82 & 0.21 & 0 & 23 \\
 GLM-5.3                             & 169 & 0.82 & 0.21 & 0 & 33 \\
-Claude Opus 4.8 (agent harness)     & 152 & 0.78 & 0.15 & 2 & --- \\
-Claude Sonnet 5 (agent harness)     & 143 & 0.75 & 0.14 & 0 & --- \\
+Claude Sonnet 5                     & 175 & 0.76 & 0.20 & 0 & 50 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -572,7 +571,7 @@ Three observations follow. First, the scaffold's effect on the model it grounds 
 paired: the same weights, same prompt and same GPU move from 0.17 to 0.55 term resolution
 ($3.2\times$) when served through the Loom, while producing \emph{fewer} assertions --- grounding
 narrows the model's vocabulary onto the graph's, which is precisely what the integration step
-needs. The injected block also cut generation time roughly in half (174s vs.\ 346s per episode),
+needs. The injected block also cut generation time roughly in half (173s vs.\ 346s per episode),
 consistent with the scaffold displacing open-ended reasoning. Second, the grounded local 27B's
 resolution rate exceeds every frontier arm run bare (best: 0.42), reproducing in a write-path
 setting the read-path pattern of Study~B, where a grounded local model outscored bare frontier
@@ -581,16 +580,22 @@ assertions, and we do not judge assertion quality here --- but without sight of 
 vocabulary their concept labels miss it, and unresolved assertions do not land. Third, the arms
 differ on an axis the pipeline cares about that resolution does not capture: fidelity to noisy
 input. Transcripts arrive with speech-recognition errors, and several arms copy corrupted entity
-names into claims verbatim (10/320 for Haiku 4.5, 7/181 for GLM-4.7) where both local Qwen arms
-normalise them; corrupted names poison downstream dedup fingerprints as well as page matching.
+names into claims verbatim (7/181 for GLM-4.7; 3 each for DeepSeek and Opus 4.8) where both
+local Qwen arms normalise them; corrupted names poison downstream dedup fingerprints as well as
+page matching. Figure~\ref{fig:casestudy} shows all three observations on one panel.
+
+\input{figures/fig-casestudy}
 
 The prior production default had disabled scaffold injection entirely (a workaround for the
 fa\c{c}ade's verbatim short-circuit, which on transcript-shaped prompts would answer from the
 scaffold without invoking the model); the pipeline now requests injection with the short-circuit
-explicitly declined. The caveats are the section's own: one podcast source, ten episodes, a
-single run per arm, a lexical proxy metric, and heterogeneous serving paths for the
-agent-harness arms. The case study is evidence about where extracted knowledge lands, not a
-model-quality leaderboard.
+explicitly declined. The section's caveats are all one class of shortfall,
+\emph{single-configuration estimation}: one podcast source, ten episodes, one run per arm and
+one lexical scorer are four views of the same limit, a point estimate from a single draw of a
+single setup, carrying no sampling variance and no test of transfer to other corpora or
+scorers. The paired Loom-versus-bare contrast is the part most robust to this, since both arms
+share the draw; the cross-model ordering is the part least robust. The case study is evidence
+about where extracted knowledge lands, not a model-quality leaderboard.
 
 \section{The Multivariate Bar}\label{sec:bar}
 Table~\ref{tab:bar} details the four axes that define the deployable bar from \S\ref{sec:setting}, listing the measurement instrument for each and the current status of this work. We present a scorecard that shrinks rather than inflates: two axes are measured here, while two remain specified but not yet closed. No single number serves as the deployable target; the bar is conjunctive across all four axes.
