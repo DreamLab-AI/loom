@@ -540,7 +540,7 @@ the GPT-5.6 and Claude arms ran inside agent harnesses that fix their own sampli
 deviation. One DeepSeek call returned an empty body and one Loom call yielded three assertions;
 both are retained in the totals.
 
-\begin{table}[h]\centering\small
+\begin{table*}[t]\centering\small
 \caption{Assertion extraction across ten serving arms, ten episodes (2026-08-22). \emph{Ground}
 is the fraction of emitted \texttt{ontology\_terms} that resolve to an existing knowledge-graph
 page (lexical proxy); \emph{Artif.}\ counts claims that reproduce speech-recognition artefacts as
@@ -566,7 +566,7 @@ Claude Opus 4.8 (agent harness)     & 152 & 0.78 & 0.15 & 2 & --- \\
 Claude Sonnet 5 (agent harness)     & 143 & 0.75 & 0.14 & 0 & --- \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Three observations follow. First, the scaffold's effect on the model it grounds is large and
 paired: the same weights, same prompt and same GPU move from 0.17 to 0.55 term resolution
