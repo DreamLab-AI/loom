@@ -224,6 +224,11 @@ A positive delivery result might reflect lexical overlap rather than knowledge t
 \end{description}
 If gain over copy remains near zero under \textbf{shuffled}, \textbf{masked} and \textbf{irrelevant}, the ceiling tracks exposure and delivery is content-bound; a shift indicates leakage through surface form or position. This experiment tests whether the observed lift is content-specific, serving as the direct analogue of a shortcut-robustness check for a faithfulness metric~\cite{gao2023alce}.
 
+\subsection{Relation to prior instruments}\label{sec:ceiling-prior}
+Several recent instruments ask a related question --- did the shown context deliver the answer? --- by different means, and the copy ceiling should be read against them. A reader--context diagnostic scores whether a budget-constrained reader recovers the answer from its retrieved context and reports that this predicts downstream F1 above retrieval recall~\cite{readercontext2026}; \emph{Sufficient Context} labels whether the context alone suffices, using a prompted autorater at roughly $93\%$ agreement~\cite{sufficientcontext2025}; RAGChecker decomposes quality into claim-level retrieval and generation scores through LLM extraction and entailment~\cite{ragchecker2024}; and an information-bottleneck view filters retrieved noise by compressing context against the answer~\cite{zhu2024ibrag}. The idea of an input-side reference is older still: the extractive-oracle tradition in summarisation --- lead and sentence-level oracles~\cite{see2017pointergenerator,narayan2018xsum} and syntactic-compression oracles~\cite{xu2019extractive} --- makes a copy of the input a near-definitional upper bound on any recall- or ROUGE-style metric.
+
+Against this lineage we claim four specifics, not the input-copy idea itself. First, the ceiling is a \emph{continuous, per-item, verbatim-copy recall}, not a binary answer-survival label or a claim-level score. Second, we report a \emph{signed} gain over copy, which re-centres recall on exposure and can be negative --- the diagnostically informative case these instruments do not surface. Third, the ceiling is \emph{judge-free and deterministic}: it needs no autorater and is identical across a model sweep, whereas the sufficient-context and claim-level instruments depend on a prompted grader. Fourth, we pair it with a \emph{negative-control and composition apparatus} --- the verified seed-disjoint placebo (\S\ref{sec:ceiling-controls}) and the two-edge design (\S\ref{sec:composition}) --- that isolates content-specific transfer and locates the synthesis boundary. The reader--context diagnostic is the closest neighbour and also the clearest caution: it finds verbatim survival only \emph{moderately} predictive of F1. We therefore position the copy ceiling as a calibrated instrument for delivery fidelity, not as a classifier of downstream correctness.
+
 
 \section{Method}\label{sec:method}
 \paragraph{Design.} Both studies use within-model pairs: the \emph{same} model answers the \emph{same} question twice, cancelling between-question difficulty variance and yielding a paired per-question estimand. The ten-model sweep varies the \emph{model} with grounding fixed; the new study varies the \emph{serving path} with the model fixed.
@@ -456,6 +461,8 @@ Off-domain, gate skipped (correct) & $+0.00$ & n/a              & 60 \\
 \section{Analysis: Exposure, not Reasoning}\label{sec:analysis}
 Both studies indicate that graph-grounding uplift over a private corpus is almost entirely \emph{exposure}: faithful delivery of curated facts shown to the model, rather than reasoning over injected structure. The instrument establishes this distinction and yields two engineering implications.
 
+\paragraph{Negative gain is what a delivery channel predicts.} Read information-theoretically, the scaffold-to-answer step is a channel: the model may relabel or drop content from $S_i$ but cannot deliver exposed gold it was never shown. The deterministic data-processing inequality~\cite{coverthomas2006} then bounds recoverable answer content by what the context already carries, so a faithful delivery pipe should sit \emph{at or below} the copy ceiling, and gain over copy measures the realised slack --- here uniformly small and negative. This reframes the objection that ``negative gain is a tautology of recall oracles'': the sign is predicted by the channel, while its \emph{magnitude} is a measured quantity that separates models where raw uplift cannot. We keep the analogy honest about its limits. A recent risk bound treats in-context learning over noisy retrieval as the mechanism and derives a bias--variance ceiling~\cite{guo2025noisyicl}; we cite it as a motivated analogue, not a theorem for our setting, since it is proven for in-context linear regression rather than open generation. Nor does the estimated-mutual-information ``compression'' debate bear on the claim: the critique that questioned that phenomenon contests binned-MI estimation artefacts~\cite{saxe2018ib}, not the deterministic inequality invoked here, which holds exactly.
+
 \paragraph{The headline is delivery fidelity, and the instrument is what reveals it.} In the ten-model sweep, raw uplift is large and consistent ($+0.57$ to $+0.78$), whereas gain over copy is small and uniformly negative ($-0.067$ to $-0.022$). Every model appears transformed against its bare-model baseline, but none exceeds a verbatim copy of its context; they differ only in how much exposed gold they drop. Thus uplift reveals little about model performance, while gain over copy discriminates between models. This inversion supports reporting the ceiling as standard practice.
 
 \paragraph{The live controls point to content, not form.} The served block raises judged quality (true$-$raw $+0.59$), while a same-shaped, on-corpus but wrong block has a near-zero point estimate (irrelevant$-$raw $+0.04$). The content-specific residual is $+0.35$; masking names ($+0.42$) or shuffling sentences ($+0.25$) costs comparatively little. The graded facts therefore appear to carry most of the effect, although the arms do not precisely isolate names and order. The arms use complete cases from unequal survivor sets, their contrasts consequently do not sum arithmetically, and several are non-significant with wide intervals. Nonetheless, a content-specific lift alongside a verified-irrelevant placebo near zero fits faithful exposure better than generic priming by ontology-shaped text. Crucially, this pattern emerged only after verifying that the irrelevant donor was seed-IRI-disjoint: an assumed-inert placebo had leaked domain vocabulary and produced a spurious baseline.
@@ -561,6 +568,8 @@ verification continue. Redesign addresses \emph{placement} rather than phrasing.
 instrument earned its keep in the direction the promotion-gate discipline
 of \S\ref{sec:analysis} predicts: it caught a value-destroying step before it ran at scale.
 
+\paragraph{What the judged gate can and cannot rule out.} Two known judge biases bear on this result, in opposite directions. Contextual judging is itself error-prone --- ContextualJudgeBench shows even strong judges struggle on context-grounded verdicts~\cite{contextualjudgebench2025} --- so the degradation is measured with an imperfect instrument. But the most relevant bias would, if anything, mask the finding: judges score text labelled as ``refined'' more favourably~\cite{calmjudgebias2024}, whereas our before/after pairs are blind with seeded order randomisation, so a refinement-aware bias cannot manufacture a \emph{negative} delta. The phenomenon we observe has a longer pedigree in psychology: the dilution effect, whereby non-diagnostic detail weakens a judgement built on diagnostic evidence~\cite{nisbett1981dilution}, is the mechanism by which narrow extracted facts erode a mature curated page. We do not claim to have excluded every confound: inline enrichment can alter formatting and length, and judges carry style and verbosity preferences that our design controls only partially. A replacement study at constant token budget, separating content from format, is the control that would close this gap, and it remains future work.
+
 \subsection{From instrument to pipeline: the promotion lifecycle}\label{sec:lifecycle}
 The redesign that replaced inline insertion turns the paper's instruments into the write path's
 architecture. Extracted, verified assertions now land on per-episode \emph{ledger pages} inside
@@ -590,7 +599,12 @@ only landing zone. No real ledger cluster yet spans two episodes, so the first g
 dossier awaits production accumulation. Figure~\ref{fig:lifecycle} draws the
 path with each stage's status and its open-source hook. The lifecycle is the paper's thesis
 made operational: the corpus is the asset, every write to it is measured before it is trusted,
-and the same ceiling that audits the serving layer gates admission to it.
+and the same ceiling that audits the serving layer gates admission to it. Architecturally the
+ledger-and-served split is the Event Sourcing / CQRS materialised-view pattern~\cite{fowler2005eventsourcing}:
+the ledger is the append-only source of truth and the served page a disposable projection rebuilt
+from it, which is also why a diluting projection can be discarded without data loss. Promotion is
+made idempotent by fingerprinting each assertion and de-duplicating on it, so the at-least-once
+delivery inherent to such pipelines cannot double-promote.
 
 \begin{figure*}[t]\centering
 \includegraphics[width=\textwidth]{figures/fig-lifecycle.pdf}
@@ -643,8 +657,38 @@ intermediate class's served block already names the target. With per-IRI serving
 ``multi-hop'' questions are single-hop exposure in disguise, extending the copy-ceiling lesson
 one edge outward.
 
+\paragraph{Lineage and scope.} These controls inherit a well-established caution about multi-hop evaluation. The compositionality gap names the tendency of models to answer sub-questions yet fail their composition~\cite{press2023compgap}; MuSiQue builds chains resistant to single-hop shortcuts and adds an unanswerable-decomposition condition~\cite{musique2022}; the DiRe probe measures disconnected reasoning directly~\cite{dire2020}; and distractibility work shows irrelevant context degrades reasoning even when the answer is present~\cite{shi2023distracted,faithfate2023}. Our single-premise and distractor arms operationalise these cautions per served block. Two scope notes follow. The anti-composer result is a \emph{deployment-state} observation, not a fixed property: controlled-benchmark work shows such distraction is substantially trainable away~\cite{gsmdc2025}, so a model that anti-composes today need not after targeted training. And the split by model is consistent with a utilisation threshold --- below roughly 7--10B parameters models struggle to use what they retrieve~\cite{retrievalutil2026} --- which frames the 27B local model's place in the composing class rather than explaining it away.
+
 \input{figures/fig-composition}
 
+
+\section{Vocabulary Mismatch: the Retrieval Boundary}\label{sec:paraphrase}
+The serving node retrieves lexically, and a standing limitation was that its red-gated semantic
+fallback had never been tested on the workload it exists for. We tested it with a paraphrase
+stress-set: all 510 sweep questions rewritten by an LLM to preserve meaning while excluding the
+seed class's title tokens, leak-checked mechanically (0 of 510 contain a title token) and graded
+for resolvability by two model families (69\% resolvable by at least one; results are reported
+on the full set and that subgroup). The instrument is the copy ceiling itself, computed per arm
+with no generation: does the retrieved block expose the gold?
+
+Three results. First, vocabulary mismatch collapses lexical exposure: mean ceiling falls from
+0.96 on the original questions to 0.34 on the paraphrases, with 62\% of questions below 0.5.
+Second, the failure is \emph{silent}: because partial word overlaps almost always engage some
+seed, the designed absence-keyed semantic fallback would fire on only 3 of 510 questions ---
+a gate keyed to finding nothing cannot detect finding the wrong thing, and the fallback as
+designed is therefore inert against the failure mode that actually occurs. (The production
+fa\c{c}ade ships this path unconfigured; the arms here are a harness-side reconstruction using
+its embedding model and corpus.) Third, the signal the gate wastes is real: a semantic-only arm
+(top-5 cosine seeds over all 8{,}146 class embeddings) recovers $+0.42$ ceiling
+$[+0.38,+0.47]$ precisely on the failing 62\%, while a naive union arm recovers only a third of
+that --- the fixed token budget clamps seeds lexical-first, evicting the semantic seeds that
+carried the rescue. The engineering prescription is specific: a useful hybrid gate must be keyed
+to retrieval \emph{confidence}, not presence, and must \emph{replace} weak lexical seeds rather
+than append to them. Within the paper's framing, the ceiling again does the work: it locates
+the boundary of the serving regime (rephrased queries fall out of it), measures what a semantic
+path could recover, and prices the design that would recover it.
+
+\paragraph{Caveats on the prescription.} Three qualifications keep the prescription honest. First, ``replace weak lexical seeds'' must be \emph{query-type-aware}. On entity and rare-token queries dense retrieval is the fragile arm and lexical matching the one that holds up~\cite{entityquestions2022} --- exactly the identifier-, code- and entity-shaped queries a semantic-only replacement would regress. The safe form gates on query type, or on dense-versus-lexical rank disagreement, and fuses the two rankings with reciprocal-rank fusion~\cite{rrf2009} rather than discarding lexical seeds wholesale. Second, the gate cannot be keyed on intrinsic query-performance prediction: score-distribution predictors are weakest precisely on semantic queries and cannot see a confident-but-wrong lexical seed~\cite{qppneural2023}, which is why disagreement between the two retrievers, not a single-ranking confidence score, is the informative key. Third, the collapse reported here is a retrieval-\emph{exposure} measurement --- whether the block reaches the model at all --- not the model's answer robustness: the paraphrase-robustness literature reports only single-digit accuracy drops~\cite{benchrobust2025} because it measures a different construct downstream of successful retrieval. The $0.96$-to-$0.34$ ceiling fall is not comparable to those figures and should not be read as one.
 
 \section{The Multivariate Bar}\label{sec:bar}
 Table~\ref{tab:bar} specifies the four-axis deployable bar from \S\ref{sec:setting}, its instruments and current status. Two axes are measured; two are specified but unresolved. The bar is conjunctive, not reducible to one number.
@@ -685,7 +729,7 @@ semantic scoring raises every model's recall but raises the copy ceiling as much
 over copy stays negative for all ten models at all thresholds with every CI excluding zero, and
 unexposed recovery is unchanged at 3 of 11{,}360. The headline is not an artefact of strict
 matching.
-\item \textbf{Semantic fallback disabled throughout.} HNSW semantic retrieval was disabled because its document-embedding recall (0.816) falls below the 0.87 design floor, a red gate retained and reported. The loom arm therefore uses lexical retrieval only. A query-shaped embedding that clears the floor could alter engagement and thin-set results.
+\item \textbf{Semantic fallback disabled throughout --- now characterised.} HNSW semantic retrieval was disabled because its document-embedding recall (0.816) falls below the 0.87 design floor, a red gate retained and reported; the loom arm uses lexical retrieval only. \S\ref{sec:paraphrase} now measures what the gate is worth: on vocabulary-mismatched queries the semantic path carries real recoverable exposure, but the shipped absence-keyed trigger cannot reach it.
 \item \textbf{Single production model.} Study~2 fixes the model at Qwen3.8-27B, isolating the serving-path effect but leaving its magnitude under other backends unmeasured. The ten-model sweep varies models only on the offline scaffold, not the live node.
 \item \textbf{Three excluded questions.} Three questions empty at 4096 in both arms are excluded (complete-case $n=114$). Although symmetric, this departs from intention-to-treat.
 \item \textbf{Two axes of the bar unmeasured.} The specified web-search baseline (axis~3) and attribution precision (axis~4) remain unmeasured, so the deployable claim is not fully closed.
