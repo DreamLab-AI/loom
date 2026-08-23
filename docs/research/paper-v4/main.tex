@@ -557,11 +557,29 @@ judges ($-0.40$ dev, $-0.90$ held-out). Persistence across mechanic, rubric and 
 a structural problem: narrow, newly extracted facts dilute a mature curated page.
 
 Under a pre-declared decision rule, the integration phase was disabled while extraction and
-verification continue. Redesign will address \emph{placement}, towards thin pages, dedicated
-currency sections or batched section regeneration, rather than further prompt iteration. The
+verification continue. Redesign addresses \emph{placement} rather than phrasing. The
 instrument earned its keep in the direction the promotion-gate discipline
 of \S\ref{sec:analysis} predicts: it caught a value-destroying step before it ran at scale.
 
+\subsection{From instrument to pipeline: the promotion lifecycle}\label{sec:lifecycle}
+The redesign that replaced inline insertion turns the paper's instruments into the write path's
+architecture. Extracted, verified assertions now land on per-episode \emph{ledger pages} inside
+the graph, wikilinked to the topics they concern: readers see them immediately through linked
+references, curated prose is never edited, and --- because ledger pages carry no ontology
+markup --- nothing enters the served corpus by default. Landing is thereby separated from
+promotion. A topic whose ledger accumulates evidence, or a thin page whose additions have been
+judged to improve it, becomes a \emph{candidate}; candidates pass an automated pre-filter
+consisting of the two instruments this paper developed --- the blind before/after quality
+judgment of \S\ref{sec:pagejudge} and the copy-ceiling answer-completeness gate of
+\S\ref{sec:analysis} --- and survivors reach the graph's existing governed proposal queue as
+scored dossiers with provenance down to assertion fingerprints. Approval triggers batched
+section regeneration, which is the point at which content acquires ontology markup and becomes
+servable. Status, in the register this paper insists on: the ledger, its e2e verification and
+the judged gate are \emph{built and running}; the two-instrument pre-filter and dossier assembly
+are \emph{designed, with both instruments individually validated}; thin-page direct enrichment
+is \emph{pending its own judged evidence}. The lifecycle is the paper's thesis made operational:
+the corpus is the asset, every write to it is measured before it is trusted, and the same
+ceiling that audits the serving layer gates admission to it.
 
 \section{Two-Edge Composition: Locating the Synthesis Boundary}\label{sec:composition}
 The exposure/recovery decomposition found beyond-exposure recovery in only 3 of 11{,}360
