@@ -1,0 +1,52 @@
+\begin{figure*}[t]\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=13.5cm, height=9.5cm,
+  xlabel={$b$-only recall (target visible, route withheld) --- what guessing achieves},
+  ylabel={both-premises recall --- guessing $+$ composition},
+  xmin=0, xmax=1, ymin=0, ymax=1,
+  clip=false,
+]
+\draw[gray!70,dashed,line width=0.8pt] (axis cs:0,0) -- (axis cs:1,1);
+\node[gray!90!black,font=\scriptsize,rotate=39,anchor=south] at (axis cs:0.17,0.17) {no composition: both $=$ $b$-only};
+\node[softgreen!80!black,font=\scriptsize\itshape,anchor=west] at (axis cs:0.06,0.93) {composes over structure};
+\node[burnt,font=\scriptsize\itshape,anchor=west] at (axis cs:0.70,0.055) {route information hurts};
+
+% composers (bootstrap CI > 0): green circles
+\addplot[only marks,mark=*,mark size=3pt,color=softgreen] coordinates {
+  (0.65,0.98) (0.45,0.71) (0.71,0.96) (0.71,0.91)};
+% local Qwen3.8-27B: teal circle (composer)
+\addplot[only marks,mark=*,mark size=3.4pt,color=teal0] coordinates {(0.67,0.96)};
+% null (CI spans 0): grey squares
+\addplot[only marks,mark=square*,mark size=2.6pt,color=gray!70] coordinates {
+  (0.89,0.88) (0.65,0.70) (0.31,0.34)};
+% anti-composers (CI < 0): burnt triangles
+\addplot[only marks,mark=triangle*,mark size=3.4pt,color=burnt] coordinates {
+  (0.61,0.14) (0.56,0.27) (0.37,0.19) (0.46,0.34)};
+
+\node[anchor=east,font=\scriptsize,color=ink] at (axis cs:0.635,0.99) {Gemini 3 Flash};
+\node[anchor=east,font=\scriptsize,color=ink] at (axis cs:0.435,0.71) {DeepSeek v4};
+\node[anchor=south west,font=\scriptsize,color=ink] at (axis cs:0.715,0.965) {Sonnet 5};
+\node[anchor=west,font=\scriptsize,color=ink] at (axis cs:0.725,0.905) {Opus 4.8};
+\draw[teal0!70,line width=0.5pt] (axis cs:0.665,0.955) -- (axis cs:0.56,0.88);
+\node[anchor=east,font=\scriptsize,color=teal0] at (axis cs:0.555,0.875) {Qwen3.8-27B (local)};
+\node[anchor=north,font=\scriptsize,color=ink] at (axis cs:0.89,0.87) {GPT-5.6};
+\node[anchor=south,font=\scriptsize,color=ink] at (axis cs:0.65,0.705) {GLM-5.3};
+\node[anchor=south,font=\scriptsize,color=ink] at (axis cs:0.31,0.345) {Haiku 4.5};
+\node[anchor=north,font=\scriptsize,color=ink] at (axis cs:0.61,0.13) {GPT-4.1-mini};
+\node[anchor=south,font=\scriptsize,color=ink] at (axis cs:0.56,0.278) {Mistral 24B};
+\node[anchor=east,font=\scriptsize,color=ink] at (axis cs:0.355,0.19) {GLM-4.7};
+\node[anchor=west,font=\scriptsize,color=ink] at (axis cs:0.472,0.34) {Llama 70B};
+\end{axis}
+\end{tikzpicture}
+\caption{Two-edge composition on one panel. Each mark is a model given the same 150 questions;
+$x$ is recall when only the answer-bearing premise is served ($b$-only: the target is verbatim in
+context but the route from the question's subject is withheld), $y$ is recall with both premises.
+The dashed diagonal is the no-composition reference; vertical distance above it is the
+composition-specific component $\Delta$. Green circles: $\Delta$'s seeded 10,000-resample
+bootstrap 95\% CI is positive; grey squares: CI spans zero; burnt triangles: CI is negative ---
+for these models the compositional context actively hurts. The three control arms are omitted
+from the panel because they are uniformly at floor: $a$-only, matched-irrelevant and raw recall
+are zero (or $\le 2/150$) for every model.}
+\label{fig:composition}
+\end{figure*}

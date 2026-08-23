@@ -43,6 +43,13 @@ Grounded Generation over Private Corpora}
 
 \begin{abstract}
 \noindent
+In plain terms: when an AI assistant answers questions from an organisation's own curated
+knowledge base, almost all of the accuracy comes from showing it the right vetted facts, not
+from the model thinking its way to answers --- so a small private model with a well-tended
+knowledge base matches the biggest commercial models, and the money belongs in the knowledge base and
+its upkeep. This paper builds the measurement instrument that proves that claim honestly,
+rather than assuming it.
+
 When a language model answers from a private, curated corpus via graph-based retrieval, the reported ``grounding uplift'' obscures a measurement issue: if gold answers come from the same injected corpus, uplift mixes faithful \emph{delivery} of exposed facts with \emph{reasoning} over injected structure. We propose the \emph{copy ceiling}, defined as the recall a verbatim copy of the shown context would achieve, and the signed \emph{gain over copy}. This control is deterministic, judge-free and per-item, listed as a standing column beside generation recall, and paired with a placebo verified irrelevant by seed-disjointness; together they separate exposure coverage from beyond-exposure recovery prior to architecture selection. On a production ontology-serving node, unaided models score $\approx0.26$ in-domain and grounded $\approx0.92$, yet across ten models from five providers the gain over copy is uniformly negative ($-0.067$ to $-0.022$). A direct exposure/recovery decomposition of 11{,}360 gold items explains why: three unexposed gold items are recovered in total, context utilisation spans 0.900--0.955, and models differ only in how much exposed gold they drop. The uplift is delivery, measured rather than inferred. A paired study on the same node, holding the model constant and varying only the serving path, lifts judged quality by $+0.27$ pooled ($p=0.004$) and $+0.79$ where curation is deepest; a four-arm control study is consistent with content-specific transfer (the served block lifts quality, $+0.59$; the verified-irrelevant placebo's point estimate is near zero, $+0.04$, though differential attrition leaves the contrast imprecise). Out of domain the gated node does not regress: the general-set delta ($+0.05$, $[0.00,+0.13]$) lies inside a pre-specified $\pm0.25$ equivalence margin. Grounding evaluations whose gold derives from the injected corpus should report a copy ceiling as standard.
 \end{abstract}
 
@@ -530,7 +537,7 @@ An assertion whose terms resolve to no page is either discarded or queued for pa
 knowledge lands. We report it as a lexical proxy (normalised string match of each emitted term
 against the page inventory, 8{,}142 classes); it is not a human judgment of assertion quality.
 
-On 2026-08-22 we ran the production extraction prompt, unmodified, over ten episodes of a
+We ran the production extraction prompt, unmodified, over ten episodes of a
 technology news podcast (November 2025--August 2026) across ten serving arms: the node's local
 Qwen3.8-27B both \emph{through the Loom} (scaffold injected at the default 1{,}500-token budget,
 verbatim short-circuit disabled) and \emph{bare}; and eight frontier or near-frontier cloud
@@ -540,7 +547,7 @@ the Claude and GPT arms were served through a model router, the rest through the
 own APIs. One Loom call yielded three assertions on one episode; it is retained in the totals.
 
 \begin{table*}[t]\centering\small
-\caption{Assertion extraction across ten serving arms, ten episodes (2026-08-22). \emph{Ground}
+\caption{Assertion extraction across ten serving arms, ten episodes. \emph{Ground}
 is the fraction of emitted \texttt{ontology\_terms} that resolve to an existing knowledge-graph
 page (lexical proxy); \emph{Artif.}\ counts claims that reproduce speech-recognition artefacts as
 entity names (e.g.\ ``Opus 48'', ``GPT55''). $n$ is total assertions; Conf.\ is the model's own
@@ -593,9 +600,79 @@ explicitly declined. The section's caveats are all one class of shortfall,
 \emph{single-configuration estimation}: one podcast source, ten episodes, one run per arm and
 one lexical scorer are four views of the same limit, a point estimate from a single draw of a
 single setup, carrying no sampling variance and no test of transfer to other corpora or
-scorers. The paired Loom-versus-bare contrast is the part most robust to this, since both arms
-share the draw; the cross-model ordering is the part least robust. The case study is evidence
+scorers. The paired Loom-versus-bare contrast is the part this touches least, since both arms
+share the draw; the cross-model ordering is where a different draw could most plausibly
+reorder rows. The case study is evidence
 about where extracted knowledge lands, not a model-quality leaderboard.
+
+\subsection{The judged page: an end-to-end quality gate}\label{sec:pagejudge}
+Term resolution measures where knowledge lands; it does not measure whether the page improves.
+We therefore judged the user-facing outcome directly: for each arm, its matched assertions were
+applied to sandbox copies of their target pages by the production integration mechanic, and a
+cross-family judge (Gemini~3.1~Pro, temperature~0, blind A/B with seeded order randomisation,
+un-blinded at analysis; a second judge, GPT-5.6, re-scored a 20\% subset with 93\% verdict
+agreement) scored each before/after pair. The result is uniformly negative: every arm degrades
+judged page quality (means $-1.04$ to $-0.44$; the two arms adjacent to a judge's family are
+flagged in the released analysis). Nor is this the insertion mechanic alone: a section-splice
+rewriter (the model emits only an anchored section edit; deterministic code applies it
+fail-closed, preserving the original by construction) was prompt-optimised over four variants on
+a dev split and validated on held-out pages under two rubrics --- including one written
+post-hoc, and disclosed as such, to explicitly credit informativeness --- and the best variant
+remained negative under both judges ($-0.40$ dev, $-0.90$ held-out). The effect survives every
+axis we varied (mechanic, rubric, judge), which argues it is structural: inserting
+narrow, freshly extracted facts into a mature curated page reads as dilution.
+Acting on a pre-declared decision rule, the pipeline's integration phase was disabled
+(extraction and verification continue) pending a redesign of \emph{placement} --- towards thin
+pages, dedicated currency sections, or batched section regeneration --- rather than further
+prompt iteration. The instrument earned its keep in the direction the promotion-gate discipline
+of \S\ref{sec:analysis} predicts: it caught a value-destroying step before it ran at scale.
+
+\section{Two-Edge Composition: Locating the Synthesis Boundary}\label{sec:composition}
+The exposure/recovery decomposition found beyond-exposure recovery in only 3 of 11{,}360
+gold items, but could not say whether models \emph{would} compose ontological
+structure if the composition were both required and fully exposed. The multi-hop design
+sketched in \S\ref{sec:limits} answers that directly. From the graph we mined two-edge chains
+$A\!\xrightarrow{r_1}\!B\!\xrightarrow{r_2}\!C$ over the corpus's two restriction-encoded
+relations (\emph{requires}, \emph{hasPart}), admitting only chains with no direct asserted or
+inferred $A\!\to\!C$ edge, with $C$ absent from $A$'s served block, and with at most three valid
+targets; 6{,}514 chains qualified and 150 were sampled, stratified across the four relation-pair
+shapes. Each question names only $A$ (``Name a part of something $A$ requires''); every arm
+serves exactly four blocks with seeded shuffling, so relevance is never signalled by presence.
+The six arms per question: \emph{both} premises ($A$'s and $B$'s blocks $+$ two seed-disjoint
+distractors), each premise \emph{alone} ($+$ three distractors), \emph{masked} (both, relation
+labels replaced), \emph{irrelevant} (four distractors), and \emph{raw} (no context). Twelve
+models ran all arms under identical sampling.
+
+The control arms behave exactly as a clean instrument requires: $a$-only, irrelevant and raw
+recall are at floor for every model (zero in almost all cells; no cell exceeds $2/150$) --- no
+parametric leakage, no placebo effect. The informative contrast is
+$\Delta=\text{both}-b\text{-only}$: the $b$-only arm exposes the target verbatim but withholds
+the route, so $\Delta$ isolates composition from in-context guessing.
+Figure~\ref{fig:composition} shows the result: the twelve models split three ways, and the split
+is not a capability ladder. Five compose (positive bootstrap CI): Gemini~3~Flash
+($\Delta=+0.33$), the local Qwen3.8-27B ($+0.29$), DeepSeek~v4 ($+0.26$), Sonnet~5 ($+0.25$)
+and Opus~4.8 ($+0.20$). Three are indistinguishable from pure guessing, including GPT-5.6, whose
+$b$-only recall (0.89) --- the field's best guess rate --- exactly matches its both-premises
+recall (0.88). Four are \emph{anti-composers} with significantly negative $\Delta$
+(GPT-4.1-mini $-0.47$, Mistral-24B $-0.29$, GLM-4.7 $-0.18$, Llama-70B $-0.12$): given the route
+as well as the target, they do \emph{worse} than when handed the answer-bearing block alone ---
+the compositional context actively confuses them. Masking relation labels collapses every model
+(best masked recall 0.61, most below 0.2): what composition exists rides on the labels, not on
+bare graph structure.
+
+Three readings follow. First, the serving regime's boundary is real but crossable: unlike the
+delivery setting, where gain over copy is uniformly negative, a genuine synthesis task separates
+models decisively --- and the local model behind this node's fa\c{c}ade sits in the composing
+class, at the top of it. Second, the guessing confound the design controls for is large
+(0.31--0.89 recall from the answer-bearing block alone) and would masquerade as multi-hop
+reasoning in any evaluation lacking the single-premise arms; two-hop benchmarks without this
+control overstate composition. Third, an incidental finding about serving itself: 99.97\% of
+naively mined two-hop chains were unusable as composition probes because the served block of the
+intermediate class already names the target --- on a corpus served in per-IRI blocks, most
+``multi-hop'' questions are single-hop exposure in disguise, which is the copy-ceiling lesson
+extended one edge outward.
+
+\input{figures/fig-composition}
 
 \section{The Multivariate Bar}\label{sec:bar}
 Table~\ref{tab:bar} details the four axes that define the deployable bar from \S\ref{sec:setting}, listing the measurement instrument for each and the current status of this work. We present a scorecard that shrinks rather than inflates: two axes are measured here, while two remain specified but not yet closed. No single number serves as the deployable target; the bar is conjunctive across all four axes.
@@ -654,19 +731,35 @@ the model only for the offline scaffold, not the live node.
 (complete-case $n=114$). The exclusion is symmetric across arms but is a departure from intention-to-treat.
 \item \textbf{Two axes of the bar unmeasured.} The web-search baseline (axis~3) and attribution
 precision (axis~4) are specified and not measured here; the deployable claim is not yet fully closed.
-\item \textbf{The experiment a positive gain would demand.} Nothing here can license
-reasoning-over-structure, because every in-domain answer's target is verbatim in the scaffold and the
-decomposition finds essentially no beyond-exposure recovery ($n_{01}=3$ of 11{,}360). The definitive
-test is a multi-hop design whose target is \emph{not} verbatim in the injected context: over questions
-requiring composition of two graph edges, run arms that serve both premises, one premise removed,
-relation labels masked, matched irrelevant premises, and raw. Only an interaction there (recovery
-present with both premises, absent when either is removed) would separate reasoning over structure from
-parametric leakage or guessing. A positive gain over copy is the signal that would make this experiment
-worth running.
+\item \textbf{The delivery studies cannot license reasoning claims.} Nothing in the delivery
+studies can license reasoning-over-structure, because every in-domain answer's target is verbatim
+in the scaffold and the decomposition finds essentially no beyond-exposure recovery
+($n_{01}=3$ of 11{,}360). The multi-hop design that separates composition from exposure and
+guessing is now run and reported in \S\ref{sec:composition}; its own limits (two relation types,
+one corpus, a lexical scorer, single run per arm) are of the same single-configuration class as
+the case study's.
 \end{itemize}
 
 \section{Conclusion}\label{sec:conclusion}
 Grounding evaluations where the gold standard derives from the injected corpus should report a copy ceiling as standard practice. This is a cheap, per-item, model-free quantity, defined as the recall a verbatim copy of the shown context already achieves. The signed gain over copy re-centres recall against exposure, while the exposure/recovery decomposition it anchors separates dropped exposed facts from beyond-exposure recovery, a distinction a bare-model baseline cannot make. Across ten models, the gain is uniformly negative. An exposure/recovery decomposition over 11{,}360 gold items measures the item-level claim directly: only 3 unexposed gold items are recovered, and per-model context utilisation is $0.900$--$0.955$, indicating that recovery beyond exposure is negligible. A production paired study lifts judged quality by $+0.27$ pooled and $+0.79$ where curation is deep. A four-arm control study is consistent with that lift being content-specific, as the placebo's point estimate collapses once verified seed-disjoint. The reusable method is the pair: \emph{the ceiling plus a verified-irrelevant placebo}, computed before architecting to distinguish a serving regime (where verbatim retrieval wins) from a synthesis regime (where heavier machinery must be measured above the ceiling, not above the bare model). The economics follow the measurement: value concentrates upstream at curation, where the same instrument doubles as a promotion gate for extraction candidates. For a private corpus, the goal was never a model that reasons its way to answers it never saw. It is a model that delivers vetted knowledge faithfully, attributably and cheaply, and an instrument honest enough to prove that is what it does.
+
+For the reader outside this literature, the value of the work is worth stating without the
+apparatus. Organisations increasingly want AI assistants that answer from their own knowledge
+--- policies, research, technical documentation --- without sending that knowledge to a cloud
+provider. The findings here show that this is not a compromise: a modest model running on local
+hardware, connected to a carefully curated knowledge graph, answered domain questions about as
+well as the most capable commercial systems, because nearly all of the accuracy came from the
+curated knowledge being placed in front of the model rather than from anything the model worked
+out for itself. That claim is easy to assert and usually asserted loosely; here it is proved by
+a control most evaluations omit --- asking what score a simple verbatim copy of the shown
+material would already achieve, and demanding that any claimed intelligence show up \emph{above}
+that line. Measured this way, ten commercial models sit at or below the copying line for
+delivery, a separate composition test shows which models can genuinely chain two facts together
+when copying cannot help (several of the largest cannot, and the local model can), and a blind
+quality judgment caught a pipeline step that was quietly making pages worse before it ran at
+scale. The practical lesson for any team building on private knowledge is the same from every
+experiment: invest in the knowledge and its curation, serve it faithfully, keep it local, and
+measure claims of machine reasoning against the humble baseline of copying things out.
 
 \printbibliography
 
