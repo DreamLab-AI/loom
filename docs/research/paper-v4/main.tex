@@ -671,7 +671,14 @@ Axes~1 and~2 establish excellent, attributable delivery where the corpus is auth
 (\texttt{openai/gpt-4.1}). It is cross-family from the Qwen candidate, avoiding self-preference, but there is no panel, answer-order randomisation, or repeatability test across judge seeds. Gold references mitigate but do not eliminate judge idiosyncrasy.
 \item \textbf{Complete-case control attrition.} The control arms were not retried at the larger budget and have $36$--$50\%$ empty attrition at 1536. All contrasts therefore compare unequal survivor sets. Attrition rises with scaffold length and disorder, so survivors are not a random subsample and causal interpretation is unsafe. A uniform-budget rerun at the larger budget is needed. The arms do not sum arithmetically; several contrasts are non-significant with wide intervals (shuffled$-$raw, masked$-$raw, true$-$irrelevant), so attribution rests on the \emph{pattern} across arms.
 \item \textbf{Small per-set $n$ for controls.} Per-set contrasts have $n=8$--$21$. The curation-depth gradient (arcane true$-$raw $+0.95$ significant, thin $+0.08$ ns) is suggestive, while thin-set nulls may reflect either low power or no effect.
-\item \textbf{Lexical scorer for Study~1.} The ten-model gain-over-copy and in-domain recall use a lexical title matcher that under-counts paraphrase. Absolute recall and gain over copy are therefore lower-bound estimands. Only Study~2 uses the semantic judge.
+\item \textbf{Lexical scorer for Study~1 --- now checked semantically.} The sweep's lexical
+title matcher under-counts paraphrase, making absolute recall a lower bound. A
+paraphrase-tolerant re-score of every saved row (embedding matcher, thresholds 0.80--0.90, the
+ceiling re-scored under the identical matcher) confirms the symmetry claim empirically:
+semantic scoring raises every model's recall but raises the copy ceiling as much or more, gain
+over copy stays negative for all ten models at all thresholds with every CI excluding zero, and
+unexposed recovery is unchanged at 3 of 11{,}360. The headline is not an artefact of strict
+matching.
 \item \textbf{Semantic fallback disabled throughout.} HNSW semantic retrieval was disabled because its document-embedding recall (0.816) falls below the 0.87 design floor, a red gate retained and reported. The loom arm therefore uses lexical retrieval only. A query-shaped embedding that clears the floor could alter engagement and thin-set results.
 \item \textbf{Single production model.} Study~2 fixes the model at Qwen3.8-27B, isolating the serving-path effect but leaving its magnitude under other backends unmeasured. The ten-model sweep varies models only on the offline scaffold, not the live node.
 \item \textbf{Three excluded questions.} Three questions empty at 4096 in both arms are excluded (complete-case $n=114$). Although symmetric, this departs from intention-to-treat.
