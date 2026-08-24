@@ -1,0 +1,54 @@
+\begin{figure*}[t]\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=14.5cm, height=8cm,
+  xmin=80, xmax=330, ymin=0.10, ymax=0.62,
+  xlabel={Assertions extracted ($n$, ten episodes)},
+  ylabel={Ground rate (terms resolving to a KG page)},
+  clip=false,
+]
+% best cloud-bare reference line
+\draw[gray!60,dashed,line width=0.6pt] (axis cs:80,0.42) -- (axis cs:330,0.42);
+\node[gray!90!black,font=\scriptsize,anchor=south east] at (axis cs:328,0.42) {best cloud-bare arm};
+
+% cloud-bare field: grey squares
+\addplot[only marks,mark=square*,mark size=2.4pt,color=gray!70] coordinates {
+  (107,0.42) (181,0.39) (131,0.28) (171,0.27) (295,0.22) (133,0.21) (169,0.21) (175,0.20)};
+
+% local pair
+\addplot[only marks,mark=*,mark size=3pt,color=burnt] coordinates {(170,0.17)};
+\addplot[only marks,mark=*,mark size=3pt,color=teal0] coordinates {(125,0.55)};
+
+% the paired move: same weights, bare -> scaffolded
+\draw[-stealth,teal0,line width=1.1pt,dashed] (axis cs:166,0.195) -- (axis cs:128,0.525);
+\node[teal0,font=\scriptsize\itshape,anchor=east,align=right] at (axis cs:147,0.37) {same weights,\\ +scaffold};
+
+% direct labels
+\node[anchor=south,font=\scriptsize,color=ink] at (axis cs:107,0.428) {Gemini 3 Flash};
+\node[anchor=south,font=\scriptsize,color=ink] at (axis cs:184,0.398) {GLM-4.7};
+\node[anchor=south,font=\scriptsize,color=ink] at (axis cs:131,0.288) {DeepSeek v4};
+\node[anchor=west,font=\scriptsize,color=ink] at (axis cs:177,0.27) {Opus 4.8};
+\node[anchor=south,font=\scriptsize,color=ink] at (axis cs:295,0.228) {Haiku 4.5};
+\node[anchor=east,font=\scriptsize,color=ink] at (axis cs:127,0.21) {GPT-5.6};
+\node[anchor=south west,font=\scriptsize,color=ink] at (axis cs:169,0.216) {GLM-5.3};
+\node[anchor=west,font=\scriptsize,color=ink] at (axis cs:181,0.198) {Sonnet 5};
+\node[anchor=west,font=\scriptsize,color=burnt] at (axis cs:176,0.168) {Qwen3.8-27B bare};
+\node[anchor=south,font=\scriptsize,color=teal0] at (axis cs:125,0.563) {Loom + Qwen3.8-27B};
+
+% artifact halos (arms with >2 corrupted-entity claims), radius ~ count
+\draw[burnt!60,line width=0.7pt] (axis cs:181,0.39) circle[radius=6pt];
+\draw[burnt!60,line width=0.7pt] (axis cs:131,0.28) circle[radius=4pt];
+\draw[burnt!60,line width=0.7pt] (axis cs:171,0.27) circle[radius=4pt];
+\end{axis}
+\end{tikzpicture}
+\caption{The case study on one panel (Table~\ref{tab:casestudy}). Each mark is a serving arm:
+volume of extracted assertions ($n$) against the rate at which its \texttt{ontology\_terms}
+resolve to knowledge-graph pages. Grey squares are cloud models run bare; a burnt-orange halo
+marks arms with more than two speech-recognition artefacts copied into claims (radius scales
+with count). The comparison is grounded-local versus bare-cloud, not like-for-like: the dashed
+teal arrow is the only paired contrast (identical local weights, 0.17 to 0.55 when served through
+the Loom), while the cloud arms are unaided. Grounded-local lands above every bare-cloud arm here,
+including the best (dashed grey line, 0.42), but this reflects vocabulary alignment with the graph
+rather than a head-to-head quality win.}
+\label{fig:casestudy}
+\end{figure*}

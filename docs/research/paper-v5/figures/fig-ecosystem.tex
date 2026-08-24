@@ -1,0 +1,61 @@
+\begin{figure*}[t]\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\footnotesize,
+  >={Stealth[length=2mm]},
+  block/.style={draw=ink,fill=ink!3,rounded corners=2pt,align=center,inner sep=4pt,minimum height=8mm},
+  corpus/.style={draw=teal0,fill=teal0!8,rounded corners=2pt,align=center,inner sep=4pt,minimum height=8mm},
+  gen/.style={draw=softgreen,fill=softgreen!8,rounded corners=2pt,align=center,inner sep=4pt,minimum height=8mm},
+  ext/.style={draw=ink!55,dash pattern=on 2pt off 2pt,fill=ink!2,rounded corners=2pt,align=center,inner sep=3.5pt},
+  stage/.style={draw=teal0!70,fill=white,rounded corners=1.5pt,align=center,inner sep=3pt,minimum height=6.5mm,font=\scriptsize},
+  offgate/.style={draw=burnt,dash pattern=on 2.5pt off 1.5pt,fill=burnt!7,rounded corners=2pt,align=center,inner sep=3pt,font=\scriptsize},
+  flow/.style={->,ink!75,line width=0.7pt},
+  offflow/.style={->,burnt,dash pattern=on 2.5pt off 1.5pt,line width=0.7pt},
+]
+% ---- ingestion row ----
+\node[corpus] (kg) {\textbf{knowledgeGraph} corpus\\8{,}138 Logseq pages\\$\rightarrow$ pure-TBox OWL~2, 8{,}146 classes};
+\node[ext,above left=6mm and -6mm of kg] (ontocast) {OntoCast (external)\\ontology extraction};
+\node[block,right=9mm of kg] (ci) {CI gate $+$ Whelk EL reasoner\\conflict detect $\cdot$ reject contradictions};
+\node[gen,right=9mm of ci] (gen) {Versioned generation\\282{,}492-triple closure};
+% ontocast -> kg via preview import
+\draw[flow,ink!55,dash pattern=on 2pt off 2pt] (ontocast) -- node[right=1pt,font=\scriptsize,align=left]{preview-first\\staged import} (kg);
+\draw[flow] (kg) -- (ci);
+\draw[flow] (ci) -- (gen);
+% ---- Loom serving node (below) ----
+\node[stage,below=13mm of kg]        (match) {lexical match\\2.02\,ms p50};
+\node[stage,right=5mm of match]      (gate)  {confidence\\gate};
+\node[stage,right=5mm of gate]       (scaf)  {scaffold\\injection};
+\node[stage,right=5mm of scaf]       (deleg) {delegate};
+\node[block,right=5mm of deleg,fill=teal0!6,draw=teal0] (model) {LAN model\\Qwen3.8-27B\\OpenAI-compat.\ fa\c{c}ade};
+\draw[flow] (match) -- (gate);
+\draw[flow] (gate) -- (scaf);
+\draw[flow] (scaf) -- (deleg);
+\draw[flow] (deleg) -- (model);
+% HNSW fallback (default-off)
+\node[offgate,below=6mm of gate] (hnsw) {HNSW semantic fallback\\recall 0.816 $<$ 0.87 floor $\cdot$ \textbf{default-off}};
+\draw[offflow] (hnsw) -- (gate);
+% node grouping box
+\begin{scope}[on background layer]
+\node[draw=teal0,dash pattern=on 1pt off 1pt,rounded corners=3pt,fill=teal0!3,
+      fit=(match)(model)(hnsw),inner sep=6pt,label={[teal0,font=\scriptsize\bfseries]above:Loom serving node}] (loombox) {};
+\end{scope}
+% generation feeds the loom node (mirror)
+\draw[flow] (gen.south) |- (loombox.east) node[pos=0.28,right,font=\scriptsize]{mirror generation};
+% consumers
+\node[block,below=8mm of model,align=center] (cons) {Consumers\\email gateway $\cdot$ working agents};
+\draw[flow] (model) -- (cons);
+\end{tikzpicture}}
+\caption{The data path around the measured node. Knowledge enters at the \emph{knowledgeGraph} corpus
+(8{,}138 Logseq pages compiled losslessly into a pure-TBox OWL~2 ontology of 8{,}146 classes); output
+from OntoCast, an independent third-party extractor, enters only through a preview-first staged import
+that reports collisions and emits review candidates rather than publishing machine output directly. A
+CI gate and a Whelk OWL~2~EL reasoner classify each build and reject contradictions before publishing a
+versioned generation (a 282{,}492-triple reasoned closure). The \emph{Loom} node mirrors a generation
+and serves it through a model-free pipeline (lexical match at 2.02\,ms, confidence gate, scaffold
+injection) before delegating to whatever LAN model sits behind its OpenAI-compatible fa\c{c}ade
+(Qwen3.8-27B here); consumers hold the fa\c{c}ade URL and inherit grounding. The HNSW semantic fallback
+is drawn dashed in burnt orange because it ships default-off: its document-embedding recall (0.816) is
+below the 0.87 design floor, a red gate we report rather than hide (\S\ref{sec:ecosystem},
+\S\ref{sec:system}).}
+\label{fig:ecosystem}
+\end{figure*}
