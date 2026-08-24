@@ -76,7 +76,7 @@ The lineage runs from RAG~\cite{lewis2020rag} through graph-structured retrieval
 Simple controls can overturn headline results: strong RAG baselines match elaborate pipelines under equal token budgets~\cite{laitenberger2025stronger}; controlled comparisons reverse earlier ``RAG wins'' findings and add a confidence router~\cite{li2024ragorlongcontext}; and apparent argument comprehension can reflect spurious cues~\cite{niven2019probing}. The confidence router of~\textcite{li2024ragorlongcontext} and selective retrieval~\cite{asai2024selfrag,jeong2024adaptiverag,mallen2023trust} provide precedents for our injection gate. Those methods choose whether to retrieve; ours chooses whether to inject.
 
 \paragraph{Input-only baselines and faithfulness metrics.}
-The copy ceiling extends input-only baselines. Passage-only, question-only~\cite{kaushik2018reading}, and hypothesis-only baselines~\cite{gururangan2018artifacts,poliak2018hypothesis} reveal shortcuts present in inputs. Unlike these discrete task classifiers, the copy ceiling is continuous and per-item. Faithfulness can be measured separately from correctness~\cite{es2023ragas,adlakha2024evaluating,zhou2023contextfaithful}; metric-first evaluations formalise assumptions~\cite{min2023factscore} and test shortcut robustness~\cite{gao2023alce}. FActScore's source precision and Adlakha's token-overlap K-Precision resemble our exposure count. ALCE rejects ``copy the passage'' as a shortcut; we use it as the reference point. Contamination audits~\cite{sainz2023contamination,golchin2024timetravel} assess input-visible score post hoc, whereas we define deliberate exposure as the reference a priori.
+The copy ceiling extends input-only baselines. Passage-only, question-only~\cite{kaushik2018reading}, and hypothesis-only baselines~\cite{gururangan2018artifacts,poliak2018hypothesis} reveal shortcuts present in inputs. Unlike these discrete task classifiers, the copy ceiling is continuous and per-item. Faithfulness can be measured separately from correctness~\cite{es2023ragas,adlakha2024evaluating,zhou2023contextfaithful}; metric-first evaluations formalise assumptions~\cite{min2023factscore} and test shortcut robustness~\cite{gao2023alce}. FActScore's source precision and Adlakha's token-overlap K-Precision resemble our exposure count. ALCE rejects ``copy the passage'' as a shortcut; we use it as the reference point. Contamination audits~\cite{sainz2023contamination,golchin2024timetravel} assess input-visible score post hoc, whereas we define deliberate exposure as the reference a priori. The closest ancestry is the extractive-oracle and lead-$n$ baselines of neural summarisation~\cite{see2017pointergenerator,narayan2018xsum} and the trivial-baseline critiques of reading comprehension~\cite{kaushik2018reading}, which likewise ask what a copy of the input already achieves. A literature search (2026-08-24) found no direct precedent for a judge-free, per-item copy baseline reported as a standing control for knowledge-graph-grounded generation.
 
 \paragraph{The nearest neighbours, and how we differ.}
 The closest methodological precedent causally manipulates the gold answer to test its effect on retrieval-augmented gains~\cite{answerpresence2026}. We adopt only its paired-intervention \emph{method}: the authors withdrew the work in 2026 after finding errors that compromised its main conclusions. Leakage-free benchmarks instead extract reasoning graphs from question--context pairs, then apply type-constrained entity replacement with consistency checks and leakage filters~\cite{seedrg2026}. This occurs during corpus construction; the copy ceiling is a per-item measurement. RAGChecker uses LLM extraction and grading to decompose RAG quality into claim-level retrieval and generation scores~\cite{ragchecker2024}. Our context utilisation is a deterministic, surface-matched version of its context-utilisation metric; we claim no originality for the decomposition. MIRAGE measures benchmark-level adaptability by evaluating reader behaviour against oracle context across retriever--model pairings~\cite{mirage2025}. The RAGAS \emph{library}'s later ``context recall'', absent from the original paper~\cite{es2023ragas}, is an LLM-judged retrieval-coverage measure. We have not found elsewhere our combination of a deterministic, judge-free, continuous per-item exposure ceiling for a schema-level ontology corpus and a verified seed-disjoint placebo. Across models, signed gain over copy provides an exposure-normalised recall scale where raw uplift does not distinguish models. Judged arms use a cross-family judge to limit self-preference~\cite{zheng2023judging,panickssery2024selfpreference}.
@@ -385,6 +385,24 @@ true $-$ masked           & $+0.27$ $[-0.08,+0.65]$          & $+0.08$ $[-0.20,+
 true $-$ fluent\_noise    & ---                              & $+0.25$ $[-0.02,+0.55]$ \\
 fluent\_noise $-$ irrelevant & ---                           & $+0.02$ $[-0.24,+0.30]$ \\
 loom $-$ true             & $-0.06$ $[-0.44,+0.31]$          & $-0.22$ $[-0.54,+0.09]$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[t]\centering\small
+\caption{Judge provenance across the judged studies, for auditing family overlap. Study~1 uses no
+judge (deterministic lexical scoring). A \textdagger\ marks a judge sharing a provider family with a
+candidate model it graded --- the case that motivates the never-used third-family re-judge named as
+future work (\S\ref{sec:bar}).}
+\label{tab:judgeprov}
+\begin{tabular}{p{3.4cm}p{3.4cm}p{3.4cm}p{3.6cm}}
+\toprule
+Study & Judge (family) & Candidate families judged & Reference source \\
+\midrule
+Study~1 (ten-model sweep) & none --- lexical, deterministic & Google, Anthropic, OpenAI, Meta, DeepSeek, Alibaba, Mistral, Zhipu & graph-derived \{slug,title\} \\
+Study~2 (paired serving path) & \texttt{gpt-4.1} (OpenAI)\textdagger & Qwen/Alibaba (single candidate) & graph-derived in-domain; frontier-authored out-of-domain \\
+\S\ref{sec:controls} controls (re-judged) & \texttt{gemini-3.1-pro} (Google) & Qwen/Alibaba & graph-derived \\
+Write-path page quality (\S\ref{sec:pagejudge}) & \texttt{gemini-3.1-pro} (Google) primary; \texttt{gpt-5.6} (OpenAI) 20\% secondary & ten extraction families incl.\ Google\textdagger, OpenAI\textdagger & the pages themselves (blind before/after) \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -770,7 +788,7 @@ Axes~1 and~2 establish excellent, attributable delivery where the corpus is auth
 \item \textbf{Single production model.} Study~2 fixes the model at Qwen3.8-27B, isolating the serving-path effect but leaving its magnitude under other backends unmeasured. The ten-model sweep varies models only on the offline scaffold, not the live node.
 \item \textbf{Three excluded questions.} Three questions empty at 4096 in both arms are excluded (complete-case $n=114$). Although symmetric, this departs from intention-to-treat.
 \item \textbf{Two axes of the bar unmeasured.} The specified web-search baseline (axis~3) and attribution precision (axis~4) remain unmeasured, so the deployable claim is not fully closed.
-\item \textbf{The delivery studies cannot license reasoning claims.} Every in-domain target is verbatim in the scaffold, and beyond-exposure recovery is negligible ($n_{01}=3$ of 11{,}360). The multi-hop design separating composition from exposure and guessing is reported in \S\ref{sec:composition}; its limits (two relation types, one corpus, a lexical scorer, single run per arm) remain those of a single-configuration case study.
+\item \textbf{The delivery studies cannot license reasoning claims.} Every in-domain target is verbatim in the scaffold, and beyond-exposure recovery is negligible ($n_{01}=3$ of 11{,}360). The multi-hop design separating composition from exposure and guessing is reported in \S\ref{sec:composition}; its limits (two relation types, one corpus, a lexical scorer, single run per arm) remain those of a single-configuration case study. The same caveat applies across the paper: questions are sampled under a single seed (42), so the reported figures are point estimates that do not bound question-sampling variance; a seed sweep is future work.
 \end{itemize}
 
 
