@@ -44,7 +44,7 @@ for Ontology-Grounded Generation over Curated Corpora}
 
 \begin{abstract}
 \noindent
-We measure how much of a grounded language model's accuracy is faithful \emph{delivery} of shown facts rather than \emph{reasoning} over them, using a deterministic control we call the \emph{copy ceiling}: the recall a verbatim copy of the retrieved context would already achieve. Across ten API models spanning cheap to mid tiers, grounded recall sits within 0.07 of a verbatim copy of the context on a niche public corpus used here as a proxy for a private one, so the models are separated only by how faithfully they restate what curation supplied. On a separate composition test, where copying cannot help, the local 27B model sits with the composing group alongside Opus~4.8 and Sonnet~5, while several smaller models fail. That a small local model matches larger ones on delivery is an inference from ceiling saturation (there is almost no headroom above a copy for a better model to claim), not a head-to-head result.
+We measure how much of a grounded language model's accuracy is faithful \emph{delivery} of shown facts rather than \emph{reasoning} over them, using a deterministic control we call the \emph{copy ceiling}: the recall a verbatim copy of the retrieved context would already achieve. Across ten API models spanning cheap to mid tiers, grounded recall sits within 0.07 of a verbatim copy of the context on a niche public corpus used here as a proxy for a private one, so the models are separated only by how faithfully they restate what curation supplied. On a separate composition test, where copying cannot help, the local 27B model sits with the composing group alongside Opus~4.8 and Sonnet~5, while several smaller models fail. That a small local model matches larger ones on delivery is an inference from ceiling saturation (there is almost no headroom above a copy for a better model to claim), not a head-to-head result. A second local family (Gemma) reproduces both the composition result and the ceiling saturation under a single-variable backend swap, so neither is an idiosyncrasy of one candidate.
 
 When a language model answers from a curated, organisation-controlled corpus via graph-based retrieval, the reported ``grounding uplift'' obscures a measurement issue: if gold answers come from the same injected corpus, uplift mixes faithful \emph{delivery} of exposed facts with \emph{reasoning} over injected structure. We propose the \emph{copy ceiling}, defined as the recall a verbatim copy of the shown context would achieve, and the signed \emph{gain over copy}. This control is deterministic, judge-free and per-item, listed as a standing column beside generation recall, and paired with a placebo verified irrelevant by seed-disjointness; together they separate exposure coverage from beyond-exposure recovery prior to architecture selection. On a production ontology-serving node, unaided models score $\approx0.26$ in-domain and grounded $\approx0.92$, yet across ten models from five providers the gain over copy is uniformly negative ($-0.067$ to $-0.022$). A direct exposure/recovery decomposition of 11{,}360 gold items explains why: three unexposed gold items are recovered in total, context utilisation spans 0.900--0.955, and models differ only in how much exposed gold they drop; grounding does not merely fail to add beyond-exposure recall, it suppresses the parametric recall the bare model demonstrably has on those items ($\approx0.12$ raw to $\approx0.004$ grounded). The uplift is delivery, measured rather than inferred. A paired study on the same node, holding the model constant and varying only the serving path, lifts judged quality by $+0.27$ pooled ($p=0.004$) and $+0.79$ where curation is deepest. A uniform-budget, single-judge control rerun with a length-matched fluent-noise arm and Holm correction shows the scaffold as a whole clearly beats no context (true$-$raw $+0.75$, Holm-significant), but does not establish that the specific retrieved content beats generic on-corpus text: with attrition eliminated, no content-specificity contrast (true$-$irrelevant, true$-$fluent-noise, fluent-noise$-$irrelevant) clears correction. Out of domain the gated node does not regress: the general-set delta ($+0.05$, $[0.00,+0.13]$) lies inside a pre-specified $\pm0.25$ equivalence margin. Grounding evaluations whose gold derives from the injected corpus should report a copy ceiling as standard.
 \end{abstract}
@@ -609,21 +609,34 @@ against this corpus is not separable from a single candidate. To test replicatio
 second local family, Gemma (\texttt{gemma-4-31B-it-qat}), is run through the two-edge composition
 test and the Study-1 sweep behind the same fa\c{c}ade, holding retrieval, gating, scaffold and
 decoding fixed and varying only the backend model. This isolates the model contribution to both
-the composition boundary and delivery-fidelity saturation. Final figures land on run completion;
-Table~\ref{tab:gemma} records the slots.
+the composition boundary and delivery-fidelity saturation. Both findings replicate
+(Table~\ref{tab:gemma}). Gemma composes: its two-edge delta is $+0.693$ $[+0.613,+0.767]$, above
+Qwen3.8-27B's $+0.287$ and every API model measured, with a low $b$-only recall ($0.260$) showing it
+leans on both premises jointly rather than leaking the target from one. And grounded, it saturates
+the same copy ceiling: raw recall $0.099$ lifts to scaffold recall $0.938$ against a $0.964$ ceiling,
+a gain over copy of $-0.027$ $[-0.037,-0.018]$ that sits at the least-negative end of the ten-model
+range and excludes zero. The composer signature and the ceiling-saturation delivery pattern are thus
+not idiosyncrasies of the first candidate; a second, independently trained local family reproduces
+both under a single-variable backend swap.
 
 \begin{table*}[t]\centering\small
-\caption{Second local family (\texttt{gemma-4-31B-it-qat}) through the composition test and Study-1
-sweep, same serving path as Qwen3.8-27B. Numbers land on run completion.}
+\caption{Second local family (\texttt{gemma-4-31B-it-qat}) through the composition test
+($n=150$) and Study-1 sweep ($n=510$), same serving path as Qwen3.8-27B, varying only the
+backend model. Both central local-model findings replicate: a positive composition delta and a
+uniformly negative gain over copy.}
 \label{tab:gemma}
 \begin{tabular}{@{}p{0.62\textwidth}l@{}}
 \toprule
 Quantity & Gemma \\
 \midrule
-Composition both-premises recall & \todo{gemma both-recall} \\
-Composition $b$-only recall       & \todo{gemma b\_only} \\
-Composition $\Delta=\text{both}-b\text{-only}$ & \todo{gemma composition delta} \\
-Study-1 gain over copy            & \todo{gemma gain over copy} \\
+Composition both-premises recall & $0.953$ \\
+Composition $b$-only recall       & $0.260$ \\
+Composition $\Delta=\text{both}-b\text{-only}$ & $+0.693$\quad$[+0.613,+0.767]$ \\
+\midrule
+Study-1 raw recall (bare model)   & $0.099$ \\
+Study-1 scaffold recall           & $0.938$ \\
+Study-1 copy ceiling              & $0.964$ \\
+Study-1 gain over copy            & $-0.027$\quad$[-0.037,-0.018]$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
