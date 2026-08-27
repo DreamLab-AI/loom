@@ -37,6 +37,35 @@ SETS = {
 }
 
 
+def _cli_prompt(question, reference, candidate):
+    user = (f"QUESTION:\n{question}\n\nREFERENCE ANSWER (ground truth):\n{reference}\n\n"
+            f"CANDIDATE ANSWER:\n{candidate[:4000]}\n\nGrade now.")
+    return RUBRIC + "\n\n" + user
+
+
+def judge_call_cli(kind, model, question, reference, candidate, retries=6):
+    """CLI judges (Claude / Codex) with serial exponential backoff. Reused for
+    the never-used-third-family re-judge (reviewer W1). kind in {claude, codex}."""
+    import sys as _sys
+    _sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from cli_judge import judge_claude, judge_codex
+    prompt = _cli_prompt(question, reference, candidate)
+    delay = 8
+    for a in range(retries + 1):
+        try:
+            obj = judge_claude(prompt, model=model) if kind == "claude" else judge_codex(prompt)
+            if obj and isinstance(obj.get("score"), (int, float)):
+                return int(obj["score"]), obj.get("why", "")
+            last = f"unparseable: {str(obj)[:80]}"
+        except Exception as e:  # noqa: BLE001
+            last = str(e)[:120]
+            if "limit" in last.lower() or "429" in last:
+                time.sleep(delay); delay = min(delay * 2, 60); continue
+        if a < retries:
+            time.sleep(3)
+    return None, f"cli judge failed: {last}"
+
+
 def judge_call(base, model, key, question, reference, candidate, timeout=90, retries=2):
     url = base.rstrip("/") + "/chat/completions"
     user = (f"QUESTION:\n{question}\n\nREFERENCE ANSWER (ground truth):\n{reference}\n\n"
@@ -79,16 +108,21 @@ def reference_for(q: dict) -> str:
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--judge-base-url", default="https://openrouter.ai/api/v1")
-    ap.add_argument("--judge-model", default="openai/gpt-4.1")
-    ap.add_argument("--judge-key-env", default="OPENROUTER_API_KEY")
+    # --judge selects the local CLI judge families (no OpenRouter): cli-claude
+    # (opus-4-6, the reviewer's clean never-used family) or cli-codex (gpt-5.6).
+    ap.add_argument("--judge", default="cli-claude",
+                    choices=["cli-claude", "cli-codex"])
+    ap.add_argument("--judge-model", default="claude-opus-4-6")
     ap.add_argument("--dir", default="uplift-results/paper-v2", type=Path)
-    ap.add_argument("--sleep", type=float, default=0.3)
+    ap.add_argument("--out", default="judged.json",
+                    help="output filename (use a distinct name to avoid clobbering the gpt-4.1 judged.json)")
+    ap.add_argument("--sleep", type=float, default=0.5)
+    ap.add_argument("--shard", default="0/1",
+                    help="k/N: this worker judges answers where index %% N == k (swarm parallelism)")
     args = ap.parse_args(argv)
+    _k, _n = (int(x) for x in args.shard.split("/"))
 
-    key = os.environ.get(args.judge_key_env)
-    if not key:
-        sys.exit(f"judge key env {args.judge_key_env} empty")
+    kind = "claude" if args.judge == "cli-claude" else "codex"
 
     qmeta = {}
     for name, path in SETS.items():
@@ -106,7 +140,7 @@ def main(argv=None):
                 continue
             rows.append(r)
 
-    outpath = args.dir / "judged.json"
+    outpath = args.dir / args.out
     judged = []
     done = set()
     if outpath.exists():
@@ -114,19 +148,23 @@ def main(argv=None):
         done = {(j["set"], j["id"], j["arm"]) for j in judged}
 
     todo = [r for r in rows if (r["set"], r["id"], r["arm"]) not in done]
-    print(f"{len(todo)} answers to judge ({len(done)} already done)", file=sys.stderr)
+    # stable order so shards are disjoint and reproducible, then take this shard
+    todo.sort(key=lambda r: (r["set"], r["id"], r["arm"]))
+    todo = [r for idx, r in enumerate(todo) if idx % _n == _k]
+    print(f"[{args.judge}/{args.judge_model}] {len(todo)} answers to judge "
+          f"({len(done)} already done) -> {outpath}", file=sys.stderr, flush=True)
     for i, r in enumerate(todo):
         q = qmeta[(r["set"], r["id"])]
-        score, why = judge_call(args.judge_base_url, args.judge_model, key,
-                                q["question"], reference_for(q), r["content"])
+        score, why = judge_call_cli(kind, args.judge_model,
+                                    q["question"], reference_for(q), r["content"])
         if score is None:
-            print(f"  FAIL {r['set']}/{r['id']}/{r['arm']}: {why}", file=sys.stderr)
+            print(f"  FAIL {r['set']}/{r['id']}/{r['arm']}: {why}", file=sys.stderr, flush=True)
             continue
         judged.append({"set": r["set"], "id": r["id"], "arm": r["arm"],
                        "score": score, "why": why})
-        if (i + 1) % 20 == 0:
-            json.dump(judged, open(outpath, "w"), indent=1)
-            print(f"  {i+1}/{len(todo)} judged", file=sys.stderr)
+        json.dump(judged, open(outpath, "w"), indent=1)  # checkpoint every item — resumable
+        if (i + 1) % 10 == 0:
+            print(f"  {i+1}/{len(todo)} judged", file=sys.stderr, flush=True)
         time.sleep(args.sleep)
     json.dump(judged, open(outpath, "w"), indent=1)
     print(f"complete: {len(judged)} scores → {outpath}", file=sys.stderr)
