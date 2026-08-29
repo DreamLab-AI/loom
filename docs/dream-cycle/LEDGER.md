@@ -8,3 +8,5 @@
 | 2026-08-16 | scaffold-retrieval | Given the scaffold-index generator at session HEAD `cb44bfadff796910dd150ddd895d | NONE | NONE | yes | INCONCLUSIVE |  | e2d30c07644a |  |
 | 2026-08-17 | model-facade | Given the loom facade whose scaffold-index is generated in a git checkout at ses | NONE | NONE | yes | INCONCLUSIVE |  | 79fb4721fd83 |  |
 | 2026-08-17 | model-facade | Given the loom model-facade at session commit `710fb5f4` operating in scaffold m | NONE | NONE | yes | INCONCLUSIVE |  | 377be864b76a |  |
+| 2026-08-28 | scaffold-retrieval | Given the scaffold-retrieval workload (facade /health serving ScaffoldIndex + MirrorManifest state), when | NONE | NONE | yes | INCONCLUSIVE |  | 55fa5421 |  |
+| 2026-08-29 | model-facade | Given the loom model-facade at session commit `8529aad5` reporting healthy (`/he | NONE | https://github.com/DreamLab-AI/loom/pull/1 | yes | ACCEPT |  | d981dcd3e502 |  |
