@@ -1,9 +1,13 @@
 # Loom model engine — llama.cpp llama-server, CUDA build for the host's 2x Quadro RTX 6000
 # (Turing sm_75 — CMAKE_CUDA_ARCHITECTURES=75, NOT 89/Ada). Serves Qwen3.8-27B on :8085.
 #
-# Pinned to the exact llama.cpp commit validated on this host (b10344+14, 2026-08-11):
-# it has the qwen35 arch (Qwen3.8 = qwen3_5 family), embedded-MTP draft-mtp spec decoding,
-# and the qwen3vl_merger mmproj projector used by Qwen3.8's vision encoder.
+# Pinned to llama.cpp master 2026-08-29 (cc83d7b): adds DFlash2 speculative decoding
+# (PR #27342, merged 2026-08-27 — block-diffusion drafter, --spec-type draft-dflash),
+# on top of everything the previous pin (030ebb55, 2026-08-11) had: qwen35 arch,
+# embedded-MTP draft-mtp spec decoding, qwen3vl_merger mmproj projector.
+# NOTE: vision + draft-dflash is still flaky upstream as of 2026-08-29 (M-RoPE draft
+# positions / acceptance collapse on image turns) — only enable SPEC=dflash on
+# text-only profiles (VISION=0) for now.
 # CUDA 13.3 matches the host toolkit (driver 610.43.03).
 ARG CUDA_VERSION=13.3.0
 
@@ -12,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git cmake ninja-build build-essential curl ca-certificates libcurl4-openssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-ARG LLAMA_COMMIT=030ebb558a5820b444a8f836ed5cdd46c9b4bd7a
+ARG LLAMA_COMMIT=cc83d7b4824f73cfdda4dfbb47ee39804f71b328
 RUN git init /src && cd /src \
     && git remote add origin https://github.com/ggml-org/llama.cpp \
     && git fetch --depth 1 origin ${LLAMA_COMMIT} \

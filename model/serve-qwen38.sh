@@ -33,11 +33,25 @@ TOP_P="${TOP_P:-0.95}"
 TOP_K="${TOP_K:-20}"
 MIN_P="${MIN_P:-0.0}"
 
-# Speculative decoding via the embedded MTP head: mtp | off. n_max swept on this
-# hardware 2026-08-15 (docs/research/evidence/mtp-sweep.txt): 3 is best (29.9 tok/s greedy,
-# 50% acceptance; 1.66x over no-spec 18.0); acceptance falls monotonically with n.
+# Speculative decoding: mtp | dflash | off.
+#  mtp    — embedded MTP head (blk.64.nextn.*); needs no -md. n_max swept on this
+#           hardware 2026-08-15 (docs/research/evidence/mtp-sweep.txt): 3 is best
+#           (29.9 tok/s greedy, 50% acceptance; 1.66x over no-spec 18.0).
+#  dflash — DFlash2 block-diffusion drafter (llama.cpp PR #27342, merged 2026-08-27);
+#           external draft GGUF via DRAFT_GGUF (official source: z-lab/Qwen3.8-27B-
+#           DFlash2-GGUF — the incoai mirrors are known-broken per upstream). The
+#           drafter targets base Qwen3.8-27B; finetunes (Heretic) share the tokenizer
+#           so decoding stays lossless, acceptance just runs a little lower. This is
+#           the only spec option for GGUFs whose MTP head was stripped (Heretic).
+#           Do NOT combine with VISION=1 yet — image turns are broken/slow upstream
+#           as of 2026-08-29 (M-RoPE draft positions, acceptance collapse).
 SPEC="${SPEC:-mtp}"
 DRAFT_N_MAX="${DRAFT_N_MAX:-3}"
+DRAFT_GGUF="${DRAFT_GGUF:-/models/qwen3.8-27B/Qwen3.8-27B-DFlash2-Q4_K_M.gguf}"
+# dflash n_max swept on this hardware 2026-08-29 (docs/research/evidence/
+# dflash2-sweep.txt): 4 is best (38.9 tok/s greedy vs 19.4 no-spec = 2.0x,
+# 44% acceptance); 3 is within noise, throughput falls monotonically above 4.
+DFLASH_N_MAX="${DFLASH_N_MAX:-4}"
 
 # Reasoning: thinking on by default. Server default effort is MEDIUM (2026-08-15 —
 # xhigh can spiral to 17K-token traces on adversarial/incoherent prompts); clients
@@ -97,12 +111,19 @@ if [[ "$REASONING_PRESERVE" == "1" ]]; then
 fi
 if [[ "$SPEC" == "mtp" ]]; then
     ARGS+=(--spec-type draft-mtp --spec-draft-n-max "$DRAFT_N_MAX")
+elif [[ "$SPEC" == "dflash" ]]; then
+    [[ -f "$DRAFT_GGUF" ]] || { echo "Error: DFlash2 draft GGUF not found: $DRAFT_GGUF" >&2; exit 1; }
+    if [[ "$VISION" == "1" ]]; then
+        echo "Error: SPEC=dflash with VISION=1 is broken upstream (2026-08-29) — use SPEC=mtp or VISION=0" >&2
+        exit 1
+    fi
+    ARGS+=(-md "$DRAFT_GGUF" -ngld 99 --spec-type draft-dflash --spec-draft-n-max "$DFLASH_N_MAX")
 fi
 if [[ "$VISION" == "1" && -f "$MMPROJ" ]]; then
     ARGS+=(--mmproj "$MMPROJ")
 fi
 
-echo "Qwen3.8-27B (UD-Q8_K_XL, vision, MTP spec-decode) — llama.cpp in Loom"
+echo "Qwen3.8-27B — llama.cpp in Loom"
 echo "  API: http://${HOST_ADDR}:${PORT}/v1 | ctx ${CTX_SIZE} | KV ${KV_TYPE} | spec ${SPEC} | vision ${VISION}"
 
 exec llama-server "${ARGS[@]}"

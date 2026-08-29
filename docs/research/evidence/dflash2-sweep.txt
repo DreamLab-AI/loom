@@ -1,0 +1,33 @@
+DFlash2 --spec-draft-n-max sweep — 2026-08-29
+=============================================
+
+Host: 2x Quadro RTX 6000 (sm_75), driver 610.43.03, CUDA 13.3
+Server: loom-model container, llama.cpp cc83d7b4 (master 2026-08-29,
+        includes PR #27342 DFlash2, merged 2026-08-27)
+Target: qwen3.8-27B-heretic RVN-Q8_0 (MTP head stripped by abliteration —
+        DFlash2 is the only spec option for this GGUF; pre-upgrade the
+        profile ran SPEC=off)
+Draft:  z-lab/Qwen3.8-27B-DFlash2-GGUF Q4_K_M (1.1GB, -ngld 99)
+        NOTE: incoai mirrors of this drafter are known-broken upstream.
+Serving config: -c 262144 -ctk q8_0 -ctv q8_0 -kvu -fa on --parallel 1
+
+Method: 3 fixed prompts x 300 tokens, temperature 0 (greedy, mirrors the
+2026-08-15 mtp-sweep methodology), 1 warmup request per config, fresh
+container per n_max. Metric = mean of llama-server timings.predicted_per_second.
+
+n_max  mean_tok/s  accept_rate  per-prompt tok/s
+  2      36.8        0.668      38.6 40.3 31.6
+  3      38.7        0.531      39.6 46.3 30.4
+  4      38.9        0.439      40.1 47.7 28.8   <-- best (serve default)
+  5      37.3        0.376      37.8 46.7 27.3
+  6      34.4        0.320      35.0 43.8 24.3
+  7      32.3        0.282      32.8 42.0 22.1
+  8      32.0        0.282      32.4 41.6 21.9
+
+Baseline (same prompts/config, SPEC=off, pre-upgrade): 19.4 tok/s greedy.
+n_max=4 => 2.0x. Acceptance falls monotonically with n (same shape as the
+MTP sweep); 3 and 4 are within noise of each other, 4 wins slightly and
+matches upstream CUDA single-stream reports (sweet spot 4-7).
+
+Spot-check under production sampling (temp 1.0 / top-p 0.95 / top-k 20,
+thinking on, /v1/chat/completions): 41.6 tok/s at n_max=4.
