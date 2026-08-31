@@ -10,3 +10,5 @@
 | 2026-08-17 | model-facade | Given the loom model-facade at session commit `710fb5f4` operating in scaffold m | NONE | NONE | yes | INCONCLUSIVE |  | 377be864b76a |  |
 | 2026-08-28 | scaffold-retrieval | Given the scaffold-retrieval workload (facade /health serving ScaffoldIndex + MirrorManifest state), when | NONE | NONE | yes | INCONCLUSIVE |  | 55fa5421 |  |
 | 2026-08-29 | model-facade | Given the loom model-facade at session commit `8529aad5` reporting healthy (`/he | NONE | https://github.com/DreamLab-AI/loom/pull/1 | yes | ACCEPT |  | d981dcd3e502 |  |
+| 2026-08-30 | confidence-injection | Given the loom facade at session commit `0be6e692` reports healthy at `/health`  | NONE | NONE | yes | ACCEPT |  | 1d6909a9fde5 |  |
+| 2026-08-31 | graph-engine | Given the loom facade at session commit `0be6e692` serves the graph store at `/h | NONE | NONE | yes | ACCEPT |  | 711110b06b36 |  |
