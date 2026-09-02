@@ -69,7 +69,9 @@ pub fn section_for(
     lines.push(head);
 
     // Definition: prose dfull (truncated) preferred, else structural d.
-    let dfull = prose_entry.and_then(|p| p.dfull.as_ref()).filter(|s| !s.is_empty());
+    let dfull = prose_entry
+        .and_then(|p| p.dfull.as_ref())
+        .filter(|s| !s.is_empty());
     if let Some(dfull) = dfull {
         lines.push(truncate(dfull.trim(), PROSE_DEF_CHARS));
     } else if let Some(d) = e.d.as_ref().filter(|s| !s.is_empty()) {
@@ -77,7 +79,11 @@ pub fn section_for(
     }
 
     // is-a / ancestors.
-    let parents: Vec<String> = e.sup.iter().map(|r| idx.title_of(&ref_to_slug(r))).collect();
+    let parents: Vec<String> = e
+        .sup
+        .iter()
+        .map(|r| idx.title_of(&ref_to_slug(r)))
+        .collect();
     let ancestors: Vec<String> = e
         .isup
         .iter()
@@ -99,7 +105,11 @@ pub fn section_for(
     let mut rel_bits: Vec<String> = Vec::new();
     let mut neighbour_order: Vec<String> = Vec::new();
     for (rt, targets) in rel_items(e) {
-        let tslugs: Vec<String> = targets.iter().take(REL_CAP).map(|t| ref_to_slug(t)).collect();
+        let tslugs: Vec<String> = targets
+            .iter()
+            .take(REL_CAP)
+            .map(|t| ref_to_slug(t))
+            .collect();
         let titles: Vec<String> = tslugs.iter().map(|t| idx.title_of(t)).collect();
         rel_bits.push(format!("{rt}: {}", titles.join(", ")));
         neighbour_order.extend(tslugs);
@@ -130,24 +140,47 @@ pub fn section_for(
     }
 
     // Landscape prose last, so the end-trimming clamp keeps structural facts.
-    if let Some(cl) = prose_entry.and_then(|p| p.cl.as_ref()).filter(|s| !s.is_empty()) {
-        lines.push(format!("landscape: {}", truncate(cl.trim(), PROSE_CL_CHARS)));
+    if let Some(cl) = prose_entry
+        .and_then(|p| p.cl.as_ref())
+        .filter(|s| !s.is_empty())
+    {
+        lines.push(format!(
+            "landscape: {}",
+            truncate(cl.trim(), PROSE_CL_CHARS)
+        ));
     }
 
     lines.join("\n")
 }
 
+/// What survived `_clamp`: the block, and HOW MANY leading sections made it.
+///
+/// The count is what lets the grounding contract report `injected` per seed as
+/// a fact rather than an assumption — sections are built one-per-seed in seed
+/// order, and the clamp only ever trims from the END, so seeds `0..kept` are
+/// exactly the ones that were served.
+#[derive(Debug, Clone)]
+pub struct Clamped {
+    pub text: String,
+    pub kept: usize,
+}
+
 /// `_clamp` — trim whole sections from the end until the block fits the budget.
+/// The returned `text` is byte-identical to the pre-contract `clamp`; only the
+/// survivor count is new.
 #[must_use]
-pub fn clamp(sections: &[String], budget_tokens: usize) -> String {
+pub fn clamp(sections: &[String], budget_tokens: usize) -> Clamped {
     let mut kept = sections.len();
     while kept > 0 {
         let body = sections[..kept].join("\n\n");
         let text = format!("{HEADER}\n{body}\n{FOOTER}");
         if est_tokens(&text) <= budget_tokens {
-            return text;
+            return Clamped { text, kept };
         }
         kept -= 1;
     }
-    String::new()
+    Clamped {
+        text: String::new(),
+        kept: 0,
+    }
 }

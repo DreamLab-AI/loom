@@ -16,9 +16,20 @@
 #![allow(clippy::wildcard_imports)]
 
 pub mod error;
+pub mod grounding;
 pub mod model;
 pub mod ports;
 
 pub use error::LoomError;
+pub use grounding::*;
 pub use model::*;
 pub use ports::*;
+
+// Test modules live beside their subject but in their own files, so no source
+// file in this crate crosses the 500-line ceiling.
+#[cfg(test)]
+#[path = "grounding_tests.rs"]
+mod grounding_tests;
+#[cfg(test)]
+#[path = "model_tests.rs"]
+mod model_tests;

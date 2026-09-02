@@ -83,7 +83,11 @@ fn write(dir: &TempDir, name: &str, content: &str) {
 #[tokio::test]
 async fn generation_store_prefers_build_manifest() {
     let dir = TempDir::new().unwrap();
-    write(&dir, "scaffold-index.json", r#"{"generated":"S","counts":{"classes":7}}"#);
+    write(
+        &dir,
+        "scaffold-index.json",
+        r#"{"generated":"S","counts":{"classes":7}}"#,
+    );
     write(
         &dir,
         ".generation.json",
@@ -104,7 +108,11 @@ async fn generation_store_prefers_build_manifest() {
 #[tokio::test]
 async fn generation_store_falls_to_mirror_manifest() {
     let dir = TempDir::new().unwrap();
-    write(&dir, "scaffold-index.json", r#"{"generated":"S","counts":{"classes":7}}"#);
+    write(
+        &dir,
+        "scaffold-index.json",
+        r#"{"generated":"S","counts":{"classes":7}}"#,
+    );
     write(
         &dir,
         ".generation.json",
@@ -121,7 +129,11 @@ async fn generation_store_falls_to_mirror_manifest() {
 #[tokio::test]
 async fn generation_store_falls_to_scaffold_index() {
     let dir = TempDir::new().unwrap();
-    write(&dir, "scaffold-index.json", r#"{"generated":"2026-08-09T00:00:00Z","counts":{"classes":7}}"#);
+    write(
+        &dir,
+        "scaffold-index.json",
+        r#"{"generated":"2026-08-09T00:00:00Z","counts":{"classes":7}}"#,
+    );
     let store = MirrorStore::new(&dir.path().join("scaffold-index.json").to_string_lossy());
     let g = store.current();
     assert_eq!(g.source, GenerationSource::ScaffoldIndex);
@@ -134,7 +146,11 @@ async fn generation_store_falls_to_scaffold_index() {
 async fn verify_atomicity_flags_a_tampered_artifact() {
     let dir = TempDir::new().unwrap();
     // A manifest recording a sha that does NOT match the on-disk artifact.
-    write(&dir, "scaffold-index.json", r#"{"generated":"S","counts":{"classes":7}}"#);
+    write(
+        &dir,
+        "scaffold-index.json",
+        r#"{"generated":"S","counts":{"classes":7}}"#,
+    );
     write(&dir, "ontology-corpus.rvdb", "pretend-vector-bytes");
     write(
         &dir,
@@ -152,7 +168,11 @@ async fn verify_atomicity_flags_a_tampered_artifact() {
 #[tokio::test]
 async fn verify_atomicity_ok_without_manifest() {
     let dir = TempDir::new().unwrap();
-    write(&dir, "scaffold-index.json", r#"{"generated":"S","counts":{"classes":7}}"#);
+    write(
+        &dir,
+        "scaffold-index.json",
+        r#"{"generated":"S","counts":{"classes":7}}"#,
+    );
     let store = MirrorStore::new(&dir.path().join("scaffold-index.json").to_string_lossy());
     // No .generation.json ⇒ nothing promoted to verify ⇒ Ok (fail-open).
     assert!(store.verify_atomicity().await.is_ok());

@@ -222,14 +222,26 @@ Score A and B with the SAME scorer/judge, then read two signals:
 
 1. **Quality delta** — recall/quality should be *unchanged* on strong on-ontology
    questions (those keep full budget) and must not regress on the set overall.
-2. **Efficiency / interference** — per-answer `loom.grounding` reports `top_score`
-   and `effective_budget`; on weak / off-ontology questions B should show a lower
-   `effective_budget` (or `injected=false`), i.e. fewer injected tokens for equal
-   or better answers. That reduction is the context-interference the switch avoids.
+2. **Efficiency / interference** — per-answer `loom.grounding` reports `top_score`,
+   `confidence`, `decision` and `effective_budget` (ADR-138; always present, engaged
+   or not). On weak / off-ontology questions B should show `decision: "skipped"` or a
+   lower `effective_budget`, i.e. fewer injected tokens for equal or better answers.
+   That reduction is the context-interference the switch avoids. Read the aggregate
+   straight off the node: `/health.confidence` is a rolling 1,000-request window of
+   `engaged` / `skipped` / `scaled` / `full` / `verbatim` / `mean_confidence`, so an
+   A/B arm can be summarised without re-parsing every answer.
 
 Keep `--budget` and `LOOM_STRONG_MATCH_SCORE`/`LOOM_MIN_INJECT_SCORE`/
 `LOOM_MIN_INJECT_FRACTION` fixed across A and B so the only variable is the master
-switch. Unit coverage for the gate/scaling math: `tests/test_confidence_injection.py`.
+switch — `deploy/compose.profile-a.yml` now pins all three at their code defaults for
+exactly this reason, and `/health.injection_policy` echoes what the node is actually
+running (do not trust the compose file alone; read it back).
+
+Coverage for the gate/scaling math and the surfaced contract:
+`cargo test -q -p loom-facade` (the `loom-scaffold` policy unit tests) and
+`cargo test -q -p loom-facade --test contract_live` against a running node. The old
+`tests/test_confidence_injection.py` reference was stale — no such file exists in
+this repo; the Python evaluators were retired to Rust bins on 2026-09-02.
 
 ### Status — verified live, A/B pending (2026-08-11)
 

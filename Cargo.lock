@@ -1563,6 +1563,7 @@ dependencies = [
  "loom-graph-oxigraph",
  "loom-scaffold",
  "loom-vector-ruvector",
+ "reqwest",
  "serde",
  "serde_json",
  "sha2 0.10.9",

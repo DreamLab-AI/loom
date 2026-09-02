@@ -77,7 +77,10 @@ async fn scaffold_merged_into_system_message_and_annotated() {
     // Merged into the EXISTING system message (still 2 messages, not 3).
     assert_eq!(msgs.len(), 2, "scaffold merged, not inserted: {forwarded}");
     let sys = msgs[0]["content"].as_str().unwrap();
-    assert!(sys.starts_with("You are helpful."), "existing preserved: {sys}");
+    assert!(
+        sys.starts_with("You are helpful."),
+        "existing preserved: {sys}"
+    );
     // The ontology block is present EXACTLY once (merged, not duplicated).
     assert_eq!(sys.matches("[ONTOLOGY CONTEXT]").count(), 1, "sys: {sys}");
     assert!(sys.contains("Knowledge Graph"));
@@ -175,4 +178,144 @@ async fn backend_failure_propagates_502() {
     assert_eq!(body["error"], json!("backend_http"));
     assert_eq!(body["upstream_status"], json!(500));
     assert!(body["detail"].as_str().unwrap().contains("model exploded"));
+}
+
+// --- the confidence contract on the chat path -------------------------------
+
+/// The nine contract keys every `loom.grounding` block carries, engaged or not.
+const GROUNDING_KEYS: [&str; 9] = [
+    "signal",
+    "top_score",
+    "score_scale",
+    "confidence",
+    "decision",
+    "threshold",
+    "effective_budget",
+    "engaged",
+    "seeds",
+];
+
+#[tokio::test]
+async fn chat_grounding_present_when_engaged() {
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/chat/completions"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({
+            "id": "cmpl-1",
+            "object": "chat.completion",
+            "choices": [{ "message": { "role": "assistant", "content": "ok" } }]
+        })))
+        .mount(&server)
+        .await;
+
+    let env = TestEnvBuilder::new()
+        .with_backend(backend_to(&server, 0))
+        .build();
+
+    let (status, body) = call(
+        env.router(),
+        "POST",
+        "/v1/chat/completions",
+        Some(json!({ "messages": [{ "role": "user", "content": PROMPT }] })),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+
+    let g = &body["loom"]["grounding"];
+    assert!(g.is_object(), "grounding is an object when engaged: {body}");
+    for key in GROUNDING_KEYS {
+        assert!(g.get(key).is_some(), "grounding missing {key}: {g}");
+    }
+    assert_eq!(g["signal"], json!("lexical"));
+    assert_eq!(g["score_scale"], json!("lexical-additive"));
+    assert_eq!(g["engaged"], json!(true));
+    assert_ne!(g["decision"], json!("skipped"));
+    assert!(g["seeds"].as_array().is_some_and(|s| !s.is_empty()));
+    // fusion_path keeps its CamelCase audit form beside the lowercase contract.
+    assert_eq!(body["loom"]["fusion_path"], json!("LexicalHit"));
+}
+
+#[tokio::test]
+async fn chat_grounding_present_when_not_engaged() {
+    // The case the pre-contract shape could not express: nothing matched, the
+    // prompt was delegated raw, and the telemetry says so instead of `null`.
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/chat/completions"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({
+            "id": "cmpl-2",
+            "object": "chat.completion",
+            "choices": [{ "message": { "role": "assistant", "content": "flip them once." } }]
+        })))
+        .mount(&server)
+        .await;
+
+    let env = TestEnvBuilder::new()
+        .with_backend(backend_to(&server, 0))
+        .build();
+
+    let (status, body) = call(
+        env.router(),
+        "POST",
+        "/v1/chat/completions",
+        Some(json!({
+            "messages": [{ "role": "user", "content": "how do I make banana pancakes" }]
+        })),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+
+    let g = &body["loom"]["grounding"];
+    assert!(!g.is_null(), "grounding must NEVER be null: {body}");
+    assert!(g.is_object(), "grounding is an object on a miss: {body}");
+    for key in GROUNDING_KEYS {
+        assert!(g.get(key).is_some(), "grounding missing {key}: {g}");
+    }
+    assert_eq!(g["signal"], json!("none"));
+    assert_eq!(g["decision"], json!("skipped"));
+    assert_eq!(g["engaged"], json!(false));
+    assert_eq!(g["confidence"], json!(0.0));
+    assert_eq!(g["seeds"], json!([]));
+    // `top_score`/`effective_budget` are OPTIONS: a miss has neither, and says
+    // so with an explicit null rather than a 0 a reader could mistake for a real
+    // score. Presence itself is covered by the GROUNDING_KEYS loop above.
+    assert!(g["top_score"].is_null(), "top_score null on a miss: {g}");
+    assert!(
+        g["effective_budget"].is_null(),
+        "effective_budget null on a miss: {g}"
+    );
+
+    // Nothing was injected: the forwarded body is the raw prompt.
+    let reqs = server.received_requests().await.unwrap();
+    let forwarded: Value = reqs[0].body_json().unwrap();
+    let msgs = forwarded["messages"].as_array().unwrap();
+    assert_eq!(msgs.len(), 1, "no scaffold merged: {forwarded}");
+    assert_eq!(body["loom"]["injected_tokens"], json!(0));
+}
+
+#[tokio::test]
+async fn chat_verbatim_grounding_reports_the_verbatim_threshold() {
+    // On the verbatim path the DECISION and the THRESHOLD both change: the bar
+    // cleared was the verbatim threshold, not the injection floor, and saying
+    // "full" there would misreport which gate ran.
+    let env = TestEnvBuilder::new().with_verbatim(true, 8.0).build();
+
+    let (status, body) = call(
+        env.router(),
+        "POST",
+        "/v1/chat/completions",
+        Some(json!({ "messages": [{ "role": "user", "content": PROMPT }] })),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+
+    let loom = &body["loom"];
+    assert_eq!(loom["served_mode"], json!("verbatim"));
+    let g = &loom["grounding"];
+    assert_eq!(g["decision"], json!("verbatim"));
+    assert_eq!(g["threshold"], json!(8.0));
+    assert_eq!(g["engaged"], json!(true));
+    // Retrieval axis untouched — a verbatim serve still arrived lexically.
+    assert_eq!(g["signal"], json!("lexical"));
+    assert_eq!(loom["fusion_path"], json!("LexicalHit"));
 }

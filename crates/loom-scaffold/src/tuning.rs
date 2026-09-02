@@ -32,7 +32,8 @@ pub const PROSE_DEF_CHARS: usize = 900; // full-definition chars used per seed
 pub const HEADER: &str = "[ONTOLOGY CONTEXT]";
 pub const FOOTER: &str = "[END ONTOLOGY CONTEXT]";
 
-pub const SYSTEM_PREAMBLE: &str = "The following ontology context was retrieved from a curated knowledge \
+pub const SYSTEM_PREAMBLE: &str =
+    "The following ontology context was retrieved from a curated knowledge \
 graph. Where it is relevant to the user's request, treat it as ground \
 truth for definitions and relationships between the concepts it covers. \
 Where it is not relevant, ignore it and answer normally.";

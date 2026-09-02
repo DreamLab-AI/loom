@@ -4,7 +4,7 @@
 //!
 //!   lexical primary → gate short-circuit (NO embed on a hit) → enabled+ready+
 //!   generation-parity guard → embed → nearest → union-dedupe-by-IRI → the SAME
-//!   gate via `assemble` → `Scaffold::empty` on no-match.
+//!   gate via `assemble` → `Scaffold::empty_with_grounding` on no-match.
 //!
 //! Invariant I-P1 checkpoints, made structural:
 //! - a lexical hit takes the hot path and NEVER calls the embedder (network-free);
@@ -20,7 +20,7 @@
 //! are matched, not `?`-propagated. Only the lexical primary (`seeds`) and the
 //! gate (`assemble`) propagate — the lexical index is the hard floor.
 
-use loom_domain::{ConceptMatch, FusionPath, Iri, LoomError, Scaffold, ScaffoldOpts};
+use loom_domain::{ConceptMatch, FusionPath, Grounding, Iri, LoomError, Scaffold, ScaffoldOpts};
 
 use crate::state::AppState;
 
@@ -89,9 +89,13 @@ pub async fn build_scaffold(
     }
 
     // (5) NO MATCH — empty scaffold; the caller falls back to the raw prompt.
-    Ok(Scaffold::empty(
+    //     The grounding is built from THIS node's gate rather than the domain's
+    //     compiled-in default, so the `threshold` a consumer reads on a miss is
+    //     the number that actually judged the request.
+    Ok(Scaffold::empty_with_grounding(
         FusionPath::NoMatch,
         state.retriever.generation(),
+        Grounding::none(state.policy.min_inject_score),
     ))
 }
 

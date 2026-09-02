@@ -8,6 +8,11 @@
 #   docker compose -f loom/deploy/compose.profile-a.yml up -d
 #   curl http://127.0.0.1:8084/health          # facade
 #   curl http://127.0.0.1:8085/health          # loom-model (Qwen3.8-27B, separate unit)
+#
+# Verify the confidence gate is actually surfaced (ADR-138) — a REDEPLOY of this
+# container is required before either of these can pass:
+#   curl -s http://127.0.0.1:8084/health | cargo run -q -p loom-facade --bin confidence-check
+#   LOOM_URL=http://127.0.0.1:8084 cargo test -q -p loom-facade --test contract_live
 services:
   loom:
     image: loom:rust
@@ -24,6 +29,19 @@ services:
       # Reasoning backends truncate to empty below 1536 max_tokens (§10 the 400→empty trap).
       LOOM_MIN_MAX_TOKENS: "1536"
       ONTOLOGY_BUDGET: "1500"
+      # --- the confidence gate, EXPLICIT (ADR-138) -------------------------------
+      # The gate was documented as on for this profile but never actually set here,
+      # so the reference deployment ran with the repo default (OFF) — the doc/deploy
+      # mismatch the 2026-09-02 dream cycle found. All four are now stated, and the
+      # three thresholds are pinned at the code defaults (loom-scaffold tuning.rs:
+      # EXACT_TITLE_WEIGHT 8.0, MIN_SEED_SCORE 2.0, MIN_INJECT_FRACTION 0.4) so the
+      # A/B in bench/UPLIFT-BENCH-PROTOCOL.md varies ONLY the master switch.
+      # `confidence` = clamp(top_score / LOOM_STRONG_MATCH_SCORE, 0, 1) on the
+      # lexical-additive scale; /health.injection_policy echoes all four back.
+      LOOM_CONFIDENCE_INJECTION: "1"
+      LOOM_STRONG_MATCH_SCORE: "8.0"
+      LOOM_MIN_INJECT_SCORE: "2.0"
+      LOOM_MIN_INJECT_FRACTION: "0.4"
       # --- findings-driven serving features (paper measured on THIS node) --------
       # F1 verbatim serving: for a delivery-lookup on a HIGH-confidence scaffold,
       # serve the curated markdown directly (no 60–170s generative re-encode of a

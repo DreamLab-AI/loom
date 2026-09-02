@@ -166,7 +166,9 @@ fn rfind_seq(hay: &[char], needle: &[char]) -> Option<usize> {
         return None;
     }
     let last = hay.len() - needle.len();
-    (0..=last).rev().find(|&i| &hay[i..i + needle.len()] == needle)
+    (0..=last)
+        .rev()
+        .find(|&i| &hay[i..i + needle.len()] == needle)
 }
 
 impl ScaffoldIndex {
@@ -185,9 +187,15 @@ impl ScaffoldIndex {
         let slugs: Vec<String> = classes.keys().cloned().collect();
 
         for (slug, entry) in &classes {
-            let title = entry.t.clone().filter(|t| !t.is_empty()).unwrap_or_else(|| slug.clone());
+            let title = entry
+                .t
+                .clone()
+                .filter(|t| !t.is_empty())
+                .unwrap_or_else(|| slug.clone());
             // setdefault: first insertion wins.
-            by_title.entry(slugify(&title)).or_insert_with(|| slug.clone());
+            by_title
+                .entry(slugify(&title))
+                .or_insert_with(|| slug.clone());
             let words = find_words(&title);
             title_len.insert(slug.clone(), words.len().max(1));
             for w in words {
@@ -247,7 +255,11 @@ impl ScaffoldIndex {
     #[must_use]
     pub fn title_of(&self, slug: &str) -> String {
         match self.classes.get(slug) {
-            Some(e) => e.t.clone().filter(|t| !t.is_empty()).unwrap_or_else(|| slug.to_owned()),
+            Some(e) => {
+                e.t.clone()
+                    .filter(|t| !t.is_empty())
+                    .unwrap_or_else(|| slug.to_owned())
+            }
             None => slug.to_owned(),
         }
     }

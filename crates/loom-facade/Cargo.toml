@@ -16,6 +16,22 @@ path = "src/lib.rs"
 name = "loom-facade"
 path = "src/main.rs"
 
+# --- dream-cycle evaluators (ADR-138) ---------------------------------------
+# Small stdin-driven checkers, run by dream.config.json evaluatorEntrypoints.
+# They live in THIS crate so they can adopt the facade's typed `/health` structs
+# as those land; they pull in no extra dependency of their own.
+[[bin]]
+name = "confidence-check"
+path = "src/bin/confidence_check.rs"
+
+[[bin]]
+name = "graph-check"
+path = "src/bin/graph_check.rs"
+
+[[bin]]
+name = "generation-check"
+path = "src/bin/generation_check.rs"
+
 [dependencies]
 loom-domain = { path = "../loom-domain" }
 # The adapters — the composition root binds one concrete impl per port.
@@ -47,6 +63,9 @@ tempfile = "3"
 tokio = { workspace = true }
 serde_json = { workspace = true }
 http-body-util = "0.1"
+# `tests/contract_live.rs` probes a RUNNING facade over real HTTP (LOOM_URL);
+# the oneshot router tests need no client, this one does.
+reqwest = { workspace = true }
 
 [lints]
 workspace = true

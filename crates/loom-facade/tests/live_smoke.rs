@@ -79,14 +79,21 @@ fn live_state(backend: OpenAiBackend) -> AppState {
 async fn live_health_reports_real_corpus() {
     let state = live_state(OpenAiBackend::new("", Duration::from_secs(5), 1536));
     let (status, body) = call(build_router(state), "GET", "/health", None).await;
-    eprintln!("[live] /health = {}", serde_json::to_string_pretty(&body).unwrap());
+    eprintln!(
+        "[live] /health = {}",
+        serde_json::to_string_pretty(&body).unwrap()
+    );
     assert_eq!(status, StatusCode::OK);
 
     assert_eq!(body["index_classes"], json!(8146), "expected 8,146 classes");
     assert_eq!(body["graph"]["available"], json!(true));
     let triples = body["graph"]["triples"].as_u64().unwrap();
     assert!(triples > 250_000, "expected ≈282k triples, got {triples}");
-    assert_eq!(body["semantic"]["ready"], json!(true), "rvdb artifact present");
+    assert_eq!(
+        body["semantic"]["ready"],
+        json!(true),
+        "rvdb artifact present"
+    );
 }
 
 #[tokio::test]
@@ -104,7 +111,11 @@ async fn live_scaffold_engages() {
     assert_eq!(body["engaged"], json!(true));
     let block = body["scaffold"].as_str().unwrap();
     eprintln!("[live] scaffold approx_tokens={}", body["approx_tokens"]);
-    assert!(block.contains("Knowledge Graph"), "block head: {}", &block[..block.len().min(200)]);
+    assert!(
+        block.contains("Knowledge Graph"),
+        "block head: {}",
+        &block[..block.len().min(200)]
+    );
 }
 
 #[tokio::test]
@@ -137,7 +148,11 @@ async fn live_chat_delegates_to_wiremock_and_annotates() {
         .mount(&server)
         .await;
 
-    let backend = OpenAiBackend::new(format!("{}/v1", server.uri()), Duration::from_secs(10), 1536);
+    let backend = OpenAiBackend::new(
+        format!("{}/v1", server.uri()),
+        Duration::from_secs(10),
+        1536,
+    );
     let state = live_state(backend);
 
     let (status, body) = call(
