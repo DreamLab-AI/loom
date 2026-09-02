@@ -13,9 +13,7 @@ use crate::index::{ref_to_slug, slugify, ClassEntry, RawIndex, ScaffoldIndex};
 use crate::match_::match_seeds;
 use crate::policy::InjectionPolicy;
 use crate::tuning::{FOOTER, HEADER, SYSTEM_PREAMBLE};
-use crate::{
-    assemble_block, scaffold_block, scaffold_messages, LexicalRetriever, ScaffoldOutcome,
-};
+use crate::{assemble_block, scaffold_block, scaffold_messages, LexicalRetriever, ScaffoldOutcome};
 
 // --- fixtures ----------------------------------------------------------------
 
@@ -52,7 +50,10 @@ fn slugify_kebab_case() {
 
 #[test]
 fn iri_ref_to_slug() {
-    assert_eq!(ref_to_slug("urn:ngm:class:graph-database"), "graph-database");
+    assert_eq!(
+        ref_to_slug("urn:ngm:class:graph-database"),
+        "graph-database"
+    );
 }
 
 // --- link + seed + expand + serialise (selftest) ----------------------------
@@ -60,19 +61,28 @@ fn iri_ref_to_slug() {
 #[test]
 fn block_has_wrapper() {
     let block = scaffold(&fixture_index(), DEFAULT_PROMPT);
-    assert!(block.starts_with(HEADER) && block.ends_with(FOOTER), "{block}");
+    assert!(
+        block.starts_with(HEADER) && block.ends_with(FOOTER),
+        "{block}"
+    );
 }
 
 #[test]
 fn seed_section_present() {
     let block = scaffold(&fixture_index(), DEFAULT_PROMPT);
-    assert!(block.contains("## Knowledge Graph (ai, maturity: mature)"), "{block}");
+    assert!(
+        block.contains("## Knowledge Graph (ai, maturity: mature)"),
+        "{block}"
+    );
 }
 
 #[test]
 fn is_a_line_present() {
     let block = scaffold(&fixture_index(), DEFAULT_PROMPT);
-    assert!(block.contains("is-a: Graph; ancestors: Data Structure"), "{block}");
+    assert!(
+        block.contains("is-a: Graph; ancestors: Data Structure"),
+        "{block}"
+    );
 }
 
 #[test]
@@ -115,7 +125,10 @@ fn hops0_suppresses_neighbour_defs() {
 
 #[test]
 fn irrelevant_prompt_empty() {
-    assert_eq!(scaffold(&fixture_index(), "best sourdough starter recipe"), "");
+    assert_eq!(
+        scaffold(&fixture_index(), "best sourdough starter recipe"),
+        ""
+    );
 }
 
 #[test]
@@ -214,14 +227,20 @@ fn messages_no_match_unchanged() {
 fn golden_default_byte_identical() {
     let block = scaffold_opts(&fixture_index(), DEFAULT_PROMPT, 1500, 1);
     let golden = workspace_file("tests/golden-python/golden_default.txt");
-    assert_eq!(block, golden, "default scaffold must be byte-identical to Python");
+    assert_eq!(
+        block, golden,
+        "default scaffold must be byte-identical to Python"
+    );
 }
 
 #[test]
 fn golden_hops0_byte_identical() {
     let block = scaffold_opts(&fixture_index(), DEFAULT_PROMPT, 1500, 0);
     let golden = workspace_file("tests/golden-python/golden_hops0.txt");
-    assert_eq!(block, golden, "hops=0 scaffold must be byte-identical to Python");
+    assert_eq!(
+        block, golden,
+        "hops=0 scaffold must be byte-identical to Python"
+    );
 }
 
 #[test]
@@ -255,7 +274,10 @@ async fn golden_default_via_port_api() {
         k_semantic: 5,
         path: FusionPath::LexicalHit,
     };
-    let scaffold = retriever.assemble(DEFAULT_PROMPT, &seeds, opts).await.unwrap();
+    let scaffold = retriever
+        .assemble(DEFAULT_PROMPT, &seeds, opts)
+        .await
+        .unwrap();
     let golden = workspace_file("tests/golden-python/golden_default.txt");
     assert_eq!(scaffold.block, golden);
     assert!(scaffold.engaged);
@@ -265,76 +287,6 @@ async fn golden_default_via_port_api() {
     assert_eq!(scaffold.seeds[0].iri.slug(), "knowledge-graph");
     assert_eq!(scaffold.seeds[1].iri.slug(), "graph-database");
     assert_eq!(scaffold.seeds[2].iri.slug(), "graph");
-}
-
-// --- EXP-003: confidence-gate math parity -----------------------------------
-
-fn policy(ci: bool, strong: f64, min: f64, frac: f64) -> InjectionPolicy {
-    InjectionPolicy {
-        confidence_injection: ci,
-        strong_match_score: strong,
-        min_inject_score: min,
-        min_inject_fraction: frac,
-    }
-}
-
-#[test]
-fn gate_off_returns_full_budget_regardless_of_score() {
-    let p = policy(false, 8.0, 2.0, 0.4);
-    // injection off ⇒ Python baseline: full budget whenever any seed matched.
-    assert_eq!(p.effective_budget(0.0, 1500), Some(1500));
-    assert_eq!(p.effective_budget(19.5, 1500), Some(1500));
-    assert_eq!(p.effective_budget(2.0, 1500), Some(1500));
-}
-
-#[test]
-fn gate_on_below_min_skips() {
-    let p = policy(true, 8.0, 2.0, 0.4);
-    // top below MIN_INJECT_SCORE ⇒ skip injection entirely.
-    assert_eq!(p.effective_budget(1.99, 1500), None);
-    assert_eq!(p.effective_budget(0.0, 1500), None);
-}
-
-#[test]
-fn gate_on_at_or_above_strong_full_budget() {
-    let p = policy(true, 8.0, 2.0, 0.4);
-    // ratio >= 1.0 ⇒ frac clamped to 1.0 ⇒ full budget.
-    assert_eq!(p.effective_budget(8.0, 1500), Some(1500));
-    assert_eq!(p.effective_budget(19.5, 1500), Some(1500));
-}
-
-#[test]
-fn gate_on_midrange_scales_budget() {
-    let p = policy(true, 8.0, 2.0, 0.4);
-    // top=4.0, strong=8.0 ⇒ frac=0.5 (exact) ⇒ 1500*0.5 = 750.
-    assert_eq!(p.effective_budget(4.0, 1500), Some(750));
-    // top=6.0 ⇒ frac=0.75 (exact) ⇒ 1125.
-    assert_eq!(p.effective_budget(6.0, 1500), Some(1125));
-}
-
-#[test]
-fn gate_on_fraction_floor_clamps() {
-    let p = policy(true, 8.0, 2.0, 0.4);
-    // top=2.0 (== min) ⇒ ratio 0.25 < 0.4 ⇒ clamp UP to 0.4, not 0.25.
-    let eff = p.effective_budget(2.0, 1500).unwrap();
-    // identical f64 path to Python's int(1500*0.4); NOT the un-clamped 375.
-    assert_eq!(eff, (1500.0_f64 * 0.4) as usize);
-    assert_ne!(eff, (1500.0_f64 * 0.25) as usize);
-}
-
-#[test]
-fn gate_on_strong_zero_avoids_div() {
-    let p = policy(true, 0.0, 2.0, 0.4);
-    // strong_match_score <= 0 ⇒ frac stays 1.0 (Python guards the divide).
-    assert_eq!(p.effective_budget(5.0, 1500), Some(1500));
-}
-
-#[test]
-fn gate_on_min_one_budget_floor() {
-    let p = policy(true, 8.0, 0.1, 0.4);
-    // tiny requested budget ⇒ max(1, floor) keeps at least 1 token.
-    assert_eq!(p.effective_budget(1.0, 1), Some(1));
-    assert_eq!(p.effective_budget(1.0, 2), Some(1)); // int(2*0.4)=0 → max(1,0)=1
 }
 
 // --- EXP-010: match() performance gate --------------------------------------
@@ -459,7 +411,10 @@ fn real_index_smoke_when_present() {
     let policy = InjectionPolicy::default();
     let ScaffoldOutcome { block, .. } =
         scaffold_block(&idx, "knowledge graph", 1500, 4, 1, false, None, &policy);
-    assert!(!block.is_empty(), "'knowledge graph' must engage the scaffold");
+    assert!(
+        !block.is_empty(),
+        "'knowledge graph' must engage the scaffold"
+    );
     assert!(block.starts_with(HEADER) && block.ends_with(FOOTER));
 }
 

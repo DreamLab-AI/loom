@@ -22,12 +22,18 @@
 #![allow(clippy::cast_sign_loss)]
 
 pub mod exposure;
+pub mod grounding;
 pub mod index;
 pub mod match_;
+pub mod messages;
 pub mod policy;
 pub mod prose;
 pub mod serialise;
 pub mod tuning;
+
+// The chat-merge helpers moved to `messages` for file-size discipline; their
+// crate-root paths are part of the published surface, so re-export them.
+pub use messages::{message_text, scaffold_messages};
 
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -36,23 +42,28 @@ use std::sync::OnceLock;
 use async_trait::async_trait;
 
 use loom_domain::{
-    CanonicalUnit, ConceptMatch, CorpusNature, Generation, GenerationId, GenerationSource, Iri,
-    LexicalIndex, LoomError, MatchProvenance, Relation, RelationKind, Scaffold, ScaffoldOpts,
+    CanonicalUnit, ConceptMatch, CorpusNature, FusionPath, Generation, GenerationId,
+    GenerationSource, Grounding, GroundingSignal, Iri, LexicalIndex, LoomError, MatchProvenance,
+    Relation, RelationKind, Scaffold, ScaffoldOpts,
 };
 
+use crate::grounding::lexical_grounding;
 use crate::index::{est_tokens, ref_to_slug, ScaffoldIndex};
 use crate::match_::match_seeds;
-use crate::policy::InjectionPolicy;
+use crate::policy::{decide, GatePolicy};
 use crate::prose::{load_prose, ProseIndex};
 use crate::serialise::{clamp, section_for};
 use crate::tuning::{
     DEFAULT_INDEX_PATH, DEFAULT_PROSE_PATH, ENV_INDEX_VAR, ENV_PROSE_VAR, PROSE_SEEDS,
-    SYSTEM_PREAMBLE,
 };
 
 // --- the scaffold pipeline (free functions — mirror Python `scaffold`) -------
 
-/// Telemetry mirror of Python's `meta_out`, plus the assembled block.
+/// Telemetry mirror of Python's `meta_out`, plus the assembled block and the
+/// typed grounding contract (PRD-026 FR-11). The flat `top_score` /
+/// `effective_budget` / `injected` fields are retained verbatim for existing
+/// callers; `grounding` is the self-describing form that also carries the score
+/// SCALE, the normalised confidence, the gate decision and per-seed detail.
 #[derive(Debug, Clone)]
 pub struct ScaffoldOutcome {
     pub block: String,
@@ -60,16 +71,20 @@ pub struct ScaffoldOutcome {
     pub seed_count: usize,
     pub effective_budget: usize,
     pub injected: bool,
+    pub grounding: Grounding,
 }
 
 impl ScaffoldOutcome {
-    fn nothing() -> Self {
+    /// Nothing matched at all — an honest zero grounding measured against the
+    /// gate that would have judged it.
+    fn nothing(gate: &GatePolicy) -> Self {
         Self {
             block: String::new(),
             top_score: 0.0,
             seed_count: 0,
             effective_budget: 0,
             injected: false,
+            grounding: Grounding::none(gate.min_inject_score),
         }
     }
 }
@@ -86,20 +101,23 @@ pub fn assemble_block(
     hops: usize,
     prose: bool,
     prose_index: Option<&ProseIndex>,
-    policy: &InjectionPolicy,
+    policy: &GatePolicy,
 ) -> ScaffoldOutcome {
     if seeds.is_empty() {
-        return ScaffoldOutcome::nothing();
+        return ScaffoldOutcome::nothing(policy);
     }
     let top_score = seeds[0].1;
+    let (decision, budget) = decide(Some(top_score), budget_tokens, policy);
     // Confidence gate skipped injection (top below MIN_INJECT_SCORE) ⇒ no block.
-    let Some(effective_budget) = policy.effective_budget(top_score, budget_tokens) else {
+    // The grounding still reports the score and the threshold it lost to.
+    let Some(effective_budget) = budget else {
         return ScaffoldOutcome {
             block: String::new(),
             top_score,
             seed_count: seeds.len(),
             effective_budget: 0,
             injected: false,
+            grounding: lexical_grounding(idx, seeds, policy, decision, None, 0, false),
         };
     };
 
@@ -124,13 +142,23 @@ pub fn assemble_block(
         })
         .collect();
 
-    let block = clamp(&sections, effective_budget);
+    let clamped = clamp(&sections, effective_budget);
+    let engaged = !clamped.text.is_empty();
     ScaffoldOutcome {
-        block,
+        block: clamped.text,
         top_score,
         seed_count: seeds.len(),
         effective_budget,
         injected: true,
+        grounding: lexical_grounding(
+            idx,
+            seeds,
+            policy,
+            decision,
+            Some(effective_budget),
+            clamped.kept,
+            engaged,
+        ),
     }
 }
 
@@ -146,96 +174,10 @@ pub fn scaffold_block(
     hops: usize,
     prose: bool,
     prose_index: Option<&ProseIndex>,
-    policy: &InjectionPolicy,
+    policy: &GatePolicy,
 ) -> ScaffoldOutcome {
     let seeds = match_seeds(idx, prompt, max_seeds);
     assemble_block(idx, &seeds, budget_tokens, hops, prose, prose_index, policy)
-}
-
-// --- scaffold_messages (OpenAI chat merge) ----------------------------------
-
-/// Extract plain text from an OpenAI message `content` (string or parts list).
-#[must_use]
-pub fn message_text(content: &serde_json::Value) -> String {
-    if let Some(s) = content.as_str() {
-        return s.to_owned();
-    }
-    if let Some(parts) = content.as_array() {
-        let texts: Vec<&str> = parts
-            .iter()
-            .filter(|p| p.get("type").and_then(serde_json::Value::as_str) == Some("text"))
-            .map(|p| {
-                p.get("text")
-                    .and_then(serde_json::Value::as_str)
-                    .unwrap_or("")
-            })
-            .collect();
-        return texts.join(" ");
-    }
-    String::new()
-}
-
-/// Scaffold an OpenAI chat `messages` array from its LAST user message. Returns a
-/// NEW array (input untouched). Merges the block into the first system message,
-/// else inserts one at position 0. Empty scaffold ⇒ messages returned unchanged.
-#[allow(clippy::too_many_arguments)]
-#[must_use]
-pub fn scaffold_messages(
-    idx: &ScaffoldIndex,
-    messages: &[serde_json::Value],
-    budget_tokens: usize,
-    max_seeds: usize,
-    hops: usize,
-    prose: bool,
-    prose_index: Option<&ProseIndex>,
-    policy: &InjectionPolicy,
-) -> Vec<serde_json::Value> {
-    let mut out: Vec<serde_json::Value> = messages.to_vec();
-    let last_user_text = out
-        .iter()
-        .rev()
-        .find(|m| m.get("role").and_then(serde_json::Value::as_str) == Some("user"))
-        .map(|m| message_text(m.get("content").unwrap_or(&serde_json::Value::Null)));
-    let Some(text) = last_user_text else {
-        return out;
-    };
-
-    let outcome = scaffold_block(
-        idx,
-        &text,
-        budget_tokens,
-        max_seeds,
-        hops,
-        prose,
-        prose_index,
-        policy,
-    );
-    if outcome.block.is_empty() {
-        return out;
-    }
-    let injection = format!("{SYSTEM_PREAMBLE}\n\n{}", outcome.block);
-
-    let sys_pos = out
-        .iter()
-        .position(|m| m.get("role").and_then(serde_json::Value::as_str) == Some("system"));
-    match sys_pos {
-        Some(i)
-            if out[i]
-                .get("content")
-                .and_then(serde_json::Value::as_str)
-                .is_some() =>
-        {
-            let existing = out[i]["content"].as_str().unwrap().trim_end().to_owned();
-            out[i]["content"] = serde_json::Value::String(format!("{existing}\n\n{injection}"));
-        }
-        _ => {
-            out.insert(
-                0,
-                serde_json::json!({"role": "system", "content": injection}),
-            );
-        }
-    }
-    out
 }
 
 // --- RelationKind mapping (camelCase scaffold key → domain kind) -------------
@@ -265,7 +207,7 @@ fn relation_kind_from_camel(key: &str) -> RelationKind {
 pub struct LexicalRetriever {
     index: ScaffoldIndex,
     prose: ProseIndex,
-    policy: InjectionPolicy,
+    policy: GatePolicy,
     generation: Generation,
 }
 
@@ -277,7 +219,7 @@ impl LexicalRetriever {
         Self {
             index,
             prose: ProseIndex::new(),
-            policy: InjectionPolicy::from_env(),
+            policy: GatePolicy::from_env(),
             generation,
         }
     }
@@ -300,7 +242,7 @@ impl LexicalRetriever {
         Ok(Self {
             index,
             prose,
-            policy: InjectionPolicy::from_env(),
+            policy: GatePolicy::from_env(),
             generation,
         })
     }
@@ -316,6 +258,36 @@ impl LexicalRetriever {
     #[must_use]
     pub fn index(&self) -> &ScaffoldIndex {
         &self.index
+    }
+
+    /// Correct the grounding `assemble_block` produced for the route the
+    /// candidates actually travelled.
+    ///
+    /// `assemble_block` only ever sees `(slug, score)` pairs, so it assumes the
+    /// lexical scale and the lexical provenance. Here we still hold the
+    /// `ConceptMatch`es, so we can stamp each seed's real provenance and — on
+    /// the semantic-fallback route — restate every confidence as the cosine it
+    /// is. Without this a `0.83` cosine would be read against a `strong_match`
+    /// of 8.0 and reported as 10% confident.
+    fn stamp_grounding(
+        &self,
+        mut grounding: Grounding,
+        candidates: &[ConceptMatch],
+        path: FusionPath,
+    ) -> Grounding {
+        for (seed, candidate) in grounding.seeds.iter_mut().zip(candidates) {
+            seed.provenance.clear();
+            seed.provenance.push_str(candidate.provenance.as_str());
+        }
+        match path {
+            FusionPath::SemanticFallback => {
+                grounding.with_signal(GroundingSignal::Semantic, self.policy.strong_match_score)
+            }
+            FusionPath::NoMatch if grounding.seeds.is_empty() => {
+                grounding.with_signal(GroundingSignal::None, self.policy.strong_match_score)
+            }
+            FusionPath::LexicalHit | FusionPath::NoMatch => grounding,
+        }
     }
 }
 
@@ -425,6 +397,7 @@ impl LexicalIndex for LexicalRetriever {
         };
         #[allow(clippy::cast_possible_truncation)]
         let top_score = outcome.top_score as f32;
+        let grounding = self.stamp_grounding(outcome.grounding, candidates, opts.path);
         Ok(Scaffold {
             block: outcome.block,
             engaged,
@@ -434,6 +407,7 @@ impl LexicalIndex for LexicalRetriever {
             effective_budget: outcome.effective_budget,
             fusion_path: opts.path,
             generation: self.generation.id.clone(),
+            grounding,
         })
     }
 
@@ -493,5 +467,9 @@ impl LexicalIndex for LexicalRetriever {
     }
 }
 
+#[cfg(test)]
+mod grounding_tests;
+#[cfg(test)]
+mod policy_tests;
 #[cfg(test)]
 mod tests;

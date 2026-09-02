@@ -39,12 +39,14 @@ impl MirrorStore {
         let data_dir = p
             .parent()
             .map_or_else(|| PathBuf::from("."), Path::to_path_buf);
-        let index_file = p
-            .file_name()
-            .map_or_else(|| "scaffold-index.json".to_owned(), |f| {
-                f.to_string_lossy().into_owned()
-            });
-        Self { data_dir, index_file }
+        let index_file = p.file_name().map_or_else(
+            || "scaffold-index.json".to_owned(),
+            |f| f.to_string_lossy().into_owned(),
+        );
+        Self {
+            data_dir,
+            index_file,
+        }
     }
 
     fn build_manifest(&self) -> Option<Generation> {
@@ -81,9 +83,7 @@ impl MirrorStore {
             generated_at,
             commit_sha: None,
             promoted_at: str_field(&m, "promoted_at"),
-            cluster_span_seconds: m
-                .get("cluster_span_seconds")
-                .and_then(Value::as_f64),
+            cluster_span_seconds: m.get("cluster_span_seconds").and_then(Value::as_f64),
             artifacts: parse_artifacts(&m),
             verified_single_generation: true,
             class_count: None,
@@ -92,9 +92,10 @@ impl MirrorStore {
 
     fn scaffold_index_stamp(&self) -> Generation {
         let path = self.data_dir.join(&self.index_file);
-        match std::fs::read_to_string(&path).ok().and_then(|s| {
-            serde_json::from_str::<Value>(&s).ok()
-        }) {
+        match std::fs::read_to_string(&path)
+            .ok()
+            .and_then(|s| serde_json::from_str::<Value>(&s).ok())
+        {
             Some(d) => {
                 let generated = str_field(&d, "generated");
                 let class_count = d
@@ -104,7 +105,9 @@ impl MirrorStore {
                     .and_then(|n| usize::try_from(n).ok());
                 Generation {
                     id: GenerationId(
-                        generated.clone().unwrap_or_else(|| "scaffold-index".to_owned()),
+                        generated
+                            .clone()
+                            .unwrap_or_else(|| "scaffold-index".to_owned()),
                     ),
                     source: GenerationSource::ScaffoldIndex,
                     generated_at: generated,
@@ -154,9 +157,8 @@ impl GenerationStore for MirrorStore {
         }
         for art in &gen.artifacts {
             let path = self.data_dir.join(&art.name);
-            let bytes = std::fs::read(&path).map_err(|e| {
-                LoomError::GenerationDrift(format!("{}: {e}", path.display()))
-            })?;
+            let bytes = std::fs::read(&path)
+                .map_err(|e| LoomError::GenerationDrift(format!("{}: {e}", path.display())))?;
             let got = hex_sha256(&bytes);
             if got != art.sha256 {
                 return Err(LoomError::GenerationDrift(format!(

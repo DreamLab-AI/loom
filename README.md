@@ -174,18 +174,66 @@ curl -sXPOST localhost:8084/v1/chat/completions \
   -d '{"model":"qwen3.8-27B","messages":[{"role":"user","content":"what is a rollup?"}],"max_tokens":1536}'
 ```
 
-The response of a grounded completion carries a `loom` block (`injected_tokens`, `mode`, `grounding`, `fusion_path`, `generation`) so consumers can account for the grounding and prove which corpus generation produced the answer.
+The response of a grounded completion carries a `loom` block (`injected_tokens`, `mode`, `grounding`, `fusion_path`, `generation`) so consumers can account for the grounding and prove which corpus generation produced the answer. `loom.grounding` is documented below and is present on every completion, engaged or not.
 
 ### Confidence-aware selective injection
 
 Grounding is only helpful when the query is actually on-ontology. Research on *contextual interference* shows that injected context can **displace** the model's own parametric knowledge — models over-rely on retrieved evidence even when it is weak or off-topic. Loom uses the retrieval score as the confidence signal: a strong exact-title hit gets the full scaffold budget; a loose match gets a proportionally smaller one; a below-threshold match is skipped entirely.
 
-| Env var | Default | Meaning |
-|---|---|---|
-| `LOOM_CONFIDENCE_INJECTION` | `0` (repo) / `1` (HP compose) | master switch |
-| `LOOM_STRONG_MATCH_SCORE` | `8.0` | at/above → full budget |
-| `LOOM_MIN_INJECT_SCORE` | `2.0` | below → skip injection entirely |
-| `LOOM_MIN_INJECT_FRACTION` | `0.4` | weakest kept match gets this fraction of budget |
+| Env var | Default | Set in `deploy/compose.profile-a.yml` | Meaning |
+|---|---|---|---|
+| `LOOM_CONFIDENCE_INJECTION` | `0` (off) | `1` | master switch |
+| `LOOM_STRONG_MATCH_SCORE` | `8.0` | `8.0` | at/above → full budget; also the `confidence` denominator |
+| `LOOM_MIN_INJECT_SCORE` | `2.0` | `2.0` | below → skip injection entirely |
+| `LOOM_MIN_INJECT_FRACTION` | `0.4` | `0.4` | weakest kept match gets this fraction of budget |
+
+> **Corrected 2026-09-02.** This table previously claimed the switch was `1` in the
+> HP compose. It was not: `deploy/compose.profile-a.yml` set none of these four
+> variables, so the reference deployment ran on the repo default (**off**). All
+> four are now set explicitly in that file, and `/health` echoes them back — so the
+> claim is checkable rather than asserted. **The HP container must be redeployed**
+> for the new values and the new `/health` blocks to take effect.
+
+#### The grounding block (the confidence surface)
+
+Every `POST /loom/scaffold` response carries a top-level `grounding` object, and
+every `POST /v1/chat/completions` response carries the same object at
+`loom.grounding`. It is **always present** — a skipped request reports a skip, it
+does not omit the block. `confidence` is `clamp(top_score / strong_match_score, 0, 1)`
+on the scale named by `score_scale`; a score is only comparable within its scale.
+
+```jsonc
+"grounding": {
+  "signal": "lexical",              // lexical | semantic | none
+  "top_score": 10.75,               // null when nothing matched
+  "score_scale": "lexical-additive",// lexical-additive | cosine
+  "confidence": 1.0,                // clamp(top_score / strong_match_score, 0, 1)
+  "decision": "full",               // full | scaled | skipped | verbatim
+  "threshold": 2.0,                 // the min_inject_score this was judged against
+  "effective_budget": 1500,         // null when skipped
+  "engaged": true,
+  "seeds": [
+    { "iri": "urn:ngm:class:rollup", "score": 10.75, "confidence": 1.0,
+      "quality": null, "provenance": "lexical", "injected": true }
+  ]
+}
+```
+
+`GET /health` gains three blocks that make the gate legible without a request:
+`injection_policy` (the four knobs above plus `score_scale`), `serving`
+(`verbatim_mode`, `verbatim_threshold`, `semantic_fallback`, `semantic_min_inject`)
+and `confidence` — a rolling 1,000-request window of `requests` / `engaged` /
+`skipped` / `scaled` / `full` / `verbatim` / `mean_confidence`.
+
+Three evaluators hold this contract (they are the `dream.config.json` entrypoints):
+
+```bash
+curl -s http://127.0.0.1:8084/health | cargo run -q -p loom-facade --bin confidence-check
+curl -s http://127.0.0.1:8084/health | cargo run -q -p loom-facade --bin graph-check
+LOOM_URL=http://127.0.0.1:8084 cargo test -q -p loom-facade --test contract_live
+```
+
+Rationale and the falsification that prompted it: [`docs/design/ADR-138-confidence-surfacing-contract.md`](docs/design/ADR-138-confidence-surfacing-contract.md).
 
 ### Findings-driven serving controls
 

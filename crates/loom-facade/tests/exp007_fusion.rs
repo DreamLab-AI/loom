@@ -44,7 +44,11 @@ async fn fallback_off_never_calls_vector_on_miss() {
     assert_eq!(status, StatusCode::OK);
     assert_eq!(body["engaged"], json!(false));
     assert_eq!(body["fusion_path"], json!("NoMatch"));
-    assert_eq!(env.vector_call_count(), 0, "fallback OFF must not call the vector index");
+    assert_eq!(
+        env.vector_call_count(),
+        0,
+        "fallback OFF must not call the vector index"
+    );
 }
 
 #[tokio::test]
@@ -91,7 +95,11 @@ async fn fallback_on_miss_flows_through_assemble_as_markdown() {
     )
     .await;
     assert_eq!(status, StatusCode::OK);
-    assert_eq!(env.vector_call_count(), 1, "the miss triggers exactly one ANN call");
+    assert_eq!(
+        env.vector_call_count(),
+        1,
+        "the miss triggers exactly one ANN call"
+    );
     assert_eq!(body["fusion_path"], json!("SemanticFallback"));
     assert_eq!(body["engaged"], json!(true));
 
@@ -100,7 +108,10 @@ async fn fallback_on_miss_flows_through_assemble_as_markdown() {
     assert!(block.contains("## Knowledge Graph"), "block: {block}");
     assert!(block.starts_with("[ONTOLOGY CONTEXT]"));
     // …and NEVER the raw cosine score the index surfaced.
-    assert!(!block.contains("0.95"), "raw score leaked into the served block: {block}");
+    assert!(
+        !block.contains("0.95"),
+        "raw score leaked into the served block: {block}"
+    );
 }
 
 #[tokio::test]

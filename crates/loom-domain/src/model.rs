@@ -3,6 +3,8 @@
 //! human-scrutible markdown-with-ontology block — is `CanonicalUnit`; every
 //! other type is a projection that resolves back to an `Iri` (Invariant I-P1).
 
+use crate::grounding::{Grounding, DEFAULT_MIN_INJECT_SCORE};
+
 // --- identity ---------------------------------------------------------------
 
 /// A concept-class IRI, e.g. `urn:ngm:class:knowledge-graph`. The addressing key
@@ -187,6 +189,19 @@ pub enum MatchProvenance {
     SemanticHnsw,
 }
 
+impl MatchProvenance {
+    /// The lower-case wire spelling used inside `SeedGrounding::provenance`,
+    /// which is a plain string so the grounding contract stays readable in JSON
+    /// without importing this enum's CamelCase variant names.
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Lexical => "lexical",
+            Self::SemanticHnsw => "semantic-hnsw",
+        }
+    }
+}
+
 /// The assembled, budget-clamped `[ONTOLOGY CONTEXT] … [END …]` block — the
 /// exact string injected into the system message. Carries the grounding
 /// telemetry, now typed.
@@ -200,13 +215,48 @@ pub struct Scaffold {
     pub effective_budget: usize,
     pub fusion_path: FusionPath, // lexical-only | semantic-fallback | none
     pub generation: GenerationId,
+    /// The typed confidence-surfacing contract (PRD-026 FR-11). `top_score` and
+    /// `effective_budget` above are retained as flat ALIASES of
+    /// `grounding.top_score` / `grounding.effective_budget` for the existing
+    /// telemetry consumers; `grounding` is the authoritative, self-describing
+    /// form (it carries the scale, the normalised confidence, the gate decision
+    /// and per-seed detail). Present even when nothing matched.
+    pub grounding: Grounding,
 }
 
 impl Scaffold {
     /// The "nothing injected" scaffold — caller falls back to the raw prompt.
-    /// `generation` is the (lexical) generation this empty answer is stamped to.
+    ///
+    /// DEPRECATED because the grounding it stamps is measured against the
+    /// COMPILED-IN `DEFAULT_MIN_INJECT_SCORE`, not the caller's gate. On a node
+    /// with a tuned `min_inject_score` that makes the reported `threshold` a
+    /// quiet lie: the miss is judged against one bar and reported against
+    /// another. Pass your real gate's threshold via
+    /// [`Self::empty_with_grounding`] instead — it is the same call with a
+    /// `Grounding::none(gate.min_inject_score)` argument.
     #[must_use]
+    #[deprecated(
+        since = "0.1.0",
+        note = "stamps the compiled-in default threshold, which misreports a miss on a tuned gate; \
+                use `Scaffold::empty_with_grounding(path, generation, Grounding::none(gate.min_inject_score))`"
+    )]
     pub fn empty(fusion_path: FusionPath, generation: Generation) -> Self {
+        Self::empty_with_grounding(
+            fusion_path,
+            generation,
+            Grounding::none(DEFAULT_MIN_INJECT_SCORE),
+        )
+    }
+
+    /// The "nothing injected" scaffold, carrying a grounding the caller built
+    /// from its OWN gate — so the reported `threshold` is the one that actually
+    /// judged this request rather than the compiled-in default.
+    #[must_use]
+    pub fn empty_with_grounding(
+        fusion_path: FusionPath,
+        generation: Generation,
+        grounding: Grounding,
+    ) -> Self {
         Self {
             block: String::new(),
             engaged: false,
@@ -216,6 +266,7 @@ impl Scaffold {
             effective_budget: 0,
             fusion_path,
             generation: generation.id,
+            grounding,
         }
     }
 }
@@ -400,164 +451,4 @@ pub struct GateVerdict {
     pub passed: bool,
     pub detail: Option<String>,
     pub subject: Option<Iri>, // the unit/generation the predicate ran over
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn iri_slug_roundtrip() {
-        let iri = Iri::from_slug("knowledge-graph");
-        assert_eq!(iri.as_str(), "urn:ngm:class:knowledge-graph");
-        assert_eq!(iri.slug(), "knowledge-graph");
-        // from_slug ∘ slug is stable on the canonical form.
-        assert_eq!(Iri::from_slug(iri.slug()), iri);
-    }
-
-    #[test]
-    fn iri_bare_slug_tolerance() {
-        // A bare slug (no `:`) resolves to itself — the _ref_to_slug leniency.
-        let bare = Iri::new("rgb-protocol");
-        assert_eq!(bare.slug(), "rgb-protocol");
-        // Full urn and bare slug agree on the join key.
-        assert_eq!(Iri::from_slug("rgb-protocol").slug(), bare.slug());
-    }
-
-    #[test]
-    fn iri_serde_roundtrip() {
-        let iri = Iri::from_slug("colour-channel");
-        let json = serde_json::to_string(&iri).unwrap();
-        assert_eq!(json, "\"urn:ngm:class:colour-channel\"");
-        let back: Iri = serde_json::from_str(&json).unwrap();
-        assert_eq!(back, iri);
-    }
-
-    #[test]
-    fn relation_kind_predicate_roundtrip() {
-        let predicates = [
-            ("has-part", RelationKind::HasPart),
-            ("requires", RelationKind::Requires),
-            ("enables", RelationKind::Enables),
-            ("depends-on", RelationKind::DependsOn),
-            ("implements", RelationKind::Implements),
-            ("uses", RelationKind::Uses),
-            ("part-of", RelationKind::PartOf),
-            ("related-to", RelationKind::RelatedTo),
-            ("bridges-to", RelationKind::BridgesTo),
-            ("supports", RelationKind::Supports),
-            ("standardized-by", RelationKind::StandardizedBy),
-            ("contrasts-with", RelationKind::ContrastsWith),
-        ];
-        for (wire, variant) in predicates {
-            // string → variant
-            let parsed = RelationKind::from_predicate(wire);
-            assert_eq!(parsed, variant, "from_predicate({wire})");
-            // variant → string
-            assert_eq!(variant.as_predicate(), wire, "as_predicate for {wire}");
-            // serde round-trip through JSON keeps the plain string form.
-            let json = serde_json::to_string(&variant).unwrap();
-            assert_eq!(json, format!("\"{wire}\""));
-            let back: RelationKind = serde_json::from_str(&json).unwrap();
-            assert_eq!(back, variant);
-        }
-    }
-
-    #[test]
-    fn relation_kind_other_tail() {
-        let k: RelationKind = serde_json::from_str("\"mentions\"").unwrap();
-        assert_eq!(k, RelationKind::Other("mentions".to_owned()));
-        // Other serialises as a bare string, NOT a tagged {"Other": …} object.
-        assert_eq!(serde_json::to_string(&k).unwrap(), "\"mentions\"");
-    }
-
-    #[test]
-    fn scaffold_empty_shape() {
-        let gen = Generation {
-            id: GenerationId("build-abc".to_owned()),
-            source: GenerationSource::ScaffoldIndex,
-            generated_at: None,
-            commit_sha: None,
-            promoted_at: None,
-            cluster_span_seconds: None,
-            artifacts: Vec::new(),
-            verified_single_generation: false,
-            class_count: None,
-        };
-        let s = Scaffold::empty(FusionPath::NoMatch, gen);
-        assert!(s.block.is_empty());
-        assert!(!s.engaged);
-        assert_eq!(s.approx_tokens, 0);
-        assert!(s.seeds.is_empty());
-        assert_eq!(s.effective_budget, 0);
-        assert_eq!(s.fusion_path, FusionPath::NoMatch);
-        assert_eq!(s.generation, GenerationId("build-abc".to_owned()));
-    }
-
-    #[test]
-    fn generation_id_equality() {
-        let a = GenerationId("sha-1||b1".to_owned());
-        let b = GenerationId("sha-1||b1".to_owned());
-        let c = GenerationId("sha-2||b2".to_owned());
-        assert_eq!(a, b);
-        assert_ne!(a, c);
-    }
-
-    #[test]
-    fn generation_equality_is_identity() {
-        // Two descriptors with the same id but different metadata are equal;
-        // different ids are not (the never-mixed-build parity guard).
-        let base = |id: &str, count: Option<usize>| Generation {
-            id: GenerationId(id.to_owned()),
-            source: GenerationSource::BuildManifest,
-            generated_at: None,
-            commit_sha: None,
-            promoted_at: None,
-            cluster_span_seconds: None,
-            artifacts: Vec::new(),
-            verified_single_generation: true,
-            class_count: count,
-        };
-        assert_eq!(base("g1", Some(10)), base("g1", Some(9999)));
-        assert_ne!(base("g1", Some(10)), base("g2", Some(10)));
-    }
-
-    #[test]
-    fn served_mode_serialises_lowercase() {
-        assert_eq!(
-            serde_json::to_string(&ServedMode::Delegated).unwrap(),
-            "\"delegated\""
-        );
-        assert_eq!(
-            serde_json::to_string(&ServedMode::Verbatim).unwrap(),
-            "\"verbatim\""
-        );
-    }
-
-    #[test]
-    fn exposure_report_shape() {
-        let r = ExposureReport {
-            targets: 3,
-            delivered: 2,
-            dropped: vec!["Graph Database".to_owned()],
-        };
-        let v = serde_json::to_value(&r).unwrap();
-        assert_eq!(v["targets"], 3);
-        assert_eq!(v["delivered"], 2);
-        assert_eq!(v["dropped"], serde_json::json!(["Graph Database"]));
-        // Default is the honest empty report.
-        let d = ExposureReport::default();
-        assert_eq!(d.targets, 0);
-        assert!(d.dropped.is_empty());
-    }
-
-    #[test]
-    fn concept_match_score_normalised_is_identity() {
-        let m = ConceptMatch {
-            iri: Iri::from_slug("x"),
-            score: 0.87,
-            provenance: MatchProvenance::SemanticHnsw,
-        };
-        assert!((m.score_normalised() - 0.87).abs() < f32::EPSILON);
-    }
 }
