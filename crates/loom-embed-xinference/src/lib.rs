@@ -188,7 +188,9 @@ impl EmbeddingProvider for XinferenceEmbedder {
 
         // Xinference orders `data` by request index, but we sort defensively so
         // the returned order matches the input order regardless (parity with the
-        // Python `sorted(data, key=index)` in tools/ingest/embed_and_stage.py).
+        // Python `sorted(data, key=index)` in the retired
+        // tools/ingest/embed_and_stage.py, now `stage_corpus` in
+        // loom-vector-ruvector).
         data.sort_by_key(|d| d.index);
 
         let mut out = Vec::with_capacity(data.len());

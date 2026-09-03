@@ -22,6 +22,9 @@ tracing = { workspace = true }
 # so the serving binary never links Postgres on the query hot path.
 tokio-postgres = { workspace = true, optional = true }
 pgvector = { workspace = true, optional = true }
+# The staging bin embeds through the LOCKED bge-small-en-v1.5/384 adapter.
+# Optional + pg-write-gated so the serving binary never links reqwest here.
+loom-embed-xinference = { path = "../loom-embed-xinference", optional = true }
 
 [dev-dependencies]
 # Recall-gate integration test embeds via Xinference over HTTP.
@@ -32,7 +35,7 @@ tempfile = "3"
 [features]
 default = []
 # The build/off-turn write channel to ruvector-postgres.
-pg-write = ["dep:tokio-postgres", "dep:pgvector"]
+pg-write = ["dep:tokio-postgres", "dep:pgvector", "dep:loom-embed-xinference"]
 # Master gate for the semantic fallback code path (recall-gate governed).
 semantic-fallback = []
 
@@ -41,6 +44,13 @@ semantic-fallback = []
 [[bin]]
 name = "export_corpus"
 path = "src/bin/export_corpus.rs"
+required-features = ["pg-write"]
+
+# The corpus stager: embed the concept records and emit idempotent upsert SQL.
+# Build/off-turn only, so it rides the same pg-write gate.
+[[bin]]
+name = "stage_corpus"
+path = "src/bin/stage_corpus.rs"
 required-features = ["pg-write"]
 
 [lints]
