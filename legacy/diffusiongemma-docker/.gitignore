@@ -1,5 +1,0 @@
-# Secrets
-.env
-
-# Build artifact: regenerated from the fork with `git archive` (see README).
-llama-diffgemma-src.tar.gz

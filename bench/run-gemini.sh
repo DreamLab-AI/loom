@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# FROZEN (2026-09-03): the harness this drives, bench/bench_ontology_uplift.py, was
+# DELETED (broken import of the retired app/ontology_scaffold.py). This script is kept
+# as the paper's cited reproduction driver (docs/research/latex/report.tex) and as the
+# record of the exact configuration behind uplift-results/. It CANNOT run as-is; see
+# bench/LEGACY-PYTHON-NOTE.md for the checkout recipe that restores the harness.
 # Drive the ontology-uplift benchmark against Gemini 3.7 Flash (cloud, OpenAI-compat).
 # Config locked from live smoke test 2026-08-16:
 #   - max_tokens 2048 : mandatory thinking would truncate answers at 400 (finish=length)

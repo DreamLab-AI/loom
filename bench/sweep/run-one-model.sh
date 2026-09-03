@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# FROZEN (2026-09-03): the harness this drives, bench/bench_ontology_uplift.py, was
+# DELETED (broken import of the retired app/ontology_scaffold.py). This script is kept
+# as the paper's cited reproduction driver (docs/research/latex/report.tex) and as the
+# record of the exact configuration behind uplift-results/. It CANNOT run as-is; see
+# bench/LEGACY-PYTHON-NOTE.md for the checkout recipe that restores the harness.
 # Run raw+scaffold+score for ONE model through the instrumented uplift harness.
 # Uniform config for the cross-model sweep: temp=0 (deterministic/reproducible),
 # max_tokens=2048 (headroom for any thinking), seed-42 510-question set.

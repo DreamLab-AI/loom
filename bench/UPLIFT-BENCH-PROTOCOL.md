@@ -1,5 +1,13 @@
 # Ontology Uplift Benchmark — Run Protocol (HP-Desktop)
 
+> **Status: FROZEN (2026-09-03).** The harness this protocol drives —
+> `bench_ontology_uplift.py` — and `run-all-tests.sh` were **deleted**: they
+> imported the retired `app/ontology_scaffold.py` and could not execute. This
+> document is kept as the method record behind the preprint's published numbers
+> (frozen in `uplift-results/`). The behaviour it measured now lives in the Rust
+> workspace under test — see [`LEGACY-PYTHON-NOTE.md`](LEGACY-PYTHON-NOTE.md)
+> for the map and for the checkout recipe that restores the harness.
+
 How to run the real muse-glimmer vs gemma uplift comparison with
 `bench_ontology_uplift.py`. Everything is stdlib-only Python; the only inputs
 are the scaffold index and the two llama-server endpoints.

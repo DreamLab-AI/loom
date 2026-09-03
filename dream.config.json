@@ -37,7 +37,7 @@
   },
   "controlPlaneProbes": [
     "curl -s --max-time 10 http://127.0.0.1:8084/health || echo 'FACADE UNREACHABLE'",
-    "ls crates/loom-facade/src/bin/*.rs bench/*.py 2>&1 | head -15 || true"
+    "ls crates/loom-facade/src/bin/*.rs crates/loom-scaffold/src/bin/*.rs crates/loom-vector-ruvector/src/bin/*.rs 2>&1 | head -15 || true"
   ],
   "buildStep": {
     "cmd": "echo '== facade =='; curl -s --max-time 10 http://127.0.0.1:8084/health || echo 'FACADE UNREACHABLE'; echo; echo '== ontology-mcp =='; (cd app/ontology-mcp && npm ci --ignore-scripts 2>&1 | tail -5) || echo 'NPM CI FAILED'",

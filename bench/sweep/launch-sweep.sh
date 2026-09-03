@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# FROZEN (2026-09-03): the harness this drives, bench/bench_ontology_uplift.py, was
+# DELETED (broken import of the retired app/ontology_scaffold.py). This script is kept
+# as the paper's cited reproduction driver (docs/research/latex/report.tex) and as the
+# record of the exact configuration behind uplift-results/. It CANNOT run as-is; see
+# bench/LEGACY-PYTHON-NOTE.md for the checkout recipe that restores the harness.
 # Launch the 10-model cross-provider uplift sweep. 4 provider groups run in
 # PARALLEL (independent rate limits); models within a group run sequentially.
 set -uo pipefail

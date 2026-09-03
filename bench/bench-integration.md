@@ -1,5 +1,13 @@
 # Wiring `ontology_scaffold` into a bench harness
 
+> **Status: FROZEN (2026-09-03).** Both sides of this wiring note are gone:
+> `ontology_scaffold.py` was retired with the Python serving code, and the
+> `bench-headhead.py`-style harnesses it targeted were deleted. Kept as the
+> record of the A/B integration pattern. The Rust equivalent is
+> `crates/loom-scaffold` (`InjectionPolicy` + `serialise`), exercised by
+> `cargo test --workspace --all-features`. See
+> [`LEGACY-PYTHON-NOTE.md`](LEGACY-PYTHON-NOTE.md).
+
 Target: any `bench-headhead.py`-style harness that builds an OpenAI chat
 payload and POSTs it to `/v1/chat/completions`. The scaffold is a pure
 message-list transform, so integration is three small edits: an import, a
