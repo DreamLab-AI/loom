@@ -26,5 +26,12 @@ tokio = { workspace = true }
 name = "match"
 harness = false
 
+# The CONCEPT-INDEX record builder (ADR-136 D3) — pure, deterministic, no new
+# deps. Byte-parity with the retired tools/ingest/build_concept_records.py is
+# pinned by tests/golden-python/golden_concept_records.jsonl.
+[[bin]]
+name = "build-concept-records"
+path = "src/bin/build_concept_records.rs"
+
 [lints]
 workspace = true

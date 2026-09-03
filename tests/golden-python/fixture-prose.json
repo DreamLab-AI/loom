@@ -1,0 +1,18 @@
+{
+  "generated": "2026-08-09T00:00:00Z",
+  "pages": {
+    "knowledge-graph": {
+      "dfull": "  Knowledge graphs fuse a schema-level ontology with instance-level assertions, so a query can traverse typed edges and a reasoner can derive facts that were never asserted — the \"semantic\" half of the semantic web.  ",
+      "cl": "ignored by the record builder"
+    },
+    "graph-database": {
+      "dfull": null
+    },
+    "vector-database": {
+      "dfull": "Vector databases index dense embeddings for approximate nearest-neighbour search; the trade-off is recall for latency."
+    },
+    "not-a-class": {
+      "dfull": "Present in prose, absent from the scaffold index — must not produce a record."
+    }
+  }
+}
