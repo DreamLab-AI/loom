@@ -41,8 +41,8 @@ const WIRING_FLOOR: f32 = 0.75;
 /// bge-small-en-v1.5 via Xinference — the LOCKED embedding model (§11.3).
 #[allow(clippy::cast_possible_truncation)]
 async fn embed(text: &str) -> Vec<f32> {
-    let base = std::env::var("XINFERENCE_URL")
-        .unwrap_or_else(|_| "http://xinference:9997/v1".to_owned());
+    let base =
+        std::env::var("XINFERENCE_URL").unwrap_or_else(|_| "http://xinference:9997/v1".to_owned());
     let url = format!("{base}/embeddings");
     let body = serde_json::json!({ "model": "bge-small-en-v1.5", "input": [text] });
 
@@ -64,13 +64,20 @@ async fn embed(text: &str) -> Vec<f32> {
         .iter()
         .map(|v| v.as_f64().expect("embedding element not a number") as f32)
         .collect();
-    assert_eq!(vec.len(), EMBEDDING_DIMENSIONS, "embedder must return 384-dim");
+    assert_eq!(
+        vec.len(),
+        EMBEDDING_DIMENSIONS,
+        "embedder must return 384-dim"
+    );
     vec
 }
 
 fn artifact_path() -> String {
     std::env::var("LOOM_HNSW_ARTIFACT").unwrap_or_else(|_| {
-        format!("{}/../../data/ontology-corpus.rvdb", env!("CARGO_MANIFEST_DIR"))
+        format!(
+            "{}/../../data/ontology-corpus.rvdb",
+            env!("CARGO_MANIFEST_DIR")
+        )
     })
 }
 
@@ -80,7 +87,10 @@ async fn recall_gate() {
     let path = artifact_path();
     eprintln!("EXP-008 recall_gate: artifact = {path}");
     let idx = HnswIndex::open(&path);
-    assert!(idx.is_ready(), "artifact not ready at {path} — run the exporter first");
+    assert!(
+        idx.is_ready(),
+        "artifact not ready at {path} — run the exporter first"
+    );
     eprintln!("generation = {:?}\n", idx.generation());
 
     // --- Axis 1a: in-domain recall ------------------------------------------
@@ -145,7 +155,11 @@ async fn recall_gate() {
     eprintln!("\nEXP-008 numbers: rgb-protocol cos={rgb_score:.4}, decoy cos={decoy_top:.4}");
     eprintln!(
         "DESIGN FLOOR (>= {floor}): {} — LOOM_SEMANTIC_FALLBACK={}",
-        if design_floor_met { "MET" } else { "NOT MET (gate RED)" },
+        if design_floor_met {
+            "MET"
+        } else {
+            "NOT MET (gate RED)"
+        },
         if flip_on { "1" } else { "0" }
     );
 

@@ -324,7 +324,10 @@ mod tests {
     async fn connection_refused_is_embed_error() {
         // Port 1 is privileged and unbound in the test sandbox ⇒ connect refused.
         let embedder = XinferenceEmbedder::new("http://127.0.0.1:1", Duration::from_secs(2));
-        let err = embedder.embed("x").await.expect_err("no server must reject");
+        let err = embedder
+            .embed("x")
+            .await
+            .expect_err("no server must reject");
         assert!(
             matches!(err, LoomError::Embed(_)),
             "expected Embed, got {err:?}"

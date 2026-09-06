@@ -76,10 +76,9 @@ pub fn api_error_parts(err: LoomError) -> (StatusCode, serde_json::Value) {
         // keeps the "never a 4xx/5xx for a missing accelerator" rule. The
         // unqualified-artefact rejection joins them: a semantic artefact that
         // failed its contract is an absent accelerator, not a fault.
-        LoomError::GraphUnavailable(_) | LoomError::SemanticUnready(_) | LoomError::Artefact(_) => (
-            StatusCode::OK,
-            json!({ "degraded": true, "reason": msg }),
-        ),
+        LoomError::GraphUnavailable(_) | LoomError::SemanticUnready(_) | LoomError::Artefact(_) => {
+            (StatusCode::OK, json!({ "degraded": true, "reason": msg }))
+        }
 
         // 500 — the lexical index is the floor; if it is gone the node cannot
         // serve its purpose. A bundle that failed activation is the same class of

@@ -63,7 +63,8 @@ struct GenerationSidecar {
     #[serde(rename = "classCount")]
     class_count: usize,
     #[serde(default)]
-    #[allow(dead_code)] // Retained for provenance/round-trip; not needed to build `Generation`.
+    #[allow(dead_code)]
+    // Retained for provenance/round-trip; not needed to build `Generation`.
     source: Option<String>,
     /// The embedding model the corpus vectors were produced with. The ONE fact
     /// the vector database cannot carry — `RuVector` stores geometry, not model
@@ -178,8 +179,7 @@ impl HnswIndex {
         let effective = db.options();
         let metric = map_metric(effective.distance_metric);
         let declared_model = sidecar.as_ref().and_then(|s| s.embedding_model.as_deref());
-        let mut qualification =
-            contract.qualify(effective.dimensions, metric, declared_model);
+        let mut qualification = contract.qualify(effective.dimensions, metric, declared_model);
 
         // Database-to-sidecar binding: a sidecar that declares a width the
         // database does not have is describing a different artefact.
@@ -271,7 +271,12 @@ impl VectorIndex for HnswIndex {
 
         let query = query_vec.to_vec();
         let results = tokio::task::spawn_blocking(move || {
-            db.search(SearchQuery { vector: query, k, filter: None, ef_search: None })
+            db.search(SearchQuery {
+                vector: query,
+                k,
+                filter: None,
+                ef_search: None,
+            })
         })
         .await
         .map_err(|e| LoomError::SemanticUnready(format!("hnsw search task failed: {e}")))?
@@ -318,7 +323,10 @@ impl VectorIndex for HnswIndex {
 /// The contract this process serves under, from the environment.
 fn contract_from_env() -> ArtefactContract {
     let base = ArtefactContract::bge_small_384();
-    match std::env::var("LOOM_SEMANTIC_REQUIRE_MODEL_ID").ok().as_deref() {
+    match std::env::var("LOOM_SEMANTIC_REQUIRE_MODEL_ID")
+        .ok()
+        .as_deref()
+    {
         Some("0" | "false" | "no" | "") => base.without_model_id_requirement(),
         _ => base,
     }
@@ -498,7 +506,10 @@ mod tests {
             "qualified artefact must be ready: {:?}",
             idx.qualification().reasons()
         );
-        assert_eq!(idx.qualification().served_metric(), Some(VectorMetric::Cosine));
+        assert_eq!(
+            idx.qualification().served_metric(),
+            Some(VectorMetric::Cosine)
+        );
 
         let hits = idx.nearest(&synth_vec(0), 3).await.unwrap();
         assert!(!hits.is_empty(), "expected hits from a seeded index");
@@ -610,7 +621,10 @@ mod tests {
         write_sidecar(&path, None, None);
 
         let strict = HnswIndex::open(&path);
-        assert!(!strict.is_ready(), "undeclared model must fail the strict contract");
+        assert!(
+            !strict.is_ready(),
+            "undeclared model must fail the strict contract"
+        );
         assert!(matches!(
             strict.qualification().first_rejection(),
             Some(ArtefactError::ModelUnknown { .. })
@@ -639,10 +653,13 @@ mod tests {
         let idx = HnswIndex::open(&path);
         assert!(!idx.is_ready());
         assert!(
-            idx.qualification()
-                .rejections
-                .iter()
-                .any(|r| matches!(r, ArtefactError::Dimension { got: 768, want: 384 })),
+            idx.qualification().rejections.iter().any(|r| matches!(
+                r,
+                ArtefactError::Dimension {
+                    got: 768,
+                    want: 384
+                }
+            )),
             "expected a sidecar/database width disagreement: {:?}",
             idx.qualification().reasons()
         );
@@ -687,7 +704,10 @@ mod tests {
         // The exporter is re-run against a different model at the same width.
         write_sidecar(&path, Some("gte-small"), Some(EMBEDDING_DIMENSIONS));
         let after = HnswIndex::open(&path);
-        assert!(!after.is_ready(), "a changed model must not survive a restart");
+        assert!(
+            !after.is_ready(),
+            "a changed model must not survive a restart"
+        );
         assert!(matches!(
             after.qualification().first_rejection(),
             Some(ArtefactError::Model { .. })
@@ -764,8 +784,17 @@ mod tests {
     #[test]
     fn every_engine_metric_maps_to_a_domain_metric() {
         assert_eq!(map_metric(DistanceMetric::Cosine), VectorMetric::Cosine);
-        assert_eq!(map_metric(DistanceMetric::Euclidean), VectorMetric::Euclidean);
-        assert_eq!(map_metric(DistanceMetric::DotProduct), VectorMetric::DotProduct);
-        assert_eq!(map_metric(DistanceMetric::Manhattan), VectorMetric::Manhattan);
+        assert_eq!(
+            map_metric(DistanceMetric::Euclidean),
+            VectorMetric::Euclidean
+        );
+        assert_eq!(
+            map_metric(DistanceMetric::DotProduct),
+            VectorMetric::DotProduct
+        );
+        assert_eq!(
+            map_metric(DistanceMetric::Manhattan),
+            VectorMetric::Manhattan
+        );
     }
 }

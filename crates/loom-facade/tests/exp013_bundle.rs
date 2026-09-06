@@ -48,9 +48,16 @@ fn activation_captures_one_identity_over_verified_content() {
     let bundle = LoadedBundle::activate(&index_path(&dir)).expect("verified bundle activates");
     let id = bundle.identity();
 
-    assert!(id.atomicity_verified, "a marker-verified bundle is attested");
+    assert!(
+        id.atomicity_verified,
+        "a marker-verified bundle is attested"
+    );
     assert_eq!(id.phase, BundlePhase::Activated);
-    assert_eq!(id.artefacts.len(), 1, "the marker's one artefact is covered");
+    assert_eq!(
+        id.artefacts.len(),
+        1,
+        "the marker's one artefact is covered"
+    );
     assert_eq!(
         id.content_digest.len(),
         64,
@@ -245,7 +252,10 @@ fn promotion_refuses_an_incomplete_staging_set_without_touching_the_target() {
     let err = BundlePromoter::new(staging.path(), target.path())
         .promote()
         .unwrap_err();
-    assert!(matches!(err, BundleError::MissingArtefact { .. }), "{err:?}");
+    assert!(
+        matches!(err, BundleError::MissingArtefact { .. }),
+        "{err:?}"
+    );
 
     // The target is untouched and still activates as its original generation.
     assert_eq!(
@@ -290,7 +300,8 @@ async fn generation_route_invokes_the_verifier_and_publishes_the_result() {
     assert_eq!(status, StatusCode::OK);
 
     assert_eq!(
-        body["drift"]["checked"], json!(true),
+        body["drift"]["checked"],
+        json!(true),
         "the serving path must actually run verify_atomicity"
     );
     assert_eq!(body["drift"]["ok"], json!(true));
@@ -345,7 +356,10 @@ async fn a_promotion_after_activation_does_not_change_what_a_running_process_ser
 
     // …and the pending difference is REPORTED rather than hidden.
     let (_, health) = call(env.router(), "GET", "/health", None).await;
-    assert_eq!(health["serving_bundle"]["disk_matches_loaded"], json!(false));
+    assert_eq!(
+        health["serving_bundle"]["disk_matches_loaded"],
+        json!(false)
+    );
     assert_eq!(
         health["serving_bundle"]["disk_generation"]["id"],
         json!("2026-09-06T00:00:00Z"),

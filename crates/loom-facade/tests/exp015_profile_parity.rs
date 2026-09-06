@@ -100,7 +100,10 @@ fn profile_b(server: &MockServer, data_dir: &Path) -> common::TestEnv {
 async fn both_profiles_activate_the_same_loaded_generation_and_content() {
     let server = ok_backend().await;
     let shared = TempDir::new().expect("shared data dir");
-    let (a, b) = (profile_a(&server, shared.path()), profile_b(&server, shared.path()));
+    let (a, b) = (
+        profile_a(&server, shared.path()),
+        profile_b(&server, shared.path()),
+    );
 
     let ia = a.state.generation.identity();
     let ib = b.state.generation.identity();
@@ -123,7 +126,10 @@ async fn both_profiles_activate_the_same_loaded_generation_and_content() {
 async fn profiles_differ_only_in_the_declared_divergent_keys() {
     let server = ok_backend().await;
     let shared = TempDir::new().expect("shared data dir");
-    let (a, b) = (profile_a(&server, shared.path()), profile_b(&server, shared.path()));
+    let (a, b) = (
+        profile_a(&server, shared.path()),
+        profile_b(&server, shared.path()),
+    );
 
     let ea = EffectiveConfig::of(&a.state.config);
     let eb = EffectiveConfig::of(&b.state.config);
@@ -182,7 +188,10 @@ fn the_release_receipt_is_profile_independent() {
 async fn scaffold_output_is_byte_identical_across_profiles() {
     let server = ok_backend().await;
     let shared = TempDir::new().expect("shared data dir");
-    let (a, b) = (profile_a(&server, shared.path()), profile_b(&server, shared.path()));
+    let (a, b) = (
+        profile_a(&server, shared.path()),
+        profile_b(&server, shared.path()),
+    );
 
     for query in QUERIES {
         let ra = scaffold(a.router(), query).await;
@@ -195,10 +204,7 @@ async fn scaffold_output_is_byte_identical_across_profiles() {
         assert_eq!(ra["engaged"], rb["engaged"], "{query:?}");
         assert_eq!(ra["seeds"], rb["seeds"], "{query:?}");
         assert_eq!(ra["top_score"], rb["top_score"], "{query:?}");
-        assert_eq!(
-            ra["effective_budget"], rb["effective_budget"],
-            "{query:?}"
-        );
+        assert_eq!(ra["effective_budget"], rb["effective_budget"], "{query:?}");
         assert_eq!(ra["fusion_path"], rb["fusion_path"], "{query:?}");
         assert_eq!(
             ra["grounding"], rb["grounding"],
@@ -215,7 +221,10 @@ async fn scaffold_output_is_byte_identical_across_profiles() {
 async fn the_injection_gate_is_reported_identically_by_both_profiles() {
     let server = ok_backend().await;
     let shared = TempDir::new().expect("shared data dir");
-    let (a, b) = (profile_a(&server, shared.path()), profile_b(&server, shared.path()));
+    let (a, b) = (
+        profile_a(&server, shared.path()),
+        profile_b(&server, shared.path()),
+    );
 
     let (_, ha) = call(a.router(), "GET", "/health", None).await;
     let (_, hb) = call(b.router(), "GET", "/health", None).await;
@@ -245,7 +254,10 @@ async fn the_injection_gate_is_reported_identically_by_both_profiles() {
 async fn delivery_mode_diverges_while_the_evidence_stays_identical() {
     let server = ok_backend().await;
     let shared = TempDir::new().expect("shared data dir");
-    let (a, b) = (profile_a(&server, shared.path()), profile_b(&server, shared.path()));
+    let (a, b) = (
+        profile_a(&server, shared.path()),
+        profile_b(&server, shared.path()),
+    );
     let query = QUERIES[0];
 
     let (sa, ba) = chat(a.router(), query).await;
@@ -284,7 +296,10 @@ async fn delivery_mode_diverges_while_the_evidence_stays_identical() {
 async fn a_miss_behaves_identically_on_both_profiles() {
     let server = ok_backend().await;
     let shared = TempDir::new().expect("shared data dir");
-    let (a, b) = (profile_a(&server, shared.path()), profile_b(&server, shared.path()));
+    let (a, b) = (
+        profile_a(&server, shared.path()),
+        profile_b(&server, shared.path()),
+    );
     let query = QUERIES[2];
 
     let (sa, ba) = chat(a.router(), query).await;
@@ -310,7 +325,10 @@ async fn backend_failure_recovery_is_identical_across_profiles() {
         .mount(&server)
         .await;
     let shared = TempDir::new().expect("shared data dir");
-    let (a, b) = (profile_a(&server, shared.path()), profile_b(&server, shared.path()));
+    let (a, b) = (
+        profile_a(&server, shared.path()),
+        profile_b(&server, shared.path()),
+    );
     let query = QUERIES[2]; // a miss: neither profile can serve it verbatim
 
     let (sa, ba) = chat(a.router(), query).await;

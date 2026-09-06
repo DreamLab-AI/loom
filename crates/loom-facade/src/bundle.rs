@@ -338,9 +338,11 @@ impl BundlePromoter {
                 detail: format!("marker stage failed: {e}"),
             }
         })?;
-        std::fs::rename(&marker_incoming, &marker).map_err(|e| BundleError::ArtefactUnreadable {
-            name: ".generation.json".to_owned(),
-            detail: format!("commit failed: {e}"),
+        std::fs::rename(&marker_incoming, &marker).map_err(|e| {
+            BundleError::ArtefactUnreadable {
+                name: ".generation.json".to_owned(),
+                detail: format!("commit failed: {e}"),
+            }
         })?;
         // (5) Clear the sentinel — the directory is a committed bundle again.
         std::fs::remove_file(&in_flight).map_err(|e| BundleError::ArtefactUnreadable {
@@ -362,7 +364,10 @@ fn verify_marker(store: &MirrorStore) -> Result<Vec<ArtifactSha>, BundleError> {
     if !store.has_commit_marker() {
         return Err(BundleError::MarkerUnreadable {
             dir: dir_s,
-            detail: format!("{} absent or malformed", store.commit_marker_path().display()),
+            detail: format!(
+                "{} absent or malformed",
+                store.commit_marker_path().display()
+            ),
         });
     }
     let recorded = store

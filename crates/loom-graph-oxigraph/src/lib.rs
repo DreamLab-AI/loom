@@ -186,7 +186,9 @@ impl OxigraphStore {
         let dir = data_dir.as_ref();
         let store = match Store::new() {
             Ok(s) => s,
-            Err(e) => return Self::failed(format!("store init failed: {e}"), default_limit, max_rows),
+            Err(e) => {
+                return Self::failed(format!("store init failed: {e}"), default_limit, max_rows)
+            }
         };
         let mut loaded = Vec::new();
         for name in ALLOWLIST {
@@ -196,7 +198,9 @@ impl OxigraphStore {
             }
             let file = match File::open(&path) {
                 Ok(f) => f,
-                Err(e) => return Self::failed(format!("graph load failed: {e}"), default_limit, max_rows),
+                Err(e) => {
+                    return Self::failed(format!("graph load failed: {e}"), default_limit, max_rows)
+                }
             };
             if let Err(e) = store.load_from_reader(RdfFormat::Turtle, BufReader::new(file)) {
                 return Self::failed(format!("graph load failed: {e}"), default_limit, max_rows);
@@ -244,7 +248,9 @@ impl OxigraphStore {
     fn run(&self, query: &str) -> Result<SparqlResult, LoomError> {
         let store = self.store.as_ref().ok_or_else(|| {
             LoomError::GraphUnavailable(
-                self.error.clone().unwrap_or_else(|| "store not loaded".to_owned()),
+                self.error
+                    .clone()
+                    .unwrap_or_else(|| "store not loaded".to_owned()),
             )
         })?;
         validate(query)?;
@@ -424,7 +430,10 @@ mod tests {
     #[test]
     fn limit_injected_exactly_once_when_absent() {
         let out = clamp("SELECT ?s WHERE { ?s ?p ?o }", 10_000);
-        assert!(out.contains("LIMIT 10000"), "expected injected LIMIT: {out}");
+        assert!(
+            out.contains("LIMIT 10000"),
+            "expected injected LIMIT: {out}"
+        );
         assert_eq!(
             out.matches("LIMIT").count(),
             1,
@@ -455,7 +464,10 @@ mod tests {
         // SELECT bypass the clamp — LIMIT is injected exactly once.
         let q = "PREFIX ex: <urn:x#>\nSELECT ?s WHERE { ?s ?p ?o }";
         let out = clamp(q, 10_000);
-        assert!(out.contains("LIMIT 10000"), "expected injected LIMIT: {out}");
+        assert!(
+            out.contains("LIMIT 10000"),
+            "expected injected LIMIT: {out}"
+        );
         assert_eq!(out.matches("LIMIT").count(), 1, "exactly once: {out}");
     }
 
@@ -471,7 +483,10 @@ mod tests {
         // leading keyword is SELECT, so the clamp fires.
         let q = "BASE <urn:base#>\n# a comment\nPREFIX ex: <urn:x#>\nPREFIX : <urn:y#>\nSELECT ?s WHERE { ?s ?p ?o }";
         let out = clamp(q, 10_000);
-        assert!(out.contains("LIMIT 10000"), "expected injected LIMIT: {out}");
+        assert!(
+            out.contains("LIMIT 10000"),
+            "expected injected LIMIT: {out}"
+        );
         assert_eq!(out.matches("LIMIT").count(), 1, "exactly once: {out}");
     }
 
@@ -492,7 +507,10 @@ mod tests {
     fn limit_injection_strips_trailing_semicolon() {
         let out = clamp("SELECT ?s WHERE { ?s ?p ?o } ;", 10_000);
         assert!(out.trim_end().ends_with("LIMIT 10000"), "{out}");
-        assert!(!out.contains(';'), "trailing semicolon must be stripped: {out}");
+        assert!(
+            !out.contains(';'),
+            "trailing semicolon must be stripped: {out}"
+        );
     }
 
     #[tokio::test]
@@ -525,16 +543,17 @@ mod tests {
         let store = store_from_turtle(ttl, 10_000, 10_000);
         let yes = store.query("ASK { ?s ?p ?o }").await.unwrap();
         assert_eq!(yes.boolean, Some(true));
-        let no = store
-            .query("ASK { <urn:ex:absent> ?p ?o }")
-            .await
-            .unwrap();
+        let no = store.query("ASK { <urn:ex:absent> ?p ?o }").await.unwrap();
         assert_eq!(no.boolean, Some(false));
     }
 
     #[tokio::test]
     async fn write_query_is_bad_query_not_executed() {
-        let store = store_from_turtle("@prefix ex: <urn:ex:> .\nex:a ex:p ex:b .\n", 10_000, 10_000);
+        let store = store_from_turtle(
+            "@prefix ex: <urn:ex:> .\nex:a ex:p ex:b .\n",
+            10_000,
+            10_000,
+        );
         let err = store
             .query("INSERT DATA { <urn:ex:x> <urn:ex:p> <urn:ex:y> }")
             .await
@@ -546,7 +565,10 @@ mod tests {
     async fn unavailable_store_fails_open() {
         let store = OxigraphStore::load("/nonexistent-loom-data-dir");
         assert!(!store.status().available);
-        let err = store.query("SELECT * WHERE { ?s ?p ?o }").await.unwrap_err();
+        let err = store
+            .query("SELECT * WHERE { ?s ?p ?o }")
+            .await
+            .unwrap_err();
         assert!(matches!(err, LoomError::GraphUnavailable(_)));
     }
 

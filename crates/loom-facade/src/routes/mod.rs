@@ -309,7 +309,13 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
 
     let verbatim_eligible =
         engaged && st.config.verbatim_mode && !opted_out && !streaming && delivery_shape;
-    if let Some(resp) = try_serve_verbatim(&st, scaffold.as_ref(), &ground, fusion_path, verbatim_eligible) {
+    if let Some(resp) = try_serve_verbatim(
+        &st,
+        scaffold.as_ref(),
+        &ground,
+        fusion_path,
+        verbatim_eligible,
+    ) {
         return resp;
     }
     st.confidence.record(ground.decision, ground.confidence);

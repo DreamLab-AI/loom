@@ -193,7 +193,9 @@ fn verbalise(slug: &str, cls: &ClassEntry, dfull: &str, title_of: &IndexMap<&str
     // Typed relations, in reading order, empty types omitted.
     let mut rel_phrases: Vec<String> = Vec::new();
     for key in REL_ORDER {
-        let Some(raw) = cls.rel.get(key) else { continue };
+        let Some(raw) = cls.rel.get(key) else {
+            continue;
+        };
         let tgts = titles(raw, title_of, MAX_REL_TARGETS);
         if !tgts.is_empty() {
             rel_phrases.push(format!("{key}: {}", tgts.join(", ")));
@@ -244,7 +246,9 @@ fn parse_args() -> Result<Args, BoxErr> {
         }
         let value = match inline {
             Some(v) => v,
-            None => it.next().ok_or_else(|| format!("missing value for {flag}"))?,
+            None => it
+                .next()
+                .ok_or_else(|| format!("missing value for {flag}"))?,
         };
         match flag.as_str() {
             "--scaffold" => args.scaffold = PathBuf::from(value),
@@ -348,7 +352,11 @@ fn run() -> Result<(), BoxErr> {
 
 /// The Python script's stderr summary (chars are Unicode code points, as in
 /// Python's `len`).
-#[allow(clippy::cast_precision_loss, clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+#[allow(
+    clippy::cast_precision_loss,
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss
+)]
 fn report(records: &[Record<'_>], generation: &str, args: &Args) {
     let n = records.len();
     let with_prose = records.iter().filter(|r| r.metadata.has_prose).count();
@@ -385,7 +393,9 @@ mod tests {
     use super::*;
 
     fn workspace_file(rel: &str) -> String {
-        let p = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..").join(rel);
+        let p = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .join(rel);
         std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("read {}: {e}", p.display()))
     }
 
@@ -423,7 +433,13 @@ mod tests {
             d: &'static str,
         }
         assert_eq!(
-            to_python_json(&T { a: 1, b: vec![1, 2], c: None, d: "em — dash \"q\"" }).unwrap(),
+            to_python_json(&T {
+                a: 1,
+                b: vec![1, 2],
+                c: None,
+                d: "em — dash \"q\""
+            })
+            .unwrap(),
             r#"{"a": 1, "b": [1, 2], "c": null, "d": "em — dash \"q\""}"#
         );
     }
@@ -437,7 +453,10 @@ mod tests {
         let empty = ProseIndex::new();
         let recs = build_records(&index, &empty);
         let line = to_python_json(&recs[0]).unwrap();
-        assert!(line.contains(r#""domain": null, "maturity": null, "quality": 0.0"#), "{line}");
+        assert!(
+            line.contains(r#""domain": null, "maturity": null, "quality": 0.0"#),
+            "{line}"
+        );
     }
 
     /// Relation targets are used verbatim: an IRI is NOT resolved to its slug,
@@ -460,8 +479,9 @@ mod tests {
     /// Dedup is by TITLE and the cap is checked every iteration, dedup or not.
     #[test]
     fn titles_dedup_by_title_and_cap() {
-        let map: IndexMap<&str, &str> =
-            [("x", "Same"), ("y", "Same"), ("z", "Other")].into_iter().collect();
+        let map: IndexMap<&str, &str> = [("x", "Same"), ("y", "Same"), ("z", "Other")]
+            .into_iter()
+            .collect();
         let slugs: Vec<String> = ["x", "y", "z"].iter().map(|s| (*s).to_owned()).collect();
         assert_eq!(titles(&slugs, &map, 8), vec!["Same", "Other"]);
         assert_eq!(titles(&slugs, &map, 1), vec!["Same"]);
@@ -474,6 +494,9 @@ mod tests {
         let index: RawIndex = serde_json::from_str(json).unwrap();
         let empty = ProseIndex::new();
         let recs = build_records(&index, &empty);
-        assert_eq!(recs.iter().map(|r| r.id).collect::<Vec<_>>(), vec!["alpha", "zeta"]);
+        assert_eq!(
+            recs.iter().map(|r| r.id).collect::<Vec<_>>(),
+            vec!["alpha", "zeta"]
+        );
     }
 }

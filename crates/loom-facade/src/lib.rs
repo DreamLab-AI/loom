@@ -113,7 +113,8 @@ pub fn try_app_state_from_env() -> Result<AppState, loom_domain::BundleError> {
     // Readiness now means "passed the artefact contract", not "opened": a
     // Euclidean or wrong-width artefact is rejected here rather than silently
     // relabelled at query time (ADR-137 closeout).
-    let semantic = HnswIndex::open_with_contract(&config.hnsw_artifact, &HnswIndex::contract_from_env());
+    let semantic =
+        HnswIndex::open_with_contract(&config.hnsw_artifact, &HnswIndex::contract_from_env());
     if semantic.is_ready() {
         let q = semantic.qualification();
         tracing::info!(

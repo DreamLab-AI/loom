@@ -185,8 +185,8 @@ impl ChainedLedger {
     /// wall clock.
     #[must_use]
     pub fn from_env() -> Self {
-        let path = std::env::var("LOOM_ATTEST_LEDGER")
-            .unwrap_or_else(|_| DEFAULT_LEDGER_PATH.to_owned());
+        let path =
+            std::env::var("LOOM_ATTEST_LEDGER").unwrap_or_else(|_| DEFAULT_LEDGER_PATH.to_owned());
         Self::with_path(path)
     }
 

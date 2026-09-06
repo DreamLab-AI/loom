@@ -49,7 +49,8 @@ fn parse_args() -> Result<Args, BoxErr> {
             if let Some(v) = inline.clone() {
                 Ok(v)
             } else {
-                it.next().ok_or_else(|| format!("missing value for {flag}").into())
+                it.next()
+                    .ok_or_else(|| format!("missing value for {flag}").into())
             }
         };
         match flag.as_str() {
@@ -96,7 +97,11 @@ fn parse_embedding(raw: &str) -> Option<Vec<f32>> {
 
 /// RFC3339 UTC stamp for `secs` since the Unix epoch (dependency-free).
 /// Howard Hinnant's `civil_from_days`.
-#[allow(clippy::cast_possible_wrap, clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+#[allow(
+    clippy::cast_possible_wrap,
+    clippy::cast_possible_truncation,
+    clippy::cast_sign_loss
+)]
 fn rfc3339_utc(secs: u64) -> String {
     let days = (secs / 86_400) as i64;
     let rem = secs % 86_400;
@@ -169,10 +174,21 @@ async fn fetch_vectors(
             bad_dim += 1;
             continue;
         }
-        entries.push(VectorEntry { id: Some(key), vector, metadata: None });
+        entries.push(VectorEntry {
+            id: Some(key),
+            vector,
+            metadata: None,
+        });
     }
     eprintln!("parsed {} valid 384-dim vectors", entries.len());
-    Ok((entries, FetchStats { fetched: rows.len(), bad_parse, bad_dim }))
+    Ok((
+        entries,
+        FetchStats {
+            fetched: rows.len(),
+            bad_parse,
+            bad_dim,
+        },
+    ))
 }
 
 /// Build a fresh `VectorDB` at `out` from `entries` and write the sidecar.
@@ -249,7 +265,10 @@ async fn main() -> Result<(), BoxErr> {
 
     let (entries, stats) = fetch_vectors(&client, &args.namespace).await?;
     if stats.bad_parse > 0 || stats.bad_dim > 0 {
-        eprintln!("skipped: {} unparseable, {} wrong-dimension", stats.bad_parse, stats.bad_dim);
+        eprintln!(
+            "skipped: {} unparseable, {} wrong-dimension",
+            stats.bad_parse, stats.bad_dim
+        );
     }
     if entries.is_empty() {
         return Err("no valid 384-dim embeddings parsed — aborting".into());
@@ -263,9 +282,15 @@ async fn main() -> Result<(), BoxErr> {
     println!("  rows fetched  : {}", stats.fetched);
     println!("  rows exported : {inserted}");
     println!("  dims verified : {EMBEDDING_DIMENSIONS} (all rows)");
-    println!("  skipped       : {} unparseable, {} wrong-dim", stats.bad_parse, stats.bad_dim);
+    println!(
+        "  skipped       : {} unparseable, {} wrong-dim",
+        stats.bad_parse, stats.bad_dim
+    );
     println!("  artifact      : {}", args.out.display());
-    println!("  sidecar       : {} (generatedAt={generated_at})", sidecar.display());
+    println!(
+        "  sidecar       : {} (generatedAt={generated_at})",
+        sidecar.display()
+    );
     println!("──────────────────────────────────────────────");
 
     Ok(())

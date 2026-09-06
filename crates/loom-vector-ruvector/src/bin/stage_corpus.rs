@@ -185,7 +185,9 @@ fn parse_args() -> Result<Args, BoxErr> {
         }
         let value = match inline {
             Some(v) => v,
-            None => it.next().ok_or_else(|| format!("missing value for {flag}"))?,
+            None => it
+                .next()
+                .ok_or_else(|| format!("missing value for {flag}"))?,
         };
         match flag.as_str() {
             "--records" => args.records = PathBuf::from(value),
@@ -253,7 +255,10 @@ async fn run() -> Result<(), BoxErr> {
     drop(w);
 
     let kb = std::fs::metadata(&args.out)?.len() / 1024;
-    eprintln!("staged {written} upserts -> {} ({kb} KB)", args.out.display());
+    eprintln!(
+        "staged {written} upserts -> {} ({kb} KB)",
+        args.out.display()
+    );
     eprintln!(
         "NEXT: stream it in, then rebuild the HNSW index NON-concurrently \
          (m=16, ef_construction=128) as a separate step."

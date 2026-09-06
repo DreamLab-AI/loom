@@ -46,7 +46,10 @@ fn main() {
 
     // Re-run when either checkout's HEAD moves, or the manifest changes.
     for root in [&loom_root, &ruvector_root] {
-        println!("cargo::rerun-if-changed={}", root.join(".git/HEAD").display());
+        println!(
+            "cargo::rerun-if-changed={}",
+            root.join(".git/HEAD").display()
+        );
     }
     println!(
         "cargo::rerun-if-changed={}",

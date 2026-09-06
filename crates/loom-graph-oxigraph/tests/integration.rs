@@ -51,7 +51,11 @@ ex:secret-private-note rdfs:label \"PRIVATE WORKING NOTE\" .
 fn fixture_store() -> (tempfile::TempDir, OxigraphStore) {
     let dir = tempfile::tempdir().expect("tempdir");
     fs::write(dir.path().join("ontology.ttl"), ONTOLOGY_TTL).unwrap();
-    fs::write(dir.path().join("ontology-inferred.ttl"), ONTOLOGY_INFERRED_TTL).unwrap();
+    fs::write(
+        dir.path().join("ontology-inferred.ttl"),
+        ONTOLOGY_INFERRED_TTL,
+    )
+    .unwrap();
     fs::write(dir.path().join("working-graph.ttl"), WORKING_GRAPH_TTL).unwrap();
     let store = OxigraphStore::load(dir.path());
     (dir, store)
@@ -64,7 +68,10 @@ async fn loads_only_the_allowlist() {
     assert!(status.available, "fixture store should be available");
     assert_eq!(
         status.loaded_files,
-        vec!["ontology.ttl".to_owned(), "ontology-inferred.ttl".to_owned()],
+        vec![
+            "ontology.ttl".to_owned(),
+            "ontology-inferred.ttl".to_owned()
+        ],
         "only the two published-ontology artifacts load, in allowlist order"
     );
     assert!(
@@ -86,8 +93,14 @@ async fn working_graph_triples_are_absent() {
         Some(false),
         "working-graph.ttl triple must not be queryable"
     );
-    let hits = store.search_labels("private working note", 10).await.unwrap();
-    assert!(hits.is_empty(), "working-graph label must not be searchable");
+    let hits = store
+        .search_labels("private working note", 10)
+        .await
+        .unwrap();
+    assert!(
+        hits.is_empty(),
+        "working-graph label must not be searchable"
+    );
 }
 
 #[tokio::test]
@@ -104,10 +117,15 @@ async fn relationship_pattern_returns_typed_rows() {
     assert!(!res.rows.is_empty(), "subClassOf pattern must return rows");
     // The inferred edge (only in ontology-inferred.ttl) must be present, proving
     // both allowlisted files loaded into one store.
-    let has_inferred = res.rows.iter().any(|r| {
-        r[0] == "urn:ngm:class:knowledge-graph" && r[1] == "urn:ngm:class:protocol"
-    });
-    assert!(has_inferred, "the reasoned-closure edge must be queryable: {:?}", res.rows);
+    let has_inferred = res
+        .rows
+        .iter()
+        .any(|r| r[0] == "urn:ngm:class:knowledge-graph" && r[1] == "urn:ngm:class:protocol");
+    assert!(
+        has_inferred,
+        "the reasoned-closure edge must be queryable: {:?}",
+        res.rows
+    );
 }
 
 #[tokio::test]
@@ -132,7 +150,11 @@ async fn label_search_returns_hits_with_predicate() {
     assert!(!hits.is_empty(), "'graph' must match labels");
     // Every hit resolves to an addressable IRI and records which predicate matched.
     for hit in &hits {
-        assert!(hit.iri.as_str().starts_with("urn:ngm:class:"), "{:?}", hit.iri);
+        assert!(
+            hit.iri.as_str().starts_with("urn:ngm:class:"),
+            "{:?}",
+            hit.iri
+        );
         assert!(
             matches!(
                 hit.predicate.as_str(),
@@ -145,7 +167,8 @@ async fn label_search_returns_hits_with_predicate() {
         );
     }
     assert!(
-        hits.iter().any(|h| h.iri.as_str() == "urn:ngm:class:knowledge-graph"),
+        hits.iter()
+            .any(|h| h.iri.as_str() == "urn:ngm:class:knowledge-graph"),
         "knowledge-graph should surface for 'graph'"
     );
 }
@@ -163,8 +186,19 @@ async fn real_data_smoke() {
     }
     let store = OxigraphStore::load(&data_dir);
     let status = store.status();
-    assert!(status.available, "real data should load: {:?}", status.error);
-    assert!(status.triples > 100_000, "expected 282k triples, got {}", status.triples);
+    assert!(
+        status.available,
+        "real data should load: {:?}",
+        status.error
+    );
+    assert!(
+        status.triples > 100_000,
+        "expected 282k triples, got {}",
+        status.triples
+    );
     let hits = store.search_labels("protocol", 20).await.unwrap();
-    assert!(!hits.is_empty(), "'protocol' should return label hits over real data");
+    assert!(
+        !hits.is_empty(),
+        "'protocol' should return label hits over real data"
+    );
 }

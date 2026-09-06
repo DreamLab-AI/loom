@@ -57,7 +57,10 @@ async fn chain_grows_and_links() {
     assert_ne!(id0.0, id1.0);
     assert_ne!(id1.0, id2.0);
 
-    assert!(ledger.verify_chain().await.unwrap(), "fresh chain is intact");
+    assert!(
+        ledger.verify_chain().await.unwrap(),
+        "fresh chain is intact"
+    );
 }
 
 #[tokio::test]
@@ -147,13 +150,22 @@ async fn attest_is_deterministic_given_fixed_inputs() {
     let a = ledger_at(dir.path().join("a.jsonl"), 42);
     let b = ledger_at(dir.path().join("b.jsonl"), 42);
 
-    let id_a = a.attest(&verdict("class_count_parity", true)).await.unwrap();
-    let id_b = b.attest(&verdict("class_count_parity", true)).await.unwrap();
+    let id_a = a
+        .attest(&verdict("class_count_parity", true))
+        .await
+        .unwrap();
+    let id_b = b
+        .attest(&verdict("class_count_parity", true))
+        .await
+        .unwrap();
     assert_eq!(id_a, id_b, "deterministic given fixed inputs");
 
     // A different clock ⇒ a different hash (ts is part of the canonical form).
     let c = ledger_at(dir.path().join("c.jsonl"), 43);
-    let id_c = c.attest(&verdict("class_count_parity", true)).await.unwrap();
+    let id_c = c
+        .attest(&verdict("class_count_parity", true))
+        .await
+        .unwrap();
     assert_ne!(id_a, id_c, "ts participates in the hash");
 }
 

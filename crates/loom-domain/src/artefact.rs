@@ -259,7 +259,11 @@ mod tests {
             VectorMetric::Cosine,
             Some("bge-small-en-v1.5"),
         );
-        assert!(q.is_qualified(), "384/cosine/bge must qualify: {:?}", q.rejections);
+        assert!(
+            q.is_qualified(),
+            "384/cosine/bge must qualify: {:?}",
+            q.rejections
+        );
         assert_eq!(q.served_metric(), Some(VectorMetric::Cosine));
         assert!(q.reasons().is_empty());
     }
@@ -280,7 +284,11 @@ mod tests {
                 want: VectorMetric::Cosine
             })
         );
-        assert_eq!(q.served_metric(), None, "an unqualified artefact serves no scale");
+        assert_eq!(
+            q.served_metric(),
+            None,
+            "an unqualified artefact serves no scale"
+        );
         assert!(!VectorMetric::Euclidean.yields_cosine_similarity());
     }
 
@@ -288,8 +296,11 @@ mod tests {
     /// not at query time.
     #[test]
     fn wrong_width_artefact_is_rejected_before_query() {
-        let q =
-            ArtefactContract::bge_small_384().qualify(3, VectorMetric::Cosine, Some("bge-small-en-v1.5"));
+        let q = ArtefactContract::bge_small_384().qualify(
+            3,
+            VectorMetric::Cosine,
+            Some("bge-small-en-v1.5"),
+        );
         assert!(!q.is_qualified());
         assert_eq!(
             q.first_rejection(),
@@ -330,7 +341,12 @@ mod tests {
     #[test]
     fn every_disagreement_is_reported_not_just_the_first() {
         let q = ArtefactContract::bge_small_384().qualify(3, VectorMetric::Euclidean, None);
-        assert_eq!(q.rejections.len(), 3, "dimension + metric + model: {:?}", q.rejections);
+        assert_eq!(
+            q.rejections.len(),
+            3,
+            "dimension + metric + model: {:?}",
+            q.rejections
+        );
         assert_eq!(q.reasons().len(), 3);
     }
 

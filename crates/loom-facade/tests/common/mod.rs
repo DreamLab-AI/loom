@@ -24,7 +24,7 @@ use loom_backend_openai::OpenAiBackend;
 use loom_domain::{
     ArtefactContract, ArtefactQualification, ConceptMatch, EmbeddingProvider, Generation,
     GenerationId, GenerationSource, Iri, LexicalIndex, LoomError, MatchProvenance, ModelBackend,
-    VectorMetric, VectorIndex,
+    VectorIndex, VectorMetric,
 };
 use loom_facade::bundle::LoadedBundle;
 use loom_facade::state::AppState;
@@ -287,7 +287,10 @@ impl TestEnvBuilder {
         // The tempdir is always created (it owns cleanup); an external
         // `data_dir` simply redirects where the fixture is written and read.
         let dir = TempDir::new().expect("tempdir");
-        let data_dir = self.data_dir.clone().unwrap_or_else(|| dir.path().to_path_buf());
+        let data_dir = self
+            .data_dir
+            .clone()
+            .unwrap_or_else(|| dir.path().to_path_buf());
         let index_path = data_dir.join("scaffold-index.json");
         std::fs::write(&index_path, FIXTURE).expect("write fixture index");
         if let Some(ttl) = &self.ttl {
