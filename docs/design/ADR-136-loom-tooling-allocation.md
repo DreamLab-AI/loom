@@ -219,3 +219,27 @@ The naive "just use the shipped hybrid substrate" instinct. **Rejected:** ruvect
 ## 7. Cross-reference discipline
 
 ADR-136 is the decision-of-record for tooling allocation; PRD-026 cites it for every allocation call and owns requirements, the WS build order, and the multivariate acceptance gates (carrying the **benchmark-first** and **SSOT-single-copy** invariants as gates). The DDD (`ddd-ontology-loom-context.md`, revised in place) names the per-IRI markdown unit as the aggregate root, draws the accelerator boundary (RuVector = downstream index/attestation adapter; pyoxigraph = in-context SPARQL; Whelk-rs = upstream build-time reasoner), and marks the mesh-coordination context as a deferred region. All three carry the identical shipped-vs-aspirational honesty table (§1) and repo-qualify every cross-repo citation (two ADR-050s — **VisionClaw pod-backed-kgnode** vs **agentbox decision-elevation**; two PRD-022s — **VisionClaw semantic-trust-layer** vs **agentbox semantic-integrity**) per PRD-025's citation discipline. THE PRIZE statement is quoted verbatim at the head of each doc as the non-negotiable driver.
+
+## Closeout extension — 2026-09-04
+
+Scope: Retrieval allocation and policy. Work packages: CP-01/02/03/08. Existing decision status, dates and deciders are retained; this review does not ratify a proposed decision or establish deployment activation. Accountable roles: Loom maintainer, corpus publisher and consuming-agent maintainer for their respective boundaries.
+
+Lexical retrieval is primary; semantic fallback is gated and shares assembly policy. Confidence is a policy ratio on a named score scale, not calibrated factual correctness.
+
+**Acceptance condition:** Keep retrieval, semantic validation and factual review separate; benchmark lexical/semantic/skip paths with copy controls, frozen datasets and measured consumer budgets before changing defaults.
+
+Dependencies: authoritative corpus and release identity, publisher visibility rules and explicit consumer policy. Reopen on corpus format, model/serving mode, generation reporting or consumer changes. Source revision: `8cdef36bb571f0aed2d599d97a3efab02760b6d5`; current test receipts are kept separately so component tests cannot be mistaken for production evidence.
+
+See the [estate grounding review](../../../VisionFlow/docs/estate-review/grounding-delivery.md) and [roadmap](../../../VisionFlow/docs/estate-review/closeout/README.md).
+
+## Acceptance progress — 2026-09-05
+
+Decision status unchanged. Recorded against the closeout extension's acceptance condition ("Keep retrieval, semantic validation and factual review separate…").
+
+**Implemented.** The three concerns are now separable in the wire format rather than only in the code. Retrieval allocation is unchanged — lexical remains primary, the semantic fallback remains gated and still hands candidates back to the single `assemble` gate — but the grounding envelope now carries `status` (which of six answer paths ran) beside `signal` (which engine produced the evidence) and `score_scale` (which units the score is in), so a lexical hit, a semantic fallback and a skip are distinguishable without inferring them from the pipeline's branch names. Semantic *validation* is a separate axis again: `/health.semantic.qualification` reports what the artefact IS against what the node requires, and `score_metric` is `null` for an unqualified artefact rather than defaulting to cosine. The record's own caution holds and is now enforced in the type: `confidence` is a clamped policy ratio on a named scale, `corpus_backed` is a policy predicate about evidence and delivery, and neither claims factual correctness — a backend failure with excellent retrieval reports `engaged: true` and `corpus_backed: false`.
+
+**Tests and results.** `crates/loom-facade/tests/exp014_grounding_contract.rs` (11 tests) asserts the status/signal/scale separation on every path, including that a semantic answer is never labelled on the lexical-additive scale. `crates/loom-facade/tests/exp015_profile_parity.rs::the_injection_gate_is_reported_identically_by_both_profiles` pins the gate configuration as profile-invariant, which is the precondition for the uplift A/B varying only its master switch. `cargo test --workspace` 278 passed / 0 failed; clippy clean under `-D warnings`.
+
+**Receipts.** [Local façade receipt](../estate-closeout/2026-09-05/local-facade-receipt.json).
+
+**Remaining.** No benchmark was run and no default was changed: the recall/uplift work — frozen datasets, copy controls, measured consumer budgets — is untouched, and no recall or performance claim is made here.

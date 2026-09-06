@@ -4,6 +4,15 @@
 //! sidecar), the atomicity check the mirror's `.generation.json` commit marker
 //! promises (ADR-136 D4).
 //!
+//! SCOPE (ADR-135 closeout): this store is the **disk view** — what the data
+//! directory says RIGHT NOW. It is deliberately not the serving identity any
+//! more. `LoadedBundle` (see `bundle.rs`) captures the generation of the content
+//! a process actually loaded, and that is what `/health`, `/loom/generation` and
+//! every grounding object report. `MirrorStore` remains so the façade can show
+//! the disk view BESIDE the loaded one, which is precisely how a promotion that
+//! has not been activated becomes visible instead of being mistaken for a
+//! serving change.
+//!
 //! Best source first, exactly as Python:
 //!   1. `build-manifest.json` (commitSha/buildId — WS-A, when upstream ships it);
 //!   2. `.generation.json` (the mirror's atomic commit marker — proof the served
@@ -47,6 +56,43 @@ impl MirrorStore {
             data_dir,
             index_file,
         }
+    }
+
+    /// The data directory this store reads (the bundle module resolves the
+    /// same directory, so it is shared rather than recomputed).
+    #[must_use]
+    pub fn data_dir(&self) -> &Path {
+        &self.data_dir
+    }
+
+    /// The scaffold index filename inside [`Self::data_dir`].
+    #[must_use]
+    pub fn index_file(&self) -> &str {
+        &self.index_file
+    }
+
+    /// The `.generation.json` commit marker's artefact digests, as recorded.
+    /// `None` when there is no readable marker.
+    #[must_use]
+    pub fn marker_artifacts(&self) -> Option<Vec<ArtifactSha>> {
+        let raw = std::fs::read_to_string(self.generation_manifest_path()).ok()?;
+        let m: Value = serde_json::from_str(&raw).ok()?;
+        Some(parse_artifacts(&m))
+    }
+
+    /// Whether a readable `.generation.json` commit marker exists.
+    #[must_use]
+    pub fn has_commit_marker(&self) -> bool {
+        std::fs::read_to_string(self.generation_manifest_path())
+            .ok()
+            .and_then(|s| serde_json::from_str::<Value>(&s).ok())
+            .is_some()
+    }
+
+    /// The commit-marker path (`<data_dir>/.generation.json`).
+    #[must_use]
+    pub fn commit_marker_path(&self) -> PathBuf {
+        self.generation_manifest_path()
     }
 
     fn build_manifest(&self) -> Option<Generation> {
@@ -197,7 +243,10 @@ fn parse_artifacts(m: &Value) -> Vec<ArtifactSha> {
         .collect()
 }
 
-fn hex_sha256(bytes: &[u8]) -> String {
+/// Lower-case hex SHA-256 of `bytes`. Shared with the bundle activator so the
+/// loaded-content digest and the marker verification cannot drift apart.
+#[must_use]
+pub fn hex_sha256(bytes: &[u8]) -> String {
     let mut hasher = Sha256::new();
     hasher.update(bytes);
     let digest = hasher.finalize();

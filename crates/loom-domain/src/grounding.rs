@@ -291,3 +291,86 @@ impl Grounding {
         self
     }
 }
+
+// --- the per-status contract (ADR-138 closeout) ------------------------------
+
+/// WHICH answer path produced the response the grounding is attached to.
+///
+/// The review's finding was that grounding objects existed for `/loom/scaffold`
+/// and for a successful chat, and that "non-200 backend paths lack the grounding
+/// contract". A consumer that cannot distinguish *the corpus had nothing* from
+/// *the model was unreachable* will read both as an ungrounded answer and treat
+/// them the same, which is exactly the failure the contract exists to prevent.
+///
+/// So every response — success, degrade and failure — carries a status, and the
+/// six variants below are the complete set the closeout enumerates.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum GroundingStatus {
+    /// Retrieval ran and nothing cleared the gate. The corpus was consulted.
+    NoMatch,
+    /// The scaffold was injected and delegated, and the caller declined the
+    /// verbatim serve for this request (`loom_options.verbatim = false`).
+    /// Distinct from `Delegated` because the node WOULD have served verbatim:
+    /// the decision was the caller's, and a benchmark that cannot see that will
+    /// mis-attribute the latency.
+    OptOut,
+    /// The lexical gate missed and the HNSW fallback supplied the seeds. The
+    /// score scale is cosine, not lexical-additive.
+    SemanticFallback,
+    /// The scaffold was served AS the answer; no backend was called.
+    Verbatim,
+    /// The scaffold was injected (or not) and the backend answered 200.
+    Delegated,
+    /// The backend did not answer: unreachable, non-2xx, or not configured.
+    /// There is no answer to be grounded, and `corpus_backed` is false however
+    /// good the retrieval was.
+    BackendFailure,
+}
+
+impl GroundingStatus {
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::NoMatch => "no-match",
+            Self::OptOut => "opt-out",
+            Self::SemanticFallback => "semantic-fallback",
+            Self::Verbatim => "verbatim",
+            Self::Delegated => "delegated",
+            Self::BackendFailure => "backend-failure",
+        }
+    }
+
+    /// Whether an answer delivered on this path may be treated as corpus-backed,
+    /// GIVEN that the scaffold actually engaged.
+    ///
+    /// The two `false` cases are the ones a consumer most needs: a no-match has
+    /// no evidence, and a backend failure has no answer. Everything else is
+    /// corpus-backed exactly when the scaffold engaged.
+    #[must_use]
+    pub fn may_be_corpus_backed(self) -> bool {
+        !matches!(self, Self::NoMatch | Self::BackendFailure)
+    }
+}
+
+/// The keys every grounding object must carry, on every response status.
+///
+/// Named here rather than left implicit in the serialiser so a contract test can
+/// assert the set directly, and so a future field addition is a deliberate edit
+/// to a stated contract rather than a silent shape change.
+pub const REQUIRED_GROUNDING_FIELDS: &[&str] = &[
+    "signal",
+    "top_score",
+    "score_scale",
+    "confidence",
+    "decision",
+    "threshold",
+    "effective_budget",
+    "engaged",
+    "seeds",
+    "status",
+    "corpus_backed",
+    "generation",
+    "content_digest",
+    "degraded",
+];

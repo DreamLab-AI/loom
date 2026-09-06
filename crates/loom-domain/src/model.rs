@@ -297,6 +297,12 @@ pub enum ServedMode {
     /// The high-confidence scaffold was served verbatim WITHOUT calling the
     /// backend — the paper's serving-regime finding realised (F1).
     Verbatim,
+    /// No answer was delivered: the delegation failed (backend unreachable,
+    /// non-2xx, or absent). The grounding contract still applies — a consumer
+    /// must be able to tell "the corpus had nothing" from "the model was down",
+    /// and only a grounding block on the failure path can carry that (ADR-138
+    /// closeout).
+    Failed,
 }
 
 /// Exposure telemetry (F2): after an answer returns, how many of the injected

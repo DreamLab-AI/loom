@@ -8,11 +8,11 @@ use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 
 use loom_domain::{
-    EmbeddingProvider, GenerationStore, GraphStore, InjectionDecision, LexicalIndex, ModelBackend,
-    VectorIndex,
+    EmbeddingProvider, GraphStore, InjectionDecision, LexicalIndex, ModelBackend, VectorIndex,
 };
 use loom_scaffold::policy::InjectionPolicy;
 
+use crate::bundle::LoadedBundle;
 use crate::config::Config;
 
 /// How many of the most recent grounded requests the `/health` confidence block
@@ -111,7 +111,13 @@ pub struct AppStateInner {
     pub graph: Arc<dyn GraphStore>,
     pub embedder: Arc<dyn EmbeddingProvider>,
     pub backend: Arc<dyn ModelBackend>,
-    pub generation: Arc<dyn GenerationStore>,
+    /// The ACTIVATED bundle (ADR-135 closeout) — a concrete type rather than
+    /// `Arc<dyn GenerationStore>` because the serving identity is not an
+    /// interchangeable policy: a node either loaded one verified bundle or it is
+    /// not serving. The `GenerationStore` impl is still there for port
+    /// conformance; the richer `identity()`/`disk_matches_loaded()` surface is
+    /// what `/health` and the grounding envelope actually read.
+    pub generation: Arc<LoadedBundle>,
     /// The confidence gate's authority — its `min_inject_score` is the lexical
     /// hot-path short-circuit in the fusion pipeline (§6 step 2).
     pub policy: InjectionPolicy,
@@ -137,7 +143,7 @@ impl AppState {
         graph: Arc<dyn GraphStore>,
         embedder: Arc<dyn EmbeddingProvider>,
         backend: Arc<dyn ModelBackend>,
-        generation: Arc<dyn GenerationStore>,
+        generation: Arc<LoadedBundle>,
         policy: InjectionPolicy,
         config: Config,
     ) -> Self {

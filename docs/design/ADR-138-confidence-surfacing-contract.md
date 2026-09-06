@@ -98,3 +98,33 @@ Prompts used by `contract_live`, both verified against the live HP node on 2026-
 They are the same pair the bench protocol's live-probe status note used on 2026-08-11, so the contract test and the bench evidence describe the same two points on the scale.
 
 `dream.config.json` `evaluatorEntrypoints` now runs all five. The `confidence-injection` slot has an evaluator for the first time.
+
+## Closeout extension — 2026-09-04
+
+Scope: Grounding visibility and consumer interpretation. Work packages: CP-01/02/03/08. Existing decision status, dates and deciders are retained; this review does not ratify a proposed decision or establish deployment activation. Accountable roles: Loom maintainer, corpus publisher and consuming-agent maintainer for their respective boundaries.
+
+The inspected routes now build grounding objects for scaffold and successful delegated/verbatim chat. Non-200 backend/error responses follow separate handling. Presence of diagnostics does not ensure every consumer interprets them.
+
+**Acceptance condition:** Test no-match, opt-out, semantic fallback, verbatim, delegated success and backend failure. Define the required grounding contract for each status and prove consuming agents preserve engagement, scale, generation and degradation.
+
+Dependencies: authoritative corpus and release identity, publisher visibility rules and explicit consumer policy. Reopen on corpus format, model/serving mode, generation reporting or consumer changes. Source revision: `8cdef36bb571f0aed2d599d97a3efab02760b6d5`; current test receipts are kept separately so component tests cannot be mistaken for production evidence.
+
+See the [estate grounding review](../../../VisionFlow/docs/estate-review/grounding-delivery.md) and [roadmap](../../../VisionFlow/docs/estate-review/closeout/README.md).
+
+### Semantic artefact qualification — 2026-09-04
+
+CP-01/03/07/08 acceptance also requires validating the stored database configuration before readiness and score labelling. RuVector restores stored settings over caller defaults. The actual adapter probe accepts a Euclidean artefact and converts its distance as cosine, and reports a wrong-width artefact ready before query failure. These are synthetic local results, not a deployed recall failure.
+
+Require effective metric/dimension/model validation, database-to-sidecar binding, and wrong-configuration/restart fixtures before certifying semantic readiness or the cosine score scale. Preserve this record's existing decision status. See the [consumed-vector review](../../../VisionFlow/docs/estate-review/consumed-vector-storage.md) and [probe receipt](../../../VisionFlow/docs/estate-review/evidence/loom-vector-config-probe.json).
+
+## Acceptance progress — 2026-09-05
+
+Decision status unchanged. Recorded against the closeout extension's acceptance condition ("Test no-match, opt-out, semantic fallback, verbatim, delegated success and backend failure. Define the required grounding contract for each status…").
+
+**Implemented.** The required contract is now named rather than implied: `loom_domain::REQUIRED_GROUNDING_FIELDS` lists the fourteen keys every grounding object must carry, and `GroundingStatus` enumerates the six answer paths. `loom-facade::routes::grounding::envelope` builds one shape for all of them, adding four keys the domain object cannot know to the nine it already had: `status`; `corpus_backed`, the single predicate a consuming agent should branch on, true only when the scaffold engaged AND the path can carry evidence; `generation` and `content_digest`, the LOADED serving identity (ADR-135), so an answer and the bytes behind it are named together instead of requiring a second `/health` call that could race a promotion; and `degraded`, always a list, naming the accelerators that were unavailable for that request. The gap the review named is closed: `error.rs` was split so the §7 mapping is available as data (`api_error_parts`), and the chat path's failure branch now attaches the contract to a 502/503 body. The status mapping is unchanged — what changed is that a consumer receiving a failure can now tell an unreachable model from an empty corpus. `ServedMode::Failed` gives the delivery axis its third value. `opt-out` is reported distinctly from `delegated`, because the node would have served verbatim and the caller declined: a benchmark that cannot see that choice will mis-attribute the latency to the serving regime.
+
+**Tests and results.** `crates/loom-facade/tests/exp014_grounding_contract.rs`, 11 tests, all passing, one per status plus cross-status invariants. Every test runs the same `assert_contract` over `REQUIRED_GROUNDING_FIELDS` and then the status-specific meaning, so the field list cannot drift without failures. `backend_failure_carries_the_contract_and_is_never_corpus_backed` pins the central case: retrieval genuinely succeeded (`engaged: true`) and the answer is still not corpus-backed, with `backend-failure` named in `degraded`. `degradations_are_named_on_the_response_that_suffered_them` asserts that an unqualified semantic artefact surfaces its failing axis, not just its outcome. Router `debug_assert`s enforce the contract on the scaffold, chat and failure paths in every debug build. `cargo test --workspace` 278 passed / 0 failed; clippy clean under `-D warnings`.
+
+**Receipts.** [Local façade receipt](../estate-closeout/2026-09-05/local-facade-receipt.json) — a live `POST /v1/chat/completions` against a retrieval-only node returned HTTP 503 with `loom.served_mode: "failed"`, `grounding.status: "backend-failure"`, `corpus_backed: false` and `degraded: ["graph-unavailable","backend-failure"]`. [Browser receipt](../estate-closeout/2026-09-05/browser-receipt.json) — a verbatim serve driven through a real browser reported `status: "verbatim"`, `corpus_backed: true`, and a generation and content digest matching `/health` exactly.
+
+**Remaining.** The acceptance condition's second half — "prove consuming agents preserve engagement, scale, generation and degradation" — is not met here: this work makes the contract emittable and tested at the façade boundary, but the agent-side consumers (agentbox ADR-051's Loom client, the email gateway) were not modified or tested, so nothing yet proves the diagnostics reach a human rather than disappearing behind a fluent answer. HP deployment is outstanding.

@@ -28,7 +28,7 @@ use tower_http::limit::RequestBodyLimitLayer;
 use tower_http::timeout::TimeoutLayer;
 use tower_http::trace::TraceLayer;
 
-use loom_domain::{FusionPath, Scaffold, ScaffoldOpts};
+use loom_domain::{FusionPath, GenerationStore, Scaffold, ScaffoldOpts};
 use loom_scaffold::message_text;
 use loom_scaffold::tuning::SYSTEM_PREAMBLE;
 
@@ -71,8 +71,44 @@ pub fn build_router(state: AppState) -> Router {
 
 // --- GET /loom/generation (+ /generation) -----------------------------------
 
+/// The generation surface, and the one place `verify_atomicity` runs PER
+/// REQUEST (ADR-135 closeout).
+///
+/// The review found the verifier defined and never invoked from state
+/// construction or request handling. Activation now calls it once, which closes
+/// the startup half; this route closes the running half, re-hashing the
+/// artefacts the process actually loaded so post-activation tampering surfaces
+/// as `drift.ok: false` instead of being invisible until the next restart.
+///
+/// The response separates the three facts the review said were being conflated:
+/// what is LOADED (`identity`), what is on DISK right now (`disk`), and whether
+/// the loaded bytes still verify (`drift`).
 async fn generation(State(st): State<AppState>) -> Response {
-    Json(to_value(&st.generation.current())).into_response()
+    let identity = st.generation.reported_identity();
+    let drift = match st.generation.verify_atomicity().await {
+        Ok(()) => json!({ "checked": true, "ok": true, "detail": Value::Null }),
+        Err(e) => json!({ "checked": true, "ok": false, "detail": e.to_string() }),
+    };
+    Json(json!({
+        // Python-parity: the top level still IS the served generation descriptor.
+        "id": identity.generation.id,
+        "source": identity.generation.source,
+        "generated_at": identity.generation.generated_at,
+        "commit_sha": identity.generation.commit_sha,
+        "promoted_at": identity.generation.promoted_at,
+        "cluster_span_seconds": identity.generation.cluster_span_seconds,
+        "artifacts": identity.generation.artifacts,
+        "verified_single_generation": identity.generation.verified_single_generation,
+        "class_count": identity.generation.class_count,
+        // The closeout additions.
+        "identity": to_value(&identity),
+        "disk": {
+            "generation": to_value(&st.generation.disk_generation()),
+            "matches_loaded": st.generation.disk_matches_loaded(),
+        },
+        "drift": drift,
+    }))
+    .into_response()
 }
 
 // --- POST /loom/scaffold (+ /scaffold) --------------------------------------
@@ -101,6 +137,13 @@ async fn scaffold(State(st): State<AppState>, body: Bytes) -> Response {
         Ok(s) => {
             let g = grounding::build(&st, Some(&s));
             st.confidence.record(g.decision, g.confidence);
+            st.generation.mark_served();
+            let status = grounding::scaffold_status(Some(&s));
+            let envelope = grounding::envelope(&st, &g, status);
+            debug_assert!(
+                grounding::missing_contract_fields(&envelope).is_empty(),
+                "scaffold path must satisfy the grounding contract"
+            );
             Json(json!({
                 "scaffold": s.block,
                 "engaged": s.engaged,
@@ -109,12 +152,12 @@ async fn scaffold(State(st): State<AppState>, body: Bytes) -> Response {
                 // `grounding` is the contract; the five keys below are the
                 // pre-contract shape, kept as ALIASES for one release so
                 // existing consumers (evaluators, dashboards) do not break.
-                "grounding": grounding::to_json(&g),
+                "grounding": envelope,
                 "seeds": s.seeds,
                 "top_score": s.top_score,
                 "effective_budget": s.effective_budget,
                 "fusion_path": s.fusion_path,
-                "generation": to_value(&st.generation.current()),
+                "generation": to_value(&st.generation.reported_identity().generation),
             }))
             .into_response()
         }
@@ -225,25 +268,7 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
     let delivery_shape = serving::is_delivery_lookup_shape(&messages);
     serving::strip_loom_options(&mut body_obj);
 
-    // Scaffold knobs for the chat path (Python `ontology_budget`/`ontology_prose`).
-    let budget = body_obj
-        .get("ontology_budget")
-        .and_then(Value::as_u64)
-        .and_then(|n| usize::try_from(n).ok())
-        .unwrap_or(st.config.budget);
-    let prose = body_obj
-        .get("ontology_prose")
-        .and_then(Value::as_bool)
-        .unwrap_or(st.config.default_prose);
-    let opts = ScaffoldOpts {
-        budget_tokens: budget,
-        hops: st.config.default_hops,
-        prose,
-        confidence_injection: st.policy.confidence_injection,
-        max_seeds: st.config.default_max_seeds,
-        k_semantic: st.config.semantic_k,
-        path: FusionPath::NoMatch,
-    };
+    let opts = chat_scaffold_opts(&st, &body_obj);
 
     // Scaffold from the LAST user message; merge into the messages array.
     let last_user_text = messages
@@ -273,22 +298,28 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
         .map_or(FusionPath::NoMatch, |s| s.fusion_path);
     // The contract block, built once and ALWAYS present (an honest zero on a
     // no-match, never `null`).
-    let mut ground = grounding::build(&st, scaffold.as_ref());
+    let ground = grounding::build(&st, scaffold.as_ref());
 
     // --- F1: VERBATIM SERVING — high-confidence scaffold, no backend call. -----
-    if engaged && st.config.verbatim_mode && !opted_out && !streaming && delivery_shape {
-        if let Some(s) = scaffold.as_ref() {
-            if f64::from(s.top_score) >= st.config.verbatim_threshold {
-                ground = grounding::as_verbatim(ground, st.config.verbatim_threshold);
-                st.confidence.record(ground.decision, ground.confidence);
-                let body =
-                    grounding::verbatim_response(&st, s, &grounding::to_json(&ground), fusion_path);
-                return (StatusCode::OK, Json(body)).into_response();
-            }
-        }
+    // A verbatim serve was possible in principle but declined by THIS request:
+    // the distinction the grounding contract reports as `opt-out` rather than
+    // folding into a plain delegation.
+    let verbatim_declined =
+        engaged && st.config.verbatim_mode && opted_out && !streaming && delivery_shape;
+
+    let verbatim_eligible =
+        engaged && st.config.verbatim_mode && !opted_out && !streaming && delivery_shape;
+    if let Some(resp) = try_serve_verbatim(&st, scaffold.as_ref(), &ground, fusion_path, verbatim_eligible) {
+        return resp;
     }
     st.confidence.record(ground.decision, ground.confidence);
-    let grounding_json = grounding::to_json(&ground);
+    st.generation.mark_served();
+    let status = grounding::chat_status(engaged, fusion_path, false, verbatim_declined);
+    let grounding_json = grounding::envelope(&st, &ground, status);
+    debug_assert!(
+        grounding::missing_contract_fields(&grounding_json).is_empty(),
+        "chat path must satisfy the grounding contract"
+    );
 
     // --- DELEGATE PATH ---------------------------------------------------------
     if let Some(s) = scaffold.as_ref().filter(|s| !s.block.is_empty()) {
@@ -328,8 +359,65 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
             }
             (status, Json(out)).into_response()
         }
-        Err(e) => ApiError(e).into_response(), // NoBackend→503; unreachable/http→502
+        Err(e) => {
+            // ADR-138 closeout: a failed delegation is still a grounded REQUEST.
+            // The §7 status is unchanged; what is added is the contract, so a
+            // consumer can tell an unreachable model from an empty corpus.
+            let (code, body) =
+                grounding::backend_failure_response(&st, e, &ground, fusion_path, injected);
+            (code, Json(body)).into_response()
+        }
     }
+}
+
+/// The chat path's scaffold knobs (Python `ontology_budget`/`ontology_prose`,
+/// with the §10 config as the default for each).
+fn chat_scaffold_opts(st: &AppState, body: &Map<String, Value>) -> ScaffoldOpts {
+    ScaffoldOpts {
+        budget_tokens: body
+            .get("ontology_budget")
+            .and_then(Value::as_u64)
+            .and_then(|n| usize::try_from(n).ok())
+            .unwrap_or(st.config.budget),
+        hops: st.config.default_hops,
+        prose: body
+            .get("ontology_prose")
+            .and_then(Value::as_bool)
+            .unwrap_or(st.config.default_prose),
+        confidence_injection: st.policy.confidence_injection,
+        max_seeds: st.config.default_max_seeds,
+        k_semantic: st.config.semantic_k,
+        path: FusionPath::NoMatch,
+    }
+}
+
+/// F1: serve the scaffold AS the answer when every precondition holds and the
+/// top score clears the verbatim threshold. `None` ⇒ fall through to delegation.
+///
+/// The grounding is restamped here rather than at the call site because the
+/// decision and the threshold BOTH change on this path: the bar cleared was the
+/// verbatim threshold, not `min_inject_score`, and reporting the latter would
+/// name the wrong gate.
+fn try_serve_verbatim(
+    st: &AppState,
+    scaffold: Option<&Scaffold>,
+    ground: &loom_domain::Grounding,
+    fusion_path: FusionPath,
+    eligible: bool,
+) -> Option<Response> {
+    if !eligible {
+        return None;
+    }
+    let s = scaffold?;
+    if f64::from(s.top_score) < st.config.verbatim_threshold {
+        return None;
+    }
+    let ground = grounding::as_verbatim(ground.clone(), st.config.verbatim_threshold);
+    st.confidence.record(ground.decision, ground.confidence);
+    st.generation.mark_served();
+    let envelope = grounding::envelope(st, &ground, loom_domain::GroundingStatus::Verbatim);
+    let body = grounding::verbatim_response(st, s, &envelope, fusion_path);
+    Some((StatusCode::OK, Json(body)).into_response())
 }
 
 // --- GET /v1/models ---------------------------------------------------------

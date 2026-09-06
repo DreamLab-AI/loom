@@ -22,10 +22,11 @@ use tower::ServiceExt;
 
 use loom_backend_openai::OpenAiBackend;
 use loom_domain::{
-    ConceptMatch, EmbeddingProvider, Generation, GenerationId, GenerationSource, Iri, LexicalIndex,
-    LoomError, MatchProvenance, ModelBackend, VectorIndex,
+    ArtefactContract, ArtefactQualification, ConceptMatch, EmbeddingProvider, Generation,
+    GenerationId, GenerationSource, Iri, LexicalIndex, LoomError, MatchProvenance, ModelBackend,
+    VectorMetric, VectorIndex,
 };
-use loom_facade::mirror::MirrorStore;
+use loom_facade::bundle::LoadedBundle;
 use loom_facade::state::AppState;
 use loom_facade::{build_router, Config};
 use loom_graph_oxigraph::OxigraphStore;
@@ -42,15 +43,40 @@ pub struct StubVector {
     pub generation: Generation,
     pub hits: Vec<ConceptMatch>,
     pub calls: Arc<AtomicUsize>,
+    /// What this stub claims its artefact IS. Defaults to a qualified
+    /// cosine/384/bge artefact when `ready`, and an unopened one when not — so
+    /// the port invariant "readiness IS qualification" holds for the stub too,
+    /// and a test that wants a rejected artefact states which axis failed.
+    pub qualification: ArtefactQualification,
 }
 
 impl StubVector {
     pub fn new(ready: bool, generation: Generation, hits: Vec<ConceptMatch>) -> Self {
+        let contract = ArtefactContract::bge_small_384();
+        let qualification = if ready {
+            contract.qualify(384, VectorMetric::Cosine, Some("bge-small-en-v1.5"))
+        } else {
+            ArtefactQualification::unopened(contract, "stub not ready")
+        };
         Self {
             ready,
             generation,
             hits,
             calls: Arc::new(AtomicUsize::new(0)),
+            qualification,
+        }
+    }
+
+    /// A stub whose artefact opened but FAILED its contract — ready in the old
+    /// sense, unqualified in the new one.
+    pub fn unqualified(generation: Generation, observed: VectorMetric) -> Self {
+        let contract = ArtefactContract::bge_small_384();
+        Self {
+            ready: false,
+            generation,
+            hits: Vec::new(),
+            calls: Arc::new(AtomicUsize::new(0)),
+            qualification: contract.qualify(384, observed, Some("bge-small-en-v1.5")),
         }
     }
 }
@@ -66,6 +92,9 @@ impl VectorIndex for StubVector {
     }
     fn generation(&self) -> Generation {
         self.generation.clone()
+    }
+    fn qualification(&self) -> ArtefactQualification {
+        self.qualification.clone()
     }
 }
 
@@ -149,6 +178,9 @@ pub struct TestEnvBuilder {
     exposure_append: bool,
     backend_no_think: bool,
     think_token_floor: u64,
+    commit_marker: bool,
+    profile: Option<String>,
+    data_dir: Option<std::path::PathBuf>,
 }
 
 impl TestEnvBuilder {
@@ -166,7 +198,34 @@ impl TestEnvBuilder {
             exposure_append: false,
             backend_no_think: false,
             think_token_floor: 0, // matches Config::default — F3 off unless a test opts in
+            commit_marker: false,
+            profile: None,
+            data_dir: None,
         }
+    }
+
+    /// Build over an EXTERNAL data directory instead of a private tempdir, so
+    /// two environments can be activated over literally the same bytes on the
+    /// same disk — what the profile-parity test means by "the same loaded
+    /// generation".
+    pub fn with_data_dir(mut self, dir: &std::path::Path) -> Self {
+        self.data_dir = Some(dir.to_path_buf());
+        self
+    }
+
+    /// Write a real `.generation.json` commit marker over the fixture files, so
+    /// the environment activates as an ATTESTED bundle rather than a degraded
+    /// one (ADR-135). Without this the fixture directory is a development
+    /// checkout: content-bound, but not publisher-attested.
+    pub fn with_commit_marker(mut self, enabled: bool) -> Self {
+        self.commit_marker = enabled;
+        self
+    }
+
+    /// Set `LOOM_DEPLOY_PROFILE` for this environment (the A/B parity test).
+    pub fn with_profile(mut self, profile: &str) -> Self {
+        self.profile = Some(profile.to_owned());
+        self
     }
 
     /// F1: turn on verbatim serving with an explicit top-score threshold.
@@ -225,11 +284,17 @@ impl TestEnvBuilder {
     }
 
     pub fn build(self) -> TestEnv {
+        // The tempdir is always created (it owns cleanup); an external
+        // `data_dir` simply redirects where the fixture is written and read.
         let dir = TempDir::new().expect("tempdir");
-        let index_path = dir.path().join("scaffold-index.json");
+        let data_dir = self.data_dir.clone().unwrap_or_else(|| dir.path().to_path_buf());
+        let index_path = data_dir.join("scaffold-index.json");
         std::fs::write(&index_path, FIXTURE).expect("write fixture index");
         if let Some(ttl) = &self.ttl {
-            std::fs::write(dir.path().join("ontology.ttl"), ttl).expect("write ttl");
+            std::fs::write(data_dir.join("ontology.ttl"), ttl).expect("write ttl");
+        }
+        if self.commit_marker {
+            write_commit_marker(&data_dir, &["scaffold-index.json"]);
         }
 
         let retriever = LexicalRetriever::from_json_str(FIXTURE).expect("fixture retriever");
@@ -255,14 +320,22 @@ impl TestEnvBuilder {
             exposure_append: self.exposure_append,
             backend_no_think: self.backend_no_think,
             think_token_floor: self.think_token_floor,
+            deploy_profile: self
+                .profile
+                .clone()
+                .unwrap_or_else(|| Config::default().deploy_profile),
             ..Config::default()
         };
 
-        let graph = OxigraphStore::load(dir.path());
+        let graph = OxigraphStore::load(&data_dir);
         let embedder = StubEmbed {
             fail: self.embed_fail,
         };
-        let generation = MirrorStore::new(&config.index_path);
+        // Activate the fixture directory as a bundle — the same entry point the
+        // composition root uses, so the tests exercise real activation rather
+        // than a test-only generation source.
+        let generation = LoadedBundle::activate_or_degraded(&config.index_path)
+            .expect("fixture directory activates");
 
         let state = AppState::new(
             Arc::new(retriever),
@@ -315,4 +388,57 @@ pub async fn call(
     let bytes = to_bytes(resp.into_body(), usize::MAX).await.expect("body");
     let json = serde_json::from_slice(&bytes).unwrap_or(Value::Null);
     (status, json)
+}
+
+// --- bundle fixtures ---------------------------------------------------------
+
+/// SHA-256 of `bytes`, lower-case hex — the same digest the mirror records and
+/// the activator recomputes.
+pub fn sha256_hex(bytes: &[u8]) -> String {
+    use sha2::{Digest, Sha256};
+    let mut h = Sha256::new();
+    h.update(bytes);
+    h.finalize().iter().fold(String::new(), |mut acc, b| {
+        use std::fmt::Write as _;
+        let _ = write!(acc, "{b:02x}");
+        acc
+    })
+}
+
+/// Write a `.generation.json` commit marker over `names` in `dir`, recording
+/// each file's real digest. This is the shape `app/mirror.sh` promotes.
+pub fn write_commit_marker(dir: &std::path::Path, names: &[&str]) {
+    write_commit_marker_at(dir, dir, names, "2026-09-05T00:00:00Z");
+}
+
+/// As [`write_commit_marker`], but hashing the files in `content_dir` while
+/// writing the marker into `marker_dir`, and stamping a chosen generation. The
+/// split lets a test build a STAGING directory whose marker is correct for its
+/// own contents, then promote it.
+pub fn write_commit_marker_at(
+    marker_dir: &std::path::Path,
+    content_dir: &std::path::Path,
+    names: &[&str],
+    generation: &str,
+) {
+    let mut artifacts = serde_json::Map::new();
+    for name in names {
+        let bytes = std::fs::read(content_dir.join(name))
+            .unwrap_or_else(|e| panic!("marker source {name}: {e}"));
+        artifacts.insert(
+            (*name).to_owned(),
+            serde_json::json!({ "sha256": sha256_hex(&bytes), "bytes": bytes.len() }),
+        );
+    }
+    let marker = serde_json::json!({
+        "generation": generation,
+        "promoted_at": generation,
+        "cluster_span_seconds": 0.0,
+        "artifacts": artifacts,
+    });
+    std::fs::write(
+        marker_dir.join(".generation.json"),
+        serde_json::to_vec_pretty(&marker).unwrap(),
+    )
+    .expect("write commit marker");
 }

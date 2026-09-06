@@ -3,6 +3,7 @@
 //! enforcement of Invariant I-P1: every retrieval port yields
 //! `Iri`/`ConceptMatch`/`CanonicalUnit`/`Scaffold`, never a raw engine artefact.
 
+use crate::artefact::ArtefactQualification;
 use crate::error::LoomError;
 use crate::model::*;
 use async_trait::async_trait;
@@ -41,8 +42,17 @@ pub trait VectorIndex: Send + Sync {
     /// ANN over the embedded query vector. `k` bounded. Cosine. Each hit carries
     /// its IRI (primary key) and cosine score (∈ [0,1]).
     async fn nearest(&self, query_vec: &[f32], k: usize) -> Result<Vec<ConceptMatch>, LoomError>;
+    /// Whether this index may be queried at all. MUST be derived from
+    /// [`Self::qualification`] — an openable-but-incompatible artefact is not
+    /// ready (ADR-137 closeout), so a wrong-metric or wrong-width artefact is
+    /// rejected before a query rather than after one.
     fn is_ready(&self) -> bool; // false ⇒ fusion degrades to lexical-only
     fn generation(&self) -> Generation; // parity with the lexical generation is asserted
+    /// What the artefact actually IS versus what this node requires: effective
+    /// dimensions, effective metric, declared embedding model, and every
+    /// rejection reason. Surfaced verbatim in `/health.semantic.qualification`,
+    /// and the authority for the metric a score is labelled with.
+    fn qualification(&self) -> ArtefactQualification;
 }
 
 /// SPARQL over the Whelk-reasoned closure. Read-only, clamped. Native oxigraph.

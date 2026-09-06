@@ -1,0 +1,45 @@
+{
+  "build": {
+    "loom_revision": "8cdef36bb571f0aed2d599d97a3efab02760b6d5",
+    "ruvector_revision": "677b2475409c50cb964be8a3b848da2952390535",
+    "ruvector_path": "/home/devuser/workspace/ruvector",
+    "ruvector_features": [
+      "hnsw",
+      "storage",
+      "simd",
+      "parallel"
+    ],
+    "features": [],
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "profile": "debug",
+    "target": "x86_64-unknown-linux-gnu",
+    "host": "x86_64-unknown-linux-gnu",
+    "version": "0.1.0"
+  },
+  "effective_config": {
+    "deploy_profile": "a",
+    "facade_port": 8080,
+    "timeout_secs": 600,
+    "max_body_bytes": 16777216,
+    "backend_configured": false,
+    "backend_url": "",
+    "min_max_tokens": 1536,
+    "index_path": "/app/data/scaffold-index.json",
+    "prose_path": "/app/data/prose-index.json",
+    "budget": 1500,
+    "default_max_seeds": 4,
+    "default_hops": 1,
+    "default_prose": false,
+    "semantic_fallback": false,
+    "hnsw_artifact": "/app/data/ontology-corpus.rvdb",
+    "semantic_k": 5,
+    "semantic_min_inject": null,
+    "semantic_score_scale": null,
+    "semantic_debug_surface": false,
+    "verbatim_mode": false,
+    "verbatim_threshold": 8.0,
+    "exposure_append": false,
+    "backend_no_think": false,
+    "think_token_floor": 0
+  }
+}

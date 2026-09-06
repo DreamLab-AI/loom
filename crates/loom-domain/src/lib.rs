@@ -15,11 +15,15 @@
 #![allow(clippy::missing_panics_doc)]
 #![allow(clippy::wildcard_imports)]
 
+pub mod artefact;
+pub mod bundle;
 pub mod error;
 pub mod grounding;
 pub mod model;
 pub mod ports;
 
+pub use artefact::*;
+pub use bundle::*;
 pub use error::LoomError;
 pub use grounding::*;
 pub use model::*;

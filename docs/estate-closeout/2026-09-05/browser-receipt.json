@@ -1,0 +1,103 @@
+{
+  "date": "2026-09-05",
+  "receipt": "local-facade-driven-through-browser-sidecar",
+  "purpose": "ADR-135/137/138 closeout item 6 — drive /health and a chat request against a locally-run facade through a real browser, and check that every surface names ONE serving identity.",
+  "driver": {
+    "tool": "chrome-devtools-mcp on the browsercontainer sidecar (MCP SSE http://browsercontainer:8931/sse)",
+    "method": "page-context fetch() from a real Chrome tab opened at http://agentbox:8123/health",
+    "why_not_curl": "curl was also run (see local-facade-receipt.json); the browser leg additionally proves the surfaces answer a real cross-origin-capable HTTP client from another container, not just a loopback client on the same host."
+  },
+  "target": {
+    "process": "loom-facade (debug) run in the agentbox container, NOT the HP production facade",
+    "url": "http://agentbox:8123",
+    "bound": "0.0.0.0:8123",
+    "production_facade_untouched": "http://192.168.2.132:8084 was read only (GET /health) and never redeployed or mutated",
+    "data": {
+      "ONTOLOGY_INDEX": "/tmp/loom-closeout-data/scaffold-index.json",
+      "ONTOLOGY_PROSE_INDEX": "/tmp/loom-closeout-data/prose-index.json",
+      "source": "tests/golden-python/fixture.json + fixture-prose.json, promoted with a real .generation.json commit marker",
+      "LOOM_HNSW_ARTIFACT": "/home/devuser/workspace/loom/data/ontology-corpus.rvdb (the real 8146-vector export)"
+    },
+    "env": {
+      "LOOM_DEPLOY_PROFILE": "a",
+      "LOOM_VERBATIM_MODE": "1",
+      "LOOM_VERBATIM_THRESHOLD": "8.0",
+      "LOOM_CONFIDENCE_INJECTION": "1",
+      "LOOM_SEMANTIC_FALLBACK": "0",
+      "DISTILL_BACKEND_URL": "(unset — retrieval-only node)"
+    }
+  },
+  "health": {
+    "http_status": 200,
+    "elapsed_ms": 7,
+    "ok": true,
+    "deploy_profile": "a",
+    "index_classes": 7,
+    "served_generation": "2026-09-05T09:00:00Z",
+    "serving_bundle": {
+      "content_digest": "3abc35087e3b9eacf3120731fc44989420843e38745aeb916f8d3d648f76859f",
+      "phase": "served",
+      "atomicity_verified": true,
+      "activated_at": "2026-09-05T15:50:49Z",
+      "disk_matches_loaded": true,
+      "artefacts": [
+        "prose-index.json:58a856524189",
+        "scaffold-index.json:b4724a3bdce2"
+      ]
+    },
+    "semantic": {
+      "ready": false,
+      "score_metric": null,
+      "rejections": [
+        "artefact declares no embedding model; contract requires \"bge-small-en-v1.5\""
+      ]
+    },
+    "build": {
+      "loom_revision": "8cdef36bb571f0aed2d599d97a3efab02760b6d5",
+      "ruvector_revision": "677b2475409c50cb964be8a3b848da2952390535",
+      "ruvector_path": "/home/devuser/workspace/ruvector",
+      "ruvector_features": ["hnsw", "storage", "simd", "parallel"],
+      "features": [],
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+      "profile": "debug",
+      "target": "x86_64-unknown-linux-gnu",
+      "host": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0"
+    }
+  },
+  "chat": {
+    "request": "POST /v1/chat/completions {\"messages\":[{\"role\":\"user\",\"content\":\"Explain how a knowledge graph uses a graph database\"}]}",
+    "http_status": 200,
+    "elapsed_ms": 8,
+    "served_mode": "verbatim",
+    "grounding_status": "verbatim",
+    "corpus_backed": true,
+    "grounding_generation": "2026-09-05T09:00:00Z",
+    "grounding_content_digest": "3abc35087e3b9eacf3120731fc44989420843e38745aeb916f8d3d648f76859f",
+    "confidence": 1,
+    "score_scale": "lexical-additive",
+    "seed_iris": [
+      "urn:ngm:class:knowledge-graph",
+      "urn:ngm:class:graph-database",
+      "urn:ngm:class:graph"
+    ],
+    "content_head": "_Served verbatim from the Ontology Loom (generation: 2026-09-05T09:00:00Z); no model generation was performed._"
+  },
+  "generation_route": {
+    "id": "2026-09-05T09:00:00Z",
+    "drift": { "checked": true, "ok": true, "detail": null },
+    "disk_matches_loaded": true,
+    "phase": "served"
+  },
+  "identity_agreement": {
+    "health_eq_chat_generation": true,
+    "health_eq_chat_digest": true,
+    "health_eq_generation_route": true,
+    "note": "ADR-135's acceptance condition asked to 'compare scaffold, graph and chat generation fields'. All three name the same LOADED bundle, and the content digest — not just the generation string — matches, which is the discriminator generation equality alone could not provide."
+  },
+  "observations": [
+    "The phase advanced Activated -> Served across the session, so 'a bundle is loaded' and 'a bundle has answered' are separately reportable, as the review required.",
+    "verify_atomicity ran on the serving path (drift.checked = true) rather than existing as an uninvoked method.",
+    "The real exported artefact data/ontology-corpus.rvdb FAILS the new strict contract because its sidecar declares no embeddingModel. This is a genuine finding, not a test artefact: model identity was previously unverifiable, and semantic readiness now says so. Remediation is for the exporter to stamp embeddingModel/dimensions into <artifact>.generation.json; LOOM_SEMANTIC_REQUIRE_MODEL_ID=0 is the documented escape hatch for a knowingly pre-contract artefact. Semantic fallback is default-off, so no deployment behaviour changes today."
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "date": "2026-09-05",
+  "receipt": "loom-closeout-2026-09-05",
+  "scope": "ADR-135/136/137/138 acceptance work: immutable loaded-bundle activation, semantic artefact qualification, the per-status grounding contract, build identity, and profile A/B parity.",
+  "source_identity": {
+    "loom_head": "8cdef36bb571f0aed2d599d97a3efab02760b6d5",
+    "loom_worktree": "modified, uncommitted (this work)",
+    "ruvector_head": "677b2475409c50cb964be8a3b848da2952390535",
+    "ruvector_path": "/home/devuser/workspace/ruvector",
+    "ruvector_features": [
+      "hnsw",
+      "storage",
+      "simd",
+      "parallel"
+    ],
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "note": "ruvector-core is a PATH dependency, so Cargo.lock pins its version string and not its revision. build.rs now reads both checkouts' HEAD at compile time; `loom-facade --build-info` prints the receipt and exits non-zero if either revision is unknown."
+  },
+  "checks": [
+    {
+      "command": "cargo test --workspace",
+      "exit_code": 0,
+      "passed": 278,
+      "failed": 0,
+      "ignored": 7,
+      "scope": "all workspace unit + integration tests, default features. Ignored tests are the network-gated live_smoke/contract_live/recall_gate suites."
+    },
+    {
+      "command": "cargo clippy --all-targets -- -D warnings",
+      "exit_code": 0,
+      "scope": "workspace lints are all + pedantic; every warning surfaced by this work was fixed rather than allowed."
+    },
+    {
+      "command": "cargo run -p loom-facade --bin loom-facade -- --build-info",
+      "exit_code": 0,
+      "scope": "release receipt: both checkout revisions, ruvector features, compiler, and the effective configuration."
+    }
+  ],
+  "new_test_suites": {
+    "crates/loom-facade/tests/exp013_bundle.rs": {
+      "tests": 13,
+      "covers": [
+        "activation captures one identity over verified content",
+        "marker-less directory degrades but stays content-bound and is not reported as verified",
+        "same generation over different content yields different identities (the discriminator the review found missing)",
+        "INJECTED: incomplete download -> MissingArtefact",
+        "INJECTED: mixed hashes -> HashMismatch, both digests named",
+        "INJECTED: marker with no artefact digests -> EmptyManifest (closes verify_atomicity's no-op success case)",
+        "INJECTED: interrupted promotion -> NoCommitMarker",
+        "atomic promotion: stage, hash-verify, swap, commit-marker-last",
+        "a refused promotion does not write to the target",
+        "verify_atomicity invoked per request on GET /loom/generation, and reports post-activation drift",
+        "PROCESS RELOAD: a promotion after activation moves NO served generation field on any surface; the pending change is reported as pending; a fresh activation adopts it",
+        "phase advances Activated -> Served on first request"
+      ]
+    },
+    "crates/loom-facade/tests/exp014_grounding_contract.rs": {
+      "tests": 11,
+      "covers": [
+        "no-match",
+        "opt-out",
+        "semantic-fallback",
+        "verbatim",
+        "delegated success",
+        "backend failure (502)",
+        "absent backend (503)",
+        "corpus_backed true exactly when evidence AND answer exist",
+        "degradations named on the response that suffered them",
+        "unattested bundle declared on the response"
+      ]
+    },
+    "crates/loom-facade/tests/exp015_profile_parity.rs": {
+      "tests": 8,
+      "covers": [
+        "both profiles activate the same loaded generation AND the same content digest (one shared data directory)",
+        "profiles differ only in the declared divergent keys; retrieval configuration is profile-invariant",
+        "the release receipt is profile-independent (one binary)",
+        "scaffold output byte-identical across profiles for hit / weak-hit / miss",
+        "the injection gate is reported identically",
+        "delivery mode diverges (A verbatim, B delegated) while the grounding evidence stays identical",
+        "a miss behaves identically on both profiles",
+        "backend-failure recovery is identical across profiles"
+      ]
+    },
+    "crates/loom-vector-ruvector/src/hnsw.rs": {
+      "tests": 15,
+      "covers": [
+        "REPRODUCED AND FIXED probe row 2: a Euclidean artefact is rejected, not relabelled cosine",
+        "REPRODUCED AND FIXED probe row 3: a 3-dimensional artefact is rejected at open, not at query time",
+        "changed embedding model at equal width is rejected (the failure no geometry check catches)",
+        "undeclared model is strict by default and relaxable via LOOM_SEMANTIC_REQUIRE_MODEL_ID=0",
+        "sidecar that contradicts the database width is rejected (database-to-sidecar binding)",
+        "RESTART FIXTURES: qualification stable across reopen; restart onto a degraded artefact rejects it"
+      ]
+    }
+  },
+  "live_local_run": {
+    "process": "loom-facade (debug), agentbox container, 0.0.0.0:8123",
+    "production_facade": "http://192.168.2.132:8084 READ ONLY (GET /health only); never redeployed or mutated",
+    "surfaces_probed": [
+      "/health",
+      "/loom/generation",
+      "/loom/scaffold",
+      "/v1/chat/completions"
+    ],
+    "drivers": [
+      "curl (loopback)",
+      "chrome-devtools-mcp on the browsercontainer sidecar (real Chrome, http://agentbox:8123) \u2014 see browser-receipt.json"
+    ],
+    "served_generation": "2026-09-05T09:00:00Z",
+    "content_digest": "3abc35087e3b9eacf3120731fc44989420843e38745aeb916f8d3d648f76859f",
+    "identity_agreement": "health.generation == generation-route.id == scaffold.grounding.generation == chat.loom.grounding.generation, and the content digest matches on all of them",
+    "drift_injection": {
+      "action": "rewrote a loaded artefact underneath the running process, re-probed GET /loom/generation, then restored it",
+      "after_tamper": {
+        "drift.ok": false,
+        "detail": "serving drift: \"scaffold-index.json\" on disk no longer matches the activated bundle",
+        "served_generation": "UNCHANGED"
+      },
+      "after_restore": {
+        "drift.ok": true
+      }
+    },
+    "backend_failure": {
+      "request": "POST /v1/chat/completions with a corpus miss, no DISTILL_BACKEND_URL",
+      "http_status": 503,
+      "body": {
+        "error": "no_backend",
+        "loom.served_mode": "failed",
+        "loom.grounding.status": "backend-failure",
+        "loom.grounding.corpus_backed": false,
+        "loom.grounding.degraded": [
+          "graph-unavailable",
+          "backend-failure"
+        ]
+      },
+      "note": "the \u00a77 status mapping is unchanged; what is new is that the failure body carries the grounding contract."
+    }
+  },
+  "production_comparison_readonly": {
+    "url": "http://192.168.2.132:8084/health",
+    "http_status": 200,
+    "keys": [
+      "backend",
+      "backend_reachable",
+      "confidence",
+      "deploy_profile",
+      "facet",
+      "generation",
+      "graph",
+      "index_classes",
+      "injection_policy",
+      "mode",
+      "ok",
+      "semantic",
+      "serving"
+    ],
+    "has_serving_bundle": false,
+    "has_build": false,
+    "index_classes": 8146,
+    "lexical_generation": "2026-08-22T08:19:43.776950+00:00 (promoted 2026-09-01T09:56:41.244829+00:00)",
+    "semantic_generation": "2026-08-17T14:54:45Z",
+    "semantic_ready": true,
+    "findings": [
+      "The deployed node runs the pre-closeout binary: no serving_bundle block, no build block, so it cannot state which bundle it LOADED as distinct from what its data directory currently says.",
+      "Its lexical generation (2026-08-22, promoted 2026-09-01) and its semantic generation (2026-08-17) are DIFFERENT. The fusion parity guard would skip the fallback on that basis, and LOOM_SEMANTIC_FALLBACK is 0 there, so nothing is being mis-served \u2014 but this is precisely the split identity the review asked to be made legible.",
+      "It reports semantic.ready = true for an artefact whose sidecar declares no embedding model. Under the new contract that same artefact reports ready = false with a named reason. Readiness there currently means 'the database opened and is non-empty', which is the over-promise ADR-137's closeout names."
+    ]
+  },
+  "remaining": [
+    "HP deployment: the production facade must be redeployed onto this binary before any of the above is production evidence. Not done here by instruction \u2014 the running facade was read only.",
+    "Corpus publisher: the exporter must stamp embeddingModel (and ideally dimensions) into <artifact>.generation.json, or the deployment must set LOOM_SEMANTIC_REQUIRE_MODEL_ID=0 as a knowing exception.",
+    "Mirror: app/mirror.sh still promotes file-at-a-time. loom-facade's BundlePromoter implements the staged, commit-marker-last protocol; porting the shell mirror onto it (or invoking it) is outstanding.",
+    "The compose data-directory mismatch (app/data vs the repository data directory) is unchanged documented operational debt.",
+    "Recall/benchmark work is untouched: no recall or performance claim is made or verified here."
+  ],
+  "incidental_observations": [
+    {
+      "file": "data/ontology-corpus.rvdb",
+      "observation": "git reports the file as modified after the local facade run: same size (34222080 bytes), differing bytes.",
+      "cause": "loom-vector-ruvector opens the artefact through ruvector_core::VectorDB::new, which opens the underlying redb database READ/WRITE. Merely opening it rewrites redb transaction metadata even though the adapter never writes a vector.",
+      "significance": "This confirms the open question the consumed-vector review raised \u2014 'Verify read-only serving intent against the storage opener's behaviour'. A serving node's semantic read path is not read-only at the filesystem level, which matters for a read-only mount, for a shared artefact, and for any content digest computed over the .rvdb itself. The bundle content digest is unaffected in this deployment because the marker covers the JSON indices.",
+      "action_taken": "Left as found. Reverting was outside this task's remit (no checkout/revert), and the modification is a real property of the consumer worth carrying rather than tidying away.",
+      "remediation": "Either open the artefact read-only in the adapter (needs a ruvector-core API that does not take a write transaction on open), or exclude the .rvdb from any content digest and treat it as a locally-mutable cache of a published set."
+    }
+  ]
+}

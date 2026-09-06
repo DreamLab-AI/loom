@@ -18,7 +18,7 @@ use common::call;
 use loom_backend_openai::OpenAiBackend;
 use loom_domain::{LexicalIndex, ModelBackend};
 use loom_embed_xinference::XinferenceEmbedder;
-use loom_facade::mirror::MirrorStore;
+use loom_facade::bundle::LoadedBundle;
 use loom_facade::state::AppState;
 use loom_facade::{build_router, Config};
 use loom_graph_oxigraph::OxigraphStore;
@@ -53,7 +53,8 @@ fn live_state(backend: OpenAiBackend) -> AppState {
     let graph = OxigraphStore::load(root.join("app/data"));
     let semantic = HnswIndex::open(&hnsw_path);
     let embedder = XinferenceEmbedder::from_env();
-    let generation = MirrorStore::new(&index_path.to_string_lossy());
+    let generation = LoadedBundle::activate_or_degraded(&index_path.to_string_lossy())
+        .expect("smoke fixture activates");
 
     let config = Config {
         index_path: index_path.to_string_lossy().into_owned(),

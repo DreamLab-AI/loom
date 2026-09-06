@@ -35,6 +35,18 @@ pub enum LoomError {
     #[error("generation not atomic: {0}")]
     GenerationDrift(String), // mirror reject
 
+    /// A staged/promoted bundle failed activation (ADR-135 closeout). NOT a
+    /// degrade: an unverified bundle is never activated, so this is fatal to a
+    /// startup and a 500 on the (operator-facing) drift surface.
+    #[error(transparent)]
+    Bundle(#[from] crate::bundle::BundleError),
+
+    /// The semantic artefact does not satisfy its contract (ADR-137 closeout).
+    /// The semantic index is an ACCELERATOR, so this degrades to lexical-only
+    /// and is reported — it never 5xx's a request.
+    #[error("semantic artefact unqualified: {0}")]
+    Artefact(#[from] crate::artefact::ArtefactError),
+
     #[error("attestation failed: {0}")]
     Attest(String), // build/CI only
 

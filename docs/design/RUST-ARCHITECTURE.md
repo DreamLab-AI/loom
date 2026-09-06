@@ -858,3 +858,11 @@ Matching the sibling repos' bar:
 - **No multi-agent coordination substrate (WS-Q).** Deferred, not shipped. When built, it must still resolve every claim to the same per-IRI markdown identity — the `Iri`→`CanonicalUnit` port contract is the seam it will attach to.
 
 _Written to `/home/devuser/workspace/loom/docs/design/RUST-ARCHITECTURE.md`._
+
+## Estate closeout qualification — 2026-09-04
+
+The [grounding review](../../../VisionFlow/docs/estate-review/grounding-delivery.md) qualifies the generation guarantee: `MirrorStore.current()` reads disk metadata while retriever/graph content is loaded at startup; `verify_atomicity()` is exercised by tests but has no located serving-path invocation. Manifest presence can report verified generation without hash verification. Closeout requires immutable loaded-bundle activation, actual rejection/reload receipts, profile parity and consumer preservation of grounding/degradation. Build identity must include the locally consumed sibling RuVector checkout and enabled features. ADR-135–138 retain their historical/proposed decision status and now carry explicit acceptance conditions.
+
+## Semantic artefact acceptance qualification — 2026-09-04
+
+The current adapter treats any nonempty opened database as ready, although stored RuVector settings override its cosine/384 defaults. Readiness therefore needs effective configuration and model validation; score labels must match the actual metric. The [consumer review](../../../VisionFlow/docs/estate-review/consumed-vector-storage.md) records wrong-metric and wrong-width local reproductions. No deployed semantic recall or profile parity is certified here.

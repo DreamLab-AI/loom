@@ -19,8 +19,9 @@ use axum::response::{IntoResponse, Response};
 use axum::Json;
 use serde_json::{json, Value};
 
-use loom_domain::ScoreScale;
+use loom_domain::{ScoreScale, ServingIdentity};
 
+use crate::build_info::BuildInfo;
 use crate::state::{AppState, ConfidenceStats};
 
 /// The full `/health` body. Public + `Deserialize` so out-of-process checkers
@@ -37,10 +38,22 @@ pub struct HealthResponse {
     pub index_classes: usize,
     /// `GraphStatus` — `{available, triples, loaded_files, error}`.
     pub graph: Value,
-    /// `{ready, generation}` for the HNSW artifact.
+    /// `{ready, generation, qualification}` for the HNSW artifact. The
+    /// qualification block is the ADR-137 closeout surface: effective
+    /// dimensions, effective metric, declared embedding model, and every reason
+    /// the artefact was rejected. `ready` is DERIVED from it, so the two can
+    /// never disagree.
     pub semantic: Value,
-    /// The `Generation` descriptor this node is serving.
+    /// The `Generation` this node is SERVING — the identity captured when the
+    /// bundle was activated, not a fresh read of the data directory (ADR-135
+    /// closeout). `serving_bundle` below carries the disk view beside it.
     pub generation: Value,
+    /// The activated bundle: its immutable identity, its lifecycle phase, and
+    /// how the disk currently compares to it.
+    pub serving_bundle: ServingBundleBlock,
+    /// The compile-time release identity, including the SIBLING RuVector
+    /// revision a Loom commit cannot pin on its own (ADR-137 closeout).
+    pub build: BuildInfo,
     pub deploy_profile: String,
     pub injection_policy: InjectionPolicyBlock,
     pub serving: ServingBlock,
@@ -74,6 +87,22 @@ pub struct ServingBlock {
     pub semantic_min_inject: Option<f64>,
 }
 
+/// The serving-bundle block: which bundle is loaded, how far through its
+/// lifecycle it is, and whether the data directory has moved on without it.
+///
+/// `disk_matches_loaded: false` is the review's mismatch made visible: a
+/// promotion has landed that this process has NOT activated, and the answer is a
+/// restart, not a reload. Reporting it here means an operator sees the pending
+/// change instead of inferring it from a generation string that used to advance
+/// on its own.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct ServingBundleBlock {
+    pub identity: ServingIdentity,
+    /// What the data directory reports right now (`Generation`).
+    pub disk_generation: Value,
+    pub disk_matches_loaded: bool,
+}
+
 pub(super) async fn health(State(st): State<AppState>) -> Response {
     let backend_configured = !st.config.backend_url.is_empty();
     // `backend_reachable` is null when there is no backend (Python parity).
@@ -88,10 +117,24 @@ pub(super) async fn health(State(st): State<AppState>) -> Response {
         None
     };
 
+    let qualification = st.semantic.qualification();
     let semantic = json!({
         "ready": st.semantic.is_ready(),
         "generation": super::to_value(&st.semantic.generation()),
+        "qualification": super::to_value(&qualification),
+        // The metric a score from THIS artefact may honestly be labelled with.
+        // `null` when the artefact is unqualified — an unqueryable artefact has
+        // no score scale, rather than a default one.
+        "score_metric": qualification.served_metric().map(loom_domain::VectorMetric::as_str),
+        "rejections": qualification.reasons(),
     });
+
+    let identity = st.generation.reported_identity();
+    let serving_bundle = ServingBundleBlock {
+        disk_generation: super::to_value(&st.generation.disk_generation()),
+        disk_matches_loaded: st.generation.disk_matches_loaded(),
+        identity: identity.clone(),
+    };
 
     Json(HealthResponse {
         ok: true,
@@ -102,7 +145,9 @@ pub(super) async fn health(State(st): State<AppState>) -> Response {
         index_classes: st.retriever.class_count(),
         graph: super::to_value(&st.graph.status()),
         semantic,
-        generation: super::to_value(&st.generation.current()),
+        generation: super::to_value(&identity.generation),
+        serving_bundle,
+        build: BuildInfo::current(),
         deploy_profile: st.config.deploy_profile.clone(),
         injection_policy: InjectionPolicyBlock {
             confidence_injection: st.policy.confidence_injection,
