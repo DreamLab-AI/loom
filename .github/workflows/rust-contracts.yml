@@ -25,7 +25,8 @@ jobs:
         run: bash scripts/check-ruvector-source.sh
       - name: Format
         working-directory: loom
-        run: cargo +1.98.0 fmt --all --check
+        # Workspace members only: --all also formats the pinned upstream path dependencies.
+        run: cargo +1.98.0 fmt --check
       - name: Hermetic Rust contracts
         working-directory: loom
         run: cargo +1.98.0 test --workspace --locked
