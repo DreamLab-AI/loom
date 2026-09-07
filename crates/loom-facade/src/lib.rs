@@ -153,6 +153,18 @@ pub fn try_app_state_from_env() -> Result<AppState, loom_domain::BundleError> {
         tracing::info!(endpoint = %config.backend_url, "backend seam configured");
     }
 
+    // A publication racing adapter loading must not bind a port with an old
+    // identity over newly loaded bytes. The serving objects are immutable after
+    // this point; future disk changes are detected by the generation endpoint.
+    if bundle.identity().atomicity_verified {
+        bundle.verify_loaded()?;
+        if !bundle.disk_matches_loaded() {
+            return Err(loom_domain::BundleError::ActivatedDrift {
+                name: ".generation.json".to_owned(),
+            });
+        }
+    }
+
     let policy = InjectionPolicy::from_env();
 
     Ok(AppState::new(

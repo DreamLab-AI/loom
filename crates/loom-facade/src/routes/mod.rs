@@ -85,6 +85,7 @@ pub fn build_router(state: AppState) -> Router {
 /// the loaded bytes still verify (`drift`).
 async fn generation(State(st): State<AppState>) -> Response {
     let identity = st.generation.reported_identity();
+    let embedding = st.semantic.qualification();
     let drift = match st.generation.verify_atomicity().await {
         Ok(()) => json!({ "checked": true, "ok": true, "detail": Value::Null }),
         Err(e) => json!({ "checked": true, "ok": false, "detail": e.to_string() }),
@@ -102,6 +103,13 @@ async fn generation(State(st): State<AppState>) -> Response {
         "class_count": identity.generation.class_count,
         // The closeout additions.
         "identity": to_value(&identity),
+        "embedding": {
+            "model_id": embedding.model_id,
+            "dimensions": embedding.dimensions,
+            "metric": embedding.metric.as_str(),
+            "rejections": embedding.reasons(),
+        },
+        "semantic_generation": to_value(&st.semantic.generation()),
         "disk": {
             "generation": to_value(&st.generation.disk_generation()),
             "matches_loaded": st.generation.disk_matches_loaded(),
@@ -174,7 +182,7 @@ async fn sparql(State(st): State<AppState>, body: Bytes) -> Response {
         return bad_request("missing query");
     }
     match st.graph.query(&query).await {
-        Ok(r) => Json(to_value(&r)).into_response(),
+        Ok(r) => with_serving_identity(Json(to_value(&r)).into_response(), &st),
         Err(e) => ApiError(e).into_response(), // BadQuery→400; GraphUnavailable→200 degraded
     }
 }
@@ -189,9 +197,27 @@ async fn search(State(st): State<AppState>, body: Bytes) -> Response {
     }
     let limit = usize_field(&j, "limit", 20);
     match st.graph.search_labels(&needle, limit).await {
-        Ok(hits) => Json(to_value(&hits)).into_response(),
+        Ok(hits) => with_serving_identity(Json(to_value(&hits)).into_response(), &st),
         Err(e) => ApiError(e).into_response(),
     }
+}
+
+// Preserve existing read bodies; identity travels with the actual response.
+fn with_serving_identity(mut response: Response, st: &AppState) -> Response {
+    let identity = st.generation.reported_identity();
+    for (name, value) in [
+        ("x-loom-generation", identity.generation.id.0),
+        ("x-loom-content-digest", identity.content_digest),
+        (
+            "x-loom-atomicity-verified",
+            identity.atomicity_verified.to_string(),
+        ),
+    ] {
+        if let Ok(value) = axum::http::HeaderValue::from_str(&value) {
+            response.headers_mut().insert(name, value);
+        }
+    }
+    response
 }
 
 // --- POST /loom/search/semantic ---------------------------------------------

@@ -1,0 +1,9 @@
+[Unit]
+Description=Verify and reload a newly published Loom generation
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 %h/githubs/loom/scripts/reload-published-generation.py --data-dir %h/githubs/loom/data --receipt %h/.local/state/loom/reload.json --url http://127.0.0.1:8084 -- /usr/bin/docker compose -f %h/githubs/loom/deploy/compose.profile-a.yml up -d --no-deps --force-recreate loom
+TimeoutStartSec=150
+UMask=0077
+NoNewPrivileges=true

@@ -50,7 +50,9 @@ sha2        = "0.10"
 async-trait = "0.1"
 tokio-postgres = "0.7"
 pgvector    = { version = "0.4", features = ["postgres"] }
-# In-process HNSW: path-dep on the sibling workspace's core crate.
+# In-process HNSW: sibling workspace core, fixed to fork commit 677b2475409c50cb964be8a3b848da2952390535
+# by scripts/check-ruvector-source.sh and the Rust contracts workflow.
+# New clones must follow docs/development-source.md before Cargo invocation.
 # HNSW search is behind the `hnsw` feature (aliasing the optional `hnsw_rs`
 # dep); persistence behind `storage` (redb + memmap2). We take an EXPLICIT
 # feature set rather than defaults: the default `api-embeddings` feature pulls
