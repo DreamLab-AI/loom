@@ -1,6 +1,9 @@
 {
   "repo": "DreamLab-AI/loom",
   "cron": "0 3 * * *",
+  "annexeInclude": [
+    "ruvector"
+  ],
   "slots": [
     {
       "deep": "scaffold-retrieval",
@@ -37,7 +40,8 @@
   },
   "controlPlaneProbes": [
     "bash scripts/dream-health.sh || echo 'FACADE UNREACHABLE'",
-    "ls crates/loom-facade/src/bin/*.rs crates/loom-scaffold/src/bin/*.rs crates/loom-vector-ruvector/src/bin/*.rs 2>&1 | head -15 || true"
+    "ls crates/loom-facade/src/bin/*.rs crates/loom-scaffold/src/bin/*.rs crates/loom-vector-ruvector/src/bin/*.rs 2>&1 | head -15 || true",
+    "ls -d ../ruvector/crates/ruvector-core 2>&1 || echo 'SIBLING ruvector ABSENT'"
   ],
   "buildStep": {
     "cmd": "bash scripts/dream-build.sh",

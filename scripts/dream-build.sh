@@ -14,6 +14,20 @@ here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo="$(cd -- "${here}/.." && pwd)"
 LOOM_URL="${LOOM_URL:-http://127.0.0.1:8084}"
 
+# The whole cargo workspace depends on the sibling checkout: Cargo.toml declares
+# ruvector-core at ../ruvector/crates/ruvector-core, crates/loom-vector-ruvector
+# consumes it, and crates/loom-facade pulls that in — so its absence fails cargo
+# at *manifest load*, before a single test compiles. That blacked out all five
+# evaluators for four consecutive nights (2026-09-03..06) and never reproduced
+# locally, where ../ruvector exists. Name it in phase 0 rather than rediscover
+# it from a stack trace in phase 3.
+echo '== sibling =='
+if [ -d "${repo}/../ruvector/crates/ruvector-core" ]; then
+  echo 'ruvector: present'
+else
+  echo 'SIBLING ruvector ABSENT - all 5 cargo evaluators will fail at manifest load'
+fi
+
 echo
 echo '== facade =='
 echo "LOOM_URL=${LOOM_URL}"
