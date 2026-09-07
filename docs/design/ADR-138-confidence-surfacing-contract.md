@@ -1,6 +1,6 @@
 # ADR-138 — Surface the confidence gate on the wire: an always-present `grounding` block, a named score scale, and `/health` policy + counters
 
-**Status:** Proposed
+**Status:** Accepted (2026-09-07 closeout; source contract, deployment separately verified)
 **Date:** 2026-09-02
 **Decision-type:** Interface (wire contract — no new retrieval heuristic; the existing gate is made legible)
 **Deciders:** Dr John O'Hare (operator)
@@ -128,3 +128,15 @@ Decision status unchanged. Recorded against the closeout extension's acceptance 
 **Receipts.** [Local façade receipt](../estate-closeout/2026-09-05/local-facade-receipt.json) — a live `POST /v1/chat/completions` against a retrieval-only node returned HTTP 503 with `loom.served_mode: "failed"`, `grounding.status: "backend-failure"`, `corpus_backed: false` and `degraded: ["graph-unavailable","backend-failure"]`. [Browser receipt](../estate-closeout/2026-09-05/browser-receipt.json) — a verbatim serve driven through a real browser reported `status: "verbatim"`, `corpus_backed: true`, and a generation and content digest matching `/health` exactly.
 
 **Remaining.** The acceptance condition's second half — "prove consuming agents preserve engagement, scale, generation and degradation" — is not met here: this work makes the contract emittable and tested at the façade boundary, but the agent-side consumers (agentbox ADR-051's Loom client, the email gateway) were not modified or tested, so nothing yet proves the diagnostics reach a human rather than disappearing behind a fluent answer. HP deployment is outstanding.
+
+
+## Closeout acceptance — 2026-09-07
+
+Under the authorised estate closeout, accept the additive confidence wire
+contract implemented by `routes/grounding.rs`, `routes/health.rs` and the domain
+`grounding` types. The eleven `exp014_grounding_contract` cases were rerun
+successfully against current source, covering named degradation, opt-out,
+semantic score scale and evidence/answer conjunction. This accepts the interface;
+it does not certify a particular running container. The live façade still
+exposes an older generation descriptor, so source and deployment identity must
+remain distinct. Evidence is in VisionFlow's `execution-2026-09-07/loom-wire-identity.log`.

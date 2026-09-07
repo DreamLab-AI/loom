@@ -1,5 +1,13 @@
 # Qwen3.8-27B — LAN Connection & Integration Guide
 
+> **Identity qualification (2026-09-07):** `qwen3.8-27B` is the compatibility wire alias.
+> The documented weight variant is **Heretic abliterated Qwen3.8-27B Q8_0**,
+> which differs from the base model. The August deployment statement below is
+> historical evidence; a `/v1/models` alias alone cannot attest the loaded GGUF.
+> The façade provides ontology grounding, not proof of base-model refusal behaviour
+> or a substitute for authorisation. Verify the loaded weight digest and serving
+> template before asserting a new deployment identity.
+
 **Replaces Muse Glimmer 30B as the network's default model** (cutover 2026-08-14), and the
 model engine now runs **inside the Loom docker stack** (`loom-model` container) instead of a
 host systemd unit. Alibaba's Qwen3.8-27B: dense 27B hybrid (Gated DeltaNet + Gated

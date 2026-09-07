@@ -1,0 +1,34 @@
+name: Rust contracts
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: loom
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: jjohare/ruvector
+          ref: 677b2475409c50cb964be8a3b848da2952390535
+          path: ruvector
+      - name: Select Rust 1.98.0
+        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt
+      - name: Verify selected dependency source
+        working-directory: loom
+        run: bash scripts/check-ruvector-source.sh
+      - name: Format
+        working-directory: loom
+        run: cargo +1.98.0 fmt --all --check
+      - name: Hermetic Rust contracts
+        working-directory: loom
+        run: cargo +1.98.0 test --workspace --locked
+      - name: Published-generation reload guard
+        working-directory: loom
+        run: python3 tests/test_reload_published_generation.py
