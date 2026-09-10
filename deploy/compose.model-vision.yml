@@ -1,0 +1,24 @@
+# HP's shared Qwen model: text, tools and image input through the Loom facade.
+# Retain the matching Qwen Jinja template and disable DFlash: the pinned server
+# does not support that speculative decoder with image turns. No new LAN port.
+name: loom-model
+services:
+  model:
+    image: loom-model:local
+    container_name: loom-model
+    entrypoint: [bash, /usr/local/bin/serve-qwen38.sh]
+    network_mode: host
+    restart: unless-stopped
+    gpus: all
+    environment:
+      MAIN_GGUF: /models/qwen3.8-27B-heretic/RVN-Q8_0.gguf
+      MMPROJ: /models/qwen3.8-27B/mmproj-BF16.gguf
+      CHAT_TEMPLATE_FILE: /models/qwen3.8-27B-heretic/chat-template.jinja
+      ALIAS: qwen3.8-27b-heretic-q8_0
+      CTX_SIZE: "262144"
+      VISION: "1"
+      SPEC: "off"
+      REASONING_FORMAT: deepseek
+    volumes:
+      - ${LOOM_MODELS_DIR:-/home/john/models}:/models:ro
+      - ../model/serve-qwen38.sh:/usr/local/bin/serve-qwen38.sh:ro

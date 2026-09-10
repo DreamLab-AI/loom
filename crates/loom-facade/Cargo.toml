@@ -57,6 +57,7 @@ async-trait = { workspace = true }
 sha2 = { workspace = true }
 
 [dev-dependencies]
+futures-util = "0.3"
 # In-memory oneshot router tests + a mock model backend for the chat path.
 wiremock = "0.6"
 tempfile = "3"

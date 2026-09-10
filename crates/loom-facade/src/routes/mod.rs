@@ -5,7 +5,8 @@
 //! - `chat_completions` scaffolds the LAST user message, merges the block into
 //!   the first system message (or inserts one at position 0), delegates via
 //!   `ModelBackend` (which floors `max_tokens` and strips `stream` — the façade
-//!   does NOT re-do that), and annotates the 200 JSON with the `loom:{…}` block;
+//!   does NOT re-do that), and annotates the 200 JSON with the `loom:{…}` block.
+//!   Explicit scaffold-disabled streaming bypasses this path and proxies SSE;
 //! - `scaffold` returns the served block + the audit surface (`seeds`,
 //!   `fusion_path`) over Python's shape, plus the `grounding` contract block;
 //! - `health` (see `health.rs`) is a superset: `semantic` readiness/generation
@@ -16,7 +17,7 @@
 
 use std::time::Duration;
 
-use axum::body::Bytes;
+use axum::body::{Body, Bytes};
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
@@ -287,6 +288,12 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
 
     // Switches read from the ORIGINAL request; `loom_options` stripped in the same step.
     let flags = serving::request_flags(&mut body_obj);
+    // Streaming passthrough is an opaque OpenAI transport: bypass retrieval,
+    // prompt rewriting and JSON annotations, including the adapter token floor.
+    // Keep scaffold-enabled streaming on its established JSON path.
+    if flags.passthrough && flags.streaming {
+        return streaming_passthrough(&st, Value::Object(body_obj)).await;
+    }
     let delivery_shape = serving::is_delivery_lookup_shape(&messages);
 
     let opts = chat_scaffold_opts(&st, &body_obj);
@@ -397,6 +404,23 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
                 grounding::backend_failure_response(&st, e, &ground, fusion_path, injected);
             (code, Json(body)).into_response()
         }
+    }
+}
+
+/// Proxy opaque upstream SSE without inventing completion chunks or buffering.
+async fn streaming_passthrough(st: &AppState, body: Value) -> Response {
+    match st.backend.chat_stream(body).await {
+        Ok(stream) => (
+            [
+                ("content-type", "text/event-stream"),
+                ("cache-control", "no-cache"),
+                ("x-accel-buffering", "no"),
+                ("x-loom-served-mode", "passthrough"),
+            ],
+            Body::from_stream(stream),
+        )
+            .into_response(),
+        Err(e) => ApiError(e).into_response(),
     }
 }
 

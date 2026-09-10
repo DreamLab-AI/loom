@@ -4,7 +4,9 @@
 //! Ports the backend-delegation semantics of `app/loom_facade.py::_backend`
 //! (and `_probe_backend`): the `max_tokens` floor, `stream` stripping, the
 //! `/models` passthrough and the 5s reachability probe. Python semantics win;
-//! divergences from the stdlib façade are noted inline.
+//! divergences from the stdlib façade are noted inline. `chat_stream` provides
+//! an opaque SSE transport for scaffold-disabled agent clients, without the
+//! legacy budget normalisation.
 //!
 //! Model identity is NEVER encoded in `endpoint()` — it rides in the response
 //! body, so swapping Qwen3.8-27B for the next model is one env-var change with
@@ -12,7 +14,8 @@
 
 use std::time::Duration;
 
-use loom_domain::{BackendResponse, LoomError, ModelBackend};
+use futures_util::StreamExt;
+use loom_domain::{BackendResponse, BackendStream, LoomError, ModelBackend};
 use serde_json::Value;
 
 /// `LOOM_MIN_MAX_TOKENS` default — reasoning backends spend their budget in
@@ -202,6 +205,50 @@ impl ModelBackend for OpenAiBackend {
             status,
             body: value,
         })
+    }
+
+    async fn chat_stream(&self, body: Value) -> Result<BackendStream, LoomError> {
+        if self.is_retrieval_only() {
+            return Err(LoomError::NoBackend);
+        }
+        // No normalisation: passthrough preserves tools, images, token budgets
+        // and stream_options. No spawned pump: downstream backpressure and drop
+        // propagate directly to reqwest. The configured timeout bounds the stream.
+        let resp = self
+            .client
+            .post(self.url("/chat/completions"))
+            .timeout(self.timeout)
+            .json(&body)
+            .send()
+            .await
+            .map_err(|e| LoomError::BackendUnreachable(e.to_string()))?;
+        let status = resp.status().as_u16();
+        if !(200..300).contains(&status) {
+            let body = resp
+                .text()
+                .await
+                .map_err(|e| LoomError::BackendUnreachable(e.to_string()))?;
+            return Err(LoomError::BackendHttp { status, body });
+        }
+        let content_type = resp
+            .headers()
+            .get(reqwest::header::CONTENT_TYPE)
+            .and_then(|h| h.to_str().ok())
+            .unwrap_or("");
+        if !content_type
+            .split(';')
+            .next()
+            .unwrap_or("")
+            .trim()
+            .eq_ignore_ascii_case("text/event-stream")
+        {
+            return Err(LoomError::BackendUnreachable(
+                "streaming backend did not return text/event-stream".into(),
+            ));
+        }
+        Ok(Box::pin(resp.bytes_stream().map(|chunk| {
+            chunk.map_err(|e| LoomError::BackendUnreachable(e.to_string()))
+        })))
     }
 
     async fn models(&self) -> Result<Value, LoomError> {

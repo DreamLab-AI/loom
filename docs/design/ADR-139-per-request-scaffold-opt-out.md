@@ -49,3 +49,28 @@ verbatim and no-think both on), `passthrough_never_serves_verbatim` (503 with a 
 backend proves no verbatim serve), `scaffold_stays_on_unless_explicitly_false`. Unit tests in
 `serving.rs` and `model_tests.rs`. Live check after redeploy: the 2026-09-09 packet answered by
 the model with `served_mode: passthrough`.
+
+## Agent streaming extension — 2026-09-10
+
+An OpenAI-compatible agent harness needs streamed tool calls and tool-result
+turns. For `stream:true` together with `loom_options.scaffold:false`, the facade
+now forwards the upstream SSE body without buffering or rewriting its events.
+The transport preserves tool-call deltas, typed image content, tool history,
+usage, finish reasons and the client's token budget. Disconnecting the client
+drops the upstream stream. No model-specific parsing or routing is involved.
+
+This path returns `x-loom-served-mode: passthrough`; it does not inject a Loom JSON
+object into the provider's SSE events. Retrieval, generation accounting and the
+confidence window are bypassed as for other scaffold opt-outs. Upstream failures
+before streaming starts are labelled JSON errors. The configured backend timeout
+also bounds the streamed body.
+
+Existing scaffold-enabled requests and non-streaming requests retain their prior
+behaviour. In particular, the legacy non-streaming backend adapter still applies
+its configured token floor and removes the stream flag; the new SSE path does
+not. This distinguishes the transport extension from a change to ontology policy.
+
+`crates/loom-facade/tests/streaming_passthrough.rs` tests exact request and SSE
+preservation, error handling, first-byte delivery and cancellation. Live
+qualification also compares a default ontology request before and after deployment
+and exercises an external agent's skill discovery and screenshot interpretation.

@@ -72,11 +72,23 @@ pub trait EmbeddingProvider: Send + Sync {
     fn dimensions(&self) -> usize; // asserted == 384
 }
 
+/// Owned, backpressured upstream bytes. Dropping the stream cancels consumption.
+/// Chunk boundaries need not coincide with SSE event boundaries.
+pub type BackendStream =
+    std::pin::Pin<Box<dyn futures_core::Stream<Item = Result<bytes::Bytes, LoomError>> + Send>>;
+
 /// The model-swap seam. OpenAI-compatible chat delegation to DISTILL_BACKEND_URL.
 #[async_trait]
 pub trait ModelBackend: Send + Sync {
     /// Delegate a (scaffold-injected) chat request. Floors max_tokens ≥ floor.
     async fn chat(&self, body: serde_json::Value) -> Result<BackendResponse, LoomError>;
+    /// Stream an unmodified OpenAI request. Adapters must validate upstream
+    /// headers before returning; body transport errors remain stream errors.
+    async fn chat_stream(&self, _body: serde_json::Value) -> Result<BackendStream, LoomError> {
+        Err(LoomError::BackendUnreachable(
+            "backend does not support streaming".into(),
+        ))
+    }
     async fn models(&self) -> Result<serde_json::Value, LoomError>; // /v1/models passthrough
     async fn reachable(&self) -> bool; // /health probe (5s)
     fn endpoint(&self) -> &str; // the URL — model identity NEVER encoded here (ADR-135 D1.2)

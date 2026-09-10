@@ -74,9 +74,16 @@ REASONING_FORMAT="${REASONING_FORMAT:-}"
 CHAT_TEMPLATE_FILE="${CHAT_TEMPLATE_FILE:-}"
 
 VISION="${VISION:-1}"
+LLAMA_SERVER="${LLAMA_SERVER:-/usr/local/bin/llama-server}"
 
-[[ -x /usr/local/bin/llama-server ]] || { echo "Error: llama-server missing" >&2; exit 1; }
+[[ -x "$LLAMA_SERVER" ]] || { echo "Error: llama-server missing: $LLAMA_SERVER" >&2; exit 1; }
 [[ -f "$MAIN" ]] || { echo "Error: model GGUF not found: $MAIN (is the models volume mounted?)" >&2; exit 1; }
+[[ "$VISION" == "0" || "$VISION" == "1" ]] || { echo "Error: VISION must be 0 or 1" >&2; exit 1; }
+[[ "$SPEC" == "mtp" || "$SPEC" == "dflash" || "$SPEC" == "off" ]] || { echo "Error: SPEC must be mtp, dflash or off" >&2; exit 1; }
+if [[ "$VISION" == "1" && ! -f "$MMPROJ" ]]; then
+    echo "Error: vision requested but projector not found: $MMPROJ" >&2
+    exit 1
+fi
 
 ARGS=(
     -m "$MAIN"
@@ -126,4 +133,4 @@ fi
 echo "Qwen3.8-27B — llama.cpp in Loom"
 echo "  API: http://${HOST_ADDR}:${PORT}/v1 | ctx ${CTX_SIZE} | KV ${KV_TYPE} | spec ${SPEC} | vision ${VISION}"
 
-exec llama-server "${ARGS[@]}"
+exec "$LLAMA_SERVER" "${ARGS[@]}"
