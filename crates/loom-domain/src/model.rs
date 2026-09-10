@@ -297,12 +297,29 @@ pub enum ServedMode {
     /// The high-confidence scaffold was served verbatim WITHOUT calling the
     /// backend — the paper's serving-regime finding realised (F1).
     Verbatim,
+    /// The caller asked for the model alone (`loom_options.scaffold = false`):
+    /// no retrieval, no injection, no thinking control. The façade acted as a
+    /// plain proxy, so nothing on this path is corpus-backed, by design (ADR-139).
+    Passthrough,
     /// No answer was delivered: the delegation failed (backend unreachable,
     /// non-2xx, or absent). The grounding contract still applies — a consumer
     /// must be able to tell "the corpus had nothing" from "the model was down",
     /// and only a grounding block on the failure path can carry that (ADR-138
     /// closeout).
     Failed,
+}
+
+impl ServedMode {
+    /// The mode of a request the backend answered: a passthrough when the
+    /// caller asked for the model alone, a plain delegation otherwise.
+    #[must_use]
+    pub fn delegated(passthrough: bool) -> Self {
+        if passthrough {
+            Self::Passthrough
+        } else {
+            Self::Delegated
+        }
+    }
 }
 
 /// Exposure telemetry (F2): after an answer returns, how many of the injected

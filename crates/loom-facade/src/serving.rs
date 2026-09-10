@@ -56,6 +56,46 @@ pub fn verbatim_opted_out(body: &Map<String, Value>) -> bool {
         == Some(false)
 }
 
+/// Per-request scaffold opt-out: `"loom_options": {"scaffold": false}`. When
+/// present-and-false the request is delegated to the backend UNCHANGED: no
+/// retrieval, no injection, no verbatim serve, no thinking control. The façade
+/// is then a plain proxy for that request, for consumers whose subject is not
+/// in the ontology (a codebase, an arbitrary document) and who still hold the
+/// façade as the stable model door (ADR-139). Any other value leaves the
+/// scaffold on.
+#[must_use]
+pub fn scaffold_opted_out(body: &Map<String, Value>) -> bool {
+    body.get("loom_options")
+        .and_then(|o| o.get("scaffold"))
+        .and_then(Value::as_bool)
+        == Some(false)
+}
+
+/// The per-request switches the chat path reads from the ORIGINAL body before
+/// any rewrite. Reading them here, and stripping the Loom-private field in the
+/// same step, keeps the router honest: nothing downstream can see a switch the
+/// backend will not.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct RequestFlags {
+    /// `loom_options.verbatim == false`: decline a verbatim serve (F1).
+    pub opted_out: bool,
+    /// `loom_options.scaffold == false`: the model alone (ADR-139).
+    pub passthrough: bool,
+    /// `stream == true`: verbatim bypassed, backend strips `stream`.
+    pub streaming: bool,
+}
+
+/// Read the [`RequestFlags`] and strip `loom_options` from `body`.
+pub fn request_flags(body: &mut Map<String, Value>) -> RequestFlags {
+    let flags = RequestFlags {
+        opted_out: verbatim_opted_out(body),
+        passthrough: scaffold_opted_out(body),
+        streaming: is_streaming(body),
+    };
+    strip_loom_options(body);
+    flags
+}
+
 /// A streaming request (`"stream": true`). Verbatim bypasses streaming (delegate
 /// as today) — a synthetic SSE stream is not worth the complexity for the
 /// delivery-lookup case, and the backend strips `stream` on the delegate path.
@@ -262,6 +302,36 @@ mod tests {
         assert!(is_streaming(&m));
         strip_loom_options(&mut m);
         assert!(!m.contains_key("loom_options"));
+    }
+
+    #[test]
+    fn request_flags_read_then_strip() {
+        let mut m = Map::new();
+        m.insert(
+            "loom_options".to_owned(),
+            json!({ "scaffold": false, "verbatim": false }),
+        );
+        let f = request_flags(&mut m);
+        assert!(f.passthrough && f.opted_out && !f.streaming);
+        assert!(!m.contains_key("loom_options"), "stripped in the same step");
+        assert_eq!(request_flags(&mut Map::new()), RequestFlags::default());
+    }
+
+    #[test]
+    fn scaffold_opt_out_is_explicit_false_only() {
+        let mut m = Map::new();
+        assert!(!scaffold_opted_out(&m));
+        m.insert("loom_options".to_owned(), json!({ "verbatim": false }));
+        assert!(
+            !scaffold_opted_out(&m),
+            "verbatim opt-out alone keeps the scaffold"
+        );
+        m.insert("loom_options".to_owned(), json!({ "scaffold": false }));
+        assert!(scaffold_opted_out(&m));
+        m.insert("loom_options".to_owned(), json!({ "scaffold": "no" }));
+        assert!(!scaffold_opted_out(&m), "non-bool leaves the scaffold on");
+        m.insert("loom_options".to_owned(), json!({ "scaffold": true }));
+        assert!(!scaffold_opted_out(&m));
     }
 
     #[test]

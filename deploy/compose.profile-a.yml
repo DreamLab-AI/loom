@@ -48,7 +48,9 @@ services:
       # scaffold the model can only restate; context-utilisation 0.90–0.955,
       # beyond-exposure recovery 3/11,360). Threshold 8.0 == an EXACT title match
       # on the LEXICAL additive scale (conservative — paraphrase-only hits still
-      # delegate). Per-request opt-out: {"loom_options":{"verbatim":false}}.
+      # delegate). Per-request opt-outs: {"loom_options":{"verbatim":false}} declines the
+      # verbatim serve; {"loom_options":{"scaffold":false}} asks for the model alone
+      # (ADR-139: no retrieval, no injection, served_mode passthrough).
       LOOM_VERBATIM_MODE: "1"
       LOOM_VERBATIM_THRESHOLD: "8.0"
       # F3 no-think: an engaged (scaffold-injected) delegation asks the backend to

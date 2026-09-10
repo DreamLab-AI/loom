@@ -174,16 +174,17 @@ pub fn missing_contract_fields(envelope: &Value) -> Vec<&'static str> {
         .collect()
 }
 
-/// The status a chat request took, from the facts the router holds.
+/// The status a DELEGATED chat request took, from the facts the router holds.
+/// A verbatim serve never reaches here: that path stamps its own envelope.
 #[must_use]
 pub fn chat_status(
+    passthrough: bool,
     engaged: bool,
     fusion_path: FusionPath,
-    verbatim_served: bool,
     verbatim_declined: bool,
 ) -> GroundingStatus {
-    if verbatim_served {
-        return GroundingStatus::Verbatim;
+    if passthrough {
+        return GroundingStatus::Passthrough;
     }
     if !engaged {
         return GroundingStatus::NoMatch;
@@ -265,6 +266,7 @@ pub fn annotate_delegated(
     grounding: &Value,
     fusion_path: FusionPath,
     injected: usize,
+    served: ServedMode,
 ) {
     let exposure = match scaffold {
         Some(s) if !s.block.is_empty() => {
@@ -282,7 +284,7 @@ pub fn annotate_delegated(
         map.insert(
             "loom".to_owned(),
             loom_block(
-                ServedMode::Delegated,
+                served,
                 injected,
                 grounding,
                 fusion_path,

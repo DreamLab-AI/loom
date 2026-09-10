@@ -475,3 +475,121 @@ async fn f3_floor_not_applied_to_passthrough() {
         "passthrough max_tokens untouched"
     );
 }
+
+// ---------------------------------------------------------------------------
+// ADR-139 — PER-REQUEST SCAFFOLD OPT-OUT (the façade as a plain proxy)
+// ---------------------------------------------------------------------------
+
+#[tokio::test]
+async fn passthrough_forwards_the_request_unchanged() {
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/chat/completions"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({
+            "choices": [{ "message": { "role": "assistant", "content": "model answer" } }]
+        })))
+        .mount(&server)
+        .await;
+
+    // Verbatim ON and no-think ON: the strongest possible scaffold, and every
+    // serving control armed. PROMPT would be served verbatim without a backend.
+    let env = TestEnvBuilder::new()
+        .with_backend(backend_to(&server, 0))
+        .with_verbatim(true, 8.0)
+        .with_thinking(true, 1536)
+        .build();
+    let original = json!([{ "role": "user", "content": PROMPT }]);
+    let (status, body) = call(
+        env.router(),
+        "POST",
+        "/v1/chat/completions",
+        Some(json!({
+            "messages": original,
+            "max_tokens": 64,
+            "loom_options": { "scaffold": false }
+        })),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK, "delegated, not served verbatim");
+
+    let reqs = server.received_requests().await.unwrap();
+    assert_eq!(reqs.len(), 1, "exactly one backend call");
+    let forwarded: Value = reqs[0].body_json().unwrap();
+    assert_eq!(
+        forwarded["messages"], original,
+        "messages untouched: no injection"
+    );
+    assert!(
+        forwarded.get("chat_template_kwargs").is_none(),
+        "no thinking control on a passthrough"
+    );
+    assert!(
+        forwarded.get("loom_options").is_none(),
+        "the Loom-private field never reaches the backend"
+    );
+
+    // Honest telemetry: the model answered; the corpus was never consulted.
+    assert_eq!(
+        body["choices"][0]["message"]["content"],
+        json!("model answer")
+    );
+    assert_eq!(body["loom"]["served_mode"], json!("passthrough"));
+    assert_eq!(body["loom"]["injected_tokens"], json!(0));
+    assert_eq!(body["loom"]["grounding"]["status"], json!("passthrough"));
+    assert_eq!(body["loom"]["grounding"]["corpus_backed"], json!(false));
+    assert_eq!(body["loom"]["grounding"]["engaged"], json!(false));
+}
+
+#[tokio::test]
+async fn passthrough_never_serves_verbatim() {
+    // Retrieval-only backend: a verbatim serve would return 200 without a
+    // backend; a passthrough must delegate and therefore surface NoBackend → 503.
+    let env = TestEnvBuilder::new().with_verbatim(true, 8.0).build();
+    let (status, _) = call(
+        env.router(),
+        "POST",
+        "/v1/chat/completions",
+        Some(json!({
+            "messages": [{ "role": "user", "content": PROMPT }],
+            "loom_options": { "scaffold": false }
+        })),
+    )
+    .await;
+    assert_eq!(
+        status,
+        StatusCode::SERVICE_UNAVAILABLE,
+        "passthrough → delegate → 503 with no backend"
+    );
+}
+
+#[tokio::test]
+async fn scaffold_stays_on_unless_explicitly_false() {
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/chat/completions"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(json!({ "choices": [] })))
+        .mount(&server)
+        .await;
+    let env = TestEnvBuilder::new()
+        .with_backend(backend_to(&server, 0))
+        .build();
+    let (status, body) = call(
+        env.router(),
+        "POST",
+        "/v1/chat/completions",
+        Some(json!({
+            "messages": [{ "role": "user", "content": PROMPT }],
+            "loom_options": { "scaffold": true, "verbatim": false }
+        })),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    let reqs = server.received_requests().await.unwrap();
+    let forwarded: Value = reqs[0].body_json().unwrap();
+    let text = forwarded["messages"].to_string();
+    assert!(
+        text.contains("[ONTOLOGY CONTEXT]"),
+        "scaffold injected as before"
+    );
+    assert_eq!(body["loom"]["served_mode"], json!("delegated"));
+}

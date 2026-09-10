@@ -28,7 +28,7 @@ use tower_http::limit::RequestBodyLimitLayer;
 use tower_http::timeout::TimeoutLayer;
 use tower_http::trace::TraceLayer;
 
-use loom_domain::{FusionPath, GenerationStore, Scaffold, ScaffoldOpts};
+use loom_domain::{FusionPath, GenerationStore, Scaffold, ScaffoldOpts, ServedMode};
 use loom_scaffold::message_text;
 use loom_scaffold::tuning::SYSTEM_PREAMBLE;
 
@@ -285,14 +285,9 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
         .cloned()
         .unwrap_or_default();
 
-    // F1 preconditions read from the ORIGINAL request, before any rewrite:
-    // per-request opt-out, streaming, and the delivery-lookup shape (last message
-    // user, no assistant turns). Then strip the Loom-private field so the backend
-    // never sees it.
-    let opted_out = serving::verbatim_opted_out(&body_obj);
-    let streaming = serving::is_streaming(&body_obj);
+    // Switches read from the ORIGINAL request; `loom_options` stripped in the same step.
+    let flags = serving::request_flags(&mut body_obj);
     let delivery_shape = serving::is_delivery_lookup_shape(&messages);
-    serving::strip_loom_options(&mut body_obj);
 
     let opts = chat_scaffold_opts(&st, &body_obj);
 
@@ -307,7 +302,7 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
     let mut new_msgs = messages;
     let mut scaffold: Option<Scaffold> = None;
 
-    if let Some(text) = last_user_text {
+    if let Some(text) = last_user_text.filter(|_| !flags.passthrough) {
         match build_scaffold(&st, &text, opts).await {
             Ok(s) => scaffold = Some(s),
             Err(e) => {
@@ -330,11 +325,10 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
     // A verbatim serve was possible in principle but declined by THIS request:
     // the distinction the grounding contract reports as `opt-out` rather than
     // folding into a plain delegation.
-    let verbatim_declined =
-        engaged && st.config.verbatim_mode && opted_out && !streaming && delivery_shape;
-
-    let verbatim_eligible =
-        engaged && st.config.verbatim_mode && !opted_out && !streaming && delivery_shape;
+    let verbatim_possible =
+        engaged && st.config.verbatim_mode && !flags.streaming && delivery_shape;
+    let verbatim_declined = verbatim_possible && flags.opted_out;
+    let verbatim_eligible = verbatim_possible && !flags.opted_out;
     if let Some(resp) = try_serve_verbatim(
         &st,
         scaffold.as_ref(),
@@ -344,9 +338,12 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
     ) {
         return resp;
     }
-    st.confidence.record(ground.decision, ground.confidence);
-    st.generation.mark_served();
-    let status = grounding::chat_status(engaged, fusion_path, false, verbatim_declined);
+    if !flags.passthrough {
+        // A passthrough never consulted the gate: keep it out of the counters.
+        st.confidence.record(ground.decision, ground.confidence);
+        st.generation.mark_served();
+    }
+    let status = grounding::chat_status(flags.passthrough, engaged, fusion_path, verbatim_declined);
     let grounding_json = grounding::envelope(&st, &ground, status);
     debug_assert!(
         grounding::missing_contract_fields(&grounding_json).is_empty(),
@@ -387,6 +384,7 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
                     &grounding_json,
                     fusion_path,
                     injected,
+                    ServedMode::delegated(flags.passthrough),
                 );
             }
             (status, Json(out)).into_response()

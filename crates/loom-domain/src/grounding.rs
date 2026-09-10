@@ -303,7 +303,8 @@ impl Grounding {
 /// them the same, which is exactly the failure the contract exists to prevent.
 ///
 /// So every response — success, degrade and failure — carries a status, and the
-/// six variants below are the complete set the closeout enumerates.
+/// seven variants below are the complete set the closeout enumerates (the
+/// seventh, `Passthrough`, added by ADR-139).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum GroundingStatus {
@@ -315,6 +316,11 @@ pub enum GroundingStatus {
     /// the decision was the caller's, and a benchmark that cannot see that will
     /// mis-attribute the latency.
     OptOut,
+    /// The caller asked for the model alone (`loom_options.scaffold = false`):
+    /// retrieval did not run and nothing was injected. The corpus was NOT
+    /// consulted, which is why this is not a `NoMatch` — a consumer must be able
+    /// to tell "the corpus had nothing" from "the caller did not ask" (ADR-139).
+    Passthrough,
     /// The lexical gate missed and the HNSW fallback supplied the seeds. The
     /// score scale is cosine, not lexical-additive.
     SemanticFallback,
@@ -334,6 +340,7 @@ impl GroundingStatus {
         match self {
             Self::NoMatch => "no-match",
             Self::OptOut => "opt-out",
+            Self::Passthrough => "passthrough",
             Self::SemanticFallback => "semantic-fallback",
             Self::Verbatim => "verbatim",
             Self::Delegated => "delegated",
@@ -344,12 +351,16 @@ impl GroundingStatus {
     /// Whether an answer delivered on this path may be treated as corpus-backed,
     /// GIVEN that the scaffold actually engaged.
     ///
-    /// The two `false` cases are the ones a consumer most needs: a no-match has
-    /// no evidence, and a backend failure has no answer. Everything else is
-    /// corpus-backed exactly when the scaffold engaged.
+    /// The three `false` cases are the ones a consumer most needs: a no-match
+    /// has no evidence, a backend failure has no answer, and a passthrough never
+    /// consulted the corpus. Everything else is corpus-backed exactly when the
+    /// scaffold engaged.
     #[must_use]
     pub fn may_be_corpus_backed(self) -> bool {
-        !matches!(self, Self::NoMatch | Self::BackendFailure)
+        !matches!(
+            self,
+            Self::NoMatch | Self::BackendFailure | Self::Passthrough
+        )
     }
 }
 

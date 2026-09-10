@@ -161,7 +161,7 @@ One deployment-agnostic contract (`ADR-135` D1). The model is always a URL behin
 | `POST /loom/scaffold` | budget-clamped ontology grounding for a prompt (the retrieval facet) | **no** |
 | `POST /loom/sparql` | read-only, clamped SPARQL over the reasoned closure | no |
 | `POST /loom/search` | label/substring search over the store | no |
-| `POST /v1/chat/completions` | scaffold-inject the last user message → delegate to the model | yes |
+| `POST /v1/chat/completions` | scaffold-inject the last user message → delegate to the model; `loom_options.scaffold=false` makes the façade a plain proxy for that request | yes |
 | `GET  /v1/models` | model identity passthrough (probe what's behind the façade) | yes |
 
 ```bash
@@ -242,6 +242,29 @@ Three controls, each shipped default-off, following the paper's serving-regime f
 - **Verbatim serving** (`LOOM_VERBATIM_MODE`) — on a high-confidence lookup, serve the canonical markdown block directly and skip the model call entirely. The serving-regime finding made operational.
 - **Exposure telemetry** (`LOOM_EXPOSURE_APPEND`) — the `loom` block carries a per-answer `exposure` object (targets/delivered/dropped); this opt-in also appends a "Not covered above" line when titles are dropped.
 - **Thinking control** (`LOOM_BACKEND_NO_THINK`, `LOOM_THINK_TOKEN_FLOOR`) — disable reasoning on gate-engaged requests and hold a token floor so reasoning cannot starve the answer.
+
+### Per-request options (`loom_options`)
+
+A consumer holds the façade as the stable model door even when its subject is not in the
+ontology. Two Loom-private keys, stripped before delegation so the backend never sees them:
+
+- `{"loom_options": {"verbatim": false}}` — decline a verbatim serve for this request; the
+  scaffold is still injected (`grounding.status: opt-out`).
+- `{"loom_options": {"scaffold": false}}` — ask for the model alone: no retrieval, no
+  injection, no verbatim, no thinking control. The response carries
+  `loom.served_mode: passthrough`, `grounding.status: passthrough`,
+  `corpus_backed: false`, and the request is not counted in the confidence window. Use it
+  for a codebase, a private document, or any subject the corpus does not cover: the
+  scaffold's lexical gate would otherwise match a stray word (a request about a test
+  script's `node` step once served the blockchain *Node* class verbatim). Rationale:
+  [`docs/design/ADR-139-per-request-scaffold-opt-out.md`](docs/design/ADR-139-per-request-scaffold-opt-out.md).
+
+```bash
+# the model alone, through the same door — nothing from the ontology touches the prompt
+curl -sXPOST localhost:8084/v1/chat/completions \
+  -d '{"messages":[{"role":"user","content":"Explain what scripts/verify.sh runs."}],
+       "max_tokens":1536,"loom_options":{"scaffold":false}}'
+```
 
 Protocol detail: [`bench/UPLIFT-BENCH-PROTOCOL.md`](bench/UPLIFT-BENCH-PROTOCOL.md).
 

@@ -146,6 +146,12 @@ fn served_mode_serialises_lowercase() {
         serde_json::to_string(&ServedMode::Verbatim).unwrap(),
         "\"verbatim\""
     );
+    assert_eq!(
+        serde_json::to_string(&ServedMode::Passthrough).unwrap(),
+        "\"passthrough\""
+    );
+    assert_eq!(ServedMode::delegated(true), ServedMode::Passthrough);
+    assert_eq!(ServedMode::delegated(false), ServedMode::Delegated);
 }
 
 #[test]
