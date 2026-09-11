@@ -47,7 +47,8 @@ two extractors: a no-op extractor that returns $S_i$ verbatim, whose recall agai
 is the per-item \emph{copy ceiling} $c_i$; and the model, whose answer $a_i$ scores the grounded recall
 $r_i$. Both scores use the identical surface matcher $\mathrm{m}(t,\cdot)$ with $G_i$ as reference
 (dashed), so their difference, the \emph{gain over copy} $g_i=r_i-c_i$, is first-order insensitive to
-the matcher's under-counting. The sign reads directly: $g\approx0$ is faithful delivery (the target
+matcher error the two scores share (cancellation is approximate; error rates can differ between
+scaffold text and generated prose). The sign reads directly: $g\approx0$ is faithful delivery (the target
 behaviour for private-knowledge grounding), $g<0$ is lossy restatement of surfaced gold, and $g>0$
 would evidence recovery of gold beyond what the exposure check finds (\S\ref{sec:ceiling}).}
 \label{fig:ceiling}

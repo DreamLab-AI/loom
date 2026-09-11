@@ -1631,8 +1631,8 @@
     \endverb
     \field{note}{Uses ``copy ceiling'' for token reachability under a
   copy/generate editing grammar (unrelated to graph-grounded RAG). Withdrawn
-  2026-05-24 over an authorship dispute; cited only to disambiguate
-  terminology.}
+  2026-05-24 pending an authorship and contribution review, per its arXiv
+  record; cited only to disambiguate terminology.}
     \field{title}{Copy-as-Decode: Grammar-Constrained Parallel Prefill for
   {LLM} Editing}
     \verb{url}
@@ -1801,6 +1801,63 @@
     \endverb
     \field{eprinttype}{arXiv}
     \field{year}{2023}
+  \endentry
+
+  \entry{min2025practicalgraphrag}{misc}{}{}
+    \name{author}{6}{}{%
+      {{hash=MC}{%
+         family={Min},
+         familyi={M\bibinitperiod},
+         given={Congmin},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=BS}{%
+         family={Bansal},
+         familyi={B\bibinitperiod},
+         given={Sahil},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=PJ}{%
+         family={Pan},
+         familyi={P\bibinitperiod},
+         given={Joyce},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=KA}{%
+         family={Keshavarzi},
+         familyi={K\bibinitperiod},
+         given={Abbas},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=MR}{%
+         family={Mathew},
+         familyi={M\bibinitperiod},
+         given={Rhea},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=KAV}{%
+         family={Kannan},
+         familyi={K\bibinitperiod},
+         given={Amar\bibnamedelima Viswanathan},
+         giveni={A\bibinitperiod\bibinitdelim V\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MC+1}
+    \strng{fullhash}{MCBSPJKAMRKAV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \verb{eprint}
+    \verb 2507.03226
+    \endverb
+    \field{title}{Towards Practical {GraphRAG}: Efficient Knowledge Graph
+  Construction and Hybrid Retrieval at Scale}
+    \verb{url}
+    \verb https://arxiv.org/abs/2507.03226
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{year}{2025}
   \endentry
 
   \entry{min2023factscore}{inproceedings}{}{}
@@ -2529,7 +2586,7 @@
     \field{year}{2023}
   \endentry
 
-  \entry{entityquestions2022}{misc}{}{}
+  \entry{entityquestions2021}{inproceedings}{}{}
     \name{author}{4}{}{%
       {{hash=SC}{%
          family={Sciavolino},
@@ -2562,17 +2619,19 @@
     \field{labeltitlesource}{title}
     \field{sortinit}{S}
     \field{sortinithash}{S}
+    \field{booktitle}{Proceedings of the 2021 Conference on Empirical Methods
+  in Natural Language Processing (EMNLP)}
     \verb{eprint}
     \verb 2109.08535
     \endverb
-    \field{note}{EMNLP 2021}
+    \field{pages}{6138\bibrangedash 6148}
     \field{title}{Simple Entity-Centric Questions Challenge Dense Retrievers}
     \verb{url}
-    \verb https://arxiv.org/abs/2109.08535
+    \verb https://aclanthology.org/2021.emnlp-main.496/
     \endverb
     \field{eprinttype}{arXiv}
     \field{eprintclass}{cs.CL}
-    \field{year}{2022}
+    \field{year}{2021}
   \endentry
 
   \entry{see2017pointergenerator}{inproceedings}{}{}
@@ -2678,22 +2737,6 @@
     \endverb
     \field{eprinttype}{arXiv}
     \field{year}{2023}
-  \endentry
-
-  \entry{jiang2025practicalgraphrag}{misc}{}{}
-    \field{labeltitlesource}{title}
-    \field{sortinit}{T}
-    \field{sortinithash}{T}
-    \verb{eprint}
-    \verb 2507.03226
-    \endverb
-    \field{title}{Towards Practical {GraphRAG}: Efficient Knowledge Graph
-  Construction and Retrieval in Enterprise Environments}
-    \verb{url}
-    \verb https://arxiv.org/abs/2507.03226
-    \endverb
-    \field{eprinttype}{arXiv}
-    \field{year}{2025}
   \endentry
 
   \entry{dire2020}{misc}{}{}

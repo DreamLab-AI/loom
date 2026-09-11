@@ -210,6 +210,7 @@ def main() -> int:
     exposure = {}   # id -> per-item exposed flag vector
     ceiling = {}    # id -> exposed/gold ratio (the per-item copy ceiling c_i)
     exposed_count = {}
+    copy_text = {}  # id -> concatenated visible input (scaffold + question)
     for qid, q in questions.items():
         gold = q.get("gold") or []
         msgs = [{"role": "user", "content": q["prompt"]}]
@@ -219,6 +220,8 @@ def main() -> int:
         exposure[qid] = flags
         exposed_count[qid] = sum(flags)
         ceiling[qid] = (sum(flags) / len(gold)) if gold else 0.0
+        copy_text[qid] = " ".join(m.get("content") for m in new
+                                  if isinstance(m.get("content"), str))
 
     # sanity: pooled mean ceiling over questions must be 0.964
     mean_ceiling = sum(ceiling[q] for q in questions) / len(questions)
@@ -226,6 +229,36 @@ def main() -> int:
                       / sum(len(questions[q].get("gold") or []) for q in questions))
     if round(mean_ceiling, 3) != 0.964:
         errors.append(f"mean ceiling {mean_ceiling:.4f} != 0.964")
+
+    # -- executable scoring invariants (REVIEW-2026-09-11 s1.1/s1.2) ----------
+    # (a) copy-as-answer: the full visible input, scored with the headline
+    #     answer scorer, must equal its reported copy baseline per question,
+    #     under BOTH the fractional (historical) and any-collapsed (symmetric)
+    #     ceiling definitions.  On the frozen sets both hold on all 510
+    #     questions because every gold_type=='any' question's alternatives are
+    #     exposed all-or-nothing, so the historical asymmetry is numerically
+    #     inert; this check makes that a hard gate rather than an assumption.
+    # (b) scaffold-only vs full-input exposure: the question text must add no
+    #     exposure beyond the scaffold (verified 0/510 on the frozen sets).
+    for qid, q in questions.items():
+        gold = q.get("gold") or []
+        sc = score_answer_recall(q, copy_text[qid])
+        frac = ceiling[qid]
+        symm = (1.0 if any(exposure[qid]) else 0.0) \
+            if q.get("gold_type") == "any" else frac
+        if abs(sc - frac) > 1e-9:
+            errors.append(f"{qid}: copy-as-answer {sc:.4f} != fractional "
+                          f"ceiling {frac:.4f}")
+        if abs(sc - symm) > 1e-9:
+            errors.append(f"{qid}: copy-as-answer {sc:.4f} != symmetric "
+                          f"ceiling {symm:.4f}")
+        prompt_only = exposed_flags(
+            [{"role": "user", "content": q["prompt"]}], gold)
+        scaf_msgs_flags = exposure[qid]
+        for i, (p, f) in enumerate(zip(prompt_only, scaf_msgs_flags)):
+            if p and not f:
+                errors.append(f"{qid}: gold item {i} exposed by prompt "
+                              f"but not by full input (impossible)")
 
     per_model = {}
     for label, disp in MODELS:

@@ -39,8 +39,11 @@ def bootstrap_ci(diffs, n=10_000, alpha=0.05, seed=7):
 
 
 def wilcoxon_signed_rank(diffs):
-    """Two-sided Wilcoxon signed-rank, normal approximation with tie/zero
-    handling (Pratt zeros dropped). Returns (W, z, p)."""
+    """Two-sided Wilcoxon signed-rank, normal approximation. Zeros are dropped
+    BEFORE ranking (the reduced-sample procedure, NOT Pratt's, which ranks
+    zeros then removes their signed contribution); tied absolute differences
+    get average ranks, but the variance is the untied formula, so with heavy
+    ties and small n prefer exact_signed_rank() below. Returns (W, z, p)."""
     d = [x for x in diffs if x != 0]
     n = len(d)
     if n == 0:
@@ -66,12 +69,57 @@ def wilcoxon_signed_rank(diffs):
     return w_plus, z, p
 
 
-def cliffs_delta(diffs):
-    """Dominance of positive over negative paired differences."""
+def exact_signed_rank(diffs):
+    """Two-sided EXACT conditional signed-rank p-value: zeros dropped, average
+    ranks for ties, then exact enumeration of the sign-randomisation
+    distribution conditional on the observed (possibly tied) absolute ranks,
+    via dynamic programming over half-integer ranks. This is the test the
+    paper reports (paper-v6, Table tab:live); it is valid at any n and
+    required where non-zero pairs are few (general set: n=2).
+    Returns (W_plus, p)."""
+    d = [x for x in diffs if x != 0]
+    n = len(d)
+    if n == 0:
+        return 0.0, 1.0
+    ranked = sorted((abs(x), i) for i, x in enumerate(d))
+    ranks = [0.0] * n
+    i = 0
+    while i < n:
+        j = i
+        while j + 1 < n and ranked[j + 1][0] == ranked[i][0]:
+            j += 1
+        avg = (i + j) / 2 + 1
+        for k in range(i, j + 1):
+            ranks[ranked[k][1]] = avg
+        i = j + 1
+    w_plus = sum(r for r, x in zip(ranks, d) if x > 0)
+    scale = 2  # average ranks are half-integers; scale to ints for exact DP
+    ir = [int(round(r * scale)) for r in ranks]
+    dist = {0: 1}
+    for r in ir:
+        nd = {}
+        for s, c in dist.items():
+            nd[s] = nd.get(s, 0) + c
+            nd[s + r] = nd.get(s + r, 0) + c
+        dist = nd
+    mu = sum(ir) / 2
+    dev = abs(w_plus * scale - mu)
+    count = sum(c for s, c in dist.items() if abs(s - mu) >= dev - 1e-9)
+    return w_plus, count / 2 ** n
+
+
+def sign_dominance(diffs):
+    """(wins - losses) / all pairs, ties included in the denominator. NOTE:
+    this is a paired sign-count statistic, NOT independent-samples Cliff's
+    delta; the paper's effect sizes are matched-pairs rank-biserial r
+    (T+ - T-)/(T+ + T-), computed in the decomposition artifact."""
     pos = sum(1 for x in diffs if x > 0)
     neg = sum(1 for x in diffs if x < 0)
     n = len(diffs)
     return (pos - neg) / n if n else 0.0
+
+
+cliffs_delta = sign_dominance  # backwards-compatible alias (misnamed; kept for old callers)
 
 
 def holm(pvals):
@@ -109,20 +157,23 @@ def main(argv=None):
             continue
         lo, hi = bootstrap_ci(diffs)
         w, z, p = wilcoxon_signed_rank(diffs)
+        w_ex, p_exact = exact_signed_rank(diffs)
         report[name] = {
             "n_pairs": len(diffs),
             "mean_loom": round(sum(by_q[k]["loom"] for k in keys) / len(keys), 4),
             "mean_raw": round(sum(by_q[k]["raw"] for k in keys) / len(keys), 4),
             "paired_mean_diff": round(sum(diffs) / len(diffs), 4),
             "boot95_lo": round(lo, 4), "boot95_hi": round(hi, 4),
-            "wilcoxon_W": w, "wilcoxon_z": round(z, 3), "p_raw": round(p, 6),
-            "cliffs_delta": round(cliffs_delta(diffs), 4),
+            "wilcoxon_W": w, "wilcoxon_z": round(z, 3),
+            "p_normal_approx": round(p, 6),
+            "p_exact": round(p_exact, 10),
+            "sign_dominance": round(sign_dominance(diffs), 4),
             "wins": sum(1 for d in diffs if d > 0),
             "losses": sum(1 for d in diffs if d < 0),
             "ties": sum(1 for d in diffs if d == 0),
         }
         if name != "pooled":
-            pvals.append(p)
+            pvals.append(p_exact)
             labels.append(name)
     for lbl, adj in zip(labels, holm(pvals)):
         report[lbl]["p_holm"] = round(adj, 6)
