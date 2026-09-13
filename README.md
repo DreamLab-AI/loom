@@ -4,7 +4,7 @@
 
 ### Grounding node for the Dynamic Agentic Mesh
 
-[![License](https://img.shields.io/badge/License-AGPL--3.0-blue?style=flat-square)](Cargo.toml)
+[![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue?style=flat-square)](Cargo.toml)
 [![Rust](https://img.shields.io/badge/Rust-1.90%2B-f74c00?style=flat-square&logo=rust)](Cargo.toml)
 [![Crates](https://img.shields.io/badge/Crates-8%20hexagonal-8b5cf6?style=flat-square)](docs/design/RUST-ARCHITECTURE.md)
 [![Model](https://img.shields.io/badge/Model-swappable-10b981?style=flat-square)](#what--the-fa%C3%A7ade)
@@ -415,7 +415,9 @@ The eight-crate hexagonal Rust workspace is built, gate-green (`just ci`), and w
 
 ## Licence
 
-Code: [AGPL-3.0-only](Cargo.toml). Running Loom as a hosted service requires making the full source (including modifications) available to users. Self-hosted and internal use carry no obligations beyond standard copyleft terms. Corpus/data terms: see the sibling [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) licensing (ODbL-1.0 for the corpus, AGPL-3.0 for the pipeline).
+Code: dual-licensed [MIT](LICENSE-MIT) OR [Apache-2.0](LICENSE-APACHE), at your option — the Rust ecosystem convention. Relicensed from AGPL-3.0-only in 2026-09; every contributor to this repository is DreamLab-AI, and no dependency forces copyleft (RocksDB reaches us through `oxrocksdb-sys`, which is `GPL-2.0 OR Apache-2.0`, and we elect Apache-2.0 — `deny.toml` enforces that election).
+
+Corpus/data terms are separate and unchanged: see the sibling [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) licensing (ODbL-1.0 for the corpus, AGPL-3.0 for the pipeline).
 
 ---
 
