@@ -1528,6 +1528,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "loom-client"
+version = "0.1.0"
+dependencies = [
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "wiremock",
+]
+
+[[package]]
 name = "loom-domain"
 version = "0.1.0"
 dependencies = [
