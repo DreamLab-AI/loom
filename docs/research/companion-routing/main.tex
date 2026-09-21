@@ -1,0 +1,381 @@
+\pdfoutput=1
+\documentclass[10pt,twocolumn]{article}
+\usepackage[a4paper,margin=2cm,columnsep=0.6cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{microtype}
+\usepackage{booktabs,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[hidelinks,pdftitle={Gain over a judge-free ranker: measuring a typed-decision seam against a strong simple baseline},pdfauthor={John O'Hare}]{hyperref}
+\usepackage[backend=bibtex,style=numeric-comp,sorting=nyt,maxnames=4,giveninits=true]{biblatex}
+\addbibresource{refs.bib}
+
+\definecolor{teal0}{RGB}{0,110,110}
+\definecolor{burnt}{RGB}{192,80,0}
+\definecolor{ink}{RGB}{25,28,32}
+\definecolor{softgreen}{RGB}{46,139,87}
+\color{ink}
+\hypersetup{colorlinks=true,linkcolor=teal0,citecolor=teal0,urlcolor=teal0}
+\captionsetup{font=small,labelfont={bf}}
+\newcommand{\gainpos}[1]{\textcolor{softgreen}{$+#1$}}
+\newcommand{\gainneg}[1]{\textcolor{burnt}{$#1$}}
+\newcommand{\grank}{$g_{\mathrm{rank}}$}
+\newcommand{\gexp}{$g_{\mathrm{exp}}$}
+
+\title{\vspace{-1.2cm}\bfseries Gain over a Judge-Free Ranker: Measuring a\\
+Typed-Decision Seam against a Strong Simple Baseline}
+\author{Dr John O'Hare\\ \small DreamLab AI --- agentbox / Sovereign System One}
+\date{21 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+A typed decision seam in an agent runtime routes each user turn to one of 115 skills whose
+rubrics are all shown to the judge, plus an option to decline. Because every candidate is
+exposed, an input-exposure control of the kind used to interpret grounded generation is
+vacuous here: the exposed fraction is $1$, and gain over exposure is accuracy minus one,
+which for our 4B local engine is $-0.116$. What this note measures instead is
+\emph{gain over ranker} (\grank), accuracy minus the accuracy of the best judge-free
+ranker over the same exposed options, with its decline threshold oracle-tuned on the same
+corpus. That is a different instrument with different guarantees, and the two are reported
+side by side so they cannot be confused. The control's first finding was a fault in itself:
+two defects in the baseline, a threshold sweep that could not reach its own optimum and
+exclusion clauses indexed as positive evidence, had manufactured $6.9$ of an apparent
+$11.6$-point advantage. Repaired, a BM25 ranker reaches $83.7\%$ against the local engine's
+$88.4\%$ (\grank${}=+4.7$, exact McNemar $p=0.455$) and a cloud judge's $93.0\%$
+(${+}9.3$, $p=0.057$); against a semantic ranker at $69.8\%$ both judges win decisively.
+Exact power at $n=86$ against the observed lexical effect is $0.50$. The corpus is self-authored
+and single-seed, and the tuning is oracle rather than held out, so these are not deployment
+estimates. The transferable findings are the repair discipline, the population breakdown,
+and the use of ranker--judge disagreement as a label-audit queue, which found a corpus
+error its authors had already reviewed.
+\end{abstract}
+
+\section{What this note is}\label{sec:what}
+This is a companion note to a paper on exposure accounting for ontology-grounded
+generation over a curated corpus.\footnote{\emph{The Copy Ceiling: An Input-Exposure
+Control for Ontology-Grounded Generation over Curated Corpora}, DreamLab AI, 2026. The
+routing study reported here formed a section of that paper's seventh draft and was
+separated from it on 21 September 2026 following external review, because it reports a
+different quantity under a name the paper had already spent.} That paper's instrument
+classifies each gold item by whether the shown context exposed it and whether the answer
+recovered it, and summarises the table as a scalar: the recall a verbatim copy of the shown
+text would achieve, and the signed gain above it. The instrument is deterministic and
+judge-free, in the tradition of input-only baselines used to deflate reading-comprehension
+and inference benchmarks~\cite{kaushik2018reading,gururangan2018artifacts,poliak2018hypothesis,niven2019probing}
+and of the broader argument that strong simple baselines should be run before elaborate
+pipelines are believed~\cite{laitenberger2025stronger}.
+
+Applying that instrument to a second, differently shaped task exposed a boundary in it.
+On a discriminative choice over a curated option set, every candidate is shown by
+construction, so the exposed fraction is $1$ and the exposure-based gain degenerates to
+accuracy minus one. Something else has to play the role of the copy baseline, and what we
+built is a judge-free ranker over the same exposed options. That is a legitimate and, we
+argue, a necessary comparison for a seam of this kind. It is not the exposure scalar, and
+the substitution was the part the original section got wrong. This note states both
+quantities, reports the routing measurement against the correct one, and keeps the material
+that survives contact with the corrections: two self-inflicted defects, three engines, a
+population breakdown, a label audit and the reasons none of it is a deployment claim.
+
+\section{The seam and its total exposure}\label{sec:task}
+An agent runtime routes each user turn to one of 115 \emph{skills}. Each skill carries a
+short rubric stating what it is for and, in 50 of the 115 cases, what it must not be chosen
+for and which skill to use instead. The router puts one typed choice to a judge: the turn as
+state, the 115 rubrics as options, and a \texttt{none} option for turns no skill should
+handle. The gold label for a turn is the key of one exposed rubric, or \texttt{none}.
+
+Exposure is therefore total. The gold answer is, by construction, among the text the judge
+is shown, which is stronger than the generation study the parent paper reports, where
+$3.6\%$ of gold lay outside the retrieved scaffold. Total exposure is exactly the condition
+under which an exposure control stops discriminating: it cannot separate a judge that reads
+the rubrics from one that picks at random from the same shown set.
+
+We wrote the corpus: 86 labelled turns (16 \texttt{none}, 70 skill), each tagged by the
+class of confusion it was written to probe. The corpus, the three engines and the
+measurement rig are released with the runtime.\footnote{Sovereign System One, in the agent
+runtime \url{https://github.com/DreamLab-AI/agentbox}: a typed-decision wire protocol
+(choice, score, probability) with a local engine behind it. The router's request is
+byte-identical across all three judges below, so the engine is a URL chosen by this
+measurement. Decision record: ADR-2095; rig:
+\texttt{crates/system-one/system-one-eval}.}
+
+\section{Two quantities, named apart}\label{sec:naming}
+Let $a$ be the seam's top-1 accuracy over the $N=86$ turns, $e$ the fraction of turns whose
+gold answer appears in the shown options, and $r$ the top-1 accuracy of a specified
+judge-free ranking procedure over those same options.
+
+\begin{align}
+g_{\mathrm{exp}} &= a - e \qquad\text{(gain over exposure)}\\
+g_{\mathrm{rank}} &= a - r \qquad\text{(gain over ranker)}
+\end{align}
+
+On this seam $e=1$ by construction, so \gexp{} is $a-1$ and is negative for every engine
+measured. That is not a defect in the engines; it is the exposure control reporting,
+correctly, that it has nothing to say about a task where everything is exposed. Table~\ref{tab:quantities}
+gives both numbers for the three engines so that neither can stand in for the other.
+
+\begin{table}[t]\centering\small
+\caption{The two quantities on the same 86 turns. \gexp{} is the parent paper's exposure
+scalar and is vacuous here because every option is shown ($e=1$). \grank{} is measured
+against the repaired lexical ranker ($r=0.837$) and is the quantity this note reports.}
+\label{tab:quantities}
+\begin{tabular}{lccc}
+\toprule
+Engine & $a$ & \gexp{} & \grank{} \\
+\midrule
+421M encoder            & $0.535$ & $-0.465$ & $-0.302$ \\
+4B cross-encoder        & $0.884$ & $-0.116$ & $+0.047$ \\
+Cloud judge             & $0.930$ & $-0.070$ & $+0.093$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The distinction matters for a claim the original draft made and this note withdraws. That
+draft observed that one definition of the baseline, implemented three ways, moved the
+reported gain by about seven points while the classification of which rubric each turn's
+gold names never moved, and read this as evidence that an exposure scalar is unstable where
+its underlying counts are not. It is not evidence of that. The counts stayed fixed because
+the shown options and the model's answers stayed fixed. The reported number moved because we
+changed a different procedure, namely the ranker used as the baseline. What was demonstrated
+is \textbf{baseline sensitivity in \grank{}}, which is a property of the instrument
+introduced here, not instability in the exposure scalar of the parent paper. The general
+lesson survives the correction and is worth more than the claim it replaces: when a task has
+no natural no-op extractor, the baseline has to be constructed, and every construction
+choice is somewhere the number can move.
+
+\section{Constructing the ranker baseline}\label{sec:baseline}
+A no-op extractor has no meaning when the answer is a key rather than a passage, so the
+baseline becomes the best judge-free surface match over the exposed options: rank the 115
+rubrics against the turn and take the top. We use two rankers with no trained judgement in
+them: BM25 over the rubric text ($k_1{=}1.5$, $b{=}0.75$, a fixed stoplist), and cosine
+similarity under a 384-dimensional sentence embedding.
+
+A ranker has no rubric to match a decline against, so conceding \texttt{none} to the judge
+would hand the judge a large and spurious advantage. Each ranker is therefore given a decline
+rule whose threshold is tuned to maximise \emph{its own} accuracy on the evaluated corpus.
+This is oracle tuning, and it is favourable to the baseline by design: within the chosen
+ranker family, on this corpus, no threshold does better. Section~\ref{sec:caveats} states
+what that does and does not buy.
+
+\section{The control's first finding was a fault in itself}\label{sec:selffault}
+Our first implementation reported a lexical baseline of $76.7\%$ ($66/86$) and a judge
+advantage of $+11.6$ points. Both figures were artefacts of two defects in the baseline,
+each of which inflated the judge.
+
+\begin{enumerate}[topsep=2pt,itemsep=3pt,leftmargin=1.6em]
+\item \textbf{The threshold sweep could not reach its own optimum.} A ``decline below $t$''
+rule is a step function whose only breakpoints are the observed scores, but the sweep
+evaluated a fixed 41-point grid spanning the observed range. The maximising window here is
+$9.5715 < t \leq 9.7420$, narrower than one grid step, and the sweep stepped over it: two
+\texttt{none} turns were recoverable at no cost to any correct answer and were never
+recovered. Enumerating every breakpoint moves the baseline to $79.1\%$ ($68/86$) and \grank{}
+to $+9.3$.
+\item \textbf{Exclusion clauses were indexed as positive evidence.} Fifty of the 115 rubrics
+carry a clause saying what the option is \emph{not} for and which option to use instead.
+Indexed in one undifferentiated bag, those clauses are dense in exactly the vocabulary they
+disclaim, so a turn about a topic scored \emph{highest} on the rubric that exists to reject
+it. Dropping each clause from its marker onward moves the baseline to $83.7\%$ ($72/86$) and
+\grank{} to $+4.7$.
+\end{enumerate}
+
+Together the two defects manufactured $6.9$ of the original $11.6$ points
+($11.6 \rightarrow 9.3 \rightarrow 4.7$; the original draft misreported this difference as
+$8.1$). In count terms the baseline moved from 66 to 68 to 72 correct of 86 while the engine
+stayed at 76; Table~\ref{tab:cascade} shows the cascade.
+
+\begin{table}[t]\centering\small
+\caption{The correction cascade. The engine's answers and the corpus labels are identical in
+every row; only the baseline procedure changes. Counts are correct turns of 86, and
+\grank{} is against the 4B cross-encoder at $76/86$.}
+\label{tab:cascade}
+\begin{tabular}{lccc}
+\toprule
+Lexical baseline & $n$ & $r$ & \grank{} \\
+\midrule
+41-point grid, all text       & 66 & $0.767$ & $+0.116$ \\
+${}+{}$breakpoint sweep       & 68 & $0.791$ & $+0.093$ \\
+${}+{}$clauses dropped        & 72 & $0.837$ & $+0.047$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The second correction carries a caveat the original draft did not state. We argued there
+that dropping exclusion clauses ``cannot introduce supervision'' because it uses strictly
+less of the exposed text than the original procedure. Using less text is not the same as
+using it neutrally. Choosing a task-aware preprocessing rule after inspecting results can
+adapt a baseline to a benchmark without adding a single token, and that claim is withdrawn.
+What we can defend is weaker and still worth having: the rule is stated in advance of the
+numbers it produces, it is uniform across all 115 rubrics, it is motivated by a mechanism
+(negative clauses are lexically dense in what they disclaim) rather than by which turns it
+fixes, and it is implemented once in the released rig. Treat it as a declared preprocessing
+choice, not as a neutral one, and re-declare it before any future corpus is scored.
+
+Neither defect is a matter of taste. A baseline that indexes ``NOT for $X$'' as evidence for
+$X$, or a tuning procedure that misses the maximum it claims to find, silently withdraws the
+guarantee that oracle-tuning the baseline exists to buy. An instrument meant to deflate other
+evaluations has to survive its own test, and ours did not until it was made to. Both defects
+are fixed in the released rig with regression tests that construct each failure.
+
+\section{Three engines against one repaired baseline}\label{sec:result}
+Table~\ref{tab:routing} reports three engines on the same 86 turns against the same two
+repaired baselines. They span a wide range of capability: a 421M-parameter encoder whose
+options share a single 256-token head budget and are each truncated to 48 tokens; a
+4B-parameter natural-language-inference cross-encoder scoring each (turn, rubric) pair
+independently~\cite{openjev2026}; and a commercial cloud judge.
+
+\begin{table*}[t]\centering\small
+\caption{Typed skill routing, $n=86$, \grank{} against the repaired baselines. Both baseline
+columns are judge-free procedures over the same 115 exposed rubrics, each with an
+oracle-tuned decline rule. Exact two-sided McNemar on the discordant pairs~\cite{dror2018hitchhiker}.
+Every figure is a single pass on one self-authored corpus.}
+\label{tab:routing}
+\begin{tabular}{lccccc}
+\toprule
+ & & \multicolumn{2}{c}{vs lexical baseline $83.7\%$} & \multicolumn{2}{c}{vs embedding baseline $69.8\%$} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+Engine & Top-1 & \grank{} & Exact $p$ & \grank{} & Exact $p$ \\
+\midrule
+421M encoder, shared head budget & 53.5 & \gainneg{-30.2} & --- & \gainneg{-16.3} & --- \\
+4B cross-encoder, independent scoring & 88.4 & \gainpos{4.7} & 0.455 & \gainpos{18.6} & 0.00086 \\
+Cloud judge (\texttt{jev-1.13.0}) & \textbf{93.0} & \gainpos{9.3} & 0.057 & \gainpos{23.3} & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Against the embedding baseline both competent engines win decisively and the conclusion does
+not depend on which of the two baselines is chosen. Against the \emph{lexical} baseline
+neither does: the cloud judge's $+9.3$ points gives an exact $p$ of $0.057$ and the local
+cross-encoder's $+4.7$ gives $0.455$. The two are also not distinguishable from each other
+($93.0\%$ against $88.4\%$; 8 discordant turns against 4, exact $p=0.39$), so the table
+separates a judge from surface matching only in the semantic case, and does not separate the
+two judges from each other. Exact power at $n=86$ against the observed lexical effect is
+$0.50$; roughly 157 turns would be needed for $80\%$. Observed-effect power is a weak guide,
+and the operational conclusion is the pre-registration rule rather than the number: choose
+the smallest difference that would change an engine decision, and size the corpus for that
+before running it.
+
+\section{Where the difference lies, and where it does not}\label{sec:decomp}
+The aggregate hides the only part of this that a design choice predicted. Against the
+repaired lexical baseline the 4B engine's advantage is \emph{exactly zero} on ordinary
+near-neighbour picking ($86.0\%$ against $86.0\%$, $n=50$) and exactly zero on
+early-discriminator turns ($83.3\%$ against $83.3\%$, $n=54$), while all of it sits on
+boundary cases ($+16.7$, $n=12$) and on turns whose discriminating clause falls late in its
+rubric ($+12.5$, $n=32$). That is the correspondence worth reporting: total exposure predicts
+no gain on ordinary picking, and against a competent ranker one measures none.
+
+No subgroup contrast survives Holm correction within its partition, and the two smallest
+carry four discordant pairs each, where the two-sided exact $p$ floors at $0.125$ and no
+effect size can reach significance. We report the pattern as a direction the design predicted,
+not as a set of established contrasts. The late-discriminator tag also depends on a 48-token
+cut inherited from a superseded engine, so it is a property of one configuration.
+
+\section{Disagreement as a label audit}\label{sec:audit}
+The ranker and the engine err on different turns, and their union is right on $95.3\%$
+against $88.4\%$ for the engine alone. Only 26 of the 86 turns can move a paired comparison
+at all: the 22 on which the procedures disagree and the 4 both get wrong. A relabelling
+inside the 60 turns both get right is exactly neutral, since a wrong gold there makes both
+wrong and leaves the discordant counts untouched. We therefore re-read the complete movable
+set against the rubrics' own text, rather than only the turns favouring the ranker.
+
+It found one corpus error. For \emph{``Take a screenshot of the staging login page and fill
+in the demo credentials''} the corpus said \texttt{browser}, both judges said
+\texttt{browser-automation}, and the \texttt{browser} rubric itself reads ``for a browser
+task choose \texttt{browser-automation}, not this''. The judges followed the rubric's stated
+boundary; the ranker won on vocabulary overlap. The audit is symmetric by construction
+rather than by assertion, and the symmetry is testable: turn~28 is the mirror image, where
+the judge's pick carries the clause ``for a visual critique of an existing UI choose
+\texttt{design-audit}'' and the same criterion points \emph{away} from the judge, so the gold
+was kept; turn~18 is contestable in the judge's favour and was left standing. Correcting the
+one label moves \grank{} by $2.3$ points and changes no conclusion here, which is the state a
+single contested label should be in.
+
+A ranker wins by surface, a judge by the rubric's semantics, so systematic disagreement
+between them localises either a mislabelled item or a genuinely ambiguous one. When gold
+derives from exposed text, the judge-free baseline is therefore also a pointer at the rows to
+re-adjudicate: disagreements go to an audit queue rather than being counted silently against
+either procedure. This is the one claim here that needs no statistical power and that a
+stronger baseline cannot take away, and the only finding in this note that survived every
+correction above unchanged.
+
+\section{Caveats}\label{sec:caveats}
+\begin{itemize}[topsep=2pt,itemsep=3pt,leftmargin=1.4em]
+\item \textbf{Oracle tuning is not a held-out estimate.} The decline threshold is tuned to
+maximise the baseline's accuracy on the same 86 turns it is then scored on. That makes the
+baseline favourable \emph{within the chosen ranker family on this corpus}, which is the
+direction we want for a conservative reading of \grank{}. It does not make \grank{} a general
+lower bound on what a judge adds, and it is not a deployment number. Before \grank{} is used
+to justify an engine in production it needs either a held-out tuning split or a resampling
+procedure that repeats the tuning inside each resample.
+\item \textbf{The exclusion-clause rule is a declared choice.} See \S\ref{sec:selffault}. It
+is task-aware preprocessing selected after seeing results, and the claim that it cannot
+introduce supervision is withdrawn.
+\item \textbf{Benchmark leakage inflates any surface baseline.} The corpus is self-authored:
+86 turns, single seed, prompts written by the same hands as the rubrics they must match. Mean
+content-token overlap between a turn and its own gold rubric is $37.1\%$, against $2.7\%$ for
+a random rubric. The lexical baseline reported here is therefore high for a reason particular
+to this benchmark.
+\item \textbf{The cloud judge is non-deterministic.} It returned confidences of $0.95$,
+$0.92$ and $0.93$ on identical repeated requests. Its column is a single pass and should
+carry repeats before any comparison is drawn between the two competent engines.
+\item \textbf{The three engines differ in training data as well as architecture}, so
+Table~\ref{tab:routing} is not a controlled architecture comparison. Judge idiosyncrasy and
+self-preference apply to the cloud column as they do to any model-as-judge
+result~\cite{zheng2023judging,panickssery2024selfpreference}.
+\item \textbf{Total exposure is not answer sufficiency.} Showing the gold rubric among 115
+options is not the same as supplying the answer, and a competent choice among exposed options
+can require reading two clauses against each other. The exposure family of instruments
+constrains what an evaluation may attribute; it does not establish what a model did
+internally~\cite{ragchecker2024,sufficientcontext2025}.
+\end{itemize}
+
+\section{What was cut during preparation}\label{sec:cut}
+Four analyses were dropped rather than reported, and the reasons are part of the record.
+Confidence-calibration, escalation-cascade and threshold-sweep tables were about the engine
+rather than the instrument, or were structurally incapable of significance at their $n$. A
+production reweighting was retracted on re-analysis: its interval was carried by two
+discordant turns in a 16-item stratum resampled to hold $65\%$ of the estimand. The
+threshold-sweep robustness claim survives as one sentence rather than a table, because nine
+passes over the same 86 turns are one corpus re-scored nine times, the full $5.8$-point span
+is five turns, and the widest pairwise contrast is itself non-significant. A cascade that
+ranks cheaply and escalates only on boundary and late-clause signals is suggested by
+\S\ref{sec:decomp} and is viable, but its figures were computed against the defective
+baseline and must be re-derived before it is built.
+
+\section{Reproduction}\label{sec:repro}
+\texttt{system-one-eval run -{}-concurrency 1 -{}-timeout-ms 120000}, then
+\texttt{system-one-eval copy-ceiling -{}-from-report \ldots{} -{}-ceilings both}, against the
+released corpus at \texttt{tests/system-one/routing-cases.json}. Three operational notes cost
+this preparation time and belong with the command. The local 4B engine is serialised by a
+tokeniser lock, so the default concurrency queues past the timeout. Embeddings must be
+requested one text per call: the estate's endpoint returns global batch offsets in
+\texttt{data[].index} when concurrent requests merge. A remote backend requires a bearer
+token and the rig now refuses to run without one, because an unauthenticated remote run
+answers 403 on every case and is otherwise indistinguishable in the report from the backend
+being unavailable.
+
+\section{What this does and does not show}\label{sec:conclusion}
+The instrument transferred to a discriminative task only by being replaced: where every
+option is exposed, an exposure control is vacuous and a judge-free ranker has to take its
+place. Under its own name, \grank{}, what survives is narrow and worth stating exactly.
+Against a semantic ranker a competent judge wins decisively. Against a well-built lexical
+ranker on this corpus it does not win measurably, at power $0.50$. The difference is located
+on boundary and late-clause turns and is exactly nil on ordinary picking. The baseline's first
+two implementations manufactured two-thirds of the effect they were measuring, and the
+repaired control found a labelling error its authors had already reviewed.
+
+The method claim is what generalises. A choice task whose gold is among its shown options
+should report a fair judge-free baseline beside its accuracy; should tune that baseline to a
+real optimum and declare every preprocessing rule that built it; should name the resulting
+quantity for the baseline it is measured against rather than borrowing the name of a different
+instrument; should read the gain by population rather than in aggregate; and should send the
+disagreements to an audit queue rather than counting them against either procedure. None of
+that requires a judge, a label budget or a model swap, which is why it is worth making
+standing practice at every typed-decision seam rather than an occasional exercise.
+
+\printbibliography
+\end{document}

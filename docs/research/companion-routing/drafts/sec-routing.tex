@@ -1,0 +1,99 @@
+\section{A Second Domain: Typed Skill Routing}\label{sec:routing}
+Every study above measures generation recall on one corpus. Whether the instrument transfers is a separate question, so we applied it to a task of a different shape: a discriminative choice over a curated set, where the model is shown every candidate and must name one, or decline.
+
+\paragraph{Task and exposure.} An agent runtime routes each user turn to one of 115 \emph{skills}, each described by a short rubric stating what it is for and when it must not be chosen. The router puts one typed choice to a judge: the turn as state, the 115 rubrics as options, plus a \texttt{none} option for turns no skill should handle. The gold label for a turn is the key of one exposed rubric, or \texttt{none}. Exposure is therefore total: the gold answer is, by construction, among the text the judge is shown. This is the condition under which the paper argues a copy ceiling is mandatory, and it is stronger here than in Study~1, where $3.6\%$ of gold lay outside the scaffold.
+
+\paragraph{Adapting the ceiling to a choice task.} A no-op extractor has no meaning when the answer is a key rather than a passage, so the copy procedure becomes the best \emph{judge-free surface match} over the exposed options: rank the 115 rubrics against the turn and take the top. We use two rankers with no trained judgement in them, BM25 over the rubric text ($k_1{=}1.5$, $b{=}0.75$, a fixed stoplist) and cosine similarity under a 384-dimensional sentence embedding. The naive ceiling concedes \texttt{none} to the judge, since a ranker has no rubric to match a decline against; that concession supplies a large and spurious gain, so the reported ceiling is the \emph{fair} one, in which each ranker is also given a decline rule and its threshold is tuned to maximise the ranker's own accuracy on the evaluated corpus. The ceiling is thereby flattered, the judge's gain is a floor, and the ranker is held to the same affordance the judge has.
+
+\paragraph{Judge.} The judge is a 4B-parameter natural-language-inference cross-encoder\footnote{\texttt{AlexWortega/openjev}, checkpoint \texttt{qwen3.5-4b-nli-v2}, revision pinned; MIT.} scoring each (turn, rubric) pair independently as entailment, with \texttt{none} answered when the best score falls below a threshold of $0.5$; a threshold sweep from $0.05$ to $0.7$ moves top-1 accuracy by at most $2.4$ points, so the result is not balanced on that constant. It replaced a 421M-parameter encoder whose options share a single 256-token head budget and are each truncated to 48 tokens: that engine scored $53.5\%$ top-1 and its decline behaviour collapsed as options were added, the failure that motivated independent scoring and uncompressed rubrics. The corpus is 86 labelled turns written by the operating estate (16 \texttt{none}, 70 skill), with each turn tagged by the class of confusion it was written to probe and by whether the rubric's discriminating clause sits late in its text, beyond the 48-token cut. The judge is not called directly: it sits behind a typed-decision façade\footnote{Sovereign System One, in the agent runtime \url{https://github.com/DreamLab-AI/agentbox}: a Jev-compatible wire protocol (choice, score, probability) with a local engine behind it; the routing corpus, the eval rig and both engines are released there.} that speaks the same wire protocol as the cloud judge it replaces, so the router's request was byte-identical across cloud, the superseded encoder and the cross-encoder, and the engine is a URL chosen by this measurement. Both the corpus and the rig are released with the runtime.
+
+\paragraph{Result.} Table~\ref{tab:routing} and Figure~\ref{fig:routing} give the outcome. Against the naive ceilings (BM25 $64.0\%$ top-1, cosine $62.8\%$, neither able to decline) the judge's gain is $+23$ points; against the fair lexical ceiling it is $+9.3$ top-1 and $+11.6$ top-3, with a signed per-item mean of $+0.093$ whose $95\%$ interval $[-0.013,+0.199]$ crosses zero: fifteen items the judge alone gets right against seven the ranker alone gets right. Holding the observed mean and variance, the interval excludes zero from $n\approx112$; the study is 26 labelled turns short of that. Against the fair embedding ceiling the gain is $+19.8$ top-1 and the interval $[+0.096,+0.299]$ excludes zero. The lexical ranker, which needs no model, is the strong baseline: $77.9\%$ top-1 and $87.2\%$ top-3 at negligible cost, against the judge's $87.2\%$ and $98.8\%$ at about five seconds per turn.
+
+\begin{table}[t]\centering\small
+\caption{Skill routing, $n=86$, top-1 accuracy by population. The ceiling columns give a judge-free
+ranker's accuracy and the judge's gain over it; both rankers carry an oracle-tuned decline rule
+(BM25 threshold $9.16$, fired on 17 turns; cosine threshold $0.59$, fired on 6). ``Late'' marks turns
+whose gold rubric's discriminating clause lies beyond a 48-token cut.}
+\label{tab:routing}
+\begin{tabular}{lrrrrrr}
+\toprule
+Population & $n$ & Judge & BM25 & Gain & Cosine & Gain \\
+\midrule
+All turns              & 86 & 87.2 & 77.9 & \gainpos{9.3}  & 67.4 & \gainpos{19.8} \\
+Skill turns            & 70 & 84.3 & 78.6 & \gainpos{5.7}  & 75.7 & \gainpos{8.6}  \\
+\texttt{none} turns    & 16 & 100.0 & 75.0 & \gainpos{25.0} & 31.2 & \gainpos{68.8} \\
+Late discriminator     & 32 & 96.9 & 78.1 & \gainpos{18.8} & 93.8 & \gainpos{3.1}  \\
+Early discriminator    & 54 & 81.5 & 77.8 & \gainpos{3.7}  & 51.9 & \gainpos{29.6} \\
+Boundary class         & 12 & 75.0 & 58.3 & \gainpos{16.7} & 58.3 & \gainpos{16.7} \\
+Near-neighbour class   & 50 & 86.0 & 82.0 & \gainpos{4.0}  & 76.0 & \gainpos{10.0} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\input{figures/fig-routing}
+
+\paragraph{Threshold, escalation and confidence in detail.} Three per-turn artefacts of the run are worth tabulating because each settles a question the aggregate cannot. Table~\ref{tab:routing-sweep} sweeps the judge's decline threshold over one full corpus pass per value: top-1 accuracy moves $2.4$ points across $0.05$--$0.7$, \texttt{none} recall is $100\%$ from $0.25$ to $0.4$ and falls away below $0.25$, and precision erodes above $0.4$, so the optimum is a plateau from $0.25$ to $0.40$ with $0.3$ at its centre. Table~\ref{tab:routing-cascade} escalates to the judge only when the lexical ranker's top-two BM25 margin is below a cut: at $40\%$ escalation the cascade matches the judge's accuracy at two-fifths of its mean latency, and the ranker and judge disagree on $25.6\%$ of turns with an oracle union of $95.3\%$, so the complementarity is real even where the one-turn improvement is not. Table~\ref{tab:routing-calib} bins the judge's reported confidence: accuracy rises monotonically with confidence, the engine is right $81\%$ of the time when claiming $0.34$, no wrong answer carries confidence above $0.548$, and the rank separation of right from wrong is $0.730$ (AUC). The judge is under-confident but rank-informative, which is the opposite of the over-confident failure that led the operating estate to forbid confidence gating after a different judge returned a wrong pick at $0.94$; that rule was fitted to that judge and does not transfer unexamined, although six turns above $0.7$ mean the evidence points somewhere without yet licensing anything.
+
+\begin{table}[t]\centering\small
+\caption{Judge decline threshold, one full corpus pass per row ($n=86$). The optimum is a plateau from
+$0.25$ to $0.40$; the deployed value ($0.5$) sits just past it.}
+\label{tab:routing-sweep}
+\begin{tabular}{rrrrrr}
+\toprule
+Threshold & Top-1 & Top-3 & \texttt{none} recall & \texttt{none} precision & p50 ms \\
+\midrule
+0.05 & 82.6 & 100.0 & 62.5  & 100.0 & 4995 \\
+0.10 & 87.2 & 98.8  & 87.5  & 93.3  & 4976 \\
+0.20 & 87.2 & 98.8  & 93.8  & 88.2  & 4982 \\
+0.25 & 88.4 & 98.8  & 100.0 & 88.9  & 4989 \\
+0.30 & 88.4 & 98.8  & 100.0 & 88.9  & 4982 \\
+0.40 & 88.4 & 98.8  & 100.0 & 84.2  & 4974 \\
+0.50 & 87.2 & 98.8  & 100.0 & 80.0  & 4971 \\
+0.60 & 87.2 & 98.8  & 100.0 & 80.0  & 4972 \\
+0.70 & 86.0 & 97.7  & 100.0 & 76.2  & 4976 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]\centering\small
+\caption{Escalation cascade: answer with the BM25 ranker unless its top-two margin is below the cut,
+then call the judge. Mean latency counts only judged turns (the ranker's cost is negligible).}
+\label{tab:routing-cascade}
+\begin{tabular}{rrrrr}
+\toprule
+Margin cut & Escalated & Top-1 & Mean ms & vs judge \\
+\midrule
+0.00  & 0\%   & 77.9 & 0    & $-9.3$ \\
+0.97  & 20\%  & 81.4 & 948  & $-5.8$ \\
+1.76  & 29\%  & 86.0 & 1370 & $-1.2$ \\
+2.87  & 40\%  & 88.4 & 1886 & $+1.2$ \\
+4.72  & 50\%  & 87.2 & 2383 & $0.0$ \\
+13.74 & 79\%  & 88.4 & 3771 & $+1.2$ \\
+--    & 100\% & 87.2 & 4798 & $0.0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]\centering\small
+\caption{Judge confidence against outcome. Mean confidence is $0.459$ on correct answers and $0.324$
+on wrong ones; the highest confidence on any wrong answer is $0.548$.}
+\label{tab:routing-calib}
+\begin{tabular}{lrrrr}
+\toprule
+Confidence bin & $n$ & Accuracy & Mean conf. & Gap \\
+\midrule
+$[0.00,0.50)$ & 53 & 81.1  & 0.341 & $+0.470$ \\
+$[0.50,0.70)$ & 27 & 96.3  & 0.564 & $+0.399$ \\
+$[0.70,0.85)$ & 5  & 100.0 & 0.770 & $+0.230$ \\
+$[0.85,0.95)$ & 1  & 100.0 & 0.856 & $+0.144$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Where the gain lies.} The decomposition is the finding. Over the fair lexical ceiling, the judge's advantage concentrates on declining ($+25.0$ on \texttt{none} turns), on late-discriminator turns ($+18.8$) and on boundary cases ($+16.7$), and is small on near-neighbour picking ($+4.0$) and early-discriminator turns ($+3.7$). Each of the three large gains is the predicted consequence of a design choice rather than of general model quality: independent scoring lets \texttt{none} be a threshold instead of a competitor for mass, and uncompressed rubrics preserve the ``not for'' clause that decides late and boundary cases. On ordinary matching among exposed options, the ranker and the judge are close, which is what total exposure predicts. Read this way, the ceiling in this domain identifies what the judge adds and shows the remainder to be delivery of exposed text.
+
+\paragraph{Disagreement as a label audit.} The two procedures agree on $74.4\%$ of turns, and their union is right on $95.3\%$, so they err on different items. The seven turns the ranker gets right and the judge does not are near-miss sibling pairs, and at least one is a corpus error rather than a judge error: for \emph{``Take a screenshot of the staging login page and fill in the demo credentials''} the corpus says \texttt{browser}, the judge says \texttt{browser-automation}, and the \texttt{browser} rubric itself reads ``for a browser task choose \texttt{browser-automation}, not this''. The judge followed the rubric's stated boundary; the ranker won on vocabulary overlap. A ranker wins by surface, a judge by the rubric's semantics, so systematic disagreement between them localises either a mislabelled item or a genuinely ambiguous one. When gold derives from exposed text, the copy control is therefore also a cheap pointer at the rows to re-adjudicate, a use the ceiling's definition does not anticipate.
+
+\paragraph{What this does and does not show.} The instrument transferred to a discriminative task with a different judge architecture and returned a signed, localised answer rather than a uniform deflation. Its magnitudes do not transfer: the corpus is small, single-seed and written by the estate that runs the router, so its phrasing echoes the rubrics and flatters a lexical ranker; the headline interval against that ranker is underpowered; and the \texttt{none} concession, fair-ceiling threshold and late-discriminator tag are all choices we made and report rather than standards. What the study licenses is a claim about method: a choice task whose gold is among its shown options should report a fair copy ceiling beside accuracy, and read the gain by population rather than in aggregate.
+
+\paragraph{Scope of the engine-side tables.} Tables~\ref{tab:routing-sweep}--\ref{tab:routing-calib} concern the judge and its deployment rather than the copy ceiling, and are reported because the per-turn control produced them at no extra cost. Neither the confidence result nor the cascade bears on the instrument; both rest on the same 86 turns.

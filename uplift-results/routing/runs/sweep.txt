@@ -1,0 +1,15 @@
+[0;36mStaging the corpus and skills tree into the sidecar...[0m
+threshold sweep  sso (http://127.0.0.1:8097/v1/systemone)
+model            openjev
+cases            86
+
+  thresh    acc    soft | none: n picked  right  recall    prec | late acc near acc | p50 ms
+   0.300   88.4%   98.8% |      16     18     16   100.0%    88.9% |    96.9%    86.0% |   4986
+   0.400   88.4%   98.8% |      16     19     16   100.0%    84.2% |    96.9%    86.0% |   4974
+   0.500   87.2%   98.8% |      16     20     16   100.0%    80.0% |    96.9%    86.0% |   4971
+   0.600   87.2%   98.8% |      16     20     16   100.0%    80.0% |    96.9%    86.0% |   4972
+   0.700   86.0%   97.7% |      16     21     16   100.0%    76.2% |    96.9%    84.0% |   4976
+
+best top-1 accuracy at threshold 0.300: 88.4% (soft 98.8%, none recall 100.0%)
+this is a measurement, not a recommendation — the operator sets the deployed value.
+

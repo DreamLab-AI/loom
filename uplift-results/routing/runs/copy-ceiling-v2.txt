@@ -1,0 +1,56 @@
+judge answers read from /tmp/openjev-run-v2.json (86 cases, no backend called)
+embedding the exposure, one text per request (sequential)…
+  embedded 25/115 rubrics
+  embedded 50/115 rubrics
+  embedded 75/115 rubrics
+  embedded 100/115 rubrics
+  embedded 115/115 rubrics
+  embedded 25/86 prompts
+  embedded 50/86 prompts
+  embedded 75/86 prompts
+  embedded 86/86 prompts
+======================================================================================
+COPY CEILING — judge-free procedures over the SAME exposed rubrics
+method: DreamLab AI, 'The Copy Ceiling' (2026-09-11), §Making it Runnable
+======================================================================================
+mode        FAIR — each judge-free ranker gets an oracle-tuned decline threshold
+judge       sso / openjev
+exposure    115 option rubrics shown to the judge; the gold label is one of them
+cases       86
+judge thr   0.500 — the value the run deployed, NOT its own best
+
+judge       top-1   88.4%   top-3   98.8%
+
+lexical (BM25)
+  no decline      top-1   62.8%   top-3   74.4%   (naive ceiling: `none` is unreachable, so it is conceded to the judge)
+  with decline    top-1   76.7%   top-3   86.0%   (threshold 9.1563, ORACLE-TUNED on this corpus, fired on 17 of 86)
+  gain over copy  top-1  +11.6 pts   top-3  +12.8 pts
+  signed/item     mean +0.116   95% CI [+0.012,+0.221]   judge-only-right 16   copy-only-right 6
+  POWER           the interval already excludes zero at n=86 (it holds from about n=70)
+
+embedding (bge-small)
+  no decline      top-1   62.8%   top-3   70.9%   (naive ceiling: `none` is unreachable, so it is conceded to the judge)
+  with decline    top-1   67.4%   top-3   76.7%   (threshold 0.5945, ORACLE-TUNED on this corpus, fired on 6 of 86)
+  gain over copy  top-1  +20.9 pts   top-3  +22.1 pts
+  signed/item     mean +0.209   95% CI [+0.106,+0.312]   judge-only-right 21   copy-only-right 3
+  POWER           the interval already excludes zero at n=86 (it holds from about n=21)
+
+subgroup breakdown, top-1
+  population                 n    judge            lexical (BM25)     embedding (bge-small)
+  all items                 86    88.4%           76.7%    +11.6           67.4%    +20.9
+  skill items (copyable)    70    85.7%           77.1%     +8.6           75.7%    +10.0
+  `none` items              16   100.0%           75.0%    +25.0           31.2%    +68.8
+  late discriminator        32    96.9%           78.1%    +18.8           93.8%     +3.1
+  early discriminator       54    83.3%           75.9%     +7.4           51.9%    +31.5
+  class boundary            12    83.3%           50.0%    +33.3           58.3%    +25.0
+  class near-neighbour      50    86.0%           82.0%     +4.0           76.0%    +10.0
+  class none                14   100.0%           85.7%    +14.3           35.7%    +64.3
+  class single              10    90.0%           70.0%    +20.0           80.0%    +10.0
+
+  (each ceiling column shows the ceiling's accuracy and the judge's gain over it)
+
+reading: the copy threshold is tuned on the corpus it is scored on, so the ceiling is
+flattered and the judge's gain is a FLOOR. `none` items are the ones a copy procedure
+can only reach through its decline rule — if the judge's advantage concentrates there,
+the advantage is in declining, not in picking among exposed options.
+

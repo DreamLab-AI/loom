@@ -1,0 +1,308 @@
+{
+  "fair": {
+    "mode": "Fair",
+    "cases": 86,
+    "exposed_options": 115,
+    "judge": {
+      "backend": "sso",
+      "model": "openjev",
+      "top1": 0.872093023255814,
+      "top3": 0.9883720930232558,
+      "none_threshold": 0.5
+    },
+    "rankers": [
+      {
+        "label": "lexical (BM25)",
+        "without_decline": {
+          "threshold": null,
+          "top1": 0.6395348837209303,
+          "top3": 0.7558139534883721,
+          "declines": 0
+        },
+        "applied": {
+          "threshold": 9.156341002956207,
+          "top1": 0.7790697674418605,
+          "top3": 0.872093023255814,
+          "declines": 17
+        },
+        "oracle_tuned": true,
+        "gain_top1_points": 9.302325581395344,
+        "gain_top3_points": 11.627906976744185,
+        "per_item": {
+          "n": 86,
+          "mean": 0.09302325581395349,
+          "variance": 0.2500683994528047,
+          "ci_low": -0.012667317313998894,
+          "ci_high": 0.19871382894190587,
+          "judge_only": 15,
+          "copy_only": 7,
+          "required_n": 112
+        }
+      },
+      {
+        "label": "embedding (bge-small)",
+        "without_decline": {
+          "threshold": null,
+          "top1": 0.627906976744186,
+          "top3": 0.7093023255813954,
+          "declines": 0
+        },
+        "applied": {
+          "threshold": 0.594504985714045,
+          "top1": 0.6744186046511628,
+          "top3": 0.7674418604651163,
+          "declines": 6
+        },
+        "oracle_tuned": true,
+        "gain_top1_points": 19.76744186046512,
+        "gain_top3_points": 22.093023255813947,
+        "per_item": {
+          "n": 86,
+          "mean": 0.19767441860465115,
+          "variance": 0.23105335157318757,
+          "ci_low": 0.09608160645026341,
+          "ci_high": 0.2992672307590389,
+          "judge_only": 20,
+          "copy_only": 3,
+          "required_n": 23
+        }
+      }
+    ],
+    "subgroups": [
+      {
+        "label": "all items",
+        "n": 86,
+        "judge_top1": 0.872093023255814,
+        "ceiling_top1": [
+          0.7790697674418605,
+          0.6744186046511628
+        ]
+      },
+      {
+        "label": "skill items (copyable)",
+        "n": 70,
+        "judge_top1": 0.8428571428571429,
+        "ceiling_top1": [
+          0.7857142857142857,
+          0.7571428571428571
+        ]
+      },
+      {
+        "label": "`none` items",
+        "n": 16,
+        "judge_top1": 1.0,
+        "ceiling_top1": [
+          0.75,
+          0.3125
+        ]
+      },
+      {
+        "label": "late discriminator",
+        "n": 32,
+        "judge_top1": 0.96875,
+        "ceiling_top1": [
+          0.78125,
+          0.9375
+        ]
+      },
+      {
+        "label": "early discriminator",
+        "n": 54,
+        "judge_top1": 0.8148148148148148,
+        "ceiling_top1": [
+          0.7777777777777778,
+          0.5185185185185185
+        ]
+      },
+      {
+        "label": "class boundary",
+        "n": 12,
+        "judge_top1": 0.75,
+        "ceiling_top1": [
+          0.5833333333333334,
+          0.5833333333333334
+        ]
+      },
+      {
+        "label": "class near-neighbour",
+        "n": 50,
+        "judge_top1": 0.86,
+        "ceiling_top1": [
+          0.82,
+          0.76
+        ]
+      },
+      {
+        "label": "class none",
+        "n": 14,
+        "judge_top1": 1.0,
+        "ceiling_top1": [
+          0.8571428571428571,
+          0.35714285714285715
+        ]
+      },
+      {
+        "label": "class single",
+        "n": 10,
+        "judge_top1": 0.9,
+        "ceiling_top1": [
+          0.7,
+          0.8
+        ]
+      }
+    ]
+  },
+  "naive": {
+    "mode": "ConcedeNone",
+    "cases": 86,
+    "exposed_options": 115,
+    "judge": {
+      "backend": "sso",
+      "model": "openjev",
+      "top1": 0.872093023255814,
+      "top3": 0.9883720930232558,
+      "none_threshold": 0.5
+    },
+    "rankers": [
+      {
+        "label": "lexical (BM25)",
+        "without_decline": {
+          "threshold": null,
+          "top1": 0.6395348837209303,
+          "top3": 0.7558139534883721,
+          "declines": 0
+        },
+        "applied": {
+          "threshold": null,
+          "top1": 0.6395348837209303,
+          "top3": 0.7558139534883721,
+          "declines": 0
+        },
+        "oracle_tuned": false,
+        "gain_top1_points": 23.25581395348837,
+        "gain_top3_points": 23.25581395348837,
+        "per_item": {
+          "n": 86,
+          "mean": 0.23255813953488372,
+          "variance": 0.3452804377564979,
+          "ci_low": 0.1083663650214058,
+          "ci_high": 0.35674991404836165,
+          "judge_only": 27,
+          "copy_only": 7,
+          "required_n": 25
+        }
+      },
+      {
+        "label": "embedding (bge-small)",
+        "without_decline": {
+          "threshold": null,
+          "top1": 0.627906976744186,
+          "top3": 0.7093023255813954,
+          "declines": 0
+        },
+        "applied": {
+          "threshold": null,
+          "top1": 0.627906976744186,
+          "top3": 0.7093023255813954,
+          "declines": 0
+        },
+        "oracle_tuned": false,
+        "gain_top1_points": 24.418604651162788,
+        "gain_top3_points": 27.90697674418604,
+        "per_item": {
+          "n": 86,
+          "mean": 0.2441860465116279,
+          "variance": 0.2808481532147742,
+          "ci_low": 0.13217969985850309,
+          "ci_high": 0.3561923931647527,
+          "judge_only": 25,
+          "copy_only": 4,
+          "required_n": 19
+        }
+      }
+    ],
+    "subgroups": [
+      {
+        "label": "all items",
+        "n": 86,
+        "judge_top1": 0.872093023255814,
+        "ceiling_top1": [
+          0.6395348837209303,
+          0.627906976744186
+        ]
+      },
+      {
+        "label": "skill items (copyable)",
+        "n": 70,
+        "judge_top1": 0.8428571428571429,
+        "ceiling_top1": [
+          0.7857142857142857,
+          0.7714285714285715
+        ]
+      },
+      {
+        "label": "`none` items",
+        "n": 16,
+        "judge_top1": 1.0,
+        "ceiling_top1": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "label": "late discriminator",
+        "n": 32,
+        "judge_top1": 0.96875,
+        "ceiling_top1": [
+          0.78125,
+          0.9375
+        ]
+      },
+      {
+        "label": "early discriminator",
+        "n": 54,
+        "judge_top1": 0.8148148148148148,
+        "ceiling_top1": [
+          0.5555555555555556,
+          0.4444444444444444
+        ]
+      },
+      {
+        "label": "class boundary",
+        "n": 12,
+        "judge_top1": 0.75,
+        "ceiling_top1": [
+          0.5833333333333334,
+          0.5833333333333334
+        ]
+      },
+      {
+        "label": "class near-neighbour",
+        "n": 50,
+        "judge_top1": 0.86,
+        "ceiling_top1": [
+          0.82,
+          0.78
+        ]
+      },
+      {
+        "label": "class none",
+        "n": 14,
+        "judge_top1": 1.0,
+        "ceiling_top1": [
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "label": "class single",
+        "n": 10,
+        "judge_top1": 0.9,
+        "ceiling_top1": [
+          0.7,
+          0.8
+        ]
+      }
+    ]
+  }
+}

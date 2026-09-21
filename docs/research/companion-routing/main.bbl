@@ -1,0 +1,566 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nyt/global//global/global/global}
+  \entry{dror2018hitchhiker}{inproceedings}{}{}
+    \name{author}{4}{}{%
+      {{hash=DR}{%
+         family={Dror},
+         familyi={D\bibinitperiod},
+         given={Rotem},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=BG}{%
+         family={Baumer},
+         familyi={B\bibinitperiod},
+         given={Gili},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=SS}{%
+         family={Shlomov},
+         familyi={S\bibinitperiod},
+         given={Segev},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=RR}{%
+         family={Reichart},
+         familyi={R\bibinitperiod},
+         given={Roi},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{DRBGSSRR1}
+    \strng{fullhash}{DRBGSSRR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{booktitle}{ACL}
+    \verb{doi}
+    \verb 10.18653/v1/P18-1128
+    \endverb
+    \field{pages}{1383\bibrangedash 1392}
+    \field{title}{The Hitchhiker's Guide to Testing Statistical Significance in
+  Natural Language Processing}
+    \verb{url}
+    \verb https://aclanthology.org/P18-1128/
+    \endverb
+    \field{year}{2018}
+  \endentry
+
+  \entry{gururangan2018artifacts}{inproceedings}{}{}
+    \name{author}{6}{}{%
+      {{hash=GS}{%
+         family={Gururangan},
+         familyi={G\bibinitperiod},
+         given={Suchin},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=SS}{%
+         family={Swayamdipta},
+         familyi={S\bibinitperiod},
+         given={Swabha},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=LO}{%
+         family={Levy},
+         familyi={L\bibinitperiod},
+         given={Omer},
+         giveni={O\bibinitperiod},
+      }}%
+      {{hash=SR}{%
+         family={Schwartz},
+         familyi={S\bibinitperiod},
+         given={Roy},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=BSR}{%
+         family={Bowman},
+         familyi={B\bibinitperiod},
+         given={Samuel\bibnamedelima R.},
+         giveni={S\bibinitperiod\bibinitdelim R\bibinitperiod},
+      }}%
+      {{hash=SNA}{%
+         family={Smith},
+         familyi={S\bibinitperiod},
+         given={Noah\bibnamedelima A.},
+         giveni={N\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GS+1}
+    \strng{fullhash}{GSSSLOSRBSRSNA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{booktitle}{NAACL-HLT}
+    \verb{eprint}
+    \verb 1803.02324
+    \endverb
+    \field{title}{Annotation Artifacts in Natural Language Inference Data}
+    \verb{url}
+    \verb https://arxiv.org/abs/1803.02324
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{year}{2018}
+  \endentry
+
+  \entry{sufficientcontext2025}{misc}{}{}
+    \name{author}{6}{}{%
+      {{hash=JH}{%
+         family={Joren},
+         familyi={J\bibinitperiod},
+         given={Hailey},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=ZJ}{%
+         family={Zhang},
+         familyi={Z\bibinitperiod},
+         given={Jianyi},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=FCS}{%
+         family={Ferng},
+         familyi={F\bibinitperiod},
+         given={Chun-Sung},
+         giveni={C\bibinithyphendelim S\bibinitperiod},
+      }}%
+      {{hash=JDC}{%
+         family={Juan},
+         familyi={J\bibinitperiod},
+         given={Da-Cheng},
+         giveni={D\bibinithyphendelim C\bibinitperiod},
+      }}%
+      {{hash=TA}{%
+         family={Taly},
+         familyi={T\bibinitperiod},
+         given={Ankur},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=RC}{%
+         family={Rashtchian},
+         familyi={R\bibinitperiod},
+         given={Cyrus},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{JH+1}
+    \strng{fullhash}{JHZJFCSJDCTARC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{J}
+    \field{sortinithash}{J}
+    \verb{eprint}
+    \verb 2411.06037
+    \endverb
+    \field{note}{ICLR 2025}
+    \field{title}{Sufficient Context: A New Lens on Retrieval Augmented
+  Generation Systems}
+    \verb{url}
+    \verb https://arxiv.org/abs/2411.06037
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{eprintclass}{cs.CL}
+    \field{year}{2025}
+  \endentry
+
+  \entry{kaushik2018reading}{inproceedings}{}{}
+    \name{author}{2}{}{%
+      {{hash=KD}{%
+         family={Kaushik},
+         familyi={K\bibinitperiod},
+         given={Divyansh},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=LZC}{%
+         family={Lipton},
+         familyi={L\bibinitperiod},
+         given={Zachary\bibnamedelima C.},
+         giveni={Z\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KDLZC1}
+    \strng{fullhash}{KDLZC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{booktitle}{EMNLP}
+    \verb{eprint}
+    \verb 1808.04926
+    \endverb
+    \field{title}{How Much Reading Does Reading Comprehension Require? A
+  Critical Investigation of Popular Benchmarks}
+    \verb{url}
+    \verb https://arxiv.org/abs/1808.04926
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{year}{2018}
+  \endentry
+
+  \entry{laitenberger2025stronger}{inproceedings}{}{}
+    \name{author}{3}{}{%
+      {{hash=LA}{%
+         family={Laitenberger},
+         familyi={L\bibinitperiod},
+         given={Alex},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=MCD}{%
+         family={Manning},
+         familyi={M\bibinitperiod},
+         given={Christopher\bibnamedelima D.},
+         giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=LNF}{%
+         family={Liu},
+         familyi={L\bibinitperiod},
+         given={Nelson\bibnamedelima F.},
+         giveni={N\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LAMCDLNF1}
+    \strng{fullhash}{LAMCDLNF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{booktitle}{EMNLP}
+    \verb{doi}
+    \verb 10.18653/v1/2025.emnlp-main.1656
+    \endverb
+    \verb{eprint}
+    \verb 2506.03989
+    \endverb
+    \field{pages}{32559\bibrangedash 32569}
+    \field{title}{Stronger Baselines for Retrieval-Augmented Generation with
+  Long-Context Language Models}
+    \verb{url}
+    \verb https://arxiv.org/abs/2506.03989
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{year}{2025}
+  \endentry
+
+  \entry{niven2019probing}{inproceedings}{}{}
+    \name{author}{2}{}{%
+      {{hash=NT}{%
+         family={Niven},
+         familyi={N\bibinitperiod},
+         given={Timothy},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=KHY}{%
+         family={Kao},
+         familyi={K\bibinitperiod},
+         given={Hung-Yu},
+         giveni={H\bibinithyphendelim Y\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NTKHY1}
+    \strng{fullhash}{NTKHY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{booktitle}{ACL}
+    \verb{eprint}
+    \verb 1907.07355
+    \endverb
+    \field{title}{Probing Neural Network Comprehension of Natural Language
+  Arguments}
+    \verb{url}
+    \verb https://arxiv.org/abs/1907.07355
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{year}{2019}
+  \endentry
+
+  \entry{panickssery2024selfpreference}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=PA}{%
+         family={Panickssery},
+         familyi={P\bibinitperiod},
+         given={Arjun},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=BSR}{%
+         family={Bowman},
+         familyi={B\bibinitperiod},
+         given={Samuel\bibnamedelima R.},
+         giveni={S\bibinitperiod\bibinitdelim R\bibinitperiod},
+      }}%
+      {{hash=FS}{%
+         family={Feng},
+         familyi={F\bibinitperiod},
+         given={Shi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{PABSRFS1}
+    \strng{fullhash}{PABSRFS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{title}{{LLM} Evaluators Recognize and Favor Their Own Generations}
+    \field{journaltitle}{arXiv preprint arXiv:2404.13076}
+    \field{year}{2024}
+  \endentry
+
+  \entry{poliak2018hypothesis}{inproceedings}{}{}
+    \name{author}{5}{}{%
+      {{hash=PA}{%
+         family={Poliak},
+         familyi={P\bibinitperiod},
+         given={Adam},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=NJ}{%
+         family={Naradowsky},
+         familyi={N\bibinitperiod},
+         given={Jason},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=HA}{%
+         family={Haldar},
+         familyi={H\bibinitperiod},
+         given={Aparajita},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=RR}{%
+         family={Rudinger},
+         familyi={R\bibinitperiod},
+         given={Rachel},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=VDB}{%
+         family={Van\bibnamedelima Durme},
+         familyi={V\bibinitperiod\bibinitdelim D\bibinitperiod},
+         given={Benjamin},
+         giveni={B\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{PA+1}
+    \strng{fullhash}{PANJHARRVDB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{booktitle}{*SEM}
+    \verb{eprint}
+    \verb 1805.01042
+    \endverb
+    \field{title}{Hypothesis Only Baselines in Natural Language Inference}
+    \verb{url}
+    \verb https://arxiv.org/abs/1805.01042
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{year}{2018}
+  \endentry
+
+  \entry{ragchecker2024}{inproceedings}{}{}
+    \name{author}{18}{}{%
+      {{hash=RD}{%
+         family={Ru},
+         familyi={R\bibinitperiod},
+         given={Dongyu},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=QL}{%
+         family={Qiu},
+         familyi={Q\bibinitperiod},
+         given={Lin},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=HX}{%
+         family={Hu},
+         familyi={H\bibinitperiod},
+         given={Xiangkun},
+         giveni={X\bibinitperiod},
+      }}%
+      {{hash=ZT}{%
+         family={Zhang},
+         familyi={Z\bibinitperiod},
+         given={Tianhang},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=SP}{%
+         family={Shi},
+         familyi={S\bibinitperiod},
+         given={Peng},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=CS}{%
+         family={Chang},
+         familyi={C\bibinitperiod},
+         given={Shuaichen},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=JC}{%
+         family={Jiayang},
+         familyi={J\bibinitperiod},
+         given={Cheng},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=WC}{%
+         family={Wang},
+         familyi={W\bibinitperiod},
+         given={Cunxiang},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=SS}{%
+         family={Sun},
+         familyi={S\bibinitperiod},
+         given={Shichao},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=LH}{%
+         family={Li},
+         familyi={L\bibinitperiod},
+         given={Huanyu},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=ZZ}{%
+         family={Zhang},
+         familyi={Z\bibinitperiod},
+         given={Zizhao},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=WB}{%
+         family={Wang},
+         familyi={W\bibinitperiod},
+         given={Binjie},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=JJ}{%
+         family={Jiang},
+         familyi={J\bibinitperiod},
+         given={Jiarong},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=HT}{%
+         family={He},
+         familyi={H\bibinitperiod},
+         given={Tong},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=WZ}{%
+         family={Wang},
+         familyi={W\bibinitperiod},
+         given={Zhiguo},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=LP}{%
+         family={Liu},
+         familyi={L\bibinitperiod},
+         given={Pengfei},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=ZY}{%
+         family={Zhang},
+         familyi={Z\bibinitperiod},
+         given={Yue},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=ZZ}{%
+         family={Zhang},
+         familyi={Z\bibinitperiod},
+         given={Zheng},
+         giveni={Z\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{RD+1}
+    \strng{fullhash}{RDQLHXZTSPCSJCWCSSLHZZWBJJHTWZLPZYZZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{booktitle}{NeurIPS (Datasets and Benchmarks)}
+    \verb{eprint}
+    \verb 2408.08067
+    \endverb
+    \field{title}{{RAGChecker}: A Fine-grained Framework for Diagnosing
+  Retrieval-Augmented Generation}
+    \verb{url}
+    \verb https://arxiv.org/abs/2408.08067
+    \endverb
+    \field{eprinttype}{arXiv}
+    \field{year}{2024}
+  \endentry
+
+  \entry{openjev2026}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=WA}{%
+         family={Wortega},
+         familyi={W\bibinitperiod},
+         given={Alex},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{WA1}
+    \strng{fullhash}{WA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{howpublished}{Hugging Face model card,
+  \url{https://huggingface.co/AlexWortega/openjev}}
+    \field{note}{Checkpoint \texttt{qwen3.5-4b-nli-v2}; MIT licence; revision
+  pinned in the released runtime.}
+    \field{title}{{OpenJev}: a Qwen3.5 natural-language-inference
+  cross-encoder}
+    \field{year}{2026}
+  \endentry
+
+  \entry{zheng2023judging}{inproceedings}{}{}
+    \true{moreauthor}
+    \true{morelabelname}
+    \name{author}{3}{}{%
+      {{hash=ZL}{%
+         family={Zheng},
+         familyi={Z\bibinitperiod},
+         given={Lianmin},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=CWL}{%
+         family={Chiang},
+         familyi={C\bibinitperiod},
+         given={Wei-Lin},
+         giveni={W\bibinithyphendelim L\bibinitperiod},
+      }}%
+      {{hash=SY}{%
+         family={Sheng},
+         familyi={S\bibinitperiod},
+         given={Ying},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{ZLCWLSY+1}
+    \strng{fullhash}{ZLCWLSY+1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{Z}
+    \field{sortinithash}{Z}
+    \field{booktitle}{NeurIPS Datasets and Benchmarks}
+    \field{note}{arXiv:2306.05685}
+    \field{title}{Judging {LLM}-as-a-Judge with {MT-Bench} and Chatbot Arena}
+    \field{year}{2023}
+  \endentry
+\enddatalist
+\endinput
