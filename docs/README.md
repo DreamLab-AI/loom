@@ -16,6 +16,7 @@ with the ground truth — reality wins, but history is annotated, not rewritten.
 design/PRD-025 ............ product capstone (the ontology-loom + connector platform)
 design/PRD-026 ............ consolidation requirements (single-source build, fallback, admission)
 design/PRD-027 ............ Rust re-engineering requirements + acceptance criteria (§10.1 status)
+design/PRD-028 ............ does Loom earn its complexity on genuinely private knowledge? (preregistration spec; pilot first; proposed)
 design/ADR-135 ........... keystone: node boundary, model-is-a-URL, generation discipline, A/B
 design/ADR-136 ........... tooling allocation: RuVector behind the markdown, keep oxigraph SPARQL
 design/ADR-137 ........... Rust re-platform + both compose profiles   [Accepted + Implemented]
