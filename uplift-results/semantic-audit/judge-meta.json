@@ -1,6 +1,8 @@
 {
   "backend": "openrouter",
+  "judge_base_url": "https://openrouter.ai/api/v1",
   "judge_model": "openai/gpt-4.1",
+  "judge_key_env": "OPENROUTER_API_KEY",
   "judge_family": "openai/gpt",
   "judge_is_model_not_human": true,
   "backend_probes": {
@@ -24,5 +26,5 @@
   "total_completion_tokens": 17139,
   "cost_estimate_usd_total": 0.9296,
   "cost_basis": "gpt-4.1 list price $2.00/M input, $8.00/M output. `cost_estimate_usd` covers the uncached calls of the last run only; `cost_estimate_usd_total` sums every call ever written to judge-cache.jsonl, which is what the audit actually cost to produce.",
-  "when": "2026-09-21T14:44:18.656585+00:00"
+  "when": "2026-09-21T14:46:17.459873+00:00"
 }
