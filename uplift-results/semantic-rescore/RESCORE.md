@@ -77,7 +77,7 @@ margins but does not overturn the finding" is the honest characterisation.
 
 The **n01 (unexposed-yet-recovered) reasoning-evidence number is likewise essentially unchanged
 and remains near-zero under semantic scoring**: pooled n01 = 3 of 11,360 gold-item instances
-(0.026%) at 0.85, against n01 = 0 pooled under the original lexical matcher (per
+(0.026%) at 0.85, against n01 = 3 pooled under the original lexical matcher (per
 `decompose_exposure.py`'s note that its own matcher already gives an approximate lower bound near
 zero). This directly answers the "lexical matching penalises paraphrase" critique for the
 strongest form of the paper's claim ("models essentially do not recover gold beyond what the
