@@ -8,7 +8,7 @@ its limitations before quoting a number from it.
 ## Current manuscript
 
 **[`paper-v9/main.pdf`](paper-v9/main.pdf)** — *The Copy Ceiling: An Input-Exposure Control
-for Ontology-Grounded Generation over Curated Corpora* (24 pp, 21 September 2026).
+for Ontology-Grounded Generation over Curated Corpora* (26 pp, 21 September 2026, v9.1).
 
 This is the version to cite. Every table, figure and headline number in it maps to a released
 artefact and a released script ([`paper-v9/MANIFEST.md`](paper-v9/MANIFEST.md)); nothing in it

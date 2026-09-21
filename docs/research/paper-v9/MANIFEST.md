@@ -9,7 +9,10 @@ none. Three were closed by release or recovery, one by re-running the study, and
 removing the studies whose underlying observations do not exist anywhere in the reachable
 record (see `CHANGES-2026-09-21-v9.md` §1 and `uplift-results/recovered/RECOVERY.md`).
 
-**Pinned at:** `37fc47c` (21 September 2026) and its ancestors. There is no git tag.
+**Pinned at:** `a6d3e41f898c9c18efdf947fc4924ce93c79f4c8` (short `a6d3e41`, 21 September 2026)
+and its ancestors. The manuscript is tagged `paper-v9.1`; the evidence directories below are as
+of `a6d3e41`. Release directory:
+`https://github.com/DreamLab-AI/loom/tree/a6d3e41f898c9c18efdf947fc4924ce93c79f4c8/docs/research/paper-v9`.
 
 **Two standing notes.** `uplift-results/` is listed in `.gitignore` and its evidence files
 are force-added, so a fresh clone gets them but `git status` will not notice new ones. And
@@ -80,8 +83,22 @@ Both panels, and every rate quoted in that section.
   and the model judge's verdict, blank verdict columns) and `ANNOTATION-GUIDE.md`, both
   released **unannotated**. Re-run `summarise --human` after annotating to add agreement and
   κ.
-- **Status: released** (frame, sample, every verdict, the judge cache, the summariser and
-  the prepared human sample).
+- **Symmetric quote gate (protocol v2, §3A/§3B of `SUMMARY.md`):**
+  `quote-gate-v2.jsonl` (29 rows, one per failed citation: the original quote, the re-ask
+  prompt and response, the repaired quote, both verification results and the decision) and
+  `quote-gate-v2-meta.json` (judge, temperature, main rubric sha256[:16] `2895842241850808`,
+  re-ask rubric sha256[:16] `0867909a4403300f`, call and cost accounting). Outcome 11
+  repaired / 18 unresolved; every rate in the paper's audit section is read three ways
+  against it.
+- **Corrected-rate interval (§4A):** same `verdicts.jsonl`; stratified cluster bootstrap
+  resampling questions within stratum, 184 `n11` and 59 `n10` clusters, 10,000 draws,
+  seed 42. Reported beside a model-clustered bootstrap and the (invalid for this design)
+  naive propagated Wilson.
+- **Run-together gold titles (§8A):** `camel-census.json`, the frame-wide census of all 70
+  units carrying one of the 7 run-together titles, with the 12 omissions itemised by whether
+  the answer contains the spaced form.
+- **Status: released** (frame, sample, every verdict, the judge cache, the summariser, the
+  v2 quote gate with its per-unit log, the camelCase census and the prepared human sample).
 
 ### `tab:live` — Production-node paired study (§Production-node paired study)
 
@@ -159,6 +176,7 @@ above.
 | Claim | Section | Artefact / script |
 |---|---|---|
 | Suppression: 0.121 bare to 0.004 grounded on 760 unexposed items, per-model 1–14 of 76 | `sec:suppression` | Released sweep rows; `tools/paper/parametric_suppression.py`, using the same matcher as `decompose_exposure.py` |
+| Suppression restated relationally: 71 of 760 bare (0.093 [0.075, 0.116]) against 0 of 760 grounded (0.000 [0.000, 0.005]); of the 92 bare lexical hits, 71 `correct_relation`, 15 `name_only`, 6 `absent` | `sec:suppression` | `uplift-results/semantic-audit/raw-hits-sample.jsonl` (the 92 enumerated units, count-gated against the paper's 92/760), `raw-hits-audit.jsonl` (92 verdicts under the same rubric and the same symmetric quote gate) and `raw-hits-meta.json` (judge, rubrics, call and cost accounting); summarised in `SUMMARY.md` §12 and §12A |
 | Semantic re-score: ceilings 0.980 / 0.968 / 0.937 against 0.9645 lexical; 30 of 30 gains negative; pooled n01 = 3 at 0.80 and 0.85, 20 at 0.90; pooled 2×2 at 0.85 | `sec:rescore` | `uplift-results/semantic-rescore/rescore_results.json`, `RESCORE-2026-09-21.md`; `rescore.py` with `embed_lib.py`, `make_copy_contexts.py`, `compare_rescore.py`. `copy_contexts.json` regenerated under a gate requiring every question's recomputed exposed-gold count to equal its stored `n_gold_exposed` |
 | Paraphrase: 506 of 510 accepted, ceilings 0.964 to 0.328, 326 of 506 below 0.5, fallback 2 of 506, semantic recovery +0.446 [+0.398, +0.493] on the failing subset and +0.269 [+0.227, +0.310] overall | `sec:paraphrase` | `uplift-results/paraphrase-stress/{paraphrases.jsonl, ceilings.jsonl, summary.json}` and `PARAPHRASE-2026-09-21.md`; `tools/paper/paraphrase_stress.py --stage all` (three resumable stages). Paraphrase generator `openai/gpt-4.1`, t=0, seed 42, prompt stored as `PARAPHRASE_PROMPT` and named in every row |
 | Out-of-domain five-model judged arm | `sec:ood` | `uplift-results/general/` question sets and judged outputs |
