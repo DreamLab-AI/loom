@@ -1,0 +1,26 @@
+\begin{figure*}[t]\centering
+\begin{tikzpicture}
+\begin{axis}[xbar,width=13cm,height=6.9cm,bar width=9pt,xmin=-4,xmax=38,
+  xlabel={Judge gain over the fair lexical copy ceiling (percentage points, top-1)},
+  enlarge y limits=0.08, ytick=data,
+  symbolic y coords={early discriminator,near-neighbour,skill items,all items,boundary,late discriminator,single,none items},
+  yticklabel style={font=\small}, xmajorgrids, grid style={grayln},
+  nodes near coords, nodes near coords style={font=\footnotesize,/pgf/number format/showpos},
+  nodes near coords align={horizontal},
+  axis line style={ink!60}]
+\addplot[fill=teal0!25,draw=teal0] coordinates {
+  (7.4,early discriminator) (4.0,near-neighbour) (8.6,skill items) (11.6,all items)
+  (33.3,boundary) (18.8,late discriminator) (20.0,single) (25.0,none items)};
+\draw[burnt,dashed,line width=0.7pt] (axis cs:0,early discriminator) -- (axis cs:0,none items);
+\end{axis}\end{tikzpicture}
+\caption{Typed skill routing, $n=86$: where the judge's gain over the fair copy ceiling lies.
+Each bar is judge top-1 accuracy minus the accuracy of a BM25 ranker over the same 115 exposed
+rubrics, with that ranker granted a decline rule and its threshold tuned on this very corpus, so the
+ceiling is flattered and every bar is a floor. The gain is not spread: it concentrates on declining
+(\texttt{none}, $+25.0$), on rubrics whose discriminating clause sits late ($+18.8$) and on boundary
+cases ($+33.3$), each a consequence of a stated architectural choice (independent scoring; uncompressed
+rubrics), while ordinary near-neighbour picking among exposed options gains $+4.0$. The all-items interval is $+0.116$,
+$[+0.012,+0.221]$, clear of zero by one turn's margin; against an embedding ceiling it is $+0.209$,
+$[+0.106,+0.312]$.}
+\label{fig:routing}
+\end{figure*}

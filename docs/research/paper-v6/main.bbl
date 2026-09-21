@@ -2833,6 +2833,30 @@
     \field{year}{2022}
   \endentry
 
+  \entry{openjev2026}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=WA}{%
+         family={Wortega},
+         familyi={W\bibinitperiod},
+         given={Alex},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{WA1}
+    \strng{fullhash}{WA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{howpublished}{Hugging Face model card,
+  \url{https://huggingface.co/AlexWortega/openjev}}
+    \field{note}{Checkpoint \texttt{qwen3.5-4b-nli-v2}; MIT licence; revision
+  pinned in the released runtime.}
+    \field{title}{{OpenJev}: a Qwen3.5 natural-language-inference
+  cross-encoder}
+    \field{year}{2026}
+  \endentry
+
   \entry{contextualjudgebench2025}{misc}{}{}
     \name{author}{5}{}{%
       {{hash=XA}{%
