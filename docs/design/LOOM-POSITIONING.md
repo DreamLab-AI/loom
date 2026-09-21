@@ -11,7 +11,7 @@ actual product goal rather than an academic abstraction.*
 
 > **Measurement note (2026-08-18).** The copy-ceiling framing below (faithful delivery is the
 > product, not a confound) is now the measured result, not a forecast:
-> [`docs/research/paper-v2/main.pdf`](../research/paper-v2/main.pdf) (*The Copy Ceiling*) reports
+> [`docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf`](../research/gain-over-copy-paper/gain-over-copy-paper.pdf) (*The Copy Ceiling*) reports
 > a 0.964 ceiling, a uniformly negative gain over copy across ten models, an exposure/recovery
 > decomposition of 11,360 gold items, and a production paired study (loom−raw +0.27 pooled, +0.79
 > where curation is deepest) with an out-of-domain equivalence result inside a ±0.25 margin. The

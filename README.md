@@ -138,7 +138,7 @@ Three different models — two local, one a frontier cloud model — all land at
 
 † First cloud model benched (2026-08-16, `gemini-3.7-flash`), on a larger set — 510 questions vs 37 local. `temp=1.0`, `reasoning_effort=low`, `max_tokens=2048`. The *paired* delta is within-model and stays valid; absolute raw recall is not cell-for-cell comparable. Full provenance: [`docs/research/report-gemini-3.7-flash.md`](docs/research/report-gemini-3.7-flash.md).
 
-**What that uplift *is*, measured.** The paper *An Input-Exposure Control for Ontology Grounded Generation over Private Corpora* ([`docs/research/paper-v3/main.pdf`](docs/research/paper-v3/main.pdf)) went further: it introduces a *copy ceiling* (recall a verbatim copy would already score) and reports the signed *gain over copy*. On this node the copy ceiling is 0.964; across ten models from five providers the gain over copy is uniformly negative (−0.067 to −0.022). The reading: the model adds **faithful delivery of the exposed facts, not reasoning over the injected structure** — exactly the product for private-knowledge grounding, where the answer is trustworthy because the curated source is.
+**What that uplift *is*, measured.** The paper *An Input-Exposure Control for Ontology Grounded Generation over Private Corpora* ([`docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf`](docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf)) went further: it introduces a *copy ceiling* (recall a verbatim copy would already score) and reports the signed *gain over copy*. On this node the copy ceiling is 0.964; across ten models from five providers the gain over copy is uniformly negative (−0.067 to −0.022). The reading: the model adds **faithful delivery of the exposed facts, not reasoning over the injected structure** — exactly the product for private-knowledge grounding, where the answer is trustworthy because the curated source is.
 
 Three findings shaped Loom's defaults:
 
@@ -407,7 +407,7 @@ The eight-crate hexagonal Rust workspace is built, gate-green (`just ci`), and w
 
 **Design** — [PRD-025](docs/design/PRD-025-ontology-loom-and-connector-platform.md) (product capstone) · [ADR-135](docs/design/ADR-135-ontology-loom-node.md) (keystone node boundary) · [ADR-137](docs/design/ADR-137-loom-rust-replatform.md) (Rust re-platform) · [RUST-ARCHITECTURE.md](docs/design/RUST-ARCHITECTURE.md) (build blueprint) · [DDD bounded context](docs/design/ddd-ontology-loom-context.md) · [Positioning](docs/design/LOOM-POSITIONING.md) · [agentbox ADR-051](docs/design/agentbox-ADR-051-loom-client-and-deferred-distillation.md) (harness client)
 
-**Research** — [Evidence index](docs/research/README.md) · [Input-exposure control paper](docs/research/paper-v3/main.pdf) · [Ontology uplift report](docs/research/ontology-uplift-report.pdf) · [Gemini 3.7 Flash report](docs/research/report-gemini-3.7-flash.md) · [Local model report](docs/research/report.md)
+**Research** — [Evidence index](docs/research/README.md) · [Input-exposure control paper](docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf) · [Ontology uplift report](docs/research/ontology-uplift-report.pdf) · [Gemini 3.7 Flash report](docs/research/report-gemini-3.7-flash.md) · [Local model report](docs/research/report.md)
 
 **Audit** — [Evidence directory](.claude/evidence/) · [gpt-5.4 adversarial audit](.claude/evidence/AUDIT-gpt54.md)
 

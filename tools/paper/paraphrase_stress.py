@@ -5,7 +5,7 @@
 Why this exists
 ---------------
 The original stress set (510 LLM-rewritten questions and their per-arm ceilings)
-was never written to disk; ``docs/research/paper-v8/notes/R5-numbers.md`` s3.3
+was never written to disk; ``docs/research/gain-over-copy-paper/archive/v8/notes/R5-numbers.md`` s3.3
 establishes there is no artefact for it anywhere in the repository or its
 history, and the paper itself lists it as reported-but-not-released. It is
 therefore NOT recoverable. This script regenerates an equivalent stress set from
@@ -575,7 +575,7 @@ def write_markdown(summary: dict, paras: list, rows: list, scored: list,
     A("## What this is, and what it is not")
     A("")
     A("The paper's original paraphrase stress set is **not recoverable**. "
-      "`docs/research/paper-v8/notes/R5-numbers.md` §3.3 establishes that no "
+      "`docs/research/gain-over-copy-paper/archive/v8/notes/R5-numbers.md` §3.3 establishes that no "
       "paraphrase file, per-question ceiling pair, resolvability grading or "
       "per-arm row exists anywhere in the repository or its git history, and "
       "the paper lists it as reported-but-not-released twice (§sec:intro item "

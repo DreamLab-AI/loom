@@ -61,7 +61,16 @@ Enterprises need language models to answer from curated, organisation-controlled
 
 Without assistance, the evaluated models score 0.265 on average (range $0.151$--$0.375$) on in-domain questions and $\approx0.92$ with curated context. Across ten models from eight developer families, gain over copy is uniformly negative ($-0.067$ to $-0.022$), while beyond-exposure recovery totals three items in 11{,}360 item$\times$model observations (the same 1{,}136 target instances scored under each of ten models, \S\ref{sec:tenmodel}). Models therefore differ almost entirely in how much surfaced gold they drop. A clarification on ``private'': the corpus is not secret. It is published on GitHub and at a public site (\S\ref{sec:setting}), so the non-trivial raw scores ($0.151$--$0.375$ across models) reflect partial pretraining exposure rather than a genuinely unseen domain; what makes it a useful test bed is that it is organisation-controlled and curated, not that it is hidden. Throughout, ``private'' denotes the \emph{deployment} pattern (LAN-confined, no cloud egress), not corpus secrecy. Delivery of an authoritative, human-curated source is the product. Throughout, ``delivery'' is scored as recall of exposed gold target names and nothing more. Relational correctness is measured separately, on a stratified sample of the sweep under model adjudication (\S\ref{sec:audit}); precision of the full answer against fabrication, and the accuracy of the attribution metadata, remain unmeasured here (\S\ref{sec:limits}).
 
-Three methods below are corpus-general and separable from the node they are measured on: the copy-ceiling computation and signed gain over copy (\S\ref{sec:ceiling}, \S\ref{sec:runnable}); the seed-disjoint placebo construction (\S\ref{sec:ceiling-controls}, \S\ref{sec:controls}); and the blind before/after judged gate for write paths (\S\ref{sec:pagejudge}). A fourth, the stratified audit of \S\ref{sec:audit}, is specific to a lexical matcher but transfers to any evaluation that uses one. \textbf{Release.} The served node, the ten-model sweep rows together with the harness that generated them, the exposure decomposition, the production paired study and both of its judge passes, the negative-control completions with both their archived and their re-judged scores, the semantic re-score, the paraphrase stress set and the semantic audit (its sample, its cached judge calls, its summariser and the blind sample prepared for a human pass) are in the repositories footnoted below, under version control, with per-study bootstrap seeds named in the released scripts and a table-to-artefact manifest at \texttt{docs/research/paper-v9/MANIFEST.md}. This manuscript is tagged \texttt{paper-v9.1} and the evidence directories are as of commit \texttt{a6d3e41f898c9c18efdf947fc4924ce93c79f4c8}, released at \url{https://github.com/DreamLab-AI/loom/tree/a6d3e41f898c9c18efdf947fc4924ce93c79f4c8/docs/research/paper-v9}. Every table and figure in this paper resolves to an artefact in that manifest. The release supports checking every reported number against saved rows; it does not support full scaffold regeneration, because the corpus-derived scaffold index is not released, and two embedding caches are excluded for size and rebuilt by their own released scripts against the embedding endpoint. The routing companion note (\S\ref{sec:companion}) states its own release gaps, which are not inherited here.
+\paragraph{How the control came to be built.} We built the serving node first and deployed it, and
+the conventional measurement it produced was a large uplift over the same model answering unaided,
+of the kind this literature routinely reports. The question we then put to our own result was
+narrower than that headline: what would a verbatim copy of the text we had already shown the model
+score on the same questions? That baseline sat above the grounded system on every model we swept,
+which changed what the uplift could be taken to support. The protocol below is that same check
+written down, so that another team can run it against its own deployment before reporting an
+uplift figure.
+
+Three methods below are corpus-general and separable from the node they are measured on: the copy-ceiling computation and signed gain over copy (\S\ref{sec:ceiling}, \S\ref{sec:runnable}); the seed-disjoint placebo construction (\S\ref{sec:ceiling-controls}, \S\ref{sec:controls}); and the blind before/after judged gate for write paths (\S\ref{sec:pagejudge}). A fourth, the stratified audit of \S\ref{sec:audit}, is specific to a lexical matcher but transfers to any evaluation that uses one. \textbf{Release.} The served node, the ten-model sweep rows together with the harness that generated them, the exposure decomposition, the production paired study and both of its judge passes, the negative-control completions with both their archived and their re-judged scores, the semantic re-score, the paraphrase stress set and the semantic audit (its sample, its cached judge calls, its summariser and the blind sample prepared for a human pass) are in the repositories footnoted below, under version control, with per-study bootstrap seeds named in the released scripts and a table-to-artefact manifest at \texttt{docs/research/gain-over-copy-paper/MANIFEST.md}. This manuscript is tagged \texttt{paper-v9.1} and the evidence directories are as of commit \texttt{a6d3e41f898c9c18efdf947fc4924ce93c79f4c8}, released at \url{https://github.com/DreamLab-AI/loom/tree/a6d3e41f898c9c18efdf947fc4924ce93c79f4c8/docs/research/paper-v9}. Every table and figure in this paper resolves to an artefact in that manifest. The release supports checking every reported number against saved rows; it does not support full scaffold regeneration, because the corpus-derived scaffold index is not released, and two embedding caches are excluded for size and rebuilt by their own released scripts against the embedding endpoint. The routing companion note (\S\ref{sec:companion}) states its own release gaps, which are not inherited here.
 
 \section{Related Work}\label{sec:related}
 \paragraph{Knowledge-graph and private-corpus grounding.}
@@ -92,7 +101,7 @@ Loom is one component of a larger stack, and two of the others matter here becau
 Behind these choices sit five deployment requirements: curation the organisation controls, human auditability at single-entity granularity, accelerators that may locate the served markdown unit but never stand in for it, LAN confinement with the model delegated by URL, and confidence-gated injection. Jointly they demand high recall where the corpus is authoritative, with attribution metadata whose precision is itself unmeasured (\S\ref{sec:bar}), and no regression on general questions the model already answers.
 
 
-\input{figures/fig-ecosystem}
+\input{assets/fig-ecosystem}
 
 \section{Ontology Scaffold}\label{sec:system}
 Our deployed serving node is a single static Rust binary built as a hexagonal workspace: a domain core defining the port traits, one adapter per backend, a scaffold-policy module and a thin HTTP façade. Only the domain core mints a served unit, so no adapter can return its own row, triple or vector as the payload, and golden fixtures pin retrieval, gating and scaffold serialisation byte-for-byte to a reference implementation.
@@ -171,7 +180,7 @@ A near-ceiling result shows the measured recall is achievable by delivery alone:
 
 \paragraph{What zero gain does and does not say.} The accounting is not a test for the presence of reasoning, and no result in this paper should be read as one. Consider a context stating that $A$ requires $B$, that $B$ has part $C$, and that $D$ has part $E$, and a question asking for a part of something $A$ requires. Choosing $C$ requires following two relations, yet $C$ is already a string in the context, so exposure is 1, a perfect answer scores 1, and gain over copy is exactly zero. Zero gain is therefore compatible with successful reasoning over exposed names, and negative gain with reasoning that sometimes fails; positive gain is compatible with memorisation, guessing or matcher asymmetry. The example generalises: wherever a curated corpus is served one entity-scoped block at a time, the names an answer needs are usually already on the page, and a recall metric over those names cannot see which route the model took to them. The defensible statement is the narrow one, \emph{this recall score does not establish reasoning beyond answer-name exposure}, and establishing whether a model composes exposed structure needs a second instrument that varies the route while holding the answer name exposed. This paper does not run that instrument; it separates the two rather than conflating them, and \S\ref{sec:audit} shows empirically where the exposure instrument stops, since roughly one credited item in sixty names the gold target without asserting the relation the question asked for. Figure~\ref{fig:ceiling} illustrates the two paths compared.
 
-\input{figures/fig-ceiling}
+\input{assets/fig-ceiling}
 
 \subsection{Negative controls: what would move the gain}\label{sec:ceiling-controls}
 A positive delivery result might reflect lexical overlap rather than knowledge transfer. Four arms hold the model and question fixed while perturbing only the injected block (defined here; results in \S\ref{sec:controls}):
@@ -577,6 +586,26 @@ Both studies place the graph-grounding uplift over this curated corpus almost en
 
 \paragraph{The controls attribute less than the uplift suggests.} The served path beats no context, and no content-specificity contrast survives Holm correction (\S\ref{sec:controls}): true$-$irrelevant is $+0.39$ with an interval touching zero, and true$-$shuffled and true$-$masked are smaller still. The graded facts are therefore not shown to carry the effect beyond what a well-formed, on-corpus block supplies, which is the shape of the noise confound~\textcite{cuconasu2024poweofnoise} warn of. This is non-establishment and not absence of a content effect: the cohort lost $36$--$50\%$ of its control-arm completions to budget exhaustion and is underpowered for everything except loom against raw. Seed-IRI disjointness still matters as method, because an unconstructed placebo carries donor vocabulary and produces a misleadingly favourable baseline, but it is a construction guarantee rather than answer disjointness, and the irrelevant arm is not length-matched to the true arm.
 
+\paragraph{What the accounting does not price: controlled delivery.} The reason an organisation
+builds a node of this kind is not that a model reasons better with a graph attached to it. It is
+that the organisation's own maintained knowledge should be answerable through a model it can
+replace, with control over which source is consulted, which version of that source is current, and
+by what route a new assertion becomes authoritative. Selecting that material, keeping it current,
+governing what may be added to it and delivering the right part of it to a given request are
+substantial system responsibilities, and most of the engineering in this stack is spent on them
+(\S\ref{sec:ecosystem}, \S\ref{sec:lifecycle}). Exposure accounting identifies which part of an
+observed result those responsibilities already explain. It does not measure what they are worth to
+operate, and a negative gain over copy is not an argument against them: a system can be useful
+because it reliably makes maintained knowledge available through a model, whether or not its recall
+exceeds what a copy of the shown material would score. Three statements can be made confidently on
+this evidence: versioned curated material is served through a replaceable model interface
+(\S\ref{sec:system}); the scaffold supplies the gold target names for the large majority of
+in-domain questions (\S\ref{sec:indomain}); and each answer carries source metadata naming the
+generation it was served from. Three others still need evidence: that this path is cheaper than an
+alternative at matched quality; that ontology structure outperforms simpler retrieval over the same
+corpus at an equal budget (\S\ref{sec:companion}); and that the attribution metadata is accurate at
+the level of an individual answer (\S\ref{sec:bar}).
+
 \paragraph{Consequence 1: compute the ceiling before you architect.}
 Calculate the ceiling on representative questions before selecting an architecture. A ceiling close to 1 ($0.964$ here) says answer entity names are exposed in the context. It does not say the required relation is present or that the answer needed no reasoning, so what follows is a prioritisation heuristic and not a diagnosis. Where the ceiling is high, retrieval already supplies most target coverage, so the exposure reference should be reported alongside the quality and system baselines a generative component is judged on; positive gain over copy is not a prerequisite for useful generation, and a large bare-model uplift is exactly what exposure alone predicts. Where the ceiling is low, GraphRAG-style machinery (community summaries, multi-hop traversal, GNN soft-prompts) has room to earn its keep, provided the low ceiling is not simply retrieval or vocabulary failure (\S\ref{sec:paraphrase}). We suspect much reported graph-RAG gain is measured in the first setting without the subtraction; the ceiling is cheap enough to compute before expensive architecture is built.
 
@@ -708,7 +737,7 @@ double-promote. Nothing in this section is a measurement: it is the architecture
 gates were used to choose.
 
 \begin{figure*}[t]\centering
-\includegraphics[width=\textwidth]{figures/fig-lifecycle.pdf}
+\includegraphics[width=\textwidth]{assets/fig-lifecycle.pdf}
 \caption{Write-path lifecycle and the open-source component carrying each stage.
 Landing is separated from serving: assertions stage on unserved
 ledger pages, candidates pass the two instruments this paper develops, and only governed,
@@ -740,10 +769,62 @@ Temperature~0 does not guarantee deterministic remote inference: ``deterministic
 scoring, scaffold generation and fixed decoding settings, not to provider-side reproducibility.
 
 \section{Open Axes}\label{sec:roadmap}
-Two axes of the deployment bar this node is built against (\S\ref{sec:setting}) are measured by the studies above: in-domain delivery, as recall of exposed gold with its accounting, and out-of-domain non-regression, by interval inclusion on a blunt instrument (\S\ref{sec:ood}). Two are specified and unmeasured, and we record them here rather than as a headline.\label{sec:bar} \textbf{Axis~3, beats web search in-domain}: the correct comparison for a curated scaffold is the same model grounded in live web results on the same questions, not a bare model, and we have not run it. \textbf{Axis~4, attribution precision}: every answer carries a named generation and a confidence, but whether that metadata is precise is unmeasured, and it is the axis that would let ``recall of exposed gold'' become ``attributable''. The bar is conjunctive, so two closed axes do not establish it.
+The deployment bar this node is built against (\S\ref{sec:setting}) resolves into four questions a
+deployment has to answer about itself. Table~\ref{tab:bar} states each one, the instrument that
+bears on it, and its status in this work.\label{sec:bar} Two are measured on limited sets and two
+are not measured at all. The bar is conjunctive, so evidence on two of the four establishes nothing
+about the whole, and we record the table as a roadmap rather than as a headline.
+
+\begin{table*}[t]\centering\small
+\caption{Deployment questions, the instruments that bear on them, and this work's status against
+each. The four are measured on different instruments, so no single number speaks to the
+conjunction, and no row is closed.}
+\label{tab:bar}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.3cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{4.5cm}@{}}
+\toprule
+Question & Instrument \& evidence & Status \\
+\midrule
+1. Does it recover the corpus's information in domain? & Lexical exposure accounting and signed gain
+over copy across ten models (\S\ref{sec:tenmodel}); stratified relational audit of 423 observations
+under a cross-family judge (\S\ref{sec:audit}); paired production quality comparison
+(\S\ref{sec:live}) & Measured on one corpus, one generation and one question set, by a lexical
+matcher whose credit is audited on a sample rather than in full \\
+2. How does it perform beyond the corpus's useful coverage? & Judged $\Delta$ against frontier gold
+out of domain and on the general set (\S\ref{sec:ood}); lexical recovery on gold the scaffold
+omitted (\S\ref{sec:suppression}) & Equivalence measured by interval inclusion on one general set
+with a blunt instrument ($+0.05$ $[0.00,+0.13]$ inside a $\pm0.25$ margin), and not established in
+the five-model arm, whose worst-case subgroup interval is wider than the margin; suppression on
+scaffold-omitted items measured \\
+3. Does it beat competitive retrieval baselines? & The same model and question set grounded in
+flat-text retrieval over the same corpus, in direct graph query over the closure, and in live web
+results, each at an equal token budget & Unmeasured. Broadened from a web-search comparison alone:
+for graph-derived questions the direct graph query is the more demanding of the three
+(\S\ref{sec:companion}) \\
+4. Is its attribution precise, and is the whole answer? & Per-answer generation identity and
+confidence are already emitted; precision of that metadata, and of the full answer against
+fabrication, would be scored against the served block & Unmeasured. Source metadata is available on
+every answer; its accuracy is not assessed, and precision against fabrication is not scored
+(\S\ref{sec:limits}) \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Questions~1 and~2 are the two this paper instruments, and both statuses are qualified rather than
+clean: the in-domain figure is recall of exposed gold target names under a sampled relational
+audit, and the out-of-domain figure is non-detection of regression on one set rather than
+demonstrated equivalence. Question~3 is the one whose absence most constrains the architectural
+reading, because a bare model is not the baseline a curated scaffold competes against. Question~4
+is the one that would let ``recall of exposed gold'' become ``attributable''.
 
 \section{Companion Work}\label{sec:companion}
-A companion note\footnote{\texttt{docs/research/companion-routing/} in the served-node repository, with its corpus, per-run reports, embedding caches, analysis scripts and manifest under \texttt{uplift-results/routing/}. That note states its own release gaps: per-item rows survive for one of its three engines.} measures a different instrument on a different task: a typed-decision seam in an agent runtime, where a router must choose one of 115 exposed skill rubrics or decline. A choice over shown options has no natural no-op extractor, so its baseline is constructed from a judge-free ranker with an oracle-tuned decline rule. That constructed quantity is ranker-relative: it measures a judge's advantage over a particular baseline procedure, not the fraction of gold a fixed text exposes. The reusable part is the reporting discipline, that a choice task whose gold sits among its shown options should carry a fair baseline beside its accuracy, tuned to a real optimum and read by population rather than in aggregate.
+A companion note\footnote{\texttt{docs/research/companion-routing/} in the served-node repository, with its corpus, per-run reports, embedding caches, analysis scripts and manifest under \texttt{uplift-results/routing/}. That note states its own release gaps: per-item rows survive for one of its three engines.} measures a different instrument on a different task: a typed-decision seam in an agent runtime, where a router must choose one of 115 exposed skill rubrics or decline. A choice over shown options has no natural no-op extractor, so its baseline is constructed from a judge-free ranker with an oracle-tuned decline rule. That constructed quantity is ranker-relative: it measures a judge's advantage over a particular baseline procedure, not the fraction of gold a fixed text exposes. The reusable part is the reporting discipline, that a choice task whose gold sits among its shown options should carry a fair baseline beside its accuracy, tuned to a real optimum and read by population rather than in aggregate. Four concrete lessons came out of it, and they are the reason the note is worth reading beside
+this paper: a coarse threshold grid stepped over the ranker's own optimum and so overstated the
+judge's advantage against it; exclusion clauses indexed as positive evidence made turns score
+highest on the very option written to reject them; aggregate accuracy concealed that the judge's
+entire advantage sat on boundary and late-clause turns and was nil on ordinary picking; and
+systematic ranker--judge disagreement located a labelling error in a corpus its authors had already
+reviewed.
 
 The architectural consequences of these results, for an organisation holding a large private corpus it must answer from without the content leaving the boundary, would need evidence this paper does not have: a matched comparison of the ontology scaffold against a direct graph query and flat-text retrieval at equal budgets, and an accounting of curation effort against query volume.
 
@@ -761,7 +842,7 @@ The architectural consequences of these results, for an organisation holding a l
 \item \textbf{Local-model identity.} The local backend is addressed by a compatibility alias (\texttt{qwen3.8-27B}) whose deployed checkpoint is a quantised derivative recorded in the node's deployment notes rather than an attested reference release; provider display names elsewhere are likewise not immutable version identifiers.
 \item \textbf{Two exposure figures, not interchangeable.} The macro ceiling, $0.964$, averages per-question exposed fractions; the item-pooled exposed fraction is $(n_{11}+n_{10})/N=10{,}600/11{,}360=0.933$, equivalently $1{,}060$ of $1{,}136$ items per model. Headline recall is macro-averaged and context utilisation is micro-averaged, so the two do not reconstruct each other.
 \item \textbf{One seed, one snapshot.} Questions are sampled under seed~42 and served from one corpus generation. The bootstrap intervals estimate uncertainty under resampling of the frozen questions and do not cover corpus, snapshot, prompt or seed variation.
-\item \textbf{Reproducibility is pinned, but not complete.} Every table and figure resolves to an artefact listed in the manifest at \texttt{docs/research/paper-v9/MANIFEST.md}, released at commit \texttt{a6d3e41f898c9c18efdf947fc4924ce93c79f4c8} with this manuscript tagged \texttt{paper-v9.1} (\url{https://github.com/DreamLab-AI/loom/tree/a6d3e41f898c9c18efdf947fc4924ce93c79f4c8/docs/research/paper-v9}). Two items are absent from that release: the 7.9\,MB scaffold index, which is corpus-derived, so a reader can check every derived number against the released rows but cannot regenerate the scaffolds themselves; and two embedding caches, excluded for size and rebuilt by their own released scripts.
+\item \textbf{Reproducibility is pinned, but not complete.} Every table and figure resolves to an artefact listed in the manifest at \texttt{docs/research/gain-over-copy-paper/MANIFEST.md}; the evidence directories are as of commit \texttt{a6d3e41f898c9c18efdf947fc4924ce93c79f4c8} and this manuscript is tagged \texttt{paper-v9.2} (\url{https://github.com/DreamLab-AI/loom/tree/paper-v9.2/docs/research/gain-over-copy-paper}). Two items are absent from that release: the 7.9\,MB scaffold index, which is corpus-derived, so a reader can check every derived number against the released rows but cannot regenerate the scaffolds themselves; and two embedding caches, excluded for size and rebuilt by their own released scripts.
 \item \textbf{Equivalence and power.} The out-of-domain reading rests on an instrument near its ceiling: 58 of 60 Study-2 general pairs tie at means of $5.0$ and $4.95$, so sensitivity to deterioration on harder questions is weak and the equivalence claim is confined to that instrument and set. Power figures quoted here are computed against observed effects and are therefore post hoc.
 \item \textbf{A constructed baseline is a different instrument.} The copy ceiling applies to a task with a natural no-op extractor. For a task without one, such as a discriminative choice over shown options, a baseline must be constructed from a ranker with a decline rule; that quantity is ranker-relative and is not the exposure scalar of \S\ref{sec:ceiling} (\S\ref{sec:companion}).
 \end{itemize}
@@ -852,6 +933,60 @@ broader ancestors as well, but the graph asserts gold here as the immediate pare
 names visible in the scaffold are context rather than gold. And although the engine ran with
 \texttt{prose~off}, each served block always carries its curated definition text: the flag controls
 additional generated prose, not the block's own content.
+
+\section{Two-Edge Composition: a Protocol}\label{sec:appendix-composition}
+This appendix specifies a design, not a result. An earlier execution of it was described in a
+previous revision of this manuscript; its per-item rows, mined chain corpus and mining script are
+not present on any ref of the repository, so that execution cannot be substantiated and nothing
+from it is reported here. No quantity below has been measured. The protocol is recorded because
+exposure accounting cannot substitute for it: a question can require following two relations while
+its answer name is already a string in the shown context, in which case exposure is $1$, a perfect
+answer scores $1$, and gain over copy is exactly zero (\S\ref{sec:ceiling}).
+
+\paragraph{Question construction.} Mine two-edge chains $A\xrightarrow{r_1}B\xrightarrow{r_2}C$ over
+the restriction-encoded relations of the reasoned closure. A chain is eligible when no direct
+asserted or inferred $A\to C$ edge exists, when $C$ does not appear in $A$'s served block, and when
+the chain admits at most a small bounded set of valid targets. The question names only $A$ and the
+two relation types, never $B$, so the route must be traversed rather than read.
+
+\paragraph{Arms.} Every context-bearing arm serves the same number of blocks, seed-shuffled, so that
+the presence or the position of a block does not itself signal relevance. The arms are: \emph{both}
+premises ($A$'s and $B$'s blocks plus seed-disjoint distractors); \emph{$b$-only} and \emph{$a$-only}
+single-premise controls, each padded with distractors to the same block count; \emph{masked}, in
+which both premises are served with their relation labels replaced by uninformative tokens;
+\emph{distractor}, in which every block is seed-disjoint from the chain; and \emph{raw}, with no
+context. The $a$-only, distractor and raw arms bound parametric leakage and placebo response; the
+$b$-only arm bounds what is obtainable from the answer-bearing block alone.
+
+\paragraph{Scorer and the primary contrast.} Score by the same deterministic surface matcher used
+throughout, against the bounded target set, and report precision alongside recall so that
+enumeration of the candidate space cannot pass as an answer. Because the $b$-only arm already
+exposes the target name verbatim, no copy baseline separates it from the both-premises arm; the
+informative quantity is the contrast $\Delta=\textrm{both}-b\textrm{-only}$, which nets out answer
+exposure. Read each $\Delta$ against its own headroom $1-b_{\textrm{only}}$: a high single-premise
+rate caps the detectable difference, so a flat $\Delta$ at a high $b$-only rate is uninformative
+rather than negative evidence.
+
+\paragraph{Decisive controls.} Four manipulations, none of which a recall rise on adding a relevant
+block can replace. \emph{Entity-preserving edge swap}: rewire $r_2$ so that the correct answer
+changes while the served names and block lengths are held fixed; a model that follows the changed
+edge to the changed answer is evidence of composition. \emph{Relation reversal}: reverse the
+direction of $r_2$ at matched names and length, so that the same entities admit a different correct
+target. \emph{Consistent renaming}: replace all chain entities with unfamiliar identifiers
+consistently throughout the served blocks and the question, which removes parametric recognition
+while preserving the route. \emph{Bounded precision}: cap the valid target set and score precision,
+so broad enumeration is penalised rather than credited.
+
+\paragraph{Multiplicity and interpretation.} With one $\Delta$ per model, apply Holm correction
+across the panel and report the adjusted intervals; without it, boundary assignments between
+positive, null and negative $\Delta$ are expected by chance alone. What the contrasts can identify
+is the effect of adding route information, and of altering it, under this particular context
+construction. What they cannot identify is composition ability as a model property: adding $A$'s
+block changes distractor competition and answer-selection pressure as well as supplying a missing
+premise, the masked arm confounds label removal with a change in block surface form, and any grouping
+of models by the sign of $\Delta$ is configuration-specific behaviour rather than a capability
+ladder.
+
 
 \twocolumn
 \printbibliography

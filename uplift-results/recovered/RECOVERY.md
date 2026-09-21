@@ -1,8 +1,8 @@
 # Recovery pass — 2026-09-21
 
-Response to `docs/research/paper-v8/REVIEW-2026-09-21-external-2.md`'s "experimental
+Response to `docs/research/gain-over-copy-paper/archive/v8/REVIEW-2026-09-21-external-2.md`'s "experimental
 provenance" section, against the six gaps enumerated in
-`docs/research/paper-v8/MANIFEST.md` ("What is not released"). Exhaustive search for
+`docs/research/gain-over-copy-paper/archive/v8/MANIFEST.md` ("What is not released"). Exhaustive search for
 surviving artefacts; nothing in this repository's tracked tree, prior git history,
 docs/paper drafts, or paper edits was touched. Everything below is either a *new* file
 copied into `uplift-results/recovered/<study>/` or a documented negative result.
@@ -47,7 +47,7 @@ even be rerun without rewriting `embed_lib.py` first. One (iv) is now fully **A*
 ## i. Control rerun (5-arm ITT) — **ABSENT, confirmed independently**
 
 This exact question was already answered, exhaustively, by a prior session and is
-committed at `docs/research/paper-v8/notes/R3-data.md` §3 ("Control rerun cohort —
+committed at `docs/research/gain-over-copy-paper/archive/v8/notes/R3-data.md` §3 ("Control rerun cohort —
 ABSENT from this checkout"). I re-ran the same searches independently (git history
 across all refs/reflog for `fluent_noise`, `gemini-3.1`, `retry_budget`,
 `common-retry`/`retry-policy`) and found nothing beyond what R3-data.md already
@@ -169,12 +169,12 @@ No per-item rows, no 6,514-chain corpus, no mining script exist anywhere searche
 Two things were found, both already fully accounted for in the tracked paper and
 **not new evidence**:
 
-1. `docs/research/paper-v8/figures/fig-composition.tex` (tracked) — the exact 12
+1. `docs/research/gain-over-copy-paper/archive/v8/figures/fig-composition.tex` (tracked) — the exact 12
    per-model `(b-only, both)` coordinate pairs plotted in Figure `fig:composition`.
    An identical copy exists in an old LaTeX-build scratchpad
    (`.../6303bdf0-.../scratchpad/arxiv-final/figures/fig-composition.tex` and three
    sibling build dirs) — same file, not new data, not copied in.
-2. `docs/research/paper-v8/main.tex` §11 ("Two-Edge Composition") — the full narrative
+2. `docs/research/gain-over-copy-paper/archive/v8/main-v8.tex` §11 ("Two-Edge Composition") — the full narrative
    with per-model Δ values and CIs (Gemini 3 Flash +0.33, Qwen3.8-27B +0.29, DeepSeek
    v4 +0.26, Sonnet 5 +0.25, Opus 4.8 +0.20; GPT-4.1-mini −0.47, Mistral-24B −0.29,
    GLM-4.7 −0.18, Llama-70B −0.12; three at floor). Identical text found in the same
@@ -195,7 +195,7 @@ pre-existing fact about the paper, not a new recovery).
 
 ## vi. Paraphrase stress-set — **ABSENT, C**
 
-Nothing found. `docs/research/paper-v8/main.tex` §"Vocabulary Mismatch" (`sec:paraphrase`)
+Nothing found. `docs/research/gain-over-copy-paper/archive/v8/main-v8.tex` §"Vocabulary Mismatch" (`sec:paraphrase`)
 states outright: "the paraphrase stress-set behind the 0.96-to-0.34 collapse, and the
 per-arm ceilings computed on it, are **reported but not yet released**." No script, no
 question set, no per-arm ceiling file exists under `tools/paper/`, in git history for

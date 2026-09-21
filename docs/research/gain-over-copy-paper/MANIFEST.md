@@ -10,7 +10,7 @@ removing the studies whose underlying observations do not exist anywhere in the 
 record (see `CHANGES-2026-09-21-v9.md` §1 and `uplift-results/recovered/RECOVERY.md`).
 
 **Pinned at:** `a6d3e41f898c9c18efdf947fc4924ce93c79f4c8` (short `a6d3e41`, 21 September 2026)
-and its ancestors. The manuscript is tagged `paper-v9.1`; the evidence directories below are as
+and its ancestors. The manuscript is tagged `paper-v9.2`; the evidence directories below are as
 of `a6d3e41`. Release directory:
 `https://github.com/DreamLab-AI/loom/tree/a6d3e41f898c9c18efdf947fc4924ce93c79f4c8/docs/research/paper-v9`.
 
@@ -155,11 +155,11 @@ Both panels, and every rate quoted in that section.
 
 ### `fig:ecosystem` — Read path around the measured node
 
-`figures/fig-ecosystem.tex`. Descriptive TikZ; no measured rows.
+`assets/fig-ecosystem.tex`. Descriptive TikZ; no measured rows.
 
 ### `fig:ceiling` — Copy ceiling and signed gain over copy on one panel
 
-`figures/fig-ceiling.tex`. Definitional TikZ; no measured rows. Its caption states the
+`assets/fig-ceiling.tex`. Definitional TikZ; no measured rows. Its caption states the
 cancellation claim in the same terms as assumption A2.
 
 ### `fig:gain` — Signed gain over copy, ten models, with bootstrap intervals
@@ -170,7 +170,7 @@ display. Same artefact and script as `tab:sweep`. **Status: released.**
 
 ### `fig:lifecycle` — Write-path lifecycle
 
-`figures/fig-lifecycle.pdf`, source `figures/fig-lifecycle-source.html`. Architectural; no
+`assets/fig-lifecycle.pdf`, source `assets/fig-lifecycle-source.html`. Architectural; no
 measured rows. The two judged figures it rests on (the integration-phase degradation and the
 thin-page alternative at −0.65 and −0.60 over twenty pairs) are the case-study artefacts
 above.

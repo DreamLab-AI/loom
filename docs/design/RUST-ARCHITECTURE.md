@@ -700,7 +700,7 @@ One `Config` struct (`loom-facade/src/config.rs`), `figment`- or hand-parsed fro
 
 **Boundary rule encoded in config:** `RUVECTOR_PG_CONNINFO` is read **only** by the `pg-write` feature of `loom-vector-ruvector`, which is compiled out of the serving binary by default. A Profile-A node cut off from the docker network still serves fully because the query path never touches Postgres — it reads `LOOM_HNSW_ARTIFACT` in-process (ADR-136 §3, DDD §6.1).
 
-**Addendum (2026-08-18), findings-driven serving controls.** The measurement in [`docs/research/paper-v2/main.pdf`](../research/paper-v2/main.pdf) (*The Copy Ceiling*) adds three config knobs, all default-off (so the §9 flow above is unchanged unless a deployment opts in). Implemented in `loom-facade/src/config.rs` (`serving.rs`, `loom-scaffold/src/exposure.rs`); names below are as landed.
+**Addendum (2026-08-18), findings-driven serving controls.** The measurement in [`docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf`](../research/gain-over-copy-paper/gain-over-copy-paper.pdf) (*The Copy Ceiling*) adds three config knobs, all default-off (so the §9 flow above is unchanged unless a deployment opts in). Implemented in `loom-facade/src/config.rs` (`serving.rs`, `loom-scaffold/src/exposure.rs`); names below are as landed.
 
 | Env var | Default | Owner crate | Meaning |
 |---|---|---|---|

@@ -44,8 +44,8 @@ TIMEOUT = 600
 # ignored: we validate choices[0].message.content only.
 DISABLE_THINKING = False
 
-DEFAULT_INPUT = Path("docs/research/paper-v2/main.tex")
-DEFAULT_OUTDIR = Path("docs/research/paper-v4")
+DEFAULT_INPUT = Path("docs/research/gain-over-copy-paper/archive/v2/main-v2.tex")
+DEFAULT_OUTDIR = Path("docs/research/gain-over-copy-paper/archive/v4")
 
 PROTECTED_ENVS = {
     "table", "table*", "figure", "figure*", "tikzpicture", "axis",

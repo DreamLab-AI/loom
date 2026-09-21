@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """semantic_audit — does the lexical title matcher agree with semantic answer correctness?
 
-Reviewer request (docs/research/paper-v8/REVIEW-2026-09-21-external-2.md, section
+Reviewer request (docs/research/gain-over-copy-paper/archive/v8/REVIEW-2026-09-21-external-2.md, section
 "The paper now identifies the semantic-validation gap correctly, but identifying it
 has not closed it"):
 
@@ -36,7 +36,7 @@ byte-identically the matcher the paper reports. Exposure is model-independent
 vendored v1 scaffold engine), hence every model shares the same 1060 exposed / 76
 unexposed items and the n00 stratum is 76 items repeated ten times.
 
-Protocol v2 (docs/research/paper-v9/REVIEW-2026-09-21-external-3.md)
+Protocol v2 (docs/research/gain-over-copy-paper/REVIEW-2026-09-21-external-3.md)
 -------------------------------------------------------------------
 The third external review asked for three things, all added here without disturbing
 the v1 outputs; `summarise` reports both protocols side by side.

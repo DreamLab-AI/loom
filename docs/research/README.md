@@ -7,11 +7,11 @@ its limitations before quoting a number from it.
 
 ## Current manuscript
 
-**[`paper-v9/main.pdf`](paper-v9/main.pdf)** — *The Copy Ceiling: An Input-Exposure Control
-for Ontology-Grounded Generation over Curated Corpora* (26 pp, 21 September 2026, v9.1).
+**[`gain-over-copy-paper/gain-over-copy-paper.pdf`](gain-over-copy-paper/gain-over-copy-paper.pdf)** — *The Copy Ceiling: An Input-Exposure Control
+for Ontology-Grounded Generation over Curated Corpora* (28 pp, 21 September 2026, v9.2).
 
 This is the version to cite. Every table, figure and headline number in it maps to a released
-artefact and a released script ([`paper-v9/MANIFEST.md`](paper-v9/MANIFEST.md)); nothing in it
+artefact and a released script ([`gain-over-copy-paper/MANIFEST.md`](gain-over-copy-paper/MANIFEST.md)); nothing in it
 is reported without its observations.
 
 **What it establishes.** When a model answers from a curated corpus and the gold answers derive
@@ -56,12 +56,12 @@ Alongside the manuscript:
 
 | File | What it is |
 |---|---|
-| [`paper-v9/MANIFEST.md`](paper-v9/MANIFEST.md) | table-to-artefact manifest: every table, figure and headline number mapped to its released rows and generating script |
-| [`paper-v9/CHANGES-2026-09-21-v9.md`](paper-v9/CHANGES-2026-09-21-v9.md) | what left, what was re-run, what changed, 26 pp → 24 pp |
-| [`paper-v9/arxiv-v9.zip`](paper-v9/arxiv-v9.zip) | the arXiv bundle, verified to build standalone |
-| [`paper-v8/REVIEW-2026-09-21-external.md`](paper-v8/REVIEW-2026-09-21-external.md), [`paper-v8/REVIEW-2026-09-21-external-2.md`](paper-v8/REVIEW-2026-09-21-external-2.md) | the two external reviews, verbatim |
-| [`paper-v8/REMEDIATION-2026-09-21.md`](paper-v8/REMEDIATION-2026-09-21.md) | the first review's item-by-item disposition; the second review's dispositions are the v9 change log and the artefacts below |
-| [`paper-v8/notes/`](paper-v8/notes/) | the verification passes: fact-check, prior-work, recomputation, number provenance (`R5-numbers.md`) |
+| [`gain-over-copy-paper/MANIFEST.md`](gain-over-copy-paper/MANIFEST.md) | table-to-artefact manifest: every table, figure and headline number mapped to its released rows and generating script |
+| [`gain-over-copy-paper/CHANGES-2026-09-21-v9.md`](gain-over-copy-paper/CHANGES-2026-09-21-v9.md) | what left, what was re-run, what changed, 26 pp → 24 pp |
+| [`gain-over-copy-paper/gain-over-copy-paper-arxiv.zip`](gain-over-copy-paper/gain-over-copy-paper-arxiv.zip) | the arXiv bundle, verified to build standalone |
+| [`gain-over-copy-paper/archive/v7/REVIEW-2026-09-21-external-1.md`](gain-over-copy-paper/archive/v7/REVIEW-2026-09-21-external-1.md), [`gain-over-copy-paper/archive/v8/REVIEW-2026-09-21-external-2.md`](gain-over-copy-paper/archive/v8/REVIEW-2026-09-21-external-2.md) | the two external reviews, verbatim |
+| [`gain-over-copy-paper/archive/v8/REMEDIATION-2026-09-21.md`](gain-over-copy-paper/archive/v8/REMEDIATION-2026-09-21.md) | the first review's item-by-item disposition; the second review's dispositions are the v9 change log and the artefacts below |
+| [`gain-over-copy-paper/archive/v8/notes/`](gain-over-copy-paper/archive/v8/notes/) | the verification passes: fact-check, prior-work, recomputation, number provenance (`R5-numbers.md`) |
 
 ## Companion note
 
@@ -83,32 +83,39 @@ See [`companion-routing/HARNESS-NOTES.md`](companion-routing/HARNESS-NOTES.md) f
 
 ## Reviewed versions (superseded)
 
-**[`paper-v8/main.pdf`](paper-v8/main.pdf)** — the v8 text (26 pp) the second external review
+**[`gain-over-copy-paper/archive/v8/main-v8.tex`](gain-over-copy-paper/archive/v8/main-v8.tex)** — the v8 text (26 pp, source only) the second external review
 read. It still reported the five-arm control rerun, the two-edge composition study and the
 original paraphrase stress set, none of which had surviving observations; v9 removes the first
 two and replaces the third with a fresh set. Do not cite it.
 
-**[`paper-v6/main.pdf`](paper-v6/main.pdf)** — the v7 text (31 pp, 21 September 2026). This
+**[`gain-over-copy-paper/archive/v7/main-v7.tex`](gain-over-copy-paper/archive/v7/main-v7.tex)** — the v7 text (31 pp, 21 September 2026, source only). This
 is the manuscript the first external review read, kept so the review can be checked against what it
 reviewed. Its §Ideal State architecture section and its routing section do not survive into
 v8, and several of its claims are retracted there — notably the "thirty times worse outside
 the corpus" reading of the suppression result, the content-specificity reading of the
 controls, and the description of the placebo as a correctly specified floor. Do not cite it.
-Its own predecessor's review and ledger are [`paper-v6/REVIEW-2026-09-11.md`](paper-v6/REVIEW-2026-09-11.md)
-and [`paper-v6/REMEDIATION-2026-09-11.md`](paper-v6/REMEDIATION-2026-09-11.md).
+Its own predecessor's review and ledger are [`gain-over-copy-paper/archive/v6/REVIEW-2026-09-11.md`](gain-over-copy-paper/archive/v6/REVIEW-2026-09-11.md)
+and [`gain-over-copy-paper/archive/v6/REMEDIATION-2026-09-11.md`](gain-over-copy-paper/archive/v6/REMEDIATION-2026-09-11.md).
 
-## Frozen preprint
+## Archive of earlier versions
 
-**[`paper-v2/main.pdf`](paper-v2/main.pdf)** — *…over Private Corpora* (22 pp, 2026-08-18).
-The arXiv preprint as first posted. Frozen; do not edit. Read as a historical record: it
-describes the placebo as verified irrelevant, reads the four-arm controls as consistent with
-content-specific transfer, and frames the headline as delivery rather than reasoning. The
-control rerun retracted the first two readings and the external review retracted the third.
+Every earlier manuscript lives as source under [`gain-over-copy-paper/archive/`](gain-over-copy-paper/archive/): `v2/`
+(the arXiv preprint as first posted, 2026-08-18), `v3/` (a model-re-voiced edition of v2,
+generated by `tools/paper/rewrite_v4.py`), `v4/` and `v5/` (intermediate drafts), `v6/` and
+`v7/` (the text the first external review read, with its review and ledger), `v8/` (the text
+the second review read, with both reviews, its ledger, manifest and the verification notes),
+`preprint/` (the earliest scaffold and survey notes) and `uplift-report/` (the LaTeX of the
+precursor uplift report). The PDFs of those versions are not kept; each source records what it
+claimed at the time and several of those claims were retracted. Do not cite them. The third
+review is beside the current paper as `REVIEW-2026-09-21-external-3.md`.
 
-`paper-v3/` is a model-re-voiced edition of paper-v2, generated by `tools/paper/rewrite_v4.py`
-under mechanically-enforced invariant checks (see [`paper-v4-smoke-notes.md`](paper-v4-smoke-notes.md)
-and `paper-v3/REWRITE-REPORT.md`). Generated output, not a re-measurement; its claims are
-paper-v2's. `paper-v4/` and `paper-v5/` are intermediate drafts.
+## Design notes
+
+[`design-notes/private-corpus-programme.md`](design-notes/private-corpus-programme.md) preserves
+the private-corpus architecture programme from v7's "Ideal State" section as requirements, each
+marked implemented, tested or untested, with the three retracted claims stated up front so they
+are not reconstructed. The two-edge composition design survives as an appendix protocol in the
+current paper; its earlier execution is not reported.
 
 ## Per-row evidence
 
@@ -162,7 +169,7 @@ Under [`../../tools/paper/`](../../tools/paper/):
 | `analyze.py`, `analyze_controls.py` | the paired and control-contrast statistics; `analyze.py` implements the exact conditional signed-rank test |
 | `decompose_exposure.py` | the exposure/recovery decomposition, with the copy-as-answer invariant as a hard gate |
 | `parametric_suppression.py` | the bare-versus-grounded comparison on unexposed items; **prints to stdout, writes no file** |
-| `rewrite_v4.py` | the paragraph re-voicing harness that produced paper-v3 |
+| `rewrite_v4.py` | the paragraph re-voicing harness that produced the archived v3 edition |
 
 Study 1's sweep is driven by `bench/sweep/{launch-sweep.sh,run-one-model.sh,analyse.py}` and
 the judged arms by `bench/quality/`. **Caveat:** the Python harness both call,

@@ -199,7 +199,7 @@ Three findings, all load-bearing for this design (Gemma cross-check in flight):
    *secondary* to scaffold injection for grounding.
 
 > **Addendum (2026-08-18).** This subsection reads the raw→scaffold gap as the scaffold "doing
-> the work". The later measurement in [`docs/research/paper-v2/main.pdf`](../research/paper-v2/main.pdf)
+> the work". The later measurement in [`docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf`](../research/gain-over-copy-paper/gain-over-copy-paper.pdf)
 > (*The Copy Ceiling*) re-centres that reading: the ~3.5× is faithful **delivery** of facts the
 > scaffold already exposes, measured against a verbatim-copy ceiling (0.964 on this node), not
 > reasoning over structure. Across ten models from five providers the gain *over that ceiling* is
