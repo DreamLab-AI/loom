@@ -1,0 +1,554 @@
+{
+  "thresholds": [
+    0.8,
+    0.85,
+    0.9
+  ],
+  "sanity": {
+    "lexical_hit_sample_n": 126,
+    "agreement_by_threshold": {
+      "0.8": 1.0,
+      "0.85": 1.0,
+      "0.9": 1.0
+    }
+  },
+  "per_model": {
+    "gemini-3.7-flash-t0": {
+      "display": "gemini-3.7-flash",
+      "lexical_recall": 0.9423,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0222,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9526,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0276,
+          "gain_ci95": [
+            -0.0349,
+            -0.0206
+          ],
+          "n11_exposed_recovered": 1036,
+          "n10_exposed_omitted": 58,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 42,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.945,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0227,
+          "gain_ci95": [
+            -0.0298,
+            -0.0161
+          ],
+          "n11_exposed_recovered": 1018,
+          "n10_exposed_omitted": 49,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.9198,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0168,
+          "gain_ci95": [
+            -0.023,
+            -0.0111
+          ],
+          "n11_exposed_recovered": 998,
+          "n10_exposed_omitted": 36,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 102,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "gemini-3.5-flash-lite": {
+      "display": "gemini-3.5-flash-lite",
+      "lexical_recall": 0.938,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0264,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9485,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0317,
+          "gain_ci95": [
+            -0.0411,
+            -0.0231
+          ],
+          "n11_exposed_recovered": 1028,
+          "n10_exposed_omitted": 66,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 42,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9413,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0264,
+          "gain_ci95": [
+            -0.0356,
+            -0.0181
+          ],
+          "n11_exposed_recovered": 1011,
+          "n10_exposed_omitted": 56,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.918,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0186,
+          "gain_ci95": [
+            -0.0276,
+            -0.0106
+          ],
+          "n11_exposed_recovered": 991,
+          "n10_exposed_omitted": 43,
+          "n01_unexposed_recovered": 3,
+          "n00_unexposed_omitted": 99,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "gemini-2.5-flash-lite": {
+      "display": "gemini-2.5-flash-lite",
+      "lexical_recall": 0.8971,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0674,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.919,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0612,
+          "gain_ci95": [
+            -0.0781,
+            -0.0455
+          ],
+          "n11_exposed_recovered": 990,
+          "n10_exposed_omitted": 104,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 42,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9131,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0546,
+          "gain_ci95": [
+            -0.071,
+            -0.0392
+          ],
+          "n11_exposed_recovered": 970,
+          "n10_exposed_omitted": 97,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.8761,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0605,
+          "gain_ci95": [
+            -0.0786,
+            -0.0431
+          ],
+          "n11_exposed_recovered": 944,
+          "n10_exposed_omitted": 90,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 102,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "claude-haiku-4.5": {
+      "display": "claude-haiku-4.5",
+      "lexical_recall": 0.9338,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0307,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9539,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0263,
+          "gain_ci95": [
+            -0.0369,
+            -0.0169
+          ],
+          "n11_exposed_recovered": 1043,
+          "n10_exposed_omitted": 51,
+          "n01_unexposed_recovered": 1,
+          "n00_unexposed_omitted": 41,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9431,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0246,
+          "gain_ci95": [
+            -0.035,
+            -0.0153
+          ],
+          "n11_exposed_recovered": 1019,
+          "n10_exposed_omitted": 48,
+          "n01_unexposed_recovered": 1,
+          "n00_unexposed_omitted": 68,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.9168,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0199,
+          "gain_ci95": [
+            -0.0306,
+            -0.0101
+          ],
+          "n11_exposed_recovered": 992,
+          "n10_exposed_omitted": 42,
+          "n01_unexposed_recovered": 2,
+          "n00_unexposed_omitted": 100,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "gpt-4.1-mini": {
+      "display": "gpt-4.1-mini",
+      "lexical_recall": 0.9049,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0596,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9273,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0529,
+          "gain_ci95": [
+            -0.0681,
+            -0.0391
+          ],
+          "n11_exposed_recovered": 1000,
+          "n10_exposed_omitted": 94,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 42,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9155,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0523,
+          "gain_ci95": [
+            -0.0682,
+            -0.0375
+          ],
+          "n11_exposed_recovered": 977,
+          "n10_exposed_omitted": 90,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.8903,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0464,
+          "gain_ci95": [
+            -0.0636,
+            -0.0304
+          ],
+          "n11_exposed_recovered": 954,
+          "n10_exposed_omitted": 80,
+          "n01_unexposed_recovered": 2,
+          "n00_unexposed_omitted": 100,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "deepseek-chat": {
+      "display": "deepseek-chat",
+      "lexical_recall": 0.9245,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.04,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9361,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0441,
+          "gain_ci95": [
+            -0.0568,
+            -0.0324
+          ],
+          "n11_exposed_recovered": 1014,
+          "n10_exposed_omitted": 80,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 42,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9292,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0385,
+          "gain_ci95": [
+            -0.0509,
+            -0.0271
+          ],
+          "n11_exposed_recovered": 998,
+          "n10_exposed_omitted": 69,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.9099,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0268,
+          "gain_ci95": [
+            -0.0407,
+            -0.0134
+          ],
+          "n11_exposed_recovered": 975,
+          "n10_exposed_omitted": 59,
+          "n01_unexposed_recovered": 4,
+          "n00_unexposed_omitted": 98,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "glm-4.6": {
+      "display": "glm-4.6",
+      "lexical_recall": 0.9281,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0363,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.94,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0402,
+          "gain_ci95": [
+            -0.053,
+            -0.0288
+          ],
+          "n11_exposed_recovered": 1026,
+          "n10_exposed_omitted": 68,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 42,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9324,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0354,
+          "gain_ci95": [
+            -0.0478,
+            -0.0241
+          ],
+          "n11_exposed_recovered": 1010,
+          "n10_exposed_omitted": 57,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.9067,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.03,
+          "gain_ci95": [
+            -0.0422,
+            -0.0193
+          ],
+          "n11_exposed_recovered": 989,
+          "n10_exposed_omitted": 45,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 102,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "qwen-2.5-72b": {
+      "display": "qwen-2.5-72b",
+      "lexical_recall": 0.9142,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0503,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9466,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0337,
+          "gain_ci95": [
+            -0.0463,
+            -0.0224
+          ],
+          "n11_exposed_recovered": 1036,
+          "n10_exposed_omitted": 58,
+          "n01_unexposed_recovered": 1,
+          "n00_unexposed_omitted": 41,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9305,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0373,
+          "gain_ci95": [
+            -0.0505,
+            -0.0251
+          ],
+          "n11_exposed_recovered": 1005,
+          "n10_exposed_omitted": 62,
+          "n01_unexposed_recovered": 2,
+          "n00_unexposed_omitted": 67,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.9006,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0361,
+          "gain_ci95": [
+            -0.0512,
+            -0.0217
+          ],
+          "n11_exposed_recovered": 971,
+          "n10_exposed_omitted": 63,
+          "n01_unexposed_recovered": 4,
+          "n00_unexposed_omitted": 98,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "llama-3.3-70b": {
+      "display": "llama-3.3-70b",
+      "lexical_recall": 0.9156,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0489,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9372,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0431,
+          "gain_ci95": [
+            -0.057,
+            -0.0308
+          ],
+          "n11_exposed_recovered": 1026,
+          "n10_exposed_omitted": 68,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 42,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9284,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0393,
+          "gain_ci95": [
+            -0.0528,
+            -0.0272
+          ],
+          "n11_exposed_recovered": 1006,
+          "n10_exposed_omitted": 61,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.8999,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0367,
+          "gain_ci95": [
+            -0.052,
+            -0.0225
+          ],
+          "n11_exposed_recovered": 980,
+          "n10_exposed_omitted": 54,
+          "n01_unexposed_recovered": 2,
+          "n00_unexposed_omitted": 100,
+          "n_gold_items": 1136
+        }
+      }
+    },
+    "mistral-small-24b": {
+      "display": "mistral-small-24b",
+      "lexical_recall": 0.9061,
+      "lexical_ceiling": 0.9645,
+      "lexical_gain": -0.0583,
+      "semantic": {
+        "0.8": {
+          "n_questions": 510,
+          "semantic_recall": 0.9254,
+          "semantic_ceiling": 0.9802,
+          "semantic_gain": -0.0548,
+          "gain_ci95": [
+            -0.0712,
+            -0.0395
+          ],
+          "n11_exposed_recovered": 1008,
+          "n10_exposed_omitted": 86,
+          "n01_unexposed_recovered": 1,
+          "n00_unexposed_omitted": 41,
+          "n_gold_items": 1136
+        },
+        "0.85": {
+          "n_questions": 510,
+          "semantic_recall": 0.9157,
+          "semantic_ceiling": 0.9677,
+          "semantic_gain": -0.0521,
+          "gain_ci95": [
+            -0.0683,
+            -0.0368
+          ],
+          "n11_exposed_recovered": 987,
+          "n10_exposed_omitted": 80,
+          "n01_unexposed_recovered": 0,
+          "n00_unexposed_omitted": 69,
+          "n_gold_items": 1136
+        },
+        "0.9": {
+          "n_questions": 510,
+          "semantic_recall": 0.8877,
+          "semantic_ceiling": 0.9366,
+          "semantic_gain": -0.0489,
+          "gain_ci95": [
+            -0.0664,
+            -0.0325
+          ],
+          "n11_exposed_recovered": 961,
+          "n10_exposed_omitted": 73,
+          "n01_unexposed_recovered": 3,
+          "n00_unexposed_omitted": 99,
+          "n_gold_items": 1136
+        }
+      }
+    }
+  },
+  "pooled_n01_at_0.85": {
+    "n01": 3,
+    "n10": 669,
+    "n11": 10001,
+    "n00": 687,
+    "n_items": 11360
+  }
+}

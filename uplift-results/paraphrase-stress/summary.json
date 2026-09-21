@@ -1,0 +1,66 @@
+{
+  "study": "paraphrase stress set (fresh regeneration, 2026-09-21)",
+  "is_reproduction_of_paper": false,
+  "generator": {
+    "model": "openai/gpt-4.1",
+    "temperature": 0.0,
+    "seed": 42,
+    "via": "openrouter"
+  },
+  "retrieval": {
+    "lexical": "http://192.168.2.132:8084/loom/scaffold",
+    "semantic": "harness-side top-5 cosine over class embeddings (facade semantic path is unconfigured: semantic.ready=false)"
+  },
+  "matcher": "tools/paper/decompose_exposure.py (gold_hit/exposed_flags)",
+  "counts": {
+    "questions": 510,
+    "accepted": 506,
+    "rejected_unrecoverable": 4,
+    "scored": 506,
+    "total_rejected_attempts": 61,
+    "rejection_reasons": {
+      "gold named verbatim": 33,
+      "relation not preserved": 23,
+      "seed-title-token leak": 5
+    },
+    "mean_attempts_per_question": 1.112,
+    "leak_check_failures_in_final_set": 0
+  },
+  "ceilings": {
+    "mean_original_lexical_v1": 0.9642,
+    "mean_original_lexical_facade": 0.9642,
+    "mean_paraphrase_lexical": 0.3275,
+    "mean_paraphrase_semantic": 0.5964,
+    "fraction_paraphrase_below_0.5": 0.6443,
+    "n_paraphrase_below_0.5": 326
+  },
+  "semantic_recovery": {
+    "mean_gain_all": 0.2689,
+    "ci95_all": [
+      0.2265,
+      0.3099
+    ],
+    "mean_gain_on_failing_subset": 0.4456,
+    "ci95_failing_subset": [
+      0.3979,
+      0.4928
+    ],
+    "n_failing_subset": 326
+  },
+  "fallback": {
+    "n_triggered": 2,
+    "fraction": 0.003953,
+    "definition": "facade returned no seeds / did not engage"
+  },
+  "paper_comparison": {
+    "paper_mean_original": 0.96,
+    "paper_mean_paraphrase": 0.34,
+    "paper_fraction_below_0.5": 0.62,
+    "paper_fallback_fired": "3/510",
+    "paper_semantic_recovery_on_failing": 0.42,
+    "paper_semantic_ci95": [
+      0.38,
+      0.47
+    ]
+  }
+}

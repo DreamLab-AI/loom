@@ -1,0 +1,63 @@
+[embed_lib] embedded 5120/104360[embed_lib] embedded 10240/104360[embed_lib] embedded 15360/104360[embed_lib] embedded 20480/104360[embed_lib] embedded 25600/104360[embed_lib] embedded 30720/104360[embed_lib] embedded 35840/104360[embed_lib] embedded 40960/104360[embed_lib] embedded 46080/104360[embed_lib] embedded 51200/104360[embed_lib] embedded 56320/104360[embed_lib] embedded 61440/104360[embed_lib] embedded 66560/104360[embed_lib] embedded 71680/104360[embed_lib] embedded 76800/104360[embed_lib] embedded 81920/104360[embed_lib] embedded 87040/104360[embed_lib] embedded 92160/104360[embed_lib] embedded 97280/104360[embed_lib] embedded 102400/104360[embed_lib] embedded 104360/104360
+[embed_lib] embedded 5193/5193
+[embed_lib] embedded 5120/8905[embed_lib] embedded 8905/8905
+[embed_lib] embedded 5120/7857[embed_lib] embedded 7857/7857
+[embed_lib] embedded 5120/62394[embed_lib] embedded 10240/62394[embed_lib] embedded 15360/62394[embed_lib] embedded 20480/62394[embed_lib] embedded 25600/62394[embed_lib] embedded 30720/62394[embed_lib] embedded 35840/62394[embed_lib] embedded 40960/62394[embed_lib] embedded 46080/62394[embed_lib] embedded 51200/62394[embed_lib] embedded 56320/62394[embed_lib] embedded 61440/62394[embed_lib] embedded 62394/62394
+[embed_lib] embedded 5060/5060
+[embed_lib] embedded 5120/12834[embed_lib] embedded 10240/12834[embed_lib] embedded 12834/12834
+[embed_lib] embedded 5120/6305[embed_lib] embedded 6305/6305
+[embed_lib] embedded 5120/48228[embed_lib] embedded 10240/48228[embed_lib] embedded 15360/48228[embed_lib] embedded 20480/48228[embed_lib] embedded 25600/48228[embed_lib] embedded 30720/48228[embed_lib] embedded 35840/48228[embed_lib] embedded 40960/48228[embed_lib] embedded 46080/48228[embed_lib] embedded 48228/48228
+[embed_lib] embedded 5120/12365[embed_lib] embedded 10240/12365[embed_lib] embedded 12365/12365
+[embed_lib] embedded 5120/10111[embed_lib] embedded 10111/10111
+Phase A: extracting candidate spans / gold titles ...
+  gold titles: 778
+  copy-context questions: 510, total copy candidate strings (with dup across qs): 977516
+  unique strings to embed (gold+copy, before model answers): 104360
+  gemini-3.7-flash-t0: 510 answers, 8257 unique candidate strings
+  gemini-3.5-flash-lite: 510 answers, 13663 unique candidate strings
+  gemini-2.5-flash-lite: 510 answers, 15323 unique candidate strings
+  claude-haiku-4.5: 510 answers, 87580 unique candidate strings
+  gpt-4.1-mini: 510 answers, 16094 unique candidate strings
+  deepseek-chat: 510 answers, 25852 unique candidate strings
+  glm-4.6: 510 answers, 23899 unique candidate strings
+  qwen-2.5-72b: 510 answers, 79342 unique candidate strings
+  llama-3.3-70b: 510 answers, 28025 unique candidate strings
+  mistral-small-24b: 510 answers, 33930 unique candidate strings
+Total cached vectors: 283612
+
+Phase C: sanity-checking semantic matcher against lexical hits ...
+  lexical-hit sample size: 126
+  threshold 0.8: semantic agrees on 126/126 (100.0%) of lexical hits
+  threshold 0.85: semantic agrees on 126/126 (100.0%) of lexical hits
+  threshold 0.9: semantic agrees on 126/126 (100.0%) of lexical hits
+
+Phase D: scoring ...
+  gemini-3.7-flash: lexical gain -0.0222 | sem@0.8 gain -0.0276 n01=0 | sem@0.85 gain -0.0227 n01=0 | sem@0.9 gain -0.0168 n01=0
+  gemini-3.5-flash-lite: lexical gain -0.0264 | sem@0.8 gain -0.0317 n01=0 | sem@0.85 gain -0.0264 n01=0 | sem@0.9 gain -0.0186 n01=3
+  gemini-2.5-flash-lite: lexical gain -0.0674 | sem@0.8 gain -0.0612 n01=0 | sem@0.85 gain -0.0546 n01=0 | sem@0.9 gain -0.0605 n01=0
+  claude-haiku-4.5: lexical gain -0.0307 | sem@0.8 gain -0.0263 n01=1 | sem@0.85 gain -0.0246 n01=1 | sem@0.9 gain -0.0199 n01=2
+  gpt-4.1-mini: lexical gain -0.0596 | sem@0.8 gain -0.0529 n01=0 | sem@0.85 gain -0.0523 n01=0 | sem@0.9 gain -0.0464 n01=2
+  deepseek-chat: lexical gain -0.0400 | sem@0.8 gain -0.0441 n01=0 | sem@0.85 gain -0.0385 n01=0 | sem@0.9 gain -0.0268 n01=4
+  glm-4.6: lexical gain -0.0363 | sem@0.8 gain -0.0402 n01=0 | sem@0.85 gain -0.0354 n01=0 | sem@0.9 gain -0.0300 n01=0
+  qwen-2.5-72b: lexical gain -0.0503 | sem@0.8 gain -0.0337 n01=1 | sem@0.85 gain -0.0373 n01=2 | sem@0.9 gain -0.0361 n01=4
+  llama-3.3-70b: lexical gain -0.0489 | sem@0.8 gain -0.0431 n01=0 | sem@0.85 gain -0.0393 n01=0 | sem@0.9 gain -0.0367 n01=2
+  mistral-small-24b: lexical gain -0.0583 | sem@0.8 gain -0.0548 n01=1 | sem@0.85 gain -0.0521 n01=0 | sem@0.9 gain -0.0489 n01=3
+
+Wrote rescore_results.json
+{
+  "sanity": {
+    "lexical_hit_sample_n": 126,
+    "agreement_by_threshold": {
+      "0.8": 1.0,
+      "0.85": 1.0,
+      "0.9": 1.0
+    }
+  },
+  "pooled_n01_at_0.85": {
+    "n01": 3,
+    "n10": 669,
+    "n11": 10001,
+    "n00": 687,
+    "n_items": 11360
+  }
+}
