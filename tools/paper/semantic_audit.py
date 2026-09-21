@@ -886,7 +886,8 @@ def cmd_judge(args) -> int:
     with open(os.path.join(OUT_DIR, "verdicts.jsonl"), "w") as fh:
         for v in sorted(verdicts, key=lambda v: (v["category"], v["unit_id"])):
             fh.write(json.dumps(v) + "\n")
-    meta = {"backend": chosen, "judge_model": judge_model,
+    meta = {"backend": chosen, "judge_base_url": spec[1],
+            "judge_model": judge_model, "judge_key_env": spec[3],
             "judge_family": spec[4], "judge_is_model_not_human": True,
             "backend_probes": probes, "temperature": 0,
             "rubric_sha256_16": RUBRIC_HASH,
@@ -1200,7 +1201,8 @@ def cmd_summarise(args) -> int:
             "judge's verdict."),
         "generated": datetime.now(timezone.utc).isoformat(),
         "judge": {k: meta[k] for k in (
-            "backend", "judge_model", "judge_family", "judge_is_model_not_human",
+            "backend", "judge_base_url", "judge_model", "judge_key_env",
+            "judge_family", "judge_is_model_not_human",
             "temperature", "rubric_sha256_16", "n_units", "n_verdicts",
             "n_failures", "n_repair_reasks", "repair_policy",
             "prompt_tokens", "completion_tokens", "cost_estimate_usd",
@@ -1555,7 +1557,8 @@ def render_markdown(s: dict) -> str:
     A("```\npython3 tools/paper/semantic_audit.py sample\n"
       "python3 tools/paper/semantic_audit.py judge\n"
       "python3 tools/paper/semantic_audit.py summarise\n```\n")
-    A(f"Judge model `{j['judge_model']}` via `{j['backend']}`, temperature "
+    A(f"Judge model `{j['judge_model']}` via `{j['backend']}` at "
+      f"`{j['judge_base_url']}` (key from `{j['judge_key_env']}`), temperature "
       f"{j['temperature']}, rubric sha256[:16] `{j['rubric_sha256_16']}`, seed "
       f"{s['seed']}. {j['n_verdicts']}/{j['n_units']} units returned a parseable "
       f"verdict ({j['n_failures']} failures, {j['n_repair_reasks']} repair re-asks). "

@@ -79,6 +79,20 @@ magnitude. The honest reading of this cohort is that its 36–50% attrition leav
 underpowered for everything except the loom-vs-raw comparison — which is precisely
 why the rerun under a common retry policy was worth doing.
 
+Two further things a reader should take from the per-scope tables below.
+
+**The effect is arcane-only.** `true − raw` is +0.9474 on the 24 `arcane` questions and
++0.0769 on the 33 `thin` ones; `loom − raw` is +0.8333 vs +0.4000. Pooling hides that
+split. Whatever the scaffold is doing, this cohort locates it in the in-corpus arcane
+questions, not in the thin-coverage set.
+
+**The common-intersection set is itself skewed.** The 20 questions graded in all six
+arms are 14 `arcane` and 6 `thin` — because attrition was concentrated in `thin`. So the
+intersection analysis is not a neutral subsample: it is an arcane-weighted one, which
+makes its point estimates run slightly high relative to the pooled complete-case column
+even as its n makes every p-value worse. Both effects should be read together, not
+separately.
+
 ## Per-arm accounting: planned → attempted → completed → graded
 
 | arm | planned | attempted | completed (non-empty) | empty | empty rate | graded |
