@@ -1,0 +1,897 @@
+[
+  {
+    "id": "q0009",
+    "domain": "ai",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Automated Reasoning? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Reasoning"
+    ],
+    "ontology_source": [
+      {
+        "title": "Automated Reasoning",
+        "definition": "Automated Reasoning is a subfield of artificial intelligence and computer science concerned with developing algorithms and systems that can perform logical inference, theorem proving, satisfiability checking, and knowledge-based deduction without continuous human guidance. It encompasses formal methods such as first-order logic, propositional calculus, and higher-order logics, implemented in syste",
+        "parents": [
+          "Reasoning"
+        ],
+        "ancestors": [
+          "AI Technique",
+          "Artificial General Intelligence",
+          "AI Research Area",
+          "Artificial Intelligence",
+          "Frontier AI"
+        ],
+        "relations": {
+          "hasPart": [
+            "Theorem Proving",
+            "Sat Solving",
+            "Model Checking",
+            "Description Logic"
+          ],
+          "requires": [
+            "Formal Logic",
+            "Knowledge Representation",
+            "Inference Engine"
+          ],
+          "enables": [
+            "Formal Verification",
+            "Automated Planning",
+            "Knowledge Graph",
+            "Program Synthesis"
+          ],
+          "uses": [
+            "First-Order Logic",
+            "Constraint Satisfaction"
+          ],
+          "relatedTo": [
+            "Symbolic Reasoning",
+            "Logic Programming",
+            "Neuro Symbolic Ai"
+          ],
+          "bridgesTo": [
+            "Formal Methods"
+          ],
+          "supports": [
+            "Symbolic AI",
+            "Expert Systems",
+            "AI Alignment"
+          ],
+          "contrastsWith": [
+            "Deep Learning",
+            "Probabilistic Reasoning"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0042",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Edge AI Accelerators?",
+    "gold_titles": [
+      "NPU",
+      "TPU",
+      "FPGA",
+      "GPU Compute"
+    ],
+    "ontology_source": [
+      {
+        "title": "Edge AI Accelerators",
+        "definition": "Edge AI Accelerators are specialised hardware processors \u2014 including Neural Processing Units (NPUs), Tensor Processing Units (TPUs), FPGAs, and custom ASICs \u2014 designed to execute machine learning inference workloads on resource-constrained edge devices with dramatically higher throughput and energy efficiency than general-purpose CPUs. By exploiting the inherent parallelism of neural network matri",
+        "parents": [
+          "AI Infrastructure"
+        ],
+        "ancestors": [
+          "Digital Infrastructure",
+          "Computing and Cloud",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "NPU",
+            "TPU",
+            "FPGA",
+            "GPU Compute"
+          ],
+          "requires": [
+            "Inference",
+            "Hardware Acceleration"
+          ],
+          "enables": [
+            "Edge Computing",
+            "Federated Learning",
+            "Autonomous Vehicle",
+            "Edge AI System"
+          ],
+          "dependsOn": [
+            "Model Compression for Edge",
+            "Knowledge Distillation for Edge"
+          ],
+          "uses": [
+            "Model Pruning for Edge Deployment",
+            "Embedded AI Frameworks"
+          ],
+          "relatedTo": [
+            "Embedded Systems",
+            "Inference Hardware",
+            "Neuromorphic Computing",
+            "Edge AI Security"
+          ],
+          "supports": [
+            "Autonomous Robot",
+            "Digital Twin"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0078",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Chainlink Oracles enable?",
+    "gold_titles": [
+      "Decentralized Finance (DeFi)",
+      "Smart Contract",
+      "Cross-Chain Interoperability"
+    ],
+    "ontology_source": [
+      {
+        "title": "Chainlink Oracles",
+        "definition": "Chainlink Oracles are decentralised oracle networks operated by the Chainlink protocol that securely fetch, validate, and deliver off-chain data to on-chain smart contracts. They aggregate inputs from multiple independent node operators using cryptographic proofs and reputation systems to ensure tamper-resistant data feeds. Widely deployed for price feeds, verifiable randomness, and cross-chain co",
+        "parents": [
+          "Oracle Network"
+        ],
+        "ancestors": [
+          "Network Component (Blockchain)",
+          "Blockchain"
+        ],
+        "relations": {
+          "enables": [
+            "Decentralized Finance (DeFi)",
+            "Smart Contract",
+            "Cross-Chain Interoperability"
+          ],
+          "uses": [
+            "Cryptographic Proof",
+            "Verifiable Random Function"
+          ],
+          "relatedTo": [
+            "Chainlink",
+            "Price Oracle",
+            "Chainlink CCIP"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0125",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Linked Data use?",
+    "gold_titles": [
+      "JSON-LD",
+      "SPARQL",
+      "Turtle",
+      "OWL",
+      "Schema.org"
+    ],
+    "ontology_source": [
+      {
+        "title": "Linked Data",
+        "definition": "Linked Data is a set of design principles articulated by Tim Berners-Lee for publishing machine-readable structured data on the Web, requiring that entities be identified by HTTP URIs, that those URIs dereference to useful RDF descriptions, and that descriptions include typed links to further URIs enabling traversal across a global Web of Data. It constitutes the application layer of the Semantic ",
+        "parents": [
+          "Data Management (Infrastructure)"
+        ],
+        "ancestors": [
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "RDF",
+            "HTTP",
+            "URI"
+          ],
+          "enables": [
+            "Knowledge Graph",
+            "Knowledge Graph Construction",
+            "Federated Query",
+            "Open Data"
+          ],
+          "implements": [
+            "Linked Data Platform"
+          ],
+          "uses": [
+            "JSON-LD",
+            "SPARQL",
+            "Turtle",
+            "OWL",
+            "Schema.org"
+          ],
+          "relatedTo": [
+            "Ontology",
+            "Wikidata",
+            "DBpedia",
+            "Dublin Core"
+          ],
+          "bridgesTo": [
+            "Knowledge Representation",
+            "Entity Linking",
+            "Retrieval-Augmented Generation"
+          ],
+          "standardizedBy": [
+            "W3C",
+            "RDF Schema"
+          ],
+          "contrastsWith": [
+            "Relational Database",
+            "Data Silo"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0154",
+    "domain": "distributed-collaboration",
+    "template": "T-REL",
+    "question_natural": "What does Conflict Free Replicated Data Type enable?",
+    "gold_titles": [
+      "Operational Transformation",
+      "State Synchronisation",
+      "Conflict Resolution"
+    ],
+    "ontology_source": [
+      {
+        "title": "Conflict Free Replicated Data Type",
+        "definition": "A conflict-free replicated data type (CRDT) is a data structure that can be replicated across many nodes and updated independently, with mathematical guarantees that all replicas converge to the same state once they have exchanged updates. By designing operations to be commutative or merges to be monotonic, CRDTs avoid the need for coordination or central conflict resolution. They are a foundation",
+        "parents": [
+          "Eventual Consistency"
+        ],
+        "ancestors": [
+          "Computing and Cloud",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Eventual Consistency"
+          ],
+          "enables": [
+            "Operational Transformation",
+            "State Synchronisation",
+            "Conflict Resolution"
+          ],
+          "dependsOn": [
+            "Replication",
+            "Concurrency"
+          ],
+          "implements": [
+            "Eventual Consistency"
+          ],
+          "uses": [
+            "Vector Clock",
+            "Replication"
+          ],
+          "partOf": [
+            "Distributed Collaboration",
+            "Distributed System"
+          ],
+          "relatedTo": [
+            "Conflict Resolution",
+            "Vector Clock",
+            "Concurrency"
+          ],
+          "bridgesTo": [
+            "Distributed System"
+          ],
+          "supports": [
+            "Distributed Collaboration",
+            "State Synchronisation"
+          ],
+          "contrastsWith": [
+            "Operational Transformation"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0190",
+    "domain": "distributed-systems",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Decentralisation? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Governance Framework"
+    ],
+    "ontology_source": [
+      {
+        "title": "Decentralisation",
+        "definition": "Decentralisation is the architectural and governance principle of distributing authority, control, computation, or data storage across multiple independent nodes or actors rather than concentrating it in a single entity. In technical systems it manifests as distributed ledgers, peer-to-peer networks, and federated protocols that eliminate single points of failure and censorship. In governance it r",
+        "parents": [
+          "Governance Framework"
+        ],
+        "ancestors": [
+          "Legal and Regulatory",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "Consensus Mechanism",
+            "Nakamoto Coefficient",
+            "Sybil Resistance"
+          ],
+          "requires": [
+            "Byzantine Fault Tolerance",
+            "Cryptographic Hash Function",
+            "Incentive Mechanism"
+          ],
+          "enables": [
+            "Decentralised Finance",
+            "Decentralised Identity",
+            "Censorship Resistance",
+            "Permissionless Innovation"
+          ],
+          "implements": [
+            "Peer-to-Peer Network",
+            "Distributed Ledger Technology"
+          ],
+          "relatedTo": [
+            "Open Source Software",
+            "Network Topology",
+            "Self Sovereign Identity"
+          ],
+          "bridgesTo": [
+            "Edge Computing",
+            "Federated Learning",
+            "Supply Chain Transparency"
+          ],
+          "supports": [
+            "Blockchain Governance",
+            "Decentralized Governance",
+            "DAO",
+            "Fault Tolerance"
+          ],
+          "contrastsWith": [
+            "Federated System"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0224",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Cryptocurrency Exchange?",
+    "gold_titles": [
+      "Order Book",
+      "Hot Wallet",
+      "Wallet"
+    ],
+    "ontology_source": [
+      {
+        "title": "Cryptocurrency Exchange",
+        "definition": "A cryptocurrency exchange is a platform that enables the trading of digital assets for other cryptocurrencies or for fiat currency. Exchanges match buy and sell orders, provide custody or settlement of funds, and supply liquidity and price discovery for crypto markets. They range from centralised intermediaries holding customer assets to decentralised protocols that execute trades on-chain.",
+        "parents": [
+          "Digital Economy"
+        ],
+        "ancestors": [
+          "Economic Systems",
+          "Platform and Environment",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Order Book",
+            "Hot Wallet",
+            "Wallet"
+          ],
+          "requires": [
+            "Custody",
+            "Blockchain"
+          ],
+          "enables": [
+            "Liquidity"
+          ],
+          "uses": [
+            "KYC",
+            "Fiat Currency"
+          ],
+          "partOf": [
+            "Digital Economy"
+          ],
+          "relatedTo": [
+            "Cryptocurrency",
+            "Bitcoin",
+            "Tether",
+            "Stablecoin"
+          ],
+          "bridgesTo": [
+            "Fiat Currency"
+          ],
+          "supports": [
+            "Liquidity",
+            "Custody"
+          ],
+          "contrastsWith": [
+            "Decentralised Exchange",
+            "Centralised Exchange"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0264",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Digital Rights Management? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Content Protection"
+    ],
+    "ontology_source": [
+      {
+        "title": "Digital Rights Management",
+        "definition": "Technology systems and protocols that control access to, distribution of, and usage rights for digital content including media, software, and virtual assets, increasingly leveraging blockchain and smart contracts for transparent, decentralised rights enforcement and automated royalty distribution.",
+        "parents": [
+          "Content Protection"
+        ],
+        "ancestors": [
+          "Governance and Safety",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Key Management System"
+          ],
+          "requires": [
+            "Encryption",
+            "Smart Contracts",
+            "Public Key Infrastructure",
+            "Digital Watermarking"
+          ],
+          "enables": [
+            "Piracy Prevention",
+            "Access Control",
+            "Royalty Distribution",
+            "Content Monetisation"
+          ],
+          "implements": [
+            "Trusted Execution Environment"
+          ],
+          "uses": [
+            "Blockchain",
+            "Non-Fungible Token",
+            "Cryptographic Hash Function"
+          ],
+          "relatedTo": [
+            "Trusted Platform Module"
+          ],
+          "bridgesTo": [
+            "Metaverse",
+            "Decentralised Finance"
+          ],
+          "contrastsWith": [
+            "open-source-licensing",
+            "Creative Commons"
+          ]
+        },
+        "maturity": "draft"
+      }
+    ]
+  },
+  {
+    "id": "q0292",
+    "domain": "infrastructure",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Energy Management? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Power Management"
+    ],
+    "ontology_source": [
+      {
+        "title": "Energy Management",
+        "definition": "Energy management is the systematic process of monitoring, controlling, and optimising the generation, distribution, and consumption of energy in facilities, industrial processes, or grid infrastructure to minimise cost, reduce waste, and meet sustainability and regulatory targets. It encompasses metering infrastructure, energy auditing, demand-side management, load forecasting, and integration of",
+        "parents": [
+          "Power Management"
+        ],
+        "ancestors": [
+          "Embedded Systems",
+          "Computing and Cloud",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "energy-audit"
+          ],
+          "requires": [
+            "Smart Metering",
+            "SCADA"
+          ],
+          "enables": [
+            "Demand Response",
+            "Smart Grid",
+            "Environmental Sustainability",
+            "virtual-power-plant"
+          ],
+          "uses": [
+            "IoT Sensor Network",
+            "Monitoring System",
+            "Digital Twin",
+            "Building Automation",
+            "Predictive Analytics"
+          ],
+          "relatedTo": [
+            "Renewable Energy",
+            "Power Systems",
+            "Industrial IoT",
+            "Carbon Footprint"
+          ],
+          "bridgesTo": [
+            "Reinforcement Learning",
+            "Carbon Markets"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0332",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Neural Network Text Tokenisation enable?",
+    "gold_titles": [
+      "Large Language Models",
+      "Transformer Architecture",
+      "Text Generation",
+      "Machine Translation",
+      "Text Classification"
+    ],
+    "ontology_source": [
+      {
+        "title": "Neural Network Text Tokenisation",
+        "definition": "The process of segmenting text into discrete units (tokens) \u2014 characters, subwords, or words \u2014 that serve as the atomic inputs to neural network language models, directly determining vocabulary size, out-of-vocabulary handling, and downstream model performance.",
+        "parents": [
+          "AI Technique"
+        ],
+        "ancestors": [
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "hasPart": [
+            "Byte Pair Encoding",
+            "Subword Tokenisation"
+          ],
+          "requires": [
+            "Vocabulary",
+            "Training Corpus"
+          ],
+          "enables": [
+            "Large Language Models",
+            "Transformer Architecture",
+            "Text Generation",
+            "Machine Translation",
+            "Text Classification"
+          ],
+          "dependsOn": [
+            "Language Model"
+          ],
+          "uses": [
+            "Neural Network",
+            "Embedding Layer",
+            "Language Model"
+          ],
+          "partOf": [
+            "Natural Language Processing",
+            "Text Preprocessing"
+          ],
+          "relatedTo": [
+            "Attention Mechanism",
+            "Context Window"
+          ],
+          "bridgesTo": [
+            "Computational Linguistics",
+            "Asset Tokenisation"
+          ],
+          "supports": [
+            "Named Entity Recognition",
+            "Sentiment Analysis",
+            "Question Answering"
+          ],
+          "contrastsWith": [
+            "word-level-tokenisation"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0353",
+    "domain": "metaverse",
+    "template": "T-REL",
+    "question_natural": "What does Cultural Heritage enable?",
+    "gold_titles": [
+      "Virtual Tourism",
+      "Education"
+    ],
+    "ontology_source": [
+      {
+        "title": "Cultural Heritage",
+        "definition": "The legacy of tangible artefacts (monuments, buildings, artworks, archives) and intangible attributes (language, performance, craft, ritual) inherited from past generations, maintained in the present, and safeguarded for future ones. In digital ecosystems, cultural heritage is increasingly captured, preserved, and re-presented through 3D scanning, digital twins, and immersive experiences, making i",
+        "parents": [
+          "Creative Industries"
+        ],
+        "ancestors": [
+          "Economics",
+          "Knowledge Economy",
+          "AI Research Area",
+          "Complexity Science",
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "enables": [
+            "Virtual Tourism",
+            "Education"
+          ],
+          "dependsOn": [
+            "Digital Preservation"
+          ],
+          "relatedTo": [
+            "Digital Objects",
+            "Digital Twin",
+            "Immersive Experience"
+          ]
+        },
+        "maturity": "mature"
+      }
+    ]
+  },
+  {
+    "id": "q0383",
+    "domain": "robotics",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Inertia Tensor? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Robot Dynamics"
+    ],
+    "ontology_source": [
+      {
+        "title": "Inertia Tensor",
+        "definition": "The inertia tensor is a 3x3 symmetric matrix that characterises how a rigid body's mass is distributed about a reference point, relating the body's angular velocity to its angular momentum. Its diagonal entries are the moments of inertia about the coordinate axes and its off-diagonal entries are the products of inertia. It is a foundational quantity in rigid-body dynamics, enabling computation of ",
+        "parents": [
+          "Robot Dynamics"
+        ],
+        "ancestors": [
+          "Actuation and Control",
+          "Robotics"
+        ],
+        "relations": {
+          "requires": [
+            "Rigid Body"
+          ],
+          "enables": [
+            "Dynamics"
+          ],
+          "dependsOn": [
+            "Manipulator"
+          ],
+          "uses": [
+            "Torque",
+            "Velocity"
+          ],
+          "partOf": [
+            "Rigid Body Dynamics"
+          ],
+          "relatedTo": [
+            "Robot Dynamics",
+            "Forward Kinematics",
+            "Inverse Kinematics"
+          ],
+          "bridgesTo": [
+            "Robotics"
+          ],
+          "supports": [
+            "Physics Simulation",
+            "Simulation",
+            "Control Theory"
+          ],
+          "contrastsWith": [
+            "Kinematics"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0417",
+    "domain": "security",
+    "template": "T-REL",
+    "question_natural": "What does Digital Onboarding depend on?",
+    "gold_titles": [
+      "Identity Verification",
+      "Compliance"
+    ],
+    "ontology_source": [
+      {
+        "title": "Digital Onboarding",
+        "definition": "Digital onboarding is the remote, self-service process by which an organisation enrols a new customer or user, capturing and verifying their identity entirely through digital channels rather than in person. It typically combines document capture, biometric checks, liveness detection and database lookups to satisfy regulatory know-your-customer obligations while minimising friction. The aim is to c",
+        "parents": [
+          "Identity Verification"
+        ],
+        "ancestors": [
+          "Identity Proofing",
+          "Security and Identity",
+          "Identity Management",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Identity Verification",
+            "KYC",
+            "Biometric Authentication"
+          ],
+          "enables": [
+            "Authentication",
+            "Digital Identity"
+          ],
+          "dependsOn": [
+            "Identity Verification",
+            "Compliance"
+          ],
+          "relatedTo": [
+            "Digital Identity",
+            "Authentication",
+            "Compliance"
+          ],
+          "bridgesTo": [
+            "Self Sovereign Identity"
+          ],
+          "supports": [
+            "Anti-Money Laundering",
+            "User Experience"
+          ],
+          "contrastsWith": [
+            "Biometric Authentication"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0451",
+    "domain": "spatial-computing",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Mesh Data?",
+    "gold_titles": [
+      "Vertex Buffer",
+      "Surface Normal"
+    ],
+    "ontology_source": [
+      {
+        "title": "Mesh Data",
+        "definition": "Mesh data is a structured representation of a three-dimensional surface or volume as a collection of vertices, edges, and polygonal faces \u2014 most commonly triangles or quads \u2014 that together define the geometry of a shape. It encodes both topological connectivity (which vertices form which faces) and geometric attributes (positions, normals, UV coordinates, vertex colours) required for rendering, si",
+        "parents": [
+          "Spatial Mesh"
+        ],
+        "ancestors": [
+          "Content and Assets",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Vertex Buffer",
+            "index-buffer",
+            "Surface Normal"
+          ],
+          "requires": [
+            "Coordinate System",
+            "Topology"
+          ],
+          "enables": [
+            "3D Reconstruction",
+            "Differentiable Rendering",
+            "3D Rendering",
+            "Collision Detection",
+            "Finite Element Analysis",
+            "Level of Detail"
+          ],
+          "uses": [
+            "Vertex Shader",
+            "Photogrammetry",
+            "Lidar"
+          ],
+          "relatedTo": [
+            "Point Cloud",
+            "Three Dimensional Graphics",
+            "Computer Graphics",
+            "Texture Mapping",
+            "Gaussian Splatting"
+          ],
+          "bridgesTo": [
+            "Robotics",
+            "Machine Learning"
+          ],
+          "standardizedBy": [
+            "Universal Scene Description",
+            "Khronos Group"
+          ],
+          "contrastsWith": [
+            "Voxel Grid",
+            "Neural Radiance Field",
+            "implicit-surface"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0498",
+    "domain": "standards",
+    "template": "T-REL",
+    "question_natural": "What does Schema.org enable?",
+    "gold_titles": [
+      "Knowledge Graph",
+      "Semantic Web Linked Data Standard",
+      "Named Entity Recognition"
+    ],
+    "ontology_source": [
+      {
+        "title": "Schema.org",
+        "definition": "Schema.org is a collaborative, community-maintained vocabulary project founded in 2011 by Google, Microsoft, Yahoo, and Yandex to define a shared set of structured data markup schemas for web pages, enabling search engines and other consumers to understand the semantic content of web resources. The vocabulary defines types and properties for entities such as persons, organisations, events, product",
+        "parents": [
+          "Linked Data"
+        ],
+        "ancestors": [
+          "Data Management (Infrastructure)",
+          "Infrastructure"
+        ],
+        "relations": {
+          "enables": [
+            "Knowledge Graph",
+            "Semantic Web Linked Data Standard",
+            "Named Entity Recognition"
+          ],
+          "implements": [
+            "OWL 2 Web Ontology Language"
+          ],
+          "uses": [
+            "JSON-LD",
+            "RDF",
+            "Controlled Vocabulary"
+          ],
+          "relatedTo": [
+            "Ontology",
+            "Search Engine",
+            "Open Graph Link Preview Protocol",
+            "Dublin Core",
+            "Wikidata"
+          ],
+          "bridgesTo": [
+            "Large Language Model",
+            "Natural Language Processing"
+          ],
+          "supports": [
+            "Search Engine Optimisation",
+            "Data Annotation",
+            "Information Extraction"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  }
+]

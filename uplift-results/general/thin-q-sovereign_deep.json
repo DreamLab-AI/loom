@@ -1,0 +1,210 @@
+[
+  {
+    "id": "thin_sove01",
+    "category": "arcane_thin",
+    "topic": "did:nostr DID method (construction, resolution, verification relationships)",
+    "difficulty": "hard",
+    "question": "In the did:nostr DID method, what exactly is the method-specific identifier, and what does a resolver produce in the minimal (offline) resolution tier? Specifically, name the verification method type and the two verification relationships that must reference it, and describe how the publicKeyMultibase value is built from the Nostr key.",
+    "reference_answer": "The method-specific identifier is the 64-character lowercase hexadecimal x-only secp256k1 public key (the same key material as an npub, but npub bech32 is display-only, never the DID id): a DID looks like did:nostr:<64-hex>. In the minimal, network-free tier a conformant resolver MUST deterministically derive a DID document from the key alone: id set to the full DID, type \"DIDNostr\", a single verification method of type \"Multikey\", and both authentication and assertionMethod referencing that method by a relative DID URL such as \"#key1\". The publicKeyMultibase is constructed as multibase base16-lower (prefix \"f\") over the secp256k1 compressed-key multicodec varint (0xe7 0x01) followed by the parity byte and the 32-byte x-only key. Optional HTTP resolution fetches https://<domain>/.well-known/did/nostr/<pubkey>.json, and optional \"enhanced\" resolution queries relays for kind 0 (profile), kind 3 (follows) and kind 10002 (relay list) to enrich the document — but there is no special \"DID document\" event kind.",
+    "answer_key_points": [
+      "Method-specific id = 64-char lowercase hex x-only secp256k1 pubkey; npub is display-only",
+      "Minimal document is derived offline from the key alone, with type \"DIDNostr\"",
+      "Verification method type is \"Multikey\"; authentication and assertionMethod both reference #key1",
+      "publicKeyMultibase = 'f' (base16 multibase) + e701 (secp256k1 multicodec) + parity byte + hex key",
+      "Three-tier resolution: minimal (offline) -> HTTP .well-known/did/nostr/<pubkey>.json -> enhanced relay query (kind 0/3/10002); no dedicated DID-document event kind"
+    ],
+    "cited_sources": [
+      "https://nostrcg.github.io/did-nostr/",
+      "https://did-nostr.com/",
+      "https://nostr-labs.github.io/did-nostr-primer/"
+    ]
+  },
+  {
+    "id": "thin_sove02",
+    "category": "arcane_thin",
+    "topic": "NIP-05 DNS-based internet identifiers",
+    "difficulty": "medium",
+    "question": "How does NIP-05 map a name@domain identifier to a Nostr public key? Give the exact HTTP request a client makes, the structure of the JSON returned, the meaning of the special '_' name, and the core security rule about what a client must actually follow.",
+    "reference_answer": "A NIP-05 identifier is the 'nip05' field on a user's kind 0 metadata event. To verify local-part@domain, the client issues a GET to https://<domain>/.well-known/nostr.json?name=<local-part> (local-part restricted to a-z0-9-_.). The response is a JSON object with a required 'names' object mapping each name to a lowercase hex public key, plus an optional 'relays' object keyed by hex pubkey giving arrays of relay URLs. The name '_' is a root identifier displayed as just the bare domain (so alice can be _@alice.com shown as 'alice.com'). Crucially, NIP-05 is only a human-friendly pointer, not an identity: clients MUST follow the public key, not the NIP-05 address — if the key behind an address changes, the client keeps the original pubkey and stops showing the now-invalid address. Servers MUST NOT return HTTP redirects and should send Access-Control-Allow-Origin: *.",
+    "answer_key_points": [
+      "Request: GET https://<domain>/.well-known/nostr.json?name=<local-part>",
+      "JSON has required 'names' (name -> lowercase hex pubkey) and optional 'relays' (pubkey -> [relay URLs])",
+      "'_' is the root identifier, displayed as the bare domain name",
+      "Security rule: clients follow the pubkey, never the NIP-05 address as primary identity",
+      "No redirects allowed; CORS header Access-Control-Allow-Origin: * recommended"
+    ],
+    "cited_sources": [
+      "https://github.com/nostr-protocol/nips/blob/master/05.md"
+    ]
+  },
+  {
+    "id": "thin_sove03",
+    "category": "arcane_thin",
+    "topic": "NIP-07 window.nostr browser signer capability",
+    "difficulty": "medium",
+    "question": "What is the NIP-07 window.nostr capability, and what problem does it solve for Nostr web apps? Name the two mandatory methods and their signatures, describe what signEvent receives and returns, and list the optional encryption namespaces.",
+    "reference_answer": "NIP-07 defines a window.nostr object injected by a browser extension or signer so that a web app can request Nostr operations without ever handling the user's private key — the key stays inside the extension, and the page only ever sees signatures and the pubkey. The two mandatory methods are async window.nostr.getPublicKey(): string (returns the pubkey as hex) and async window.nostr.signEvent(event): Event. signEvent receives an unsigned event object { created_at, kind, tags, content } and returns the same event completed with the id, pubkey and sig fields filled in. Optional namespaces provide encryption: window.nostr.nip04.encrypt/decrypt(pubkey, ...) (now deprecated) and window.nostr.nip44.encrypt/decrypt(pubkey, ...). Extensions typically run at document_end so window.nostr is present when pages load.",
+    "answer_key_points": [
+      "window.nostr is injected by an extension/signer so the private key never reaches the web page",
+      "getPublicKey(): returns hex pubkey",
+      "signEvent(event) takes {created_at, kind, tags, content} and returns it with id, pubkey, sig added",
+      "Optional nip04 (deprecated) and nip44 encrypt/decrypt namespaces",
+      "getRelays() optional; extension injected at document_end"
+    ],
+    "cited_sources": [
+      "https://github.com/nostr-protocol/nips/blob/master/07.md"
+    ]
+  },
+  {
+    "id": "thin_sove04",
+    "category": "arcane_thin",
+    "topic": "NIP-19 bech32-encoded entities and TLV",
+    "difficulty": "hard",
+    "question": "NIP-19 defines both bare bech32 entities (npub, nsec, note) and TLV-carrying ones (nprofile, nevent, naddr). Which bech32 variant does it use, and what are the four TLV type numbers and their meanings? Explain concretely how an nprofile differs from an npub and what data an naddr must carry.",
+    "reference_answer": "NIP-19 uses plain bech32 — explicitly bech32 'not-m', i.e. NOT bech32m — for all of these entities. Bare types (npub/nsec/note) are just the hex pubkey, seckey or event id re-encoded in bech32. The TLV types (nprofile/nevent/naddr, plus deprecated nrelay) pack multiple 1-byte-type / 1-byte-length / value records. The four TLV types are: 0 = special (the primary payload — a 32-byte pubkey for nprofile, a 32-byte event id for nevent, or the UTF-8 identifier 'd' string for naddr); 1 = relay (an ASCII relay URL, optional and repeatable); 2 = author (a 32-byte pubkey — required for naddr, optional for nevent); 3 = kind (a big-endian 32-bit unsigned integer). So an nprofile is an npub plus optional relay hints, telling clients where to find that person, whereas an npub is only the key. An naddr, which addresses a replaceable/addressable event, must carry the identifier (type 0), the author pubkey (type 2) and the kind (type 3), optionally with relay hints.",
+    "answer_key_points": [
+      "Uses bech32, explicitly NOT bech32m",
+      "Bare npub/nsec/note are hex re-encoded; nprofile/nevent/naddr carry TLV",
+      "TLV type 0 = special (pubkey / event id / identifier string depending on prefix)",
+      "TLV type 1 = relay (ASCII URL, repeatable); type 2 = author (32-byte pubkey); type 3 = kind (32-bit big-endian)",
+      "nprofile = pubkey + relay hints (vs bare npub); naddr must carry identifier + author + kind"
+    ],
+    "cited_sources": [
+      "https://github.com/nostr-protocol/nips/blob/master/19.md"
+    ]
+  },
+  {
+    "id": "thin_sove05",
+    "category": "arcane_thin",
+    "topic": "NIP-42 client authentication to relays",
+    "difficulty": "medium",
+    "question": "Describe the NIP-42 challenge-response authentication flow between a Nostr client and a relay. What event kind is used, which two tags must it contain, what does the relay validate, and how does a relay signal that a request needs authentication?",
+    "reference_answer": "NIP-42 lets a relay authenticate a client. The relay initiates by sending an [\"AUTH\", <challenge-string>] message over the connection. The client replies with [\"AUTH\", <signed-event>] where the event is an ephemeral kind 22242 event (relays MUST NOT broadcast it) with created_at at the current time and at least two tags: a [\"relay\", \"wss://...\"] tag naming the target relay and a [\"challenge\", \"...\"] tag echoing the relay's challenge. The relay validates that the kind is 22242, that created_at is within a small window (~10 minutes) of now, that the challenge tag matches the challenge it issued, and that the relay tag matches its own URL. When an unauthenticated client attempts a restricted action, the relay signals it with an OK/CLOSED message prefixed 'auth-required: ' (and 'restricted: ' when the authenticated key still lacks permission).",
+    "answer_key_points": [
+      "Relay sends [\"AUTH\", challenge]; client returns [\"AUTH\", signed event]",
+      "Event is ephemeral kind 22242, never broadcast",
+      "Required tags: [\"relay\", url] and [\"challenge\", string]",
+      "Relay checks kind=22242, created_at within ~10 min, challenge match, relay URL match",
+      "'auth-required: ' prefix signals need to authenticate; 'restricted: ' for insufficient permission"
+    ],
+    "cited_sources": [
+      "https://github.com/nostr-protocol/nips/blob/master/42.md"
+    ]
+  },
+  {
+    "id": "thin_sove06",
+    "category": "arcane_thin",
+    "topic": "NIP-65 relay list metadata and the outbox model",
+    "difficulty": "medium",
+    "question": "What is a NIP-65 relay list, and how does it enable the 'outbox' (gossip) model? Give the event kind, the tag used to list relays, the meaning of the read/write markers including an unmarked entry, and the rule for where a client should look to fetch a given user's posts versus their mentions.",
+    "reference_answer": "NIP-65 defines kind 10002, a replaceable event whose 'r' tags advertise a user's preferred relays, e.g. [\"r\", \"wss://relay.example\", \"write\"]. The optional third element is a marker: 'read' means a relay where the user reads (expects to receive mentions), 'write' means a relay where the user publishes; if the marker is omitted the relay is BOTH read and write. This drives the outbox/gossip model: to fetch a user's own events you query their WRITE relays, and to reach a user (mention/reply) you post to their READ relays — so followers converge on the author's own declared relays instead of everyone piling onto a few big relays. Clients should keep the list small (roughly 2-4 relays per category) and propagate the kind 10002 event widely, including to well-known indexers, so others can discover it.",
+    "answer_key_points": [
+      "kind 10002, replaceable, uses 'r' tags with relay URLs",
+      "Markers 'read' and 'write'; omitted marker means both",
+      "Fetch a user's posts from their WRITE relays; send mentions/replies to their READ relays",
+      "Underpins the outbox/gossip model (spread load onto authors' own relays)",
+      "Keep list small (~2-4 per category); propagate widely / to indexers"
+    ],
+    "cited_sources": [
+      "https://github.com/nostr-protocol/nips/blob/master/65.md"
+    ]
+  },
+  {
+    "id": "thin_sove07",
+    "category": "arcane_thin",
+    "topic": "Solid-OIDC flow with DPoP (RFC 9449)",
+    "difficulty": "hard",
+    "question": "In Solid-OIDC, how is a user's WebID conveyed and how does a resource server avoid trusting a rogue OpenID Provider that issues tokens for arbitrary WebIDs? Also explain the two Solid-OIDC features that remove the need for pre-registered clients and for bearer tokens, and how a DPoP proof (RFC 9449) is bound to the access token.",
+    "reference_answer": "Solid-OIDC builds on OpenID Connect Authorization Code + PKCE. The ID Token carries a 'webid' claim (the user's WebID URI) alongside 'azp' (authorized party / client) and an 'aud' that includes azp and the string 'solid'. To stop a malicious OP minting valid-looking tokens for someone else's WebID, the verifier performs WebID Provider Confirmation: it dereferences the WebID profile and checks the triple ?webid <http://www.w3.org/ns/solid/terms#oidcIssuer> ?iss, i.e. that the token's issuer is one the WebID owner actually authorised (RDF statement or Link header). Two features remove classic friction: dynamic client identity, where the OAuth Client ID is itself a dereferenceable Client ID Document (JSON-LD using the solid/oidc-context) listing redirect_uris etc., so no manual pre-registration is needed; and DPoP-bound tokens instead of bearer tokens. Per RFC 9449, the client sends a DPoP proof JWT in the 'DPoP' header — JOSE header typ='dpop+jwt', an asymmetric 'alg', and a 'jwk' public key — with payload claims jti, htm (method), htu (URI) and iat (plus 'ath', the SHA-256 of the access token, when a token is presented). The access token's 'cnf' claim then contains 'jkt' = the base64url SHA-256 JWK thumbprint of that public key, so the resource server accepts it only from the holder of the matching private key, defeating stolen-token replay.",
+    "answer_key_points": [
+      "ID Token carries webid claim, plus azp and aud including azp and 'solid'",
+      "WebID Provider Confirmation checks solid:oidcIssuer triple (http://www.w3.org/ns/solid/terms#oidcIssuer) so issuer matches WebID-authorised OP",
+      "Client ID is a dereferenceable Client ID Document (JSON-LD), removing static registration",
+      "DPoP proof JWT (RFC 9449): header typ=dpop+jwt/alg/jwk, claims jti/htm/htu/iat (+ath with a token)",
+      "Access token cnf.jkt = base64url SHA-256 JWK thumbprint binds the token to the client's DPoP key, preventing bearer-style replay"
+    ],
+    "cited_sources": [
+      "https://solidproject.org/TR/oidc",
+      "https://www.rfc-editor.org/rfc/rfc9449.html"
+    ]
+  },
+  {
+    "id": "thin_sove08",
+    "category": "arcane_thin",
+    "topic": "Web Access Control (WAC) vs Access Control Policy (ACP)",
+    "difficulty": "hard",
+    "question": "Contrast Solid's two authorization systems, WAC and ACP. For WAC, name the authorization modes, the difference between acl:accessTo and acl:default, and how public access is granted. For ACP, name the core resource and objects (ACR, policy, matcher) and the boolean combinators, and state the key conceptual capability ACP adds that WAC lacks.",
+    "reference_answer": "Both are RDF-based, but they differ in expressiveness. WAC (namespace http://www.w3.org/ns/auth/acl#) is a classic ACL model: an acl:Authorization grants acl:mode values acl:Read, acl:Write, acl:Append and acl:Control (Control governs the ACL resource itself). acl:accessTo names the specific resource an authorization applies to, whereas acl:default is set on a container and is inherited by resources lower in the hierarchy that have no ACL of their own. Subjects are named with acl:agent (a specific agent), acl:agentGroup, or acl:agentClass — and public access is granted by using foaf:Agent as the agentClass (with acl:AuthenticatedAgent for any logged-in agent). The ACL resource is found via a Link header with rel=\"acl\". ACP (namespace acp:) is attribute-/policy-based: an Access Control Resource (ACR) links a resource to acp:AccessControl objects that acp:apply acp:Policy objects; each Policy uses acp:allow/acp:deny access modes gated by acp:Matcher conditions combined with acp:allOf (AND), acp:anyOf (OR) and acp:noneOf (NOT). Crucially, matchers can test not just acp:agent but also acp:client (which application) and acp:issuer (which identity provider) and acp:vc (verifiable credentials) — contextual, attribute-based conditions WAC cannot express, since WAC decisions turn essentially on agent identity and mode alone.",
+    "answer_key_points": [
+      "WAC modes: acl:Read, acl:Write, acl:Append, acl:Control (Control = over the ACL itself)",
+      "acl:accessTo = this resource; acl:default = on a container, inherited by contained resources lacking their own ACL",
+      "Public via acl:agentClass foaf:Agent; acl:AuthenticatedAgent = any logged-in agent; ACL found via Link rel=acl",
+      "ACP: ACR -> acp:AccessControl -> acp:Policy (acp:allow/acp:deny) gated by acp:Matcher via acp:allOf/anyOf/noneOf",
+      "ACP adds attribute/context conditions on acp:client, acp:issuer and acp:vc, not just agent identity"
+    ],
+    "cited_sources": [
+      "https://solidproject.org/TR/wac",
+      "https://solidproject.org/TR/acp"
+    ]
+  },
+  {
+    "id": "thin_sove09",
+    "category": "arcane_thin",
+    "topic": "WebID-TLS versus WebID-OIDC authentication",
+    "difficulty": "hard",
+    "question": "Explain how WebID-TLS authenticates an agent using a client certificate and the WebID profile document, naming the certificate field that carries the WebID and the RDF ontology terms a verifier matches the certificate key against. Then give the main reasons the Solid community moved from WebID-TLS to WebID-OIDC / Solid-OIDC.",
+    "reference_answer": "In WebID-TLS the agent presents an X.509 client certificate whose Subject Alternative Name (SAN) is a dereferenceable URI — that URI is the WebID. The verification agent extracts the WebID from the SAN, dereferences the WebID profile (RDF, e.g. Turtle), and looks for public key material attached to that WebID via cert:key (namespace http://www.w3.org/ns/auth/cert#). For an RSA key the profile carries a cert:RSAPublicKey node with a cert:modulus (xsd:hexBinary) and a cert:exponent (xsd:integer, commonly 65537). The verifier compares the modulus/exponent in the certificate against those published in the profile; a match, combined with the TLS handshake proving possession of the private key, authenticates the agent as that WebID. The community moved to WebID-OIDC / Solid-OIDC mainly for usability and reach: browser client-certificate UX is poor (confusing certificate-selection dialogs, a Firefox restart quirk, no real 'log out', awkward multiple-identity handling, unsuitable on shared/public machines), client-cert support is weak on mobile and some browsers, and it is hard for non-browser clients. WebID-OIDC keeps the WebID concept but rides mainstream OAuth2/OIDC token flows (adding WebID Provider Confirmation), giving better UX, session/logout semantics and cross-platform support.",
+    "answer_key_points": [
+      "WebID-TLS: WebID is carried in the certificate's SubjectAlternativeName (URI)",
+      "Verifier dereferences WebID profile and matches key via cert:key -> cert:RSAPublicKey with cert:modulus (hexBinary) and cert:exponent (integer)",
+      "TLS handshake proves private-key possession; key match binds cert to WebID",
+      "Moved away due to poor browser client-cert UX: confusing dialogs, no logout, multi-identity/shared-machine problems, weak mobile/browser support",
+      "Solid-OIDC keeps WebID but uses OAuth2/OIDC token flow plus WebID Provider Confirmation"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/2005/Incubator/webid/spec/tls/",
+      "https://github.com/solid/webid-oidc-spec/blob/master/README.md",
+      "https://solidproject.org/TR/oidc"
+    ]
+  },
+  {
+    "id": "thin_sove10",
+    "category": "arcane_thin",
+    "topic": "Solid Notifications Protocol channel types",
+    "difficulty": "medium",
+    "question": "In the Solid Notifications Protocol, how does a client subscribe to changes on a resource, and what are the two standard channel types? Give their exact type identifiers and namespace, the property used to name the resource of interest, and the response property that differs between the WebSocket and Webhook channels.",
+    "reference_answer": "A client subscribes by sending an authenticated POST of a JSON-LD subscription request (context https://www.w3.org/ns/solid/notification/v1) to the subscription resource for a channel type. The request sets 'type' to the channel type and 'topic' (notify:topic) to the URL of the resource whose changes it wants. The two standard channel types live in the namespace http://www.w3.org/ns/solid/notifications# : WebSocketChannel2023 (notify:WebSocketChannel2023) and WebhookChannel2023 (notify:WebhookChannel2023). They differ in delivery direction: for a WebSocket subscription the server's response returns a receiveFrom (notify:receiveFrom) URL that the client opens a WebSocket to; for a Webhook subscription the client additionally supplies a sendTo (notify:sendTo) HTTPS URL in the request, and the server pushes notifications there (the response identifies the 'sender'). Notification payloads themselves are Activity Streams 2.0 objects serialized as JSON-LD.",
+    "answer_key_points": [
+      "Subscribe via authenticated POST of JSON-LD (context .../solid/notification/v1) to the subscription resource",
+      "Channel types in namespace http://www.w3.org/ns/solid/notifications#",
+      "WebSocketChannel2023 and WebhookChannel2023",
+      "notify:topic names the target resource; WebSocket response gives notify:receiveFrom; Webhook request supplies notify:sendTo",
+      "Notifications are Activity Streams 2.0 JSON-LD"
+    ],
+    "cited_sources": [
+      "https://solidproject.org/TR/notifications-protocol",
+      "https://solid.github.io/notifications/webhook-channel-2023",
+      "https://communitysolidserver.github.io/CommunitySolidServer/latest/usage/notifications/"
+    ]
+  },
+  {
+    "id": "thin_sove11",
+    "category": "arcane_thin",
+    "topic": "OpenTimestamps Merkle aggregation, calendar servers and .ots proofs",
+    "difficulty": "hard",
+    "question": "How does OpenTimestamps let thousands of documents be timestamped by a single Bitcoin transaction, and what does a .ots proof actually contain? Describe the role of calendar servers, the two-step stamp-then-upgrade workflow, the kinds of operations and attestations inside a proof, and how verification recomputes the path to Bitcoin.",
+    "reference_answer": "OpenTimestamps avoids one Bitcoin transaction per document by aggregation: clients send a document hash to public calendar servers, which insert it into a Merkle tree and periodically commit only the Merkle tree root into a single Bitcoin transaction (typically via an OP_RETURN output), so one transaction can anchor thousands of digests. The workflow is two-step. On 'stamp', the client hashes the file (SHA-256, with a random nonce for privacy) and receives an incomplete .ots receipt containing PendingAttestation(<calendar URL>) — it can't be verified yet because the Bitcoin transaction isn't confirmed. Later, 'upgrade' contacts the calendar and rewrites the .ots with the finished path and a BitcoinBlockHeaderAttestation, after which the proof is self-contained. A .ots proof is essentially a program: the file hash plus an ordered sequence of commitment operations (append <hex>, prepend <hex>, and hash ops such as sha256 / ripemd160) that walk from the document hash up through the Merkle tree and the Bitcoin transaction to a block's Merkle root, terminated by an attestation. Verification replays those operations starting from the document's own hash, reproduces the committed value, and checks it against the specified Bitcoin block header (needing only the file, the .ots proof and trusted block headers) — proving the document existed before that block was mined.",
+    "answer_key_points": [
+      "Calendar servers aggregate many document hashes into a Merkle tree and commit only the root to Bitcoin via OP_RETURN (one tx anchors thousands)",
+      "Two steps: stamp yields an incomplete .ots with PendingAttestation(calendar URL); upgrade adds BitcoinBlockHeaderAttestation",
+      ".ots is an ordered path of operations: append/prepend <hex> and hash ops (sha256, ripemd160)",
+      "Verification replays ops from the document hash up to the Bitcoin block Merkle root / header",
+      "Completed proof is self-contained: needs only file + .ots + trusted Bitcoin block headers"
+    ],
+    "cited_sources": [
+      "https://opentimestamps.org/",
+      "https://github.com/opentimestamps/opentimestamps-client/blob/master/README.md",
+      "https://github.com/opentimestamps/python-opentimestamps"
+    ]
+  }
+]

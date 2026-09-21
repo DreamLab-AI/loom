@@ -1,0 +1,227 @@
+[
+  {
+    "id": "thin_prov01",
+    "category": "arcane_thin",
+    "topic": "git object model as a Merkle DAG / content addressing",
+    "difficulty": "medium",
+    "question": "Explain in what precise sense a Git repository is a Merkle DAG rather than merely a hash chain. Which four object types participate, how does an edge get its 'address', and why is the resulting graph necessarily acyclic?",
+    "reference_answer": "Git's four object types — blob, tree, commit and tag — are each stored under an object ID that is the cryptographic hash of the object's exact serialised content, i.e. content addressing (git-scm: 'All objects are named by the SHA-1 hash of their contents ... globally unique'). Objects embed the IDs of other objects: a commit names its root tree and parent commit(s) by hash; a tree names its blobs and sub-trees by hash; a tag names its target by hash. Because every edge is the hash of the target object, the links are authenticated Merkle links, forming a directed acyclic graph (a Merkle DAG), not a linear chain — a commit fans out to a whole tree of trees and blobs. It is acyclic because an object's ID is fixed by its content: you cannot make object A reference a not-yet-existing hash of B that in turn references A, since changing content produces a new hash and hence a new object rather than mutating the target in place.",
+    "answer_key_points": [
+      "Four object types: blob, tree, commit, tag",
+      "Object ID = cryptographic hash of the object's serialised content (content addressing)",
+      "Edges are hashes of target objects (Merkle links), so links are authenticated",
+      "DAG, not a chain: commits fan out to trees which fan out to blobs/sub-trees",
+      "Acyclic because content determines the hash — you cannot embed a hash of an object that embeds you"
+    ],
+    "cited_sources": [
+      "https://git-scm.com/docs/git",
+      "https://git-scm.com/docs/gitformat-pack",
+      "https://git-scm.com/docs/hash-function-transition"
+    ]
+  },
+  {
+    "id": "thin_prov02",
+    "category": "arcane_thin",
+    "topic": "git SHA-1 to SHA-256 object-format transition",
+    "difficulty": "hard",
+    "question": "Git supports a SHA-256 object format. In a repository created for the transition, what do the config extensions objectFormat and compatObjectFormat do, what auxiliary data structure must a SHA-256 repository store alongside its packfile, and what is the current state of interoperability with SHA-1 repositories?",
+    "reference_answer": "A transition-era repository uses core.repositoryFormatVersion = 1 with extensions.objectFormat = sha256 (the storage hash, which determines the 64-hex-digit object IDs) and extensions.compatObjectFormat = sha1 (a compatibility hash that must differ from objectFormat). To make objects addressable under both algorithms, a SHA-256 repository stores a bidirectional mapping between SHA-256 and SHA-1 object names alongside the packfile, so objects can be named by either their 40-hex SHA-1 or 64-hex SHA-256 IDs. SHA-1 remains the default object format, SHA-256 support is still marked experimental, and there is presently no general interoperability between SHA-256 and SHA-1 repositories — they cannot share work and old Git versions cannot read a SHA-256 repository. Git's BreakingChanges plan intends to eventually switch the default for new repositories to SHA-256 once ecosystem support is sufficient, but there is no plan to deprecate the SHA-1 object format.",
+    "answer_key_points": [
+      "objectFormat = the storage hash (sha256 => 64-hex object IDs); default is sha1",
+      "compatObjectFormat = a compatibility hash, must differ from objectFormat, for format-1 interop testing",
+      "SHA-256 repos store a bidirectional SHA-256<->SHA-1 name mapping beside the packfile",
+      "Objects can be named by 40-hex SHA-1 or 64-hex SHA-256 IDs",
+      "No interoperability today; SHA-256 support is experimental; old Git cannot read SHA-256 repos",
+      "Planned default switch to SHA-256 later; SHA-1 format not being deprecated"
+    ],
+    "cited_sources": [
+      "https://git-scm.com/docs/hash-function-transition",
+      "https://git-scm.com/docs/git-config",
+      "https://git-scm.com/docs/BreakingChanges"
+    ]
+  },
+  {
+    "id": "thin_prov03",
+    "category": "arcane_thin",
+    "topic": "hardened SHA-1 (sha1dc) collision detection in Git",
+    "difficulty": "hard",
+    "question": "Given that SHA-1 has been practically broken (SHAttered, 2017), why can Git still use SHA-1-named objects relatively safely today? Name the specific mechanism modern Git builds employ and describe what it actually detects.",
+    "reference_answer": "Modern Git builds do not use plain SHA-1; they use a hardened SHA-1 implementation, sha1dc (SHA-1 collision detection, by Stevens and Shumow), as the default hash. sha1dc computes the ordinary SHA-1 digest but simultaneously runs a detection algorithm that watches for the specific disturbance-vector / message-block patterns characteristic of a SHA-1 collision attack (the identical-prefix collision technique used by SHAttered). If such a pattern is detected it aborts rather than emitting a digest, so a crafted colliding object is rejected. This mitigates the known collision constructions cheaply, but it is a stop-gap: it does not make SHA-1 collision-resistant against future novel attacks, which is why Git is separately building out the SHA-256 object format. sha1dc is an implementation-level defence and is complementary to, not a substitute for, the architectural move to SHA-256.",
+    "answer_key_points": [
+      "Git uses hardened SHA-1 = sha1dc (collision-detecting SHA-1), not plain SHA-1, by default",
+      "sha1dc detects the disturbance-vector/message-block signatures of known SHA-1 collision attacks",
+      "It aborts instead of returning a digest when an attack pattern is seen, rejecting crafted colliding objects",
+      "Mitigates SHAttered-style identical-prefix collisions cheaply",
+      "It is a stop-gap; does not restore general collision resistance — hence the parallel SHA-256 transition"
+    ],
+    "cited_sources": [
+      "https://git-scm.com/docs/hash-function-transition",
+      "https://github.com/cr-marcstevens/sha1collisiondetection",
+      "https://shattered.io/"
+    ]
+  },
+  {
+    "id": "thin_prov04",
+    "category": "arcane_thin",
+    "topic": "signed commits and the absence of trusted time",
+    "difficulty": "medium",
+    "question": "A colleague argues that GPG- or SSH-signed Git commits (git commit -S) already prove exactly when a commit was made and therefore give a complete provenance trail. Identify the precise guarantee a signed commit provides, the field that makes the 'when' claim untrustworthy, and why an external timestamp is still needed.",
+    "reference_answer": "A signed commit binds a specific signing key to the exact hashed commit payload: the signature (stored in the gpgsig header) covers the commit object — its tree, parent(s), author/committer identities and message — so any alteration invalidates it, verifiable with git verify-commit or git log --show-signature. That is an authenticity/integrity guarantee ('this key endorsed this content'), not a trusted-time guarantee. The commit's author and committer date fields are simply attacker-controllable strings set by the client; nothing in the signature attests that the commit really existed at that moment, and back- or forward-dating is trivial. To obtain a trustworthy 'existed no later than T' you need an external anchor — e.g. an OpenTimestamps proof anchoring the commit hash to a Bitcoin block, or a transparency-log inclusion — because only a third party with independent time (a blockchain, a log, a timestamping authority) can bound existence in time.",
+    "answer_key_points": [
+      "Signed commit = key binds to the hashed commit object (tree, parents, identities, message) via the gpgsig header",
+      "Provides authenticity/integrity, verifiable with git verify-commit / git log --show-signature",
+      "The author/committer date fields are client-set and attacker-controllable — not attested by the signature",
+      "Signatures give no trusted time; back-/forward-dating is trivial",
+      "A trusted 'existed before T' needs an external anchor (OpenTimestamps/blockchain or a transparency log)"
+    ],
+    "cited_sources": [
+      "https://git-scm.com/docs/git-commit",
+      "https://git-scm.com/docs/gitformat-signature",
+      "https://git-scm.com/docs/git-verify-commit"
+    ]
+  },
+  {
+    "id": "thin_prov05",
+    "category": "arcane_thin",
+    "topic": "git-notes and tamper-evidence of annotations",
+    "difficulty": "medium",
+    "question": "git notes let you attach metadata to an existing commit without changing that commit's hash. Explain how notes are stored, why attaching a note leaves the annotated commit's object ID unchanged, and what this implies for using notes to carry provenance data such as a reference to an external timestamp proof.",
+    "reference_answer": "A git note is itself a blob (extra information supplementing an object, usually a commit), stored not inside the target commit but in a separate notes ref — by default refs/notes/commits — whose tree maps target object names (paths) to the note blobs. Because the note lives in an independent ref rather than in the commit object, the annotated commit's serialised content, and therefore its object ID, is unchanged; this is precisely why notes can be added, edited or removed after the fact and can annotate immutable, even signed, commits. The trade-off is that notes are not covered by a signature over the original commit: the note ref has its own separate Git history (its own hash chain) that can itself be signed or protected, but a signature on the commit does not vouch for its notes. So notes are a good place to record provenance pointers — e.g. the ID or hash of an OpenTimestamps .ots proof for the commit — provided you separately protect the notes ref, since the annotation's integrity is independent of the commit's.",
+    "answer_key_points": [
+      "A note is a blob stored in a separate notes ref (default refs/notes/commits), keyed by target object name",
+      "The commit object is not modified, so its object ID stays the same — hence notes can annotate immutable/signed commits",
+      "Notes are mutable after the fact (add/edit/remove) precisely because they are external to the commit",
+      "A signature over the commit does NOT cover its notes; the notes ref has its own hash chain",
+      "Good for carrying provenance pointers (e.g. an .ots proof ID) but the notes ref must be protected/signed separately"
+    ],
+    "cited_sources": [
+      "https://git-scm.com/docs/git-notes",
+      "https://git-scm.com/docs/git-log"
+    ]
+  },
+  {
+    "id": "thin_prov06",
+    "category": "arcane_thin",
+    "topic": "OpenTimestamps aggregation, calendar servers and Bitcoin anchoring",
+    "difficulty": "hard",
+    "question": "OpenTimestamps claims it can timestamp an unlimited number of documents with a single Bitcoin transaction. Explain the aggregation mechanism, the role of calendar servers and their trust model, and describe precisely how the commitment reaches Bitcoin — in particular whether OpenTimestamps uses OP_RETURN or relies only on the block's transaction Merkle root.",
+    "reference_answer": "Clients submit only the hash of a document to a calendar server. The calendar aggregates every request received in the same short interval (about one second) into a single Merkle tree, whose tip (root) is one 32-byte digest committing to all those documents at once; each client gets back a proof consisting of the operations (sibling hashes) climbing from its document hash to that tip — which is why one Bitcoin transaction can anchor unlimited documents. The calendar's job is a trust compromise: it must ensure every aggregated tip is eventually anchored on Bitcoin and keep the completed proofs available, but it need not be trusted for correctness because the finished proof verifies entirely against the blockchain. As for reaching Bitcoin: per Peter Todd, the calendar creates a Bitcoin transaction that commits to that single 32-byte tip, and the currently deployed calendar servers embed the digest directly in an OP_RETURN output. That transaction is then itself a leaf of the block's transaction Merkle tree, so the block header's merkleroot is the ultimate commitment — but the specific mechanism to get the digest into the block today is OP_RETURN, not (yet) a subtler tx-structure commitment (an alternative Poelstra scheme exists as a 2017 PR but is not in the standard protocol).",
+    "answer_key_points": [
+      "Clients send only a document hash; requests in a ~1-second interval are aggregated into one Merkle tree",
+      "The tree tip is a single 32-byte digest; each client's proof is the sibling-hash path from its hash to the tip",
+      "One Bitcoin transaction thus anchors an unlimited number of documents",
+      "Calendars must anchor tips and keep proofs available, but need not be trusted — proofs verify against the blockchain",
+      "Deployed calendars embed the tip directly in an OP_RETURN output (per Peter Todd)",
+      "The block header's transaction merkleroot is the ultimate commitment; the alternative non-OP_RETURN scheme is not in the standard protocol"
+    ],
+    "cited_sources": [
+      "https://opentimestamps.org/",
+      "https://petertodd.org/2016/opentimestamps-announcement",
+      "https://petertodd.org/2025/opentimestamps-and-knots-ocean"
+    ]
+  },
+  {
+    "id": "thin_prov07",
+    "category": "arcane_thin",
+    "topic": "git-mark: anchoring git commits to a blockchain",
+    "difficulty": "hard",
+    "question": "Describe the git-mark tool's model for making a Git repository's history tamper-evident against a public ledger. What is the role of the 'genesis' transaction, what does invoking the mark do, and how does this differ in guarantee from Git's internal hash chain plus signed commits?",
+    "reference_answer": "git-mark (invoked as `git mark`, distributed via npm) anchors Git commits onto a supporting blockchain (Bitmark, framed as Bitcoin-like) to create an auditable, tamper-proof record. On first use you bind the repository to a genesis unspent transaction with `git mark --genesis txid:output`; this fixes the starting point of a per-repository chain of mark transactions. Each subsequent `git mark` advances that chain by creating a new blockchain transaction that commits to the current Git HEAD commit hash plus metadata, so once the block confirms, that commit state is anchored under public consensus and cannot be rewritten without contradicting the ledger. The difference in guarantee is the external anchor: Git's own hash chain plus signed commits only prove internal integrity and author endorsement — they are tamper-evident merely relative to another copy of the repo, and a force-push can rewrite history undetectably if no external reference exists. Anchoring the HEAD hash to a blockchain moves the guarantee from 'tamper-evident within Git' to 'tamper-evident against a global, time-ordered consensus ledger', giving proof of existence and state at a confirmed block time.",
+    "answer_key_points": [
+      "git-mark (`git mark`, via npm) anchors commit hashes to a supporting blockchain (Bitmark)",
+      "`git mark --genesis txid:output` binds the repo to a genesis unspent transaction, starting a mark chain",
+      "Each `git mark` creates a new tx committing to the current HEAD commit hash + metadata; block confirmation anchors it",
+      "Git's hash chain + signed commits give only internal integrity/authenticity, tamper-evident relative to another copy",
+      "A force-push can rewrite history undetectably without an external reference; the blockchain anchor removes that gap",
+      "Result: proof of existence/state against a global consensus ledger, not just within Git"
+    ],
+    "cited_sources": [
+      "https://git-mark.com/",
+      "https://git-mark.com/WORKFLOW.html",
+      "https://bitmark.io/git-mark/"
+    ]
+  },
+  {
+    "id": "thin_prov08",
+    "category": "arcane_thin",
+    "topic": "OpenTimestamps git integration via a GPG wrapper",
+    "difficulty": "hard",
+    "question": "OpenTimestamps ships a Git integration that timestamps PGP-signed commits. Describe the wrapper mechanism it uses to hook into git commit -S, the git config setting that activates it, and explain the specific provenance problem this solves that an ordinary signed commit does not.",
+    "reference_answer": "The OpenTimestamps client hooks into Git by wrapping the GPG program that Git invokes when signing. It provides an ots-git-gpg-wrapper (with a shell entry point ots-git-gpg-wrapper.sh); you activate it with `git config --global gpg.program <path to ots-git-gpg-wrapper.sh>`. Thereafter `git commit -S` calls the wrapper instead of GPG directly: the wrapper produces the normal commit signature via GPG and additionally creates an OpenTimestamps proof that anchors the commit/signature to Bitcoin through the calendar servers (with options such as --wait to block until the timestamp is upgraded). The problem this solves is temporal: an ordinary signed commit only proves 'this key signed this content', with no trustworthy time. If the signing key is later revoked, expired or compromised, a plain signature becomes ambiguous — you cannot tell whether it was made while the key was still valid. The Bitcoin-anchored timestamp proves the signature existed before a specific block time, i.e. before the revocation, letting verifiers still trust signatures that pre-date a key's compromise.",
+    "answer_key_points": [
+      "Integration wraps the GPG program Git calls: ots-git-gpg-wrapper (ots-git-gpg-wrapper.sh)",
+      "Activated via `git config gpg.program <wrapper>` (typically --global)",
+      "On `git commit -S` the wrapper both produces the GPG signature and creates an OTS proof anchoring to Bitcoin via calendars",
+      "A plain signed commit proves only 'key signed content', with no trustworthy time",
+      "Anchoring proves the signature existed before a given block time — crucial once a key is revoked/expired/compromised",
+      "Lets verifiers still trust signatures that pre-date a key's compromise"
+    ],
+    "cited_sources": [
+      "https://github.com/opentimestamps/opentimestamps-client/blob/master/doc/git-integration.md",
+      "https://github.com/opentimestamps/opentimestamps-client/blob/master/README.md",
+      "https://opentimestamps.org/"
+    ]
+  },
+  {
+    "id": "thin_prov09",
+    "category": "arcane_thin",
+    "topic": "RFC 6962 Merkle tree domain separation (0x00 / 0x01 prefixes)",
+    "difficulty": "hard",
+    "question": "In RFC 6962 (Certificate Transparency), the Merkle Tree Hash prepends a single byte before hashing at each node: 0x00 for leaves and 0x01 for interior nodes. Give the exact leaf and interior-node hash definitions, and explain the security property this domain separation provides.",
+    "reference_answer": "RFC 6962 builds a binary Merkle tree over an ordered list of entries using SHA-256. For a single-entry list the leaf hash is MTH({d[0]}) = SHA-256(0x00 || d[0]). For n > 1, letting k be the largest power of two strictly less than n, the interior node is MTH(D[n]) = SHA-256(0x01 || MTH(D[0:k]) || MTH(D[k:n])). The distinct prefix bytes 0x00 (leaf) and 0x01 (interior) implement domain separation: the input spaces of leaf hashes and interior-node hashes are made disjoint, so no leaf hash can ever equal an interior-node hash. This blocks second-preimage / tree-structure ambiguity attacks in which an adversary would present a leaf whose value coincides with the concatenation of two child hashes (or vice versa), thereby forging a different tree shape that hashes to the same root. Without the prefixes such a structural collision would be possible even though SHA-256 itself is collision-resistant.",
+    "answer_key_points": [
+      "Leaf: MTH({d[0]}) = SHA-256(0x00 || d[0])",
+      "Interior (n>1, k = largest power of two < n): MTH = SHA-256(0x01 || MTH(D[0:k]) || MTH(D[k:n]))",
+      "0x00 vs 0x01 = domain separation making leaf and interior hash inputs disjoint",
+      "No leaf hash can collide with an interior-node hash",
+      "Prevents second-preimage / tree-reshaping attacks where a leaf value mimics a child-hash concatenation",
+      "Needed because such structural ambiguity would exist even with a collision-resistant SHA-256"
+    ],
+    "cited_sources": [
+      "https://datatracker.ietf.org/doc/html/rfc6962",
+      "https://datatracker.ietf.org/doc/html/rfc9162"
+    ]
+  },
+  {
+    "id": "thin_prov10",
+    "category": "arcane_thin",
+    "topic": "RFC 6962 inclusion vs consistency proofs, STH and Maximum Merge Delay",
+    "difficulty": "hard",
+    "question": "Distinguish a Merkle audit path (inclusion proof) from a Merkle consistency proof in an RFC 6962 transparency log: what does each one prove, what inputs does each need, what does a Signed Tree Head contain, and what is the Maximum Merge Delay?",
+    "reference_answer": "An audit path (inclusion proof) proves that one specific leaf is present in a tree of a given size: given the leaf hash, the list of sibling hashes up to the root, and the root hash from a Signed Tree Head, the verifier recomputes the root and checks it matches — it proves membership of a single item. A consistency proof instead proves the append-only property between two tree states: given two STHs of sizes m <= n, it is the minimal set of node hashes needed to show the smaller tree of size m is a prefix of the larger tree of size n, i.e. that nothing was deleted or rewritten, only appended. A Signed Tree Head is the log's signed commitment to its current state, containing the tree size, the root (tree-head) hash, a timestamp and the log's signature (plus log-identifying metadata). The Maximum Merge Delay (MMD) is a log-declared time bound within which any accepted certificate must be incorporated into the tree and covered by a new STH; a client can therefore demand an inclusion proof against any STH dated after SCT-timestamp + MMD, and a log that fails to honour its MMD is treated as misbehaving.",
+    "answer_key_points": [
+      "Inclusion/audit proof: sibling hashes from a leaf to the root; proves one leaf is in the tree of a given STH",
+      "Consistency proof: node hashes proving tree of size m is a prefix of tree of size n (m<=n) — append-only, nothing deleted/altered",
+      "Inclusion needs leaf hash + audit path + STH root; consistency needs two STH roots/sizes + consistency path",
+      "STH contains: tree size, root (tree-head) hash, timestamp, log signature (and log ID metadata)",
+      "MMD = log-declared max time to incorporate an accepted cert into the tree and cover it with an STH",
+      "Client verifies inclusion against an STH dated after SCT timestamp + MMD; failing MMD = misbehaviour"
+    ],
+    "cited_sources": [
+      "https://datatracker.ietf.org/doc/html/rfc6962",
+      "https://datatracker.ietf.org/doc/html/rfc9162",
+      "https://certificate.transparency.dev/howctworks/"
+    ]
+  },
+  {
+    "id": "thin_prov11",
+    "category": "arcane_thin",
+    "topic": "Google Trillian personalities and tile-based logs",
+    "difficulty": "hard",
+    "question": "Google Trillian is a general-purpose verifiable-log backend. What is a Trillian 'personality' and what three kinds of responsibility does it own that the Trillian core deliberately does not? Separately, what is a 'tile' in tile-based transparency logs and what problem does tiling address?",
+    "reference_answer": "Trillian core is a generic, storage-backed append-only Merkle tree that provides sequencing and inclusion/consistency proofs but no application semantics. A personality is the application layer built on top of that core for a specific kind of log (a CT log, a key-transparency log, a software-supply-chain log, etc.), and it owns three responsibilities the core intentionally omits: (1) admission criteria — deciding what may be logged (e.g. only valid X.509 certificates); (2) canonicalisation — mapping equivalent submissions to a canonical form so the core can de-duplicate; and (3) the external interface — the client-facing API, ACLs, rate-limiting and DoS protection, which it translates into core operations like QueueLeaf and GetInclusionProof. A tile, in tile-based logs, is a fixed-size subtree of Merkle nodes (a group of hashes) stored and served as one unit; tiling batches the tree's hashes so that storage, recomputation and proof-serving read a small number of tiles rather than walking individual nodes, greatly reducing per-request overhead and making the log cheap to serve and mirror.",
+    "answer_key_points": [
+      "Trillian core = generic storage-backed append-only Merkle tree with inclusion/consistency proofs, no app semantics",
+      "A personality = the application layer for a specific log type on top of the core",
+      "Personality owns: (1) admission criteria (what may be logged)",
+      "(2) canonicalisation (equivalent submissions -> canonical form for de-duplication)",
+      "(3) external interface/API, ACLs, rate-limiting/DoS; maps to core ops like QueueLeaf/GetInclusionProof",
+      "A tile = a fixed-size subtree/group of Merkle hashes stored and served as one unit; tiling cuts storage/recompute/proof-serving overhead and eases mirroring"
+    ],
+    "cited_sources": [
+      "https://github.com/google/trillian/blob/master/docs/Personalities.md",
+      "https://github.com/google/trillian/blob/master/README.md",
+      "https://transparency.dev/articles/tile-based-logs/"
+    ]
+  }
+]

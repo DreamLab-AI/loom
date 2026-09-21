@@ -1,0 +1,266 @@
+[
+  {
+    "id": "q0033",
+    "answer": "Both Affective Computing and Automated Reasoning are subfields/branches of Artificial Intelligence. Automated Reasoning is a well-established technical subfield of AI (also rooted in mathematical logic and theoretical computer science) concerned with logical inference and theorem proving; Affective Computing is an (inter)disciplinary AI field, often called 'emotion AI', at the intersection of AI, psychology, cognitive science and HCI. The broadest concept common to both is therefore Artificial Intelligence.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Automated_reasoning",
+      "https://en.wikipedia.org/wiki/Affective_computing",
+      "https://mitsloan.mit.edu/ideas-made-to-matter/emotion-ai-explained"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.85,
+    "notes": "Both are standard public AI subfields; the shared parent 'Artificial Intelligence' is well supported. An intermediate 'AI research area' grouping is also defensible but not a fixed public term."
+  },
+  {
+    "id": "q0001",
+    "answer": "Affective computing (emotion AI) enables machines to perceive, interpret and respond to human emotion. Public sources identify its principal capabilities/applications as: automatic emotion recognition (from face, voice, physiology, text); emotion-aware human-computer interaction (interfaces that adapt to a user's affective state, e.g. reducing frustration); mental-health and wellbeing monitoring (stress detection, depression forecasting, therapy support); and human-robot / social-robot interaction (empathetic, emotionally responsive agents). It also enables applications in education, customer service and entertainment.",
+    "cited_sources": [
+      "https://www.cl.cam.ac.uk/~pr10/iui/picard95.pdf",
+      "https://www.media.mit.edu/groups/affective-computing/overview/",
+      "https://news.mit.edu/2018/helping-computers-perceive-human-emotions-0724",
+      "https://en.wikipedia.org/wiki/Affective_computing"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.75,
+    "notes": "T-REL 'enables' is open-ended; these are the canonical public applications. The exact set an ontology lists may differ, but emotion-aware interaction, mental-health monitoring and human-robot interaction are all well attested publicly."
+  },
+  {
+    "id": "q0069",
+    "answer": "Both are concepts in deep learning / neural-network design (hence machine learning and, more broadly, Artificial Intelligence). An encoder-decoder architecture is a neural-network architecture (encoder maps input to a latent state, decoder produces the output, e.g. sequence-to-sequence models). Model width is an architectural hyperparameter denoting the number of units/channels/hidden dimensions per layer (as opposed to depth). The broadest concept both fall under is neural networks / deep learning within Artificial Intelligence.",
+    "cited_sources": [
+      "https://d2l.ai/chapter_recurrent-modern/encoder-decoder.html",
+      "https://www.ibm.com/think/topics/encoder-decoder-model",
+      "https://en.wikipedia.org/wiki/Deep_learning"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.8,
+    "notes": "Both are firmly public deep-learning concepts. 'Deep learning / neural networks' is the tightest natural parent; 'Artificial Intelligence' is the broader ancestor."
+  },
+  {
+    "id": "q0036",
+    "answer": "'AI Application' is a generic umbrella term, but AI applications characteristically use machine learning and, in particular, deep learning as their core enabling techniques (alongside related methods such as natural language processing, computer vision, knowledge representation and reasoning). So the most defensible public answer is that an AI application uses machine learning / deep learning.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Machine_learning",
+      "https://en.wikipedia.org/wiki/Deep_learning",
+      "https://en.wikipedia.org/wiki/Artificial_intelligence"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.5,
+    "notes": "'AI Application' is not a specific public concept, so the 'uses' relation is generic. Machine learning and deep learning are the standard answer but this is inherently loose."
+  },
+  {
+    "id": "q0107",
+    "answer": "Both fall under blockchain. Across Protocol is a cross-chain bridge / interoperability protocol built on Ethereum and its layer-2 ecosystem, and a 'transaction' is the fundamental unit of state change recorded on a blockchain. The broadest concept common to both is blockchain (distributed-ledger technology); more narrowly they are both blockchain components/artefacts.",
+    "cited_sources": [
+      "https://docs.across.to/guides/concepts",
+      "https://en.wikipedia.org/wiki/Blockchain",
+      "https://en.wikipedia.org/wiki/Database_transaction"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.75,
+    "notes": "'Blockchain' is the natural shared parent. 'Transaction' is generic (also a database concept), but in a blockchain context both are blockchain concepts."
+  },
+  {
+    "id": "q0072",
+    "answer": "Across Protocol depends on: (1) Ethereum mainnet as its hub (the HubPool contract and shared liquidity live there); (2) UMA's Optimistic Oracle for optimistic verification/settlement of relayer refund bundles and dispute resolution; (3) supported layer-2 / EVM chains (Arbitrum, Optimism, Base, Polygon, etc., each running a SpokePool contract); (4) the canonical/native bridges and messaging of those chains for rebalancing and slow-path transfers; and (5) off-chain relayers and dataworkers. In the requested terms, it depends on the Ethereum smart-contract platform and on layer-2 solutions (plus UMA's optimistic oracle).",
+    "cited_sources": [
+      "https://docs.across.to/guides/concepts",
+      "https://blog.uma.xyz/articles/case-study-how-uma-secures-across-protocol",
+      "https://blog.openzeppelin.com/security-hub/uma-across-v2-audit",
+      "https://docs.across.to/user-docs/how-across-works/supported-chains-and-tokens"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.85,
+    "notes": "Well documented publicly. 'Ethereum smart-contract platform' and 'layer-2 solutions' are both clearly correct dependencies; the UMA Optimistic Oracle is arguably the single most critical dependency and I would add it."
+  },
+  {
+    "id": "q0145",
+    "answer": "Both are commonly treated as parts of the broader field of data management / data science / information management. Data analytics is the analytical function (deriving insight from data, generally placed under the data-science umbrella); Linked Data (W3C / Tim Berners-Lee) is a set of best practices for publishing and interlinking structured data on the web using RDF, URIs and SPARQL, i.e. a data-integration/publishing paradigm within information management. The tightest natural public parent is 'data' / data management (information management).",
+    "cited_sources": [
+      "https://www.w3.org/DesignIssues/LinkedData.html",
+      "https://www.oracle.com/analytics/data-analytics/",
+      "https://en.wikipedia.org/wiki/Linked_data",
+      "https://www.w3.org/TR/ld-bp/"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.6,
+    "notes": "Both are public concepts and both sit within data management / data science, so a 'data'/information-management parent is defensible. The ontology's own parent (whatever it is) may be framed differently; the public common concept is data / data management, not a single canonical term."
+  },
+  {
+    "id": "q0110",
+    "answer": "Climate modelling (GCMs/ESMs) enables physically-based climate projections of temperature, precipitation and other variables under different emissions scenarios; these in turn enable quantitative climate-risk assessment and impact analysis, and evidence-based design of mitigation and adaptation strategies and climate policy (it is the scientific basis of IPCC assessments and national adaptation planning). In short it enables climate projection, climate-risk assessment, and mitigation/adaptation/policy planning.",
+    "cited_sources": [
+      "https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_FGD_Chapter04.pdf",
+      "https://www.ipcc.ch/report/ar4/wg1/global-climate-projections/",
+      "https://www4.unfccc.int/sites/NAPC/Country%20Documents/General/apf%20technical%20paper05.pdf",
+      "https://en.wikipedia.org/wiki/Climate_model"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.65,
+    "notes": "T-REL 'enables' is open-ended. Climate-risk assessment and mitigation/carbon-neutrality planning are well supported publicly; more specific downstream terms (e.g. a particular 'carbon-footprint measurement' engine) would be ontology-internal."
+  },
+  {
+    "id": "q0180",
+    "answer": "There is no single standard public concept that tightly unifies Instant Messaging (a real-time communication technology) and Organisational Theory (a management/social-science discipline). The closest defensible public framing is that both are studied within, or contribute to, the field of collaboration and communication in organisations - i.e. Computer-Supported Cooperative Work (CSCW) / distributed collaboration - where communication tools and organisational structures are analysed together. This is a loose grouping, not an established taxonomic parent.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Computer-supported_cooperative_work",
+      "https://en.wikipedia.org/wiki/Instant_messaging",
+      "https://en.wikipedia.org/wiki/Organizational_theory"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.3,
+    "notes": "The pairing looks ontology-specific: a technology and a social-science discipline have no natural common parent in public taxonomy. I give the best-fit loose answer (CSCW / distributed collaboration) but confidence is low; a reader could reasonably regard this as effectively unanswerable from public knowledge."
+  },
+  {
+    "id": "q0148",
+    "answer": "Collaboration platforms (collaborative software / groupware) enable people to work together regardless of location. Public sources identify the enabled capabilities as: remote and distributed work; real-time and asynchronous communication (chat, voice/video); team coordination and task/project management; and shared file storage and document co-editing. In short they enable remote work, team communication and coordination, and shared document/file collaboration.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Collaborative_software",
+      "https://www.techtarget.com/enterprise-software/definition/team-collaboration-tools"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.6,
+    "notes": "T-REL 'enables'. Remote work and team coordination are strongly attested publicly; more specialised downstream items (e.g. AR/digital-twin collaboration) are plausible extensions but ontology-internal."
+  },
+  {
+    "id": "q0215",
+    "answer": "Both are concepts within distributed systems / distributed computing. Decentralisation is a structural property (control, decision-making and state distributed across nodes rather than a central coordinator); Two-Phase Commit is a classic distributed atomic-commit protocol (coordinator + participants, prepare then commit) ensuring a distributed transaction commits or aborts everywhere. The broadest common concept is distributed systems / distributed computing.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Two-phase_commit_protocol",
+      "https://en.wikipedia.org/wiki/Distributed_computing",
+      "https://en.wikipedia.org/wiki/Decentralized_computing"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.75,
+    "notes": "Both are clearly public distributed-systems concepts. 'Distributed systems/computing' is the natural shared parent; the ontology's own label ('Infrastructure') is a broader, more idiosyncratic grouping."
+  },
+  {
+    "id": "q0183",
+    "answer": "The Byzantine Generals Problem (Lamport, Shostak, Pease, 1982) is the archetypal formulation of reaching reliable agreement/consensus in a distributed system when some components may fail arbitrarily or maliciously. It fundamentally depends on: the notion of a distributed system of communicating nodes; a fault model (Byzantine/arbitrary faults) and fault-tolerance thresholds (oral messages require >2/3 loyal, i.e. n >= 3m+1 for m traitors; signed messages relax this); and communication/messaging assumptions. So it depends on fault tolerance and on the distributed-system model.",
+    "cited_sources": [
+      "https://www.cs.cmu.edu/afs/cs/academic/class/15712-f08/www/lectures/Lamport82lecture.pdf",
+      "https://en.wikipedia.org/wiki/Byzantine_fault",
+      "https://en.wikipedia.org/wiki/Consensus_(computer_science)"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.8,
+    "notes": "'Fault tolerance' and 'distributed system' are both well-supported dependencies. Strictly the problem defines/founds Byzantine fault tolerance rather than depending on it, but the two are inseparable in the literature."
+  },
+  {
+    "id": "q0252",
+    "answer": "Both are broadly categorised within the financial services industry, though in different subsectors. Asset management (managing client investment portfolios) is explicitly described by the CFA Institute as an integral component of the global financial services sector; cryptocurrency exchanges are regulated as financial-services / financial-market-infrastructure providers (e.g. under the UK FCA regime and the EU's MiCA). The broadest common concept is financial services (economic/financial systems).",
+    "cited_sources": [
+      "https://www.cfainstitute.org/insights/professional-learning/refresher-readings/2026/portfolio-management-overview",
+      "https://www.investopedia.com/terms/a/assetmanagement.asp",
+      "https://www.fca.org.uk/publications/consultation-papers/cp25-40-regulating-cryptoasset-activities"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.7,
+    "notes": "'Financial services' / economic systems is a well-supported shared parent. The ontology's alternative parents ('Platform and Environment', 'Spatial Computing') look domain-specific and are not what public knowledge would give."
+  },
+  {
+    "id": "q0218",
+    "answer": "The main parts/functions of asset management are: portfolio management (asset allocation, security/fund selection, monitoring and rebalancing - often used synonymously with asset management); risk management (integral to the process, balancing risk against return within the client's risk tolerance); research/investment strategy; client service, reporting and suitability; and operations including trading, compliance and custody (custody is often provided by third-party custodians rather than the manager itself). So portfolio management, risk management and custody are all legitimate parts, plus performance measurement/reporting.",
+    "cited_sources": [
+      "https://www.investopedia.com/terms/a/assetmanagement.asp",
+      "https://www.investopedia.com/terms/p/portfoliomanagement.asp",
+      "https://rpc.cfainstitute.org/codes-and-standards/asset-manager-code"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.7,
+    "notes": "Portfolio management and risk management are core; custody is part of the value chain but frequently outsourced. 'Performance' (measurement/reporting) is a reasonable part. Good match to the standard public decomposition."
+  },
+  {
+    "id": "q0281",
+    "answer": "Both are commonly grouped under regulatory compliance / data governance, and more broadly under digital/data sovereignty. eIDAS is the EU regulation on electronic identification, authentication and trust services (a compliance/digital-identity regulation). Data residency is a data-governance/compliance requirement concerning the physical/geographic location where data is stored and processed. The broadest natural common concept is data governance & regulatory compliance (often discussed under digital/data sovereignty).",
+    "cited_sources": [
+      "https://digital-strategy.ec.europa.eu/en/policies/eidas-regulation",
+      "https://www.ibm.com/think/topics/data-residency",
+      "https://en.wikipedia.org/wiki/EIDAS"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.6,
+    "notes": "Both public. 'Regulatory compliance / data governance / digital sovereignty' is the well-supported common frame. The ontology's own single label ('Infrastructure') is broader and more idiosyncratic than the natural public grouping."
+  },
+  {
+    "id": "q0255",
+    "answer": "Regulatory compliance requires (per GRC practice and ISO 37301): documented policies and objectives; identification of compliance obligations; structured compliance risk assessment; controls, procedures and processes to manage those obligations; leadership/governance and accountability; monitoring, audits and audit trails (records of activities, investigations and remediation); and communication, training and documentation. In short it requires policy, risk assessment, controls, and audit / audit trails.",
+    "cited_sources": [
+      "https://www.iso.org/standard/75080.html",
+      "https://en.wikipedia.org/wiki/Governance,_risk,_and_compliance",
+      "https://www.diligent.com/resources/guides/grc"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.7,
+    "notes": "Audit, risk assessment, policy and audit trail are all well-supported requirements of a compliance management system. T-REL 'requires' is open-ended but this list maps closely to ISO 37301."
+  },
+  {
+    "id": "q0317",
+    "answer": "There is no established public concept that unifies Chaos Engineering (a software-reliability / SRE discipline of injecting controlled failures) and Phase Transition (a physics / statistical-mechanics phenomenon where a system changes state at a critical point). They sit in entirely different domains. The only very abstract shared thread in public knowledge is that both concern the behaviour of complex systems under stress / near critical points, but that is not a recognised taxonomic parent. I would not assert a specific common concept with confidence.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Chaos_engineering",
+      "https://en.wikipedia.org/wiki/Phase_transition"
+    ],
+    "abstained": true,
+    "abstain_reason": "The two named concepts belong to unrelated domains (software engineering vs physics) with no standard public common parent; any unifying category (e.g. the ontology's 'Software Engineering / Infrastructure') appears private/idiosyncratic and would misclassify 'phase transition'.",
+    "confidence": 0.2,
+    "notes": "Both concepts are individually public and verifiable, but the pairing has no verifiable public common concept, so I abstain on the T-COMMON answer. This is a signal the grouping is ontology-internal."
+  },
+  {
+    "id": "q0284",
+    "answer": "Chaos engineering depends on observability and monitoring. Authoritative sources treat this as a formal prerequisite: AWS/Gremlin list 'basic monitoring/observability' as the first prerequisite, and practitioners note 'without observability, there is no chaos engineering'. You need monitoring/observability (metrics, logs, traces) to define and measure the system's steady state, detect the impact of injected faults, and know when to abort an experiment. So its key dependencies are observability and monitoring (plus safety mechanisms such as a limited blast radius and a kill switch).",
+    "cited_sources": [
+      "https://www.gremlin.com/aws",
+      "https://www.devopsinstitute.com/the-practice-of-chaos-engineering-observability/",
+      "https://www.infoq.com/news/2019/03/chaos-engineering-observability/",
+      "https://en.wikipedia.org/wiki/Chaos_engineering"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.85,
+    "notes": "Strongly supported: observability and monitoring are the canonical prerequisites/dependencies of chaos engineering. Some experts note observability need not be fully mature before starting, but the dependency itself is not disputed."
+  },
+  {
+    "id": "q0348",
+    "answer": "There is no tight, standard public parent uniting Calculus (a branch of mathematics) and Distributed Inference (a technique for running machine-learning inference across multiple nodes/devices). Calculus is pure mathematics; distributed inference is an ML-systems technique. The loosest defensible common framing is that both are foundations/techniques employed within machine learning and, more broadly, computational/AI methods - calculus underpins the optimisation used to train models, while distributed inference is used to deploy them. But this is a weak, cross-domain grouping rather than a genuine taxonomic parent.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Calculus",
+      "https://en.wikipedia.org/wiki/Machine_learning",
+      "https://en.wikipedia.org/wiki/Distributed_computing"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.3,
+    "notes": "Both concepts are public but their pairing is cross-domain (mathematics vs ML systems). The ontology's answer ('AI research area / technique / AI') treats calculus as an AI technique, which is not how public taxonomy classifies pure mathematics. I give a low-confidence best-fit rather than a firm parent; this borders on abstain."
+  },
+  {
+    "id": "q0320",
+    "answer": "In machine learning, calculus (differential calculus and especially the chain rule) enables the core training machinery: it enables optimisation of model parameters via gradients, gradient descent (and stochastic/mini-batch variants), backpropagation (which is the chain rule applied to a network's computational graph), and automatic differentiation (reverse-mode autodiff, of which backprop is a special case). It also underpins convex optimisation. So calculus enables optimisation, gradient descent, backpropagation and automatic differentiation.",
+    "cited_sources": [
+      "https://www.deeplearningbook.org/slides/06_mlp.pdf",
+      "https://en.wikipedia.org/wiki/Backpropagation",
+      "https://en.wikipedia.org/wiki/Automatic_differentiation",
+      "https://en.wikipedia.org/wiki/Gradient_descent"
+    ],
+    "abstained": false,
+    "abstain_reason": "",
+    "confidence": 0.8,
+    "notes": "In an ML/AI framing this is well supported: optimisation, backpropagation, automatic differentiation and (stochastic) gradient descent are all direct applications of calculus. Convex optimisation is a reasonable addition. The framing assumes the ML context implied by the ontology domain."
+  }
+]

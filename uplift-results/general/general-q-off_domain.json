@@ -1,0 +1,358 @@
+[
+  {
+    "id": "off01",
+    "category": "off_domain",
+    "topic": "geography",
+    "difficulty": "easy",
+    "question": "What is the capital city of Australia?",
+    "reference_answer": "The capital of Australia is Canberra, not Sydney or Melbourne. It was purpose-built as a compromise capital after the two larger cities competed for the honour, and it sits in the Australian Capital Territory in the south-east of the country.",
+    "answer_key_points": [
+      "Canberra is the capital",
+      "Not Sydney and not Melbourne (a common misconception)",
+      "Located in the Australian Capital Territory (ACT)",
+      "Purpose-built as a compromise between Sydney and Melbourne"
+    ],
+    "cited_sources": ["https://en.wikipedia.org/wiki/Canberra"]
+  },
+  {
+    "id": "off02",
+    "category": "off_domain",
+    "topic": "history",
+    "difficulty": "easy",
+    "question": "In what year did the Berlin Wall fall?",
+    "reference_answer": "The Berlin Wall fell in 1989, with the border opening on the night of 9 November 1989. It had divided East and West Berlin since 1961, and its fall became a defining symbol of the end of the Cold War, paving the way for German reunification in 1990.",
+    "answer_key_points": [
+      "1989 (specifically 9 November 1989)",
+      "Divided East and West Berlin since 1961",
+      "Symbolised the end of the Cold War",
+      "Led to German reunification in 1990"
+    ],
+    "cited_sources": ["https://www.britannica.com/topic/Berlin-Wall"]
+  },
+  {
+    "id": "off03",
+    "category": "off_domain",
+    "topic": "biology",
+    "difficulty": "easy",
+    "question": "Which gas do plants take in from the air during photosynthesis, and which gas do they release?",
+    "reference_answer": "During photosynthesis plants take in carbon dioxide (CO2) from the air and release oxygen (O2). Using energy from sunlight captured by chlorophyll, they combine carbon dioxide with water to make glucose (sugar), releasing oxygen as a by-product.",
+    "answer_key_points": [
+      "Takes in carbon dioxide (CO2)",
+      "Releases oxygen (O2)",
+      "Driven by light energy captured by chlorophyll",
+      "Produces glucose/sugar from CO2 and water"
+    ],
+    "cited_sources": ["https://en.wikipedia.org/wiki/Photosynthesis"]
+  },
+  {
+    "id": "off04",
+    "category": "off_domain",
+    "topic": "chemistry",
+    "difficulty": "easy",
+    "question": "What is the chemical symbol for gold, and why isn't it 'Go' or 'Gd'?",
+    "reference_answer": "The chemical symbol for gold is Au. It derives from the Latin name for gold, aurum, which is why the symbol does not match the English word. Its atomic number is 79.",
+    "answer_key_points": [
+      "Symbol is Au",
+      "Derived from the Latin word aurum",
+      "Atomic number 79",
+      "English name and symbol differ because the symbol comes from Latin"
+    ],
+    "cited_sources": ["https://en.wikipedia.org/wiki/Gold"]
+  },
+  {
+    "id": "off05",
+    "category": "off_domain",
+    "topic": "literature",
+    "difficulty": "easy",
+    "question": "Who wrote the novel 'Pride and Prejudice'?",
+    "reference_answer": "Pride and Prejudice was written by the English author Jane Austen and first published in 1813. It follows Elizabeth Bennet and her relationship with the wealthy Mr Darcy, and is one of the most widely read novels in English literature.",
+    "answer_key_points": [
+      "Jane Austen is the author",
+      "First published in 1813",
+      "Central characters Elizabeth Bennet and Mr Darcy",
+      "A classic of English literature / novel of manners"
+    ],
+    "cited_sources": ["https://en.wikipedia.org/wiki/Pride_and_Prejudice"]
+  },
+  {
+    "id": "off06",
+    "category": "off_domain",
+    "topic": "physics",
+    "difficulty": "medium",
+    "question": "Why does the sky appear blue during the day?",
+    "reference_answer": "The sky appears blue because of Rayleigh scattering. Air molecules scatter sunlight, and the amount of scattering is much stronger for shorter (blue) wavelengths than for longer (red) wavelengths. As a result blue light is scattered across the sky in all directions, so when we look up away from the Sun we see this scattered blue light. The same effect explains red sunrises and sunsets, when light travels through more atmosphere and the blue is scattered out before it reaches us.",
+    "answer_key_points": [
+      "Caused by Rayleigh scattering of sunlight by air molecules",
+      "Shorter (blue) wavelengths are scattered much more strongly than longer (red) ones",
+      "Scattered blue light reaches the eye from all parts of the sky",
+      "The same mechanism explains reddish sunsets (blue scattered out over a longer path)"
+    ],
+    "cited_sources": ["https://www.britannica.com/science/Rayleigh-scattering"]
+  },
+  {
+    "id": "off07",
+    "category": "off_domain",
+    "topic": "economics",
+    "difficulty": "medium",
+    "question": "What is the difference between fiscal policy and monetary policy?",
+    "reference_answer": "Fiscal policy is the use of government taxation and public spending to influence the economy, and it is set by the government/treasury. Monetary policy is conducted by the central bank and manages the money supply and interest rates (and broader credit conditions) to pursue objectives such as stable prices and full employment. In short, fiscal policy works through tax-and-spend decisions, while monetary policy works through interest rates and the money supply.",
+    "answer_key_points": [
+      "Fiscal policy = government taxation and spending decisions",
+      "Set by the government/treasury (elected fiscal authority)",
+      "Monetary policy = central bank control of money supply and interest rates",
+      "Monetary policy aims at goals like price stability and employment",
+      "Key distinction: tax-and-spend vs interest rates/money supply"
+    ],
+    "cited_sources": [
+      "https://www.federalreserve.gov/faqs/money_12855.htm",
+      "https://www.investopedia.com/ask/answers/100314/whats-difference-between-monetary-policy-and-fiscal-policy.asp"
+    ]
+  },
+  {
+    "id": "off08",
+    "category": "off_domain",
+    "topic": "medicine",
+    "difficulty": "medium",
+    "question": "What is the fundamental difference between Type 1 and Type 2 diabetes?",
+    "reference_answer": "Type 1 diabetes is an autoimmune disease in which the body's immune system destroys the insulin-producing beta cells of the pancreas, causing an absolute deficiency of insulin; patients therefore depend on insulin injections. Type 2 diabetes is characterised by insulin resistance (the body's cells respond poorly to insulin) combined with a relative deficiency of insulin secretion, and it is strongly associated with obesity and lifestyle factors. Type 1 usually appears in childhood or young adulthood, whereas Type 2 typically develops later in life.",
+    "answer_key_points": [
+      "Type 1 is autoimmune destruction of pancreatic beta cells (absolute insulin deficiency)",
+      "Type 1 patients require insulin",
+      "Type 2 is insulin resistance with relative insulin deficiency",
+      "Type 2 is strongly linked to obesity/lifestyle",
+      "Different typical age of onset (Type 1 younger, Type 2 later)"
+    ],
+    "cited_sources": [
+      "https://www.ncbi.nlm.nih.gov/books/NBK279119/",
+      "https://joslin.org/news-stories/all-news-stories/education/2019/09/difference-between-type-1-and-type-2"
+    ]
+  },
+  {
+    "id": "off09",
+    "category": "off_domain",
+    "topic": "biology",
+    "difficulty": "medium",
+    "question": "How does natural selection work, as proposed by Charles Darwin?",
+    "reference_answer": "Natural selection works because individuals within a population vary in their heritable traits, more offspring are produced than can survive, and individuals whose traits make them better suited to their environment tend to survive and reproduce more successfully. Because these advantageous traits are inherited, they become more common in the population over generations. Over long timescales this differential survival and reproduction drives the evolution of species and their adaptation to their environments.",
+    "answer_key_points": [
+      "Variation exists among individuals in a population",
+      "Some of that variation is heritable (passed to offspring)",
+      "More offspring are produced than can survive (competition/struggle for existence)",
+      "Individuals with advantageous traits survive and reproduce more (differential reproductive success)",
+      "Favourable traits accumulate over generations, driving adaptation/evolution"
+    ],
+    "cited_sources": [
+      "https://evolution.berkeley.edu/evolution-101/mechanisms-the-processes-of-evolution/natural-selection/",
+      "https://en.wikipedia.org/wiki/Natural_selection"
+    ]
+  },
+  {
+    "id": "off10",
+    "category": "off_domain",
+    "topic": "geography",
+    "difficulty": "medium",
+    "question": "What causes the Earth to have seasons?",
+    "reference_answer": "Seasons are caused by the tilt of the Earth's rotational axis, which is inclined at about 23.5 degrees relative to its orbit around the Sun. As the Earth orbits the Sun, this tilt means different hemispheres lean toward or away from the Sun at different times of year, changing the angle and duration of sunlight they receive. When a hemisphere is tilted toward the Sun it experiences summer; when tilted away it experiences winter. Crucially, seasons are not caused by changes in the Earth's distance from the Sun.",
+    "answer_key_points": [
+      "Caused by the tilt of Earth's axis (about 23.5 degrees)",
+      "As Earth orbits, hemispheres tilt toward or away from the Sun",
+      "This changes the angle/intensity and length of daylight",
+      "Hemisphere tilted toward the Sun has summer; tilted away has winter",
+      "NOT caused by varying Earth-Sun distance"
+    ],
+    "cited_sources": [
+      "https://www.ces.fau.edu/nasa/module-3/why-does-temperature-vary/seasons.php",
+      "https://www.weather.gov/fsd/season"
+    ]
+  },
+  {
+    "id": "off11",
+    "category": "off_domain",
+    "topic": "art",
+    "difficulty": "medium",
+    "question": "How did the Impressionist movement get its name, and what characterises Impressionist painting?",
+    "reference_answer": "Impressionism took its name from Claude Monet's painting 'Impression, Sunrise' (Impression, soleil levant), shown at an independent group exhibition in Paris in 1874; a critic used the word 'Impressionist' mockingly, and it stuck. The style is characterised by loose, visible brushstrokes, an emphasis on capturing fleeting effects of light and atmosphere, often painting outdoors (en plein air), and everyday modern subjects rather than grand historical scenes. Leading figures included Monet, Renoir, Degas, Pissarro and Morisot.",
+    "answer_key_points": [
+      "Named after Monet's painting 'Impression, Sunrise' (1872), shown in 1874",
+      "The 1874 independent Paris exhibition; a critic coined the term (originally derisive)",
+      "Loose visible brushwork; focus on light and atmosphere",
+      "Often painted outdoors (en plein air), everyday modern subjects",
+      "Key artists include Monet, Renoir, Degas, Pissarro, Morisot"
+    ],
+    "cited_sources": [
+      "https://www.britannica.com/topic/Impression-Sunrise",
+      "https://en.wikipedia.org/wiki/Impression,_Sunrise"
+    ]
+  },
+  {
+    "id": "off12",
+    "category": "off_domain",
+    "topic": "chemistry",
+    "difficulty": "medium",
+    "question": "What does the pH scale measure, and what distinguishes an acid from a base?",
+    "reference_answer": "The pH scale measures how acidic or basic a solution is, defined as the negative logarithm of the hydrogen ion concentration (pH = -log[H+]). It typically runs from 0 to 14: a pH below 7 is acidic (higher hydrogen ion concentration), a pH of 7 is neutral (as in pure water), and a pH above 7 is basic or alkaline (lower hydrogen ion concentration). Because it is logarithmic, each whole pH unit represents a tenfold change in hydrogen ion concentration.",
+    "answer_key_points": [
+      "pH measures acidity/basicity, defined as -log of hydrogen ion concentration",
+      "Scale typically 0-14",
+      "Below 7 = acidic; 7 = neutral; above 7 = basic/alkaline",
+      "Acids have higher [H+], bases have lower [H+]",
+      "Logarithmic: each unit is a tenfold change in [H+]"
+    ],
+    "cited_sources": [
+      "https://chem.libretexts.org/Courses/Monterey_Peninsula_College/CHEM_30A:_Introduction_to_Chemistry_for_Health_Sciences/11:_Acids_Bases_and_Buffers/11.05:_The_pH_Scale"
+    ]
+  },
+  {
+    "id": "off13",
+    "category": "off_domain",
+    "topic": "history",
+    "difficulty": "hard",
+    "question": "What were the main long-term causes of the First World War, and what event triggered it?",
+    "reference_answer": "The long-term causes are often summarised by the acronym MAIN: militarism (an arms race and the glorification of military power), alliances (Europe divided into the Triple Alliance and the Triple Entente, so a local conflict could drag in the great powers), imperialism (rivalry over colonies and prestige), and nationalism (aggressive national ambitions, especially Slavic nationalism in the Balkans against Austria-Hungary). The immediate trigger was the assassination of Archduke Franz Ferdinand, heir to the Austro-Hungarian throne, by Gavrilo Princip in Sarajevo on 28 June 1914. This set off the July Crisis, and within weeks the alliance system and mobilisation plans turned a regional dispute into a general European war.",
+    "answer_key_points": [
+      "Long-term causes summarised as MAIN: Militarism, Alliances, Imperialism, Nationalism",
+      "Rival alliance blocs: Triple Alliance vs Triple Entente",
+      "Immediate trigger: assassination of Archduke Franz Ferdinand",
+      "Carried out by Gavrilo Princip in Sarajevo on 28 June 1914",
+      "Triggered the July Crisis; alliances and mobilisation escalated it into a general war"
+    ],
+    "cited_sources": [
+      "https://www.bbc.co.uk/bitesize/articles/z9cvf82",
+      "https://historycrunch.com/long-term-causes-of-world-war-i/"
+    ]
+  },
+  {
+    "id": "off14",
+    "category": "off_domain",
+    "topic": "physics",
+    "difficulty": "hard",
+    "question": "State the second law of thermodynamics and explain what entropy has to do with it and with the 'arrow of time'.",
+    "reference_answer": "The second law of thermodynamics states that in any spontaneous process the total entropy of an isolated system (system plus surroundings) never decreases; it increases for irreversible processes and stays constant only for idealised reversible ones. Entropy is a measure of the number of microscopic arrangements consistent with a system's macroscopic state (Boltzmann's S = k ln W), often described intuitively as the degree of energy dispersal or disorder. Equivalent statements are that heat flows spontaneously from hot to cold, and that no engine can convert heat entirely into work from a single reservoir (Kelvin-Planck). Because total entropy can only increase, it gives a direction to time: this one-way increase is why many physical processes are irreversible and defines the 'arrow of time'.",
+    "answer_key_points": [
+      "Total entropy of an isolated system never decreases (increases or stays constant)",
+      "Equality only for reversible processes; increase for irreversible/spontaneous ones",
+      "Entropy relates to number of microstates (Boltzmann S = k ln W) / energy dispersal",
+      "Equivalent forms: heat flows hot to cold; can't fully convert heat to work from one reservoir (Kelvin-Planck)",
+      "The one-way increase in entropy defines the arrow of time / irreversibility"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Second_law_of_thermodynamics",
+      "https://www.britannica.com/science/thermodynamics/The-second-law-of-thermodynamics"
+    ]
+  },
+  {
+    "id": "off15",
+    "category": "off_domain",
+    "topic": "literature",
+    "difficulty": "hard",
+    "question": "What is the 'stream of consciousness' technique, and why is James Joyce's 'Ulysses' a famous example of it?",
+    "reference_answer": "Stream of consciousness is a narrative technique that tries to render the continuous, often unstructured flow of a character's thoughts, sensations and associations as they occur, rather than presenting orderly, grammatically tidy narration. James Joyce's 'Ulysses' (1922) is the landmark modernist example: it follows Leopold Bloom and Stephen Dedalus through a single day in Dublin, using interior monologue to plunge the reader directly into their shifting inner lives. The technique reaches its most famous extreme in Molly Bloom's closing soliloquy, a long, largely unpunctuated passage that mimics the drift of half-conscious thought.",
+    "answer_key_points": [
+      "Stream of consciousness renders the continuous, associative flow of a character's inner thoughts",
+      "Often uses interior monologue and unconventional, loosely punctuated prose",
+      "Joyce's Ulysses (1922) is the landmark modernist example",
+      "Set over a single day in Dublin, following Leopold Bloom and Stephen Dedalus",
+      "Molly Bloom's closing soliloquy is the classic unpunctuated example"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Ulysses_(novel)",
+      "https://en.wikipedia.org/wiki/Stream_of_consciousness"
+    ]
+  },
+  {
+    "id": "off16",
+    "category": "off_domain",
+    "topic": "history",
+    "difficulty": "medium",
+    "question": "In what year was Nelson Mandela released from prison, and when did he become President of South Africa?",
+    "reference_answer": "Nelson Mandela was released from prison on 11 February 1990, after 27 years of imprisonment, most of it for his opposition to apartheid. He then became President of South Africa in 1994, taking office on 10 May 1994 after the country's first fully democratic, multiracial elections, making him the nation's first black head of state.",
+    "answer_key_points": [
+      "Released from prison in 1990 (11 February 1990)",
+      "Had been imprisoned for 27 years",
+      "Became President in 1994 (inaugurated 10 May 1994)",
+      "Followed South Africa's first fully democratic multiracial elections",
+      "First black President of South Africa"
+    ],
+    "cited_sources": [
+      "https://www.nelsonmandela.org/biography",
+      "https://www.britannica.com/biography/Nelson-Mandela"
+    ]
+  },
+  {
+    "id": "off17",
+    "category": "off_domain",
+    "topic": "medicine",
+    "difficulty": "hard",
+    "question": "How do mRNA COVID-19 vaccines work at the molecular level?",
+    "reference_answer": "An mRNA vaccine delivers a strand of messenger RNA that codes for the SARS-CoV-2 spike protein, packaged inside a lipid nanoparticle that protects the fragile mRNA and helps it enter cells after injection. Once inside the cytoplasm, the cell's own ribosomes translate the mRNA into spike protein, which is then displayed to the immune system. This trains the immune system to recognise the spike: B cells produce neutralising antibodies and T cells are primed, generating immune memory so the body can respond quickly to a real infection. Importantly, the mRNA never enters the cell nucleus or alters DNA, and it is broken down by the cell within hours to days after the protein is made.",
+    "answer_key_points": [
+      "mRNA encodes the SARS-CoV-2 spike protein",
+      "Delivered inside a lipid nanoparticle that protects it and aids cell entry",
+      "Cell's ribosomes translate the mRNA into spike protein in the cytoplasm",
+      "Immune system responds: neutralising antibodies (B cells) and T-cell response, creating memory",
+      "mRNA does not enter the nucleus or alter DNA; it is degraded after use"
+    ],
+    "cited_sources": [
+      "https://www.cdc.gov/covid/vaccines/how-they-work.html",
+      "https://www.nature.com/articles/s41573-021-00283-5"
+    ]
+  },
+  {
+    "id": "off18",
+    "category": "off_domain",
+    "topic": "geography",
+    "difficulty": "medium",
+    "question": "Which is the longest river in the world, and why is the answer disputed?",
+    "reference_answer": "Traditionally the Nile in Africa is regarded as the longest river in the world, at roughly 6,650 km (some measurements give up to around 6,850-7,000 km), and it is the answer given by most standard references. However, the answer is disputed: the Amazon in South America is comparable in length (roughly 6,400-7,000 km depending on method), and some studies, particularly Brazilian ones, argue it is actually longer. The dispute arises because a river's measured length depends on which headwater is chosen as the true source and how the winding course and mouth are measured, so different methods yield different rankings.",
+    "answer_key_points": [
+      "The Nile is traditionally considered the longest (about 6,650 km, some measures ~6,850-7,000 km)",
+      "The Amazon is comparable (roughly 6,400-7,000 km) and some studies claim it is longer",
+      "The ranking is genuinely disputed",
+      "Dispute arises from how the source/headwater is defined and how the course is measured",
+      "The Amazon is far larger by water volume/discharge even where length is contested"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Nile",
+      "https://www.livescience.com/57023-nile-river-facts.html"
+    ]
+  },
+  {
+    "id": "off19",
+    "category": "off_domain",
+    "topic": "economics",
+    "difficulty": "hard",
+    "question": "Explain David Ricardo's theory of comparative advantage. How can two countries both gain from trade even if one is better at producing everything?",
+    "reference_answer": "Comparative advantage, set out by David Ricardo, shows that mutually beneficial trade depends on relative (opportunity) costs, not absolute efficiency. In his classic example, Portugal can produce both cloth and wine using less labour than England (an absolute advantage in both), yet the countries still gain from trade. This is because each should specialise in the good it produces at lower opportunity cost: England gives up less wine to make cloth, so it has a comparative advantage in cloth, while Portugal gives up less cloth to make wine, so its comparative advantage is in wine. If each specialises accordingly and they trade, total output rises and both countries can end up with more of both goods than they could produce alone. The key insight is that even a country that is worse at making everything still has a comparative advantage in something.",
+    "answer_key_points": [
+      "Comparative advantage depends on relative/opportunity cost, not absolute efficiency",
+      "Ricardo's England-Portugal cloth-and-wine example (Portugal has absolute advantage in both)",
+      "Each country specialises in the good with the lower opportunity cost",
+      "England specialises in cloth, Portugal in wine",
+      "Specialisation plus trade raises total output; both countries can gain",
+      "Even a country worse at everything still has a comparative advantage in something"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Comparative_advantage",
+      "https://socialsci.libretexts.org/Bookshelves/Economics/International_Economics/International_Trade_-_Theory_and_Policy/02:_The_Ricardian_Theory_of_Comparative_Advantage/2.02:_The_Theory_of_Comparative_Advantage-_Overview"
+    ]
+  },
+  {
+    "id": "off20",
+    "category": "off_domain",
+    "topic": "chemistry",
+    "difficulty": "medium",
+    "question": "Who is credited with creating the periodic table, and what fundamental property are the elements now arranged by?",
+    "reference_answer": "The periodic table is credited to the Russian chemist Dmitri Mendeleev, who published his version in 1869, arranging the known elements by atomic weight and grouping those with similar chemical properties; he even left gaps and successfully predicted undiscovered elements. The modern table is fundamentally organised by atomic number (the number of protons in an element's nucleus) rather than atomic weight, a refinement established after Henry Moseley's work in the early twentieth century, which resolved anomalies in Mendeleev's weight-based ordering.",
+    "answer_key_points": [
+      "Dmitri Mendeleev is credited with the periodic table (published 1869)",
+      "He originally arranged elements by atomic weight and grouped by similar properties",
+      "He left gaps and predicted undiscovered elements",
+      "The modern table is organised by atomic number (number of protons)",
+      "The shift to atomic number followed Henry Moseley's work"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Periodic_table",
+      "https://www.britannica.com/science/periodic-table"
+    ]
+  }
+]

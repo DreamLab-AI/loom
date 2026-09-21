@@ -1,0 +1,832 @@
+[
+  {
+    "id": "q0010",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What does Autonomous Behavior enable?",
+    "gold_titles": [
+      "Autonomous Agent",
+      "Autonomous Task Execution",
+      "Swarm Intelligence",
+      "Multi-Agent Systems"
+    ],
+    "ontology_source": [
+      {
+        "title": "Autonomous Behavior",
+        "definition": "The capacity of an agent, robot, or AI system to select and execute actions in pursuit of goals without continuous human instruction, using internal models of the world, perception of environmental state, and learned or programmed decision policies. Autonomous behaviour spans a continuum from simple reactive reflexes to deliberative planning over extended time horizons.",
+        "parents": [
+          "Autonomous Operation"
+        ],
+        "ancestors": [
+          "Autonomous System",
+          "Robot Type",
+          "Robotics"
+        ],
+        "relations": {
+          "requires": [
+            "Perception System",
+            "Planning Module",
+            "Reward Function",
+            "Feedback Loop",
+            "decision-policy"
+          ],
+          "enables": [
+            "Autonomous Agent",
+            "Autonomous Task Execution",
+            "Swarm Intelligence",
+            "Multi-Agent Systems"
+          ],
+          "relatedTo": [
+            "Agentic AI",
+            "Behavioral Modeling",
+            "Goal",
+            "AI Safety",
+            "AI Alignment",
+            "Reinforcement Learning",
+            "Cognitive Architecture"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0043",
+    "domain": "artificial-intelligence",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Edge AI Accelerators? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "AI Infrastructure"
+    ],
+    "ontology_source": [
+      {
+        "title": "Edge AI Accelerators",
+        "definition": "Edge AI Accelerators are specialised hardware processors \u2014 including Neural Processing Units (NPUs), Tensor Processing Units (TPUs), FPGAs, and custom ASICs \u2014 designed to execute machine learning inference workloads on resource-constrained edge devices with dramatically higher throughput and energy efficiency than general-purpose CPUs. By exploiting the inherent parallelism of neural network matri",
+        "parents": [
+          "AI Infrastructure"
+        ],
+        "ancestors": [
+          "Digital Infrastructure",
+          "Computing and Cloud",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "NPU",
+            "TPU",
+            "FPGA",
+            "GPU Compute"
+          ],
+          "requires": [
+            "Inference",
+            "Hardware Acceleration"
+          ],
+          "enables": [
+            "Edge Computing",
+            "Federated Learning",
+            "Autonomous Vehicle",
+            "Edge AI System"
+          ],
+          "dependsOn": [
+            "Model Compression for Edge",
+            "Knowledge Distillation for Edge"
+          ],
+          "uses": [
+            "Model Pruning for Edge Deployment",
+            "Embedded AI Frameworks"
+          ],
+          "relatedTo": [
+            "Embedded Systems",
+            "Inference Hardware",
+            "Neuromorphic Computing",
+            "Edge AI Security"
+          ],
+          "supports": [
+            "Autonomous Robot",
+            "Digital Twin"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0086",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Financial Reporting require?",
+    "gold_titles": [
+      "Compliance",
+      "Regulatory Compliance",
+      "Audit"
+    ],
+    "ontology_source": [
+      {
+        "title": "Financial Reporting",
+        "definition": "Financial reporting is the structured disclosure of an organisation's financial position, performance, and cash flows to stakeholders through standardised statements and supporting notes. It rests on recognised accounting frameworks and audit assurance to provide a faithful, comparable, and verifiable view of economic activity. In blockchain and decentralised contexts, financial reporting extends ",
+        "parents": [
+          "Blockchain",
+          "Governance and Regulation"
+        ],
+        "ancestors": [],
+        "relations": {
+          "hasPart": [
+            "Disclosure Requirements",
+            "Audit"
+          ],
+          "requires": [
+            "Compliance",
+            "Regulatory Compliance",
+            "Audit"
+          ],
+          "enables": [
+            "Transparency",
+            "Treasury Management"
+          ],
+          "dependsOn": [
+            "Compliance"
+          ],
+          "uses": [
+            "Proof of Reserves",
+            "Disclosure Requirements"
+          ],
+          "partOf": [
+            "Blockchain"
+          ],
+          "relatedTo": [
+            "Tokenomics",
+            "Taxation",
+            "Regulatory Compliance"
+          ],
+          "bridgesTo": [
+            "Proof of Reserves"
+          ],
+          "supports": [
+            "Transparency",
+            "Treasury Management"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0129",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Metadata use?",
+    "gold_titles": [
+      "Data Schema",
+      "Data Standards",
+      "Controlled Vocabulary",
+      "RDF"
+    ],
+    "ontology_source": [
+      {
+        "title": "Metadata",
+        "definition": "Metadata is structured information that describes, contextualises, or categorises other data, enabling its discovery, management, interpretation, and interoperability. Metadata encompasses descriptive attributes (title, author, date), structural information (format, schema, relationships), administrative records (access rights, provenance, lifecycle), and technical parameters (resolution, encoding",
+        "parents": [
+          "Data Schema"
+        ],
+        "ancestors": [
+          "Schema Definition",
+          "Data Format Standard",
+          "Technical Standards",
+          "Standards and Interoperability",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "enables": [
+            "Data Provenance",
+            "Knowledge Graph",
+            "Linked Data",
+            "Data Discovery",
+            "Data Interoperability"
+          ],
+          "uses": [
+            "Data Schema",
+            "Data Standards",
+            "Controlled Vocabulary",
+            "RDF"
+          ],
+          "relatedTo": [
+            "Metadata Management",
+            "Metadata Schema",
+            "Data Catalog",
+            "Ontology"
+          ],
+          "bridgesTo": [
+            "Artificial Intelligence",
+            "Semantic Web Linked Data Standard"
+          ],
+          "supports": [
+            "Data Governance",
+            "Information Retrieval",
+            "Data Lineage"
+          ],
+          "standardizedBy": [
+            "Dublin Core"
+          ],
+          "contrastsWith": [
+            "Raw Data"
+          ]
+        },
+        "maturity": "mature"
+      }
+    ]
+  },
+  {
+    "id": "q0166",
+    "domain": "distributed-collaboration",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Knowledge Sharing? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Content and Assets"
+    ],
+    "ontology_source": [
+      {
+        "title": "Knowledge Sharing",
+        "definition": "Collaborative practices and platforms that facilitate the exchange of information, expertise, and learning experiences among users, encompassing immersive virtual environments, AI-enhanced interactions, distributed team workflows, and structured knowledge transfer processes across organisations and disciplines.",
+        "parents": [
+          "Content and Assets"
+        ],
+        "ancestors": [
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Knowledge Transfer",
+            "Peer Learning"
+          ],
+          "requires": [
+            "Knowledge Management",
+            "Trust"
+          ],
+          "enables": [
+            "Distributed Team Collaboration",
+            "Organisational Learning",
+            "community-of-practice",
+            "Innovation"
+          ],
+          "dependsOn": [
+            "Communication Protocol",
+            "Identity Management"
+          ],
+          "uses": [
+            "Collaborative Technology",
+            "Virtual Environment",
+            "Natural Language Processing",
+            "Semantic Search"
+          ],
+          "relatedTo": [
+            "Knowledge Graph",
+            "social-learning",
+            "Federated Identity"
+          ],
+          "bridgesTo": [
+            "Collaborative Technology",
+            "Artificial Intelligence",
+            "Spatial Computing"
+          ],
+          "supports": [
+            "Open Source",
+            "Digital Twin"
+          ]
+        },
+        "maturity": "draft"
+      }
+    ]
+  },
+  {
+    "id": "q0192",
+    "domain": "distributed-systems",
+    "template": "T-REL",
+    "question_natural": "What does Distributed Hash Table require?",
+    "gold_titles": [
+      "Hash Function",
+      "Consistent Hashing",
+      "Node"
+    ],
+    "ontology_source": [
+      {
+        "title": "Distributed Hash Table",
+        "definition": "A distributed hash table (DHT) is a decentralised data structure that partitions a key-value store across a set of participating nodes so that each node is responsible for only a fraction of the total keyspace, with lookups routed through a structured overlay network in O(log n) hops without any central coordinator. Nodes join and leave dynamically, and the system rebalances key responsibility thr",
+        "parents": [
+          "Distributed System"
+        ],
+        "ancestors": [
+          "Computing and Cloud",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "Routing Table",
+            "node-identifier"
+          ],
+          "requires": [
+            "Hash Function",
+            "Consistent Hashing",
+            "Node"
+          ],
+          "enables": [
+            "IPFS",
+            "Content Addressing",
+            "Distributed Storage",
+            "Peer Discovery"
+          ],
+          "implements": [
+            "Kademlia DHT"
+          ],
+          "uses": [
+            "libp2p",
+            "xor-metric",
+            "k-bucket"
+          ],
+          "partOf": [
+            "Peer-to-Peer Network",
+            "Overlay Network"
+          ],
+          "relatedTo": [
+            "Gossip Protocol",
+            "Eclipse Attack",
+            "Sybil Attack",
+            "Replication"
+          ],
+          "bridgesTo": [
+            "Blockchain",
+            "Decentralised Identifier"
+          ],
+          "supports": [
+            "Bittorrent",
+            "Ethereum",
+            "Filecoin"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0225",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does Cryptocurrency Exchange require?",
+    "gold_titles": [
+      "Custody",
+      "Blockchain"
+    ],
+    "ontology_source": [
+      {
+        "title": "Cryptocurrency Exchange",
+        "definition": "A cryptocurrency exchange is a platform that enables the trading of digital assets for other cryptocurrencies or for fiat currency. Exchanges match buy and sell orders, provide custody or settlement of funds, and supply liquidity and price discovery for crypto markets. They range from centralised intermediaries holding customer assets to decentralised protocols that execute trades on-chain.",
+        "parents": [
+          "Digital Economy"
+        ],
+        "ancestors": [
+          "Economic Systems",
+          "Platform and Environment",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Order Book",
+            "Hot Wallet",
+            "Wallet"
+          ],
+          "requires": [
+            "Custody",
+            "Blockchain"
+          ],
+          "enables": [
+            "Liquidity"
+          ],
+          "uses": [
+            "KYC",
+            "Fiat Currency"
+          ],
+          "partOf": [
+            "Digital Economy"
+          ],
+          "relatedTo": [
+            "Cryptocurrency",
+            "Bitcoin",
+            "Tether",
+            "Stablecoin"
+          ],
+          "bridgesTo": [
+            "Fiat Currency"
+          ],
+          "supports": [
+            "Liquidity",
+            "Custody"
+          ],
+          "contrastsWith": [
+            "Decentralised Exchange",
+            "Centralised Exchange"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0267",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of eIDAS? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Regulatory Framework"
+    ],
+    "ontology_source": [
+      {
+        "title": "eIDAS",
+        "definition": "A European Union regulation establishing a framework for electronic identification and trust services for electronic transactions across the internal market, defining assurance levels, legal effects for electronic signatures, seals, timestamps and certificates, and mandating mutual recognition of notified national identity schemes.",
+        "parents": [
+          "Regulatory Framework"
+        ],
+        "ancestors": [
+          "Legal Framework",
+          "Legal and Regulatory",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Digital Signature",
+            "Public Key Infrastructure",
+            "Certificate Authority"
+          ],
+          "enables": [
+            "Digital Identity",
+            "Identity Verification",
+            "Cross Border Authentication",
+            "Timestamp"
+          ],
+          "implements": [
+            "Eu Digital Single Market"
+          ],
+          "uses": [
+            "X.509 Certificate",
+            "Qualified Electronic Signature"
+          ],
+          "relatedTo": [
+            "Know Your Customer"
+          ],
+          "bridgesTo": [
+            "Verifiable Credential (VC)",
+            "Decentralised Identifier",
+            "Blockchain Identity"
+          ],
+          "supports": [
+            "GDPR",
+            "Digital Identity Wallet",
+            "Open Banking"
+          ],
+          "standardizedBy": [
+            "European Commission",
+            "ETSI"
+          ],
+          "contrastsWith": [
+            "FIDO2",
+            "Self Sovereign Identity"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0294",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Knowledge Artefact Update Cycle use?",
+    "gold_titles": [
+      "Continuous Integration",
+      "Data Lineage"
+    ],
+    "ontology_source": [
+      {
+        "title": "Knowledge Artefact Update Cycle",
+        "definition": "A Knowledge Artefact Update Cycle is a structured, recurring process through which knowledge assets \u2014 including ontology classes, documentation nodes, linked data graphs, and curated references \u2014 are reviewed, validated, corrected, and re-published to maintain epistemic accuracy and semantic coherence. The cycle defines per-artefact cadences calibrated to the rate of change of underlying domains, ",
+        "parents": [
+          "Data Management (Infrastructure)"
+        ],
+        "ancestors": [
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "Provenance Tracking"
+          ],
+          "requires": [
+            "Version Control",
+            "ontology-versioning",
+            "Data Quality Management"
+          ],
+          "enables": [
+            "knowledge-graph-maintenance"
+          ],
+          "dependsOn": [
+            "change-detection",
+            "Metadata Management"
+          ],
+          "uses": [
+            "Continuous Integration",
+            "Data Lineage"
+          ],
+          "partOf": [
+            "Knowledge Management",
+            "Data Governance"
+          ],
+          "relatedTo": [
+            "Knowledge Management",
+            "Ontology Engineering"
+          ],
+          "bridgesTo": [
+            "Machine Learning Pipeline",
+            "Retrieval-Augmented Generation"
+          ],
+          "supports": [
+            "Knowledge Management System",
+            "Documentation Standards",
+            "Linked Data"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0339",
+    "domain": "machine-learning",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Principal Component Analysis? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Dimensionality Reduction"
+    ],
+    "ontology_source": [
+      {
+        "title": "Principal Component Analysis",
+        "definition": "Principal Component Analysis (PCA) is an unsupervised linear technique that transforms correlated variables into a smaller set of uncorrelated components ordered by the variance they capture. The components are the eigenvectors of the data's covariance matrix, and projecting onto the leading components yields a lower-dimensional representation that preserves as much variance as possible. PCA is wi",
+        "parents": [
+          "Dimensionality Reduction"
+        ],
+        "ancestors": [
+          "AI Technique",
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "hasPart": [
+            "Linear Algebra"
+          ],
+          "requires": [
+            "Data Preprocessing",
+            "Data Quality"
+          ],
+          "enables": [
+            "Dimensionality Reduction",
+            "Data Visualisation"
+          ],
+          "uses": [
+            "Linear Algebra"
+          ],
+          "relatedTo": [
+            "Unsupervised Learning",
+            "Data Preprocessing"
+          ],
+          "supports": [
+            "Machine Learning Model (Artefact)",
+            "Data Processing"
+          ],
+          "contrastsWith": [
+            "Feature Engineering"
+          ]
+        },
+        "maturity": "mature"
+      }
+    ]
+  },
+  {
+    "id": "q0358",
+    "domain": "metaverse",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Melvin Carvalho Decentralised Web Advocate? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Decentralized Identity"
+    ],
+    "ontology_source": [
+      {
+        "title": "Melvin Carvalho Decentralised Web Advocate",
+        "definition": "Melvin Carvalho is a developer and advocate active in decentralised web and identity standards work, contributing to linked data, Solid and related semantic web technologies.",
+        "parents": [
+          "Decentralized Identity"
+        ],
+        "ancestors": [
+          "Digital Identity",
+          "Identity",
+          "Security and Identity",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Linked Data"
+          ],
+          "enables": [
+            "Decentralized Identity"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0387",
+    "domain": "robotics",
+    "template": "T-REL",
+    "question_natural": "What does rb 0012 wheeled mobile robot use?",
+    "gold_titles": [
+      "Odometry",
+      "SLAM",
+      "rb 0075 range finder"
+    ],
+    "ontology_source": [
+      {
+        "title": "rb 0012 wheeled mobile robot",
+        "definition": "A wheeled mobile robot (WMR) is a ground-based autonomous or semi-autonomous robot that uses wheels for locomotion. WMRs range from differential-drive platforms to omnidirectional holonomic designs; they rely on odometry for dead-reckoning, SLAM for map building, and path-planning algorithms for autonomous navigation in structured or semi-structured environments.",
+        "parents": [
+          "Robot Type",
+          "Mobile Robot"
+        ],
+        "ancestors": [
+          "Robot",
+          "Robotics"
+        ],
+        "relations": {
+          "dependsOn": [
+            "Path Planning",
+            "Autonomous Navigation"
+          ],
+          "uses": [
+            "Odometry",
+            "SLAM",
+            "rb 0075 range finder"
+          ],
+          "relatedTo": [
+            "Differential Drive Robot",
+            "Mobile Robot Platform",
+            "Wheeled Mobile Robot"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0418",
+    "domain": "security",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Digital Onboarding? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Identity Verification"
+    ],
+    "ontology_source": [
+      {
+        "title": "Digital Onboarding",
+        "definition": "Digital onboarding is the remote, self-service process by which an organisation enrols a new customer or user, capturing and verifying their identity entirely through digital channels rather than in person. It typically combines document capture, biometric checks, liveness detection and database lookups to satisfy regulatory know-your-customer obligations while minimising friction. The aim is to c",
+        "parents": [
+          "Identity Verification"
+        ],
+        "ancestors": [
+          "Identity Proofing",
+          "Security and Identity",
+          "Identity Management",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Identity Verification",
+            "KYC",
+            "Biometric Authentication"
+          ],
+          "enables": [
+            "Authentication",
+            "Digital Identity"
+          ],
+          "dependsOn": [
+            "Identity Verification",
+            "Compliance"
+          ],
+          "relatedTo": [
+            "Digital Identity",
+            "Authentication",
+            "Compliance"
+          ],
+          "bridgesTo": [
+            "Self Sovereign Identity"
+          ],
+          "supports": [
+            "Anti-Money Laundering",
+            "User Experience"
+          ],
+          "contrastsWith": [
+            "Biometric Authentication"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0456",
+    "domain": "spatial-computing",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Content and Assets? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Spatial Computing"
+    ],
+    "ontology_source": [
+      {
+        "title": "Content and Assets",
+        "definition": "Taxonomy hub for all content types and digital assets within the spatial computing domain, encompassing 3D models, avatars, NFTs, textures, rendering pipelines, and the digital asset lifecycle from creation through distribution. This category unifies the asset-creation and asset-management concerns that underpin immersive experiences.",
+        "parents": [
+          "Spatial Computing"
+        ],
+        "ancestors": [],
+        "relations": {
+          "hasPart": [
+            "3D Asset",
+            "Avatar",
+            "NFT",
+            "Digital Asset",
+            "Digital Content Creation",
+            "Rendering Pipeline"
+          ],
+          "enables": [
+            "Immersive Entertainment"
+          ],
+          "relatedTo": [
+            "Immersive Experience",
+            "Digital Asset Management",
+            "Avatar System",
+            "Extended Reality",
+            "Digital Twin"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0500",
+    "domain": "standards",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Schema.org? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Linked Data"
+    ],
+    "ontology_source": [
+      {
+        "title": "Schema.org",
+        "definition": "Schema.org is a collaborative, community-maintained vocabulary project founded in 2011 by Google, Microsoft, Yahoo, and Yandex to define a shared set of structured data markup schemas for web pages, enabling search engines and other consumers to understand the semantic content of web resources. The vocabulary defines types and properties for entities such as persons, organisations, events, product",
+        "parents": [
+          "Linked Data"
+        ],
+        "ancestors": [
+          "Data Management (Infrastructure)",
+          "Infrastructure"
+        ],
+        "relations": {
+          "enables": [
+            "Knowledge Graph",
+            "Semantic Web Linked Data Standard",
+            "Named Entity Recognition"
+          ],
+          "implements": [
+            "OWL 2 Web Ontology Language"
+          ],
+          "uses": [
+            "JSON-LD",
+            "RDF",
+            "Controlled Vocabulary"
+          ],
+          "relatedTo": [
+            "Ontology",
+            "Search Engine",
+            "Open Graph Link Preview Protocol",
+            "Dublin Core",
+            "Wikidata"
+          ],
+          "bridgesTo": [
+            "Large Language Model",
+            "Natural Language Processing"
+          ],
+          "supports": [
+            "Search Engine Optimisation",
+            "Data Annotation",
+            "Information Extraction"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  }
+]

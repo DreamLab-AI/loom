@@ -1,0 +1,1121 @@
+[
+  {
+    "id": "adj01",
+    "category": "adjacent",
+    "topic": "rollups-payments",
+    "difficulty": "hard",
+    "question": "For a consumer payments application that needs fast, trustless settlement, would you build on an optimistic rollup or a zk-rollup? Explain the key differences in withdrawal/finality, security assumptions, and EVM compatibility that drive the decision.",
+    "reference_answer": "For payments where fast withdrawal and settlement matter most, a zk-rollup is generally the stronger fit. Optimistic rollups assume batches are valid unless a fraud proof is submitted during a challenge window (typically 7 days), so native L1 withdrawals take about a week unless a liquidity provider fronts a fast exit; their security relies on at least one honest, live watcher during that window. zk-rollups attach a validity proof (SNARK/STARK) to every batch that Ethereum verifies before accepting it, giving near-instant, cryptographically-guaranteed finality with withdrawals clearing in minutes to under an hour and no reliance on external challengers. The main trade-off is EVM compatibility: optimistic rollups (Arbitrum, OP Stack) offer near-full EVM equivalence and easier contract portability, whereas zkEVMs have historically had more partial compatibility, though this matters less for simple payment transfers than for rich DeFi composability.",
+    "answer_key_points": [
+      "Optimistic rollups use fraud proofs with a ~7-day challenge window; zk-rollups use validity proofs verified on-chain per batch",
+      "zk-rollups give near-instant finality/withdrawals (minutes to <1 hour) vs ~7 days for optimistic L1 withdrawals (mitigated by fast-exit liquidity providers)",
+      "Optimistic security relies on at least one honest, live watcher (1-of-N); zk security is cryptographic and needs no challenge window",
+      "Optimistic rollups have fuller EVM equivalence; zkEVMs historically more partial, but EVM parity matters less for simple payments",
+      "For fast trustless settlement, zk-rollups are favoured; for maximal EVM/DeFi composability, optimistic rollups"
+    ],
+    "cited_sources": [
+      "https://ethereum.org/en/developers/docs/scaling/",
+      "https://chainscorelabs.com/comparisons/layer-2-optimistic-vs-zk-rollups/security-models/fraud-proofs-vs-validity-proofs-security",
+      "https://arxiv.org/pdf/2502.10321"
+    ]
+  },
+  {
+    "id": "adj02",
+    "category": "adjacent",
+    "topic": "consistency-models",
+    "difficulty": "medium",
+    "question": "When would you deliberately choose eventual consistency over strong consistency in a distributed system? Frame your answer around the CAP theorem and give examples where each is appropriate.",
+    "reference_answer": "Choose eventual consistency when the business can tolerate temporarily stale or divergent data in exchange for higher availability and lower latency, and choose strong consistency when any divergence would cause incorrect behaviour or financial/legal harm. The CAP theorem says that during a network partition a system must sacrifice either consistency or availability; AP systems keep serving (accepting stale reads) while CP systems refuse operations to avoid divergence, and PACELC adds that even without a partition you trade latency against consistency. Eventual consistency suits shopping-cart updates, DNS propagation, and social-media like counts, where brief anomalies are minor and easily reconciled. Strong consistency is required for bank ledgers, transfers, unique-username enforcement, and inventory reservations, where correctness must hold at every instant even at the cost of availability or latency. In practice consistency is chosen per-operation, so a system may use eventual consistency for a cart but strong consistency at checkout.",
+    "answer_key_points": [
+      "CAP: under a partition you must choose consistency or availability; partition tolerance is non-negotiable in real distributed systems",
+      "Eventual consistency (AP) favours availability/latency and tolerates temporary staleness; strong consistency (CP) favours correctness",
+      "PACELC extends CAP: even without a partition you trade latency vs consistency",
+      "Eventual-consistency examples: shopping carts, DNS, social likes/counts",
+      "Strong-consistency examples: banking/ledgers, transfers, unique constraints, inventory",
+      "Consistency is best chosen per-operation, not system-wide (e.g. cart eventual, checkout strong)"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/CAP_theorem",
+      "https://en.wikipedia.org/wiki/PACELC_design_principle",
+      "https://www.cs.umd.edu/~abadi/papers/abadi-pacelc.pdf"
+    ]
+  },
+  {
+    "id": "adj03",
+    "category": "adjacent",
+    "topic": "rag-vs-finetuning",
+    "difficulty": "medium",
+    "question": "A team wants to build an LLM assistant over a large, frequently-changing internal knowledge base. Should they lean on retrieval-augmented generation (RAG) or fine-tuning, and what are the main trade-offs?",
+    "reference_answer": "For a large, frequently-changing knowledge base, RAG is usually the better primary choice because new documents can be indexed and used immediately without retraining, and answers can be grounded in and cite source text, which lowers hallucination risk. Fine-tuning is better for adapting behaviour, tone, format, and domain-specific response patterns rather than injecting fresh facts; it needs a sizeable high-quality dataset and has a higher upfront training cost, though per-query cost can be lower at scale. A useful rule of thumb is 'RAG for knowledge, fine-tuning for behaviour.' The two are not mutually exclusive: a common hybrid fine-tunes the model for style, terminology, or tool-use and adds RAG for live, auditable retrieval, which suits regulated or enterprise settings. Given the emphasis on freshness and citations here, RAG (optionally with light fine-tuning) is the stronger fit.",
+    "answer_key_points": [
+      "RAG handles knowledge freshness: add documents without retraining; fine-tuning bakes in stable knowledge and needs retraining to update",
+      "RAG lowers hallucination risk by grounding answers in retrieved sources and enabling citations",
+      "Fine-tuning is best for behaviour/style/format/domain adaptation, and needs a sizeable quality dataset",
+      "Cost profile: RAG low upfront but recurring retrieval/storage cost; fine-tuning high upfront, lower per-query at scale",
+      "They can be combined (fine-tune for behaviour + RAG for fresh facts), common in enterprise/regulated use"
+    ],
+    "cited_sources": [
+      "https://learn.microsoft.com/en-us/azure/developer/ai/augment-llm-rag-fine-tuning",
+      "https://docs.aws.amazon.com/prescriptive-guidance/latest/retrieval-augmented-generation-options/rag-vs-fine-tuning.html",
+      "https://www.databricks.com/blog/rag-vs-fine-tuning"
+    ]
+  },
+  {
+    "id": "adj04",
+    "category": "adjacent",
+    "topic": "udp-vs-tcp",
+    "difficulty": "easy",
+    "question": "Why do real-time video and voice applications typically send media over UDP instead of TCP?",
+    "reference_answer": "Real-time media favours UDP because TCP's guarantee of reliable, in-order delivery causes head-of-line blocking: if one packet is lost, TCP holds back all later packets until it is retransmitted, adding latency that is unacceptable for live audio or video. In real-time media a late packet is usually worse than a lost one, so waiting for retransmission and congestion-control backoff degrades the experience. UDP has no ordering or automatic retransmission, so later packets can be played immediately and the application controls the trade-off itself. Applications compensate for loss at the application layer using jitter buffers, packet-loss concealment, error-resilient codecs, and optionally forward error correction or selective retransmission.",
+    "answer_key_points": [
+      "TCP's in-order reliable delivery causes head-of-line blocking that stalls later packets on a single loss",
+      "For live media a late packet is worse than a lost one, so retransmission latency and congestion backoff hurt quality",
+      "UDP has no ordering/retransmission, so packets play immediately and the app controls the reliability trade-off",
+      "Apps handle loss with jitter buffers, packet-loss concealment, resilient codecs, and optional FEC"
+    ],
+    "cited_sources": [
+      "https://developer.mozilla.org/en-US/docs/Glossary/Head_of_line_blocking",
+      "https://blog.cloudflare.com/the-road-to-quic/"
+    ]
+  },
+  {
+    "id": "adj05",
+    "category": "adjacent",
+    "topic": "rate-limiting",
+    "difficulty": "medium",
+    "question": "Compare the token bucket and leaky bucket rate-limiting algorithms. How does each handle a sudden burst of requests, and when would you pick one over the other?",
+    "reference_answer": "Both cap throughput but shape traffic differently, especially for bursts. A token bucket refills tokens at a fixed rate up to a bucket capacity B; each request consumes a token, and because idle periods let tokens accumulate, a client can burst up to B requests at once before being throttled to the refill rate, so it enforces an average rate while allowing controlled bursts. A leaky bucket instead queues incoming requests and processes (leaks) them at a constant rate, smoothing output and flattening bursts, with excess requests dropped or delayed once the queue is full. Choose a token bucket when you want to permit occasional bursts as long as the long-term average stays within limits, which suits user-facing APIs; choose a leaky bucket when you need a steady, predictable output rate and want to protect a downstream system from spikes.",
+    "answer_key_points": [
+      "Token bucket refills tokens at rate r up to capacity B; each request spends a token",
+      "Token bucket allows bursts up to B (accumulated during idle time) then throttles to the refill rate",
+      "Leaky bucket queues requests and leaks them at a constant rate, smoothing/flattening bursts and dropping overflow",
+      "Token bucket enforces average rate with controlled bursts; leaky bucket enforces a steady constant output rate",
+      "Pick token bucket for burst-tolerant APIs; leaky bucket for smooth output and protecting downstream systems"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Token_bucket",
+      "https://en.wikipedia.org/wiki/Leaky_bucket"
+    ]
+  },
+  {
+    "id": "adj06",
+    "category": "adjacent",
+    "topic": "idempotency-keys",
+    "difficulty": "easy",
+    "question": "Why do payment APIs like Stripe support idempotency keys, and what failure scenario do they protect against?",
+    "reference_answer": "Idempotency keys let a client safely retry a request without risk of performing the operation twice, which is critical for payments where a duplicate could double-charge a customer. The core problem is that when a request such as 'charge this card' times out or the response is lost, the client cannot tell whether the charge succeeded, and a naive retry might create a second charge. With an idempotency key, the client attaches a unique key to a logical operation and reuses it on every retry; the server records the result of the first request for that key and returns the same stored result for any repeat, performing the side effect only once. This gives effectively exactly-once semantics for that operation across an unreliable network, turning unsafe retries into safe ones.",
+    "answer_key_points": [
+      "A lost response or timeout leaves the client unsure whether a charge succeeded, so a blind retry risks a duplicate charge",
+      "Client attaches a unique idempotency key to a logical operation and reuses it on retries",
+      "Server stores the first result per key and returns it for repeats, executing the side effect only once",
+      "Provides effectively exactly-once semantics and makes automatic retries safe over unreliable networks"
+    ],
+    "cited_sources": [
+      "https://docs.stripe.com/api/idempotent_requests",
+      "https://stripe.com/blog/idempotency"
+    ]
+  },
+  {
+    "id": "adj07",
+    "category": "adjacent",
+    "topic": "microservices-vs-monolith",
+    "difficulty": "medium",
+    "question": "A startup with a small engineering team is debating microservices versus a monolith for a new product. What guidance would you give, and what are the main trade-offs?",
+    "reference_answer": "For a small team and an evolving product, defaulting to a well-structured monolith (or modular monolith) is usually the right call, decomposing into microservices only once concrete constraints appear. Microservices primarily solve organisational and scaling problems: they make sense when multiple autonomous teams need to deploy independently, when components have genuinely different scaling profiles, or when you need fault isolation and technology diversity. The trade-offs are significant: microservices add operational complexity (service discovery, distributed tracing, observability), turn fast in-process calls into millisecond network hops, and make cross-service ACID transactions hard, pushing you toward eventual consistency and sagas. A monolith keeps deployment, testing, transactions, and debugging simple and offers higher initial development speed, which is exactly what an early-stage small team benefits from. Martin Fowler frames this as a 'microservice premium' worth paying only when the system is too complex to manage as a monolith.",
+    "answer_key_points": [
+      "Default to a monolith/modular monolith for small teams; adopt microservices when named constraints appear",
+      "Microservices suit multiple independent teams, divergent scaling needs, fault isolation, and tech diversity",
+      "Microservices add operational complexity (discovery, tracing, observability) and network latency vs in-process calls",
+      "Cross-service transactions are hard: microservices push toward eventual consistency and sagas",
+      "Monoliths give simpler ops/testing, easy ACID transactions, and faster early development ('microservice premium')"
+    ],
+    "cited_sources": [
+      "https://martinfowler.com/bliki/MonolithFirst.html",
+      "https://martinfowler.com/articles/microservice-trade-offs.html"
+    ]
+  },
+  {
+    "id": "adj08",
+    "category": "adjacent",
+    "topic": "sql-vs-nosql",
+    "difficulty": "easy",
+    "question": "When would you choose a NoSQL database over a traditional relational (SQL) database for an application?",
+    "reference_answer": "Choose NoSQL when you have simple, well-understood access patterns at very large scale, a flexible or rapidly-changing data model, and can tolerate weaker consistency in exchange for horizontal scalability. NoSQL stores (key-value, document, wide-column, graph) are built to run across clusters and often follow BASE semantics (basically available, soft state, eventually consistent), which suits high-throughput key lookups, document reads, session/cache data, and write-heavy time-series or log data. Relational databases remain the better default when data is highly interrelated with many joins, you need ad-hoc queries and reporting, or you require multi-row/multi-table ACID transactions such as payments and inventory. A common recommendation is that if you cannot name a specific access pattern that relational struggles with, start with a relational database like PostgreSQL, and many systems adopt a hybrid split.",
+    "answer_key_points": [
+      "NoSQL fits massive scale, simple/known access patterns, and flexible or fast-changing schemas",
+      "NoSQL is built for horizontal scaling across clusters and often uses BASE (eventual consistency)",
+      "Relational fits highly-related data with joins, ad-hoc queries/reporting, and multi-entity ACID transactions",
+      "Default to relational (e.g. PostgreSQL) if no clear pattern demands NoSQL; hybrid architectures are common"
+    ],
+    "cited_sources": [
+      "https://martinfowler.com/articles/nosqlKeyPoints.html",
+      "https://aws.amazon.com/smart-business/resources-for-smb/sql-vs-nosql/"
+    ]
+  },
+  {
+    "id": "adj09",
+    "category": "adjacent",
+    "topic": "grpc-vs-rest",
+    "difficulty": "medium",
+    "question": "You are designing APIs for a system with both a public browser-facing surface and heavy internal service-to-service traffic. Where would you use gRPC and where REST/JSON, and why?",
+    "reference_answer": "Use REST/JSON over HTTP at the public, browser-facing edge and gRPC for internal service-to-service communication, which is a common hybrid. gRPC runs over HTTP/2 with binary Protocol Buffers and strongly-typed .proto contracts, giving smaller payloads, lower latency, code-generated clients, and native streaming (unary, server, client, bidirectional), which is ideal for high-volume internal traffic where you control both ends. Its weakness is that browsers cannot speak gRPC natively; you need gRPC-Web plus a proxy (e.g. Envoy), and even then bidirectional streaming is limited. REST/JSON is fully supported by browsers, curl, and standard tooling, is human-readable and easy to debug, and is the default for public APIs, simple CRUD, and wide client diversity, at the cost of larger payloads and only workaround streaming (SSE/WebSockets). Matching each protocol to its strength gives performance and strong typing internally while keeping the public surface broadly compatible.",
+    "answer_key_points": [
+      "gRPC uses HTTP/2 + Protobuf binary + typed .proto contracts: smaller payloads, lower latency, generated clients",
+      "gRPC has native streaming (unary/server/client/bidirectional), strong for internal high-volume traffic",
+      "Browsers can't use gRPC natively; needs gRPC-Web + proxy, and bidirectional streaming is limited",
+      "REST/JSON is browser-native, human-readable, easy to debug, best for public APIs and simple CRUD",
+      "Common hybrid: REST at the public edge, gRPC between internal services"
+    ],
+    "cited_sources": [
+      "https://aws.amazon.com/compare/the-difference-between-grpc-and-rest/",
+      "https://blog.logrocket.com/grpc-vs-rest/"
+    ]
+  },
+  {
+    "id": "adj10",
+    "category": "adjacent",
+    "topic": "deployment-strategies",
+    "difficulty": "medium",
+    "question": "Contrast blue-green and canary deployment strategies. How does each reduce release risk, and when would you prefer one over the other?",
+    "reference_answer": "Both reduce release risk but by different mechanisms. Blue-green runs two production-capable environments (current 'blue' and new 'green'), deploys and tests on the idle one, then switches all traffic at once; rollback is near-instant because you just route traffic back to the still-running previous version, at the cost of maintaining duplicate infrastructure. Canary deploys the new version alongside the baseline in one environment and routes a small, growing percentage of live traffic to it while monitoring metrics, limiting the blast radius and giving early warning before full rollout, which is usually cheaper on infrastructure but more procedurally complex to roll back. Prefer blue-green when you need zero downtime and the simplest, fastest rollback and can afford two full environments; prefer canary when you want fine-grained, metric-gated exposure to small user cohorts and have strong observability. The two can even be combined by routing a small traffic fraction to a green environment first.",
+    "answer_key_points": [
+      "Blue-green: two full environments, test on idle one, switch all traffic at once; near-instant rollback by re-routing",
+      "Blue-green costs more (duplicate production infrastructure)",
+      "Canary: run new version alongside baseline, route a small growing % of live traffic, monitor metrics to limit blast radius",
+      "Canary is cheaper on infra but rollback is more incremental/procedural and needs strong observability",
+      "Choose blue-green for zero downtime + fastest rollback; canary for fine-grained metric-gated exposure"
+    ],
+    "cited_sources": [
+      "https://www.ibm.com/think/topics/blue-green-deployment",
+      "https://docs.cloud.google.com/deploy/docs/deployment-strategies/canary"
+    ]
+  },
+  {
+    "id": "adj11",
+    "category": "adjacent",
+    "topic": "scaling",
+    "difficulty": "easy",
+    "question": "What is the difference between horizontal and vertical scaling, and what are the main trade-offs between them?",
+    "reference_answer": "Vertical scaling (scale-up) adds capacity by upgrading a single machine with more CPU, RAM, or faster storage, while horizontal scaling (scale-out) adds capacity by adding more machines and distributing load across them. Vertical scaling is simpler and often cheaper at small scale and works well for stateful monoliths because there is no inter-node coordination, but it keeps a single point of failure and hits a hard physical/cost ceiling as top-tier instances become disproportionately expensive. Horizontal scaling has no single-machine ceiling and improves fault tolerance and elasticity because losing one node degrades rather than downs the system, but it generally requires stateless or well-partitioned designs and adds complexity in load balancing, data sharding/replication, and operations. In short, vertical scaling trades resilience and headroom for simplicity, while horizontal scaling trades architectural complexity for scalability and availability.",
+    "answer_key_points": [
+      "Vertical = bigger single machine (more CPU/RAM); horizontal = more machines with load distributed",
+      "Vertical is simpler and cheaper at small scale, suits stateful monoliths, but keeps a single point of failure",
+      "Vertical hits a hard physical/cost ceiling; horizontal has no single-machine ceiling",
+      "Horizontal improves fault tolerance and elasticity but needs stateless/partitioned design",
+      "Horizontal adds complexity: load balancing, sharding/replication, operations"
+    ],
+    "cited_sources": [
+      "https://www.cockroachlabs.com/blog/vertical-scaling-vs-horizontal-scaling/",
+      "https://wa.aws.amazon.com/wellarchitected/2020-07-02T19-33-23/wat.concept.horizontal-scaling.en.html"
+    ]
+  },
+  {
+    "id": "adj12",
+    "category": "adjacent",
+    "topic": "encryption-tls",
+    "difficulty": "medium",
+    "question": "Symmetric and asymmetric encryption have very different speed and key-management properties. Why does TLS use both rather than just one?",
+    "reference_answer": "TLS is a hybrid cryptosystem that uses each family of algorithms for what it does best. Symmetric encryption (e.g. AES) uses one shared key and is extremely fast, but it has a key-distribution problem: both parties must already share the secret, and sending it over an untrusted network exposes it. Asymmetric encryption (e.g. RSA/ECDHE) uses a public/private key pair so the public key can be shared openly, which solves key distribution and enables authentication via certificates and signatures, but it is orders of magnitude slower and impractical for bulk data. So TLS uses asymmetric cryptography during the handshake to authenticate the server and securely establish a shared session key, then switches to fast symmetric encryption for all the bulk application data. This combines asymmetric's safe key setup and identity guarantees with symmetric's high throughput, which is why neither alone would suffice.",
+    "answer_key_points": [
+      "Symmetric encryption is fast but has a key-distribution problem (both sides must pre-share the secret)",
+      "Asymmetric encryption lets the public key be shared openly, solving key distribution and enabling authentication/signatures",
+      "Asymmetric is orders of magnitude slower, impractical for bulk data",
+      "TLS handshake uses asymmetric to authenticate the server and establish a shared session key",
+      "TLS record phase uses fast symmetric encryption for bulk data \u2014 a hybrid combining safe setup with speed"
+    ],
+    "cited_sources": [
+      "https://www.internetsociety.org/deploy360/tls/basics/",
+      "https://www.keyfactor.com/blog/what-is-tls-handshake-how-does-it-work/"
+    ]
+  },
+  {
+    "id": "adj13",
+    "category": "adjacent",
+    "topic": "consistent-hashing",
+    "difficulty": "hard",
+    "question": "A distributed cache currently maps keys to nodes with hash(key) % N. Why does this design cause problems when nodes are added or removed, and how do consistent hashing and virtual nodes address it?",
+    "reference_answer": "With hash(key) % N the mapping depends on N, so changing the node count changes the modulo result for almost every key, remapping nearly all keys and causing massive data movement and cache invalidation. Consistent hashing fixes this by mapping both keys and nodes onto a fixed circular hash space and assigning each key to the first node clockwise from it; when a node joins or leaves, only the keys in the adjacent arc move, so roughly K/N keys are remapped instead of nearly all K. A naive ring can still be imbalanced because a single point per node may cover an uneven arc, creating hotspots. Virtual nodes solve this by giving each physical node many positions on the ring, which smooths key distribution toward an even share, lets higher-capacity nodes hold more virtual nodes, and spreads a failed node's load across many neighbours rather than dumping it on a single successor.",
+    "answer_key_points": [
+      "hash(key) % N depends on N, so changing node count remaps almost all keys (catastrophic reshuffle/cache invalidation)",
+      "Consistent hashing maps keys and nodes onto a fixed ring; a key goes to the first node clockwise",
+      "On membership change only the adjacent arc moves: ~K/N keys remap instead of ~all K",
+      "A single point per node causes uneven arcs and hotspots",
+      "Virtual nodes give each physical node many ring positions, balancing load, allowing capacity weighting, and spreading failed-node load across neighbours"
+    ],
+    "cited_sources": [
+      "https://highscalability.com/consistent-hashing-algorithm/",
+      "https://www.cs.ucr.edu/~krish/CS253/Lecture11-CS253-2020.pdf"
+    ]
+  },
+  {
+    "id": "adj14",
+    "category": "adjacent",
+    "topic": "bloom-filter",
+    "difficulty": "medium",
+    "question": "What is a Bloom filter, what accuracy guarantee does it provide, and how do databases like Cassandra or RocksDB use it to speed up reads?",
+    "reference_answer": "A Bloom filter is a space-efficient probabilistic data structure for set-membership testing, built from a bit array and k independent hash functions; inserting an element sets k bits, and a query checks those bits. Its key guarantee is asymmetric: if any checked bit is 0 the element is definitely not in the set (no false negatives), but if all bits are 1 the element is only probably present, so false positives are possible. You tune the trade-off between memory (bit-array size) and false-positive rate for a given number of elements. LSM-tree databases such as Cassandra, RocksDB, LevelDB, and Bigtable keep a small in-memory Bloom filter per on-disk SSTable; on a key lookup they first consult the filter, and if it reports 'definitely not present' they skip that SSTable's disk read entirely. Because there are no false negatives this skipping is always safe, so the filter eliminates most disk I/O for keys that are absent, at the cost of occasional false positives that trigger a needless read.",
+    "answer_key_points": [
+      "Probabilistic set-membership structure: bit array + k hash functions; insert sets k bits, query checks them",
+      "No false negatives (a '0' bit means definitely absent) but false positives possible",
+      "Space vs false-positive-rate trade-off is tunable for a given element count",
+      "LSM-tree DBs (Cassandra, RocksDB, LevelDB, Bigtable) keep a Bloom filter per SSTable",
+      "A 'definitely not present' result lets the DB skip the disk read safely, cutting I/O for absent keys"
+    ],
+    "cited_sources": [
+      "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=903775",
+      "http://www.cs.umd.edu/class/spring2023/cmsc420-0201/Lects/lect20-bloom.pdf"
+    ]
+  },
+  {
+    "id": "adj15",
+    "category": "adjacent",
+    "topic": "async-messaging",
+    "difficulty": "medium",
+    "question": "When should services communicate through a message queue rather than synchronous request-response calls? Explain the benefits and what delivery guarantee you would typically rely on.",
+    "reference_answer": "Use a message queue when you want to decouple producers from consumers, absorb traffic spikes, and let work happen asynchronously, rather than requiring an immediate end-to-end result. Queues provide temporal decoupling (the producer can keep publishing while the consumer is down) and spatial decoupling (services only know the queue, not each other), plus load-leveling and backpressure so a burst of requests is buffered and drained at the consumer's pace instead of overwhelming it. This suits work that can be done later, such as sending emails, generating thumbnails, or processing analytics, where the caller gets a fast 'accepted' response. You typically rely on at-least-once delivery (messages are never lost but may be duplicated) paired with idempotent consumers to safely handle duplicates, often with dead-letter queues for repeated failures. Stick with synchronous request-response when the caller genuinely needs the result immediately, such as login or payment authorisation.",
+    "answer_key_points": [
+      "Queues give temporal and spatial decoupling of producers and consumers",
+      "They provide load-leveling/backpressure: buffer bursts and drain at the consumer's rate",
+      "Best for work that can be done later (emails, thumbnails, analytics) with a fast 'accepted' response",
+      "Typically rely on at-least-once delivery plus idempotent consumers (and dead-letter queues)",
+      "Keep synchronous request-response when the caller needs the result immediately (login, payment auth)"
+    ],
+    "cited_sources": [
+      "https://www.application-architect.com/posts/message-queues-producer-consumer-patterns/",
+      "https://layrs.me/course/hld/08-asynchronous-processing/message-queues"
+    ]
+  },
+  {
+    "id": "adj16",
+    "category": "adjacent",
+    "topic": "serverless-vs-containers",
+    "difficulty": "medium",
+    "question": "For a new backend service, when would you choose serverless functions (e.g. AWS Lambda) over container- or VM-based deployment, and what are the trade-offs?",
+    "reference_answer": "Choose serverless/FaaS when the workload is event-driven, short-lived, stateless, and often idle, and you want pay-per-use billing with minimal operations; choose containers or VMs for long-running, stateful, latency-sensitive, or high-throughput services where you need more control and predictability. Lambda bills per request and per GB-second and scales to zero, so it is cheaper for spiky or low-average-concurrency traffic, but it carries cold-start latency (from ~100 ms to seconds), a hard 15-minute execution limit, and inherent statelessness that forces any state into external stores. Containers run continuously with no per-request cold start and no execution-time limit, making them better for persistent connections, streaming, background workers, strict low-latency SLAs, and steady high-utilisation workloads where their per-request cost is lower and more predictable. The rule of thumb is that serverless wins when a service is mostly idle and bursty, while containers win when it is mostly busy or needs long-running/stateful behaviour.",
+    "answer_key_points": [
+      "Serverless suits event-driven, short-lived, stateless, often-idle workloads with pay-per-use and scale-to-zero",
+      "Lambda has cold-start latency (~100ms to seconds) and a 15-minute max execution time",
+      "Serverless is stateless: state must be externalised to databases/caches/queues",
+      "Containers/VMs: no cold start, no execution limit, better for long-running, stateful, persistent-connection, low-latency work",
+      "Rule of thumb: serverless wins when mostly idle/bursty; containers win when mostly busy/high-utilisation (cheaper, predictable at scale)"
+    ],
+    "cited_sources": [
+      "https://aws.amazon.com/lambda/faqs/",
+      "https://kodekloud.com/blog/serverless-vs-containers-in-modern-architectures-and-when-to-choose-each/"
+    ]
+  },
+  {
+    "id": "adj17",
+    "category": "adjacent",
+    "topic": "vector-search",
+    "difficulty": "hard",
+    "question": "For semantic similarity search over millions of text embeddings, why would you use a vector index such as HNSW rather than storing the vectors in a relational database and scanning them? Explain the recall-versus-latency trade-off involved.",
+    "reference_answer": "Semantic search asks 'which stored vectors are most similar to this query vector', which relational B-tree/hash indexes cannot accelerate; without a specialised index you must brute-force compute the distance to every stored vector, an O(n) scan that becomes too slow at millions of high-dimensional vectors. A vector index like HNSW (Hierarchical Navigable Small World) builds a multi-layer proximity graph whose sparse upper layers act as express lanes to navigate quickly to a query's neighbourhood, delivering approximate nearest-neighbour (ANN) results in roughly a millisecond at ~1M vectors, often a 100x+ speedup over brute force. The catch is that ANN is approximate: it trades perfect accuracy for speed, tuned by parameters such as ef_search, where a larger candidate list raises recall but also latency (e.g. recall climbing from ~0.88 to ~0.99 as ef_search grows, with latency roughly doubling at each step). For most RAG and semantic-search workloads recall around 0.95 is enough, so HNSW's near-exact results at low latency are the right trade-off; a relational brute-force scan is acceptable only for small datasets, offline/batch use, or when exact nearest neighbours are required.",
+    "answer_key_points": [
+      "Relational B-tree/hash indexes can't accelerate nearest-neighbour search on high-dimensional vectors",
+      "Brute force is O(n): comparing the query to every vector is too slow at millions of high-dim vectors",
+      "HNSW builds a multi-layer proximity graph for approximate nearest-neighbour (ANN) search, ~1ms at ~1M vectors (100x+ speedup)",
+      "ANN trades exactness for speed; ef_search tunes recall vs latency (higher ef_search = higher recall but higher latency)",
+      "~0.95 recall usually suffices for RAG/search; brute-force relational scan only fits small data, offline, or exact-NN needs"
+    ],
+    "cited_sources": [
+      "https://zilliz.com/ai-faq/what-are-the-key-configuration-parameters-for-an-hnsw-index-such-as-m-and-efconstructionefsearch-and-how-does-each-influence-the-tradeoff-between-index-size-build-time-query-speed-and-recall",
+      "https://www.techtarget.com/searchdatamanagement/tip/Vector-vs-graph-vs-relational-database-Which-to-choose"
+    ]
+  },
+  {
+    "id": "adj18",
+    "category": "adjacent",
+    "topic": "oauth-vs-api-keys",
+    "difficulty": "medium",
+    "question": "When should an API use OAuth 2.0 / OpenID Connect versus static API keys for authorising access, and what are the security trade-offs?",
+    "reference_answer": "Use OAuth 2.0 / OpenID Connect when access is user- or client-specific and needs scopes, delegation, short-lived tokens, and robust revocation; use static API keys for simple, low-sensitivity, app-level authentication such as internal server-to-server calls or basic metering. An API key is a static, long-lived bearer secret that identifies the calling application, not a user, typically grants coarse access, does not expire by default, and remains valid until manually rotated, so a leaked key gives broad indefinite access and is hard to scope. OAuth issues short-lived access tokens that carry scopes and expiry, represent delegated access on behalf of a user or client (with OIDC adding verified identity), and can be revoked centrally per user, client, or grant, so a compromised token has a limited blast radius. OAuth is the stronger choice for APIs handling user data, third-party delegation, or compliance needs, at the cost of more implementation complexity; a common pattern uses an API key to identify/meter the app plus an OAuth token for any call touching user-specific data.",
+    "answer_key_points": [
+      "API keys are static, long-lived bearer secrets identifying an app, not a user; broad access, no default expiry, manual revocation",
+      "A leaked API key grants broad, indefinite access and is hard to scope tightly",
+      "OAuth/OIDC issue short-lived tokens with scopes and expiry, representing delegated access; OIDC adds verified identity",
+      "OAuth supports central, fine-grained revocation (per user/client/grant), limiting a compromised token's blast radius",
+      "Use OAuth for user data/delegation/compliance (more complex); API keys for simple low-sensitivity server-to-server; combining both is common"
+    ],
+    "cited_sources": [
+      "https://blog.axway.com/learning-center/digital-security/keys-oauth/api-keys-oauth",
+      "https://nordicapis.com/10-security-issues-with-api-keys/"
+    ]
+  },
+  {
+    "id": "adj19",
+    "category": "adjacent",
+    "topic": "batch-vs-stream",
+    "difficulty": "easy",
+    "question": "When is batch processing the right choice for a data pipeline, and when should you use stream processing instead? Give an example of each.",
+    "reference_answer": "Use batch processing when you operate on bounded datasets and can tolerate higher latency (minutes to hours) in exchange for high throughput and operational simplicity, and use stream processing when you must react to unbounded, continuous event data in milliseconds to seconds. Batch jobs run on a schedule over a finite input, are cheaper and simpler to reason about, and are easy to re-run, which suits nightly ETL loads into a data warehouse, billing/invoicing, and reporting or model training. Stream processing keeps an always-on pipeline that handles each event as it arrives, at the cost of more operational complexity (state management, exactly-once semantics, always-on infrastructure), which suits real-time fraud detection, live dashboards, alerting, and real-time personalisation. In short, choose batch for periodic, high-volume, latency-tolerant work like nightly ETL, and streaming for low-latency, event-driven reactions like fraud detection.",
+    "answer_key_points": [
+      "Batch operates on bounded data with high latency (minutes-hours) but high throughput and simplicity",
+      "Stream operates on unbounded, continuous events with low latency (ms-seconds)",
+      "Batch is cheaper, simpler to reason about, and easy to re-run; example: nightly ETL, billing, reporting",
+      "Stream needs always-on infra and handles state/exactly-once; example: fraud detection, live dashboards, alerting",
+      "Choose batch for periodic latency-tolerant work; streaming for real-time event-driven reactions"
+    ],
+    "cited_sources": [
+      "https://moderndataengineering.dev/docs/foundations/batch-vs-streaming",
+      "https://www.jusdb.com/blog/streaming-vs-batch-processing-database-patterns"
+    ]
+  },
+  {
+    "id": "adj20",
+    "category": "adjacent",
+    "topic": "knowledge-graph-vs-relational",
+    "difficulty": "hard",
+    "question": "When would you model data as a knowledge graph with an ontology (RDF/OWL or a property graph) instead of a relational database, and what does an OWL ontology add that a relational schema cannot?",
+    "reference_answer": "Model data as a knowledge graph when connectedness itself is central: highly-connected, heterogeneous entities with many evolving relationship types, and queries that are multi-hop traversals or pattern matches rather than tabular aggregations. Graph engines store relationships as first-class edges (often with index-free adjacency), so deep or variable-length traversals \u2014 shortest paths, 'within N hops', ring/community detection \u2014 run far faster and are far easier to express than the equivalent chains of SQL joins, which degrade in performance and readability beyond a few hops. RDF/OWL specifically adds a formal semantic layer with reasoning: an OWL reasoner can infer subclass membership, apply transitive properties and property chains, and check ontological consistency automatically, and it provides standards-based interoperability via global URIs and shared ontologies. A relational database has no native notion of subclass, transitivity, or ontology axioms \u2014 such logic must live in application code or external rule engines. Relational stays the better choice for stable tabular schemas, set-based aggregations, transactional CRUD with strong ACID guarantees, and shallow 1-2-join relationships, so many systems use a hybrid: relational as the source of record with a knowledge-graph semantic layer on top.",
+    "answer_key_points": [
+      "Graphs fit highly-connected, heterogeneous, evolving data where relationships/traversals are central",
+      "Graph engines store relationships as first-class edges (index-free adjacency), making multi-hop traversal fast vs deep SQL joins that degrade beyond ~3-4 hops",
+      "RDF/OWL adds formal reasoning: subclass inference, transitivity, property chains, consistency checking",
+      "RDF/OWL gives standards-based interoperability (URIs, shared ontologies); relational has no native subclass/transitivity/axioms",
+      "Relational is better for stable tabular schemas, aggregations, ACID CRUD, shallow joins; hybrid (relational source-of-record + graph semantic layer) is common"
+    ],
+    "cited_sources": [
+      "https://learn.microsoft.com/en-us/fabric/graph/graph-relational-databases",
+      "https://neo4j.com/blog/knowledge-graph/rdf-vs-property-graphs-knowledge-graphs/"
+    ]
+  },
+  {
+    "id": "in_01",
+    "category": "in_domain_general",
+    "topic": "smart-contracts",
+    "difficulty": "easy",
+    "question": "What is a smart contract in the context of blockchains, and how does it differ from a traditional paper contract?",
+    "reference_answer": "A smart contract is a computer program that formalises and automatically enforces the terms of an agreement, executing itself when predefined conditions are met without needing a trusted intermediary. On a blockchain such as Ethereum, the contract's code and state are replicated across the network and run deterministically (on the Ethereum Virtual Machine), making execution tamper-resistant and publicly verifiable. Unlike a paper contract, which relies on courts and human enforcement, a smart contract enforces itself through code. The concept was described by Nick Szabo in the 1990s, likening it to a vending machine that embeds contractual logic in a mechanism.",
+    "answer_key_points": [
+      "A program that automatically executes/enforces agreed terms when conditions are met, without an intermediary",
+      "Runs on a blockchain (e.g. Ethereum Virtual Machine); code and state are replicated across nodes",
+      "Provides tamper-resistance and verifiable, deterministic execution",
+      "Concept attributed to Nick Szabo (1990s); underpins dApps, DeFi and token standards like ERC-20/ERC-721"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Smart_contract",
+      "https://ethereum.org/en/developers/docs/smart-contracts/"
+    ]
+  },
+  {
+    "id": "in_02",
+    "category": "in_domain_general",
+    "topic": "ml-paradigms",
+    "difficulty": "easy",
+    "question": "What is the difference between supervised and unsupervised learning in machine learning?",
+    "reference_answer": "Supervised learning trains a model on labelled data, i.e. example input-output pairs, so that it learns a mapping from inputs to correct outputs and can generalise to unseen inputs; typical tasks are classification and regression. Unsupervised learning uses unlabelled data and seeks to discover hidden structure or patterns in the data itself, with typical tasks being clustering and dimensionality reduction. The core distinction is the presence or absence of target labels during training: supervised learning is guided by known answers, whereas unsupervised learning infers structure without them.",
+    "answer_key_points": [
+      "Supervised learning uses labelled data (input-output pairs)",
+      "Supervised tasks: classification and regression; goal is to generalise to unseen inputs",
+      "Unsupervised learning uses unlabelled data to find hidden structure",
+      "Unsupervised tasks: clustering, dimensionality reduction; core distinction is presence/absence of labels"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Supervised_learning",
+      "https://en.wikipedia.org/wiki/Unsupervised_learning"
+    ]
+  },
+  {
+    "id": "in_03",
+    "category": "in_domain_general",
+    "topic": "xr-tracking",
+    "difficulty": "easy",
+    "question": "In VR/XR, what does 'six degrees of freedom' (6DoF) mean, and how does it differ from 3DoF?",
+    "reference_answer": "Six degrees of freedom describes the six independent ways a rigid body can move in 3D space: three translations and three rotations. The translations are movement along three perpendicular axes (forward/back, up/down, left/right), and the rotations are yaw, pitch and roll. In XR, 3DoF tracking captures only rotational movement (yaw, pitch, roll), so the headset knows where you are looking but not where your head moves in space; 6DoF tracking adds positional tracking (x, y, z), letting you physically walk, lean and duck within the virtual scene.",
+    "answer_key_points": [
+      "6DoF = three translations plus three rotations of a rigid body in 3D",
+      "Translations along three perpendicular axes; rotations are yaw, pitch, roll",
+      "3DoF tracks only orientation/rotation (looking around)",
+      "6DoF adds positional tracking (x, y, z), enabling movement through space"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Six_degrees_of_freedom"
+    ]
+  },
+  {
+    "id": "in_04",
+    "category": "in_domain_general",
+    "topic": "semantic-web",
+    "difficulty": "easy",
+    "question": "What is an RDF triple, and how do RDF triples form a knowledge graph?",
+    "reference_answer": "An RDF (Resource Description Framework) triple is the atomic unit of data in the semantic web, structured as a three-part statement of subject, predicate, object, for example 'Bob (subject) knows (predicate) John (object)'. The subject is an IRI or blank node, the predicate is an IRI naming a property, and the object may be an IRI, blank node, or literal value. A set of such triples forms an RDF graph, naturally visualised as a directed graph where subjects and objects are nodes and predicates are labelled arcs, which is why RDF is a foundation for knowledge graphs.",
+    "answer_key_points": [
+      "An RDF triple is a subject-predicate-object statement",
+      "Subject is an IRI/blank node; predicate is an IRI (a property); object is an IRI, blank node, or literal",
+      "A set of triples forms an RDF graph",
+      "Nodes = subjects/objects, labelled arcs = predicates; basis for knowledge graphs"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/TR/rdf11-concepts/",
+      "https://en.wikipedia.org/wiki/Semantic_triple"
+    ]
+  },
+  {
+    "id": "in_05",
+    "category": "in_domain_general",
+    "topic": "public-key-crypto",
+    "difficulty": "easy",
+    "question": "How does public-key (asymmetric) cryptography work, and how is it used to create a digital signature?",
+    "reference_answer": "Public-key cryptography uses a mathematically related pair of keys: a public key that can be shared openly and a private key kept secret, with security relying on the fact that deriving the private key from the public one is computationally infeasible. For encryption, anyone can encrypt with the recipient's public key but only the private-key holder can decrypt. For a digital signature the roles reverse: the signer applies their private key to a message (usually to its hash) to produce a signature, and any verifier uses the corresponding public key to confirm the signature matches, proving authenticity and integrity. A signature scheme thus comprises key generation, signing and verification algorithms.",
+    "answer_key_points": [
+      "Uses a related key pair: public key shared, private key secret",
+      "Infeasible to derive private key from public key (one-way functions)",
+      "Encryption: encrypt with recipient's public key, decrypt with private key",
+      "Signature: sign with private key (over the message/hash), verify with public key",
+      "Provides authenticity and integrity; scheme = key generation, signing, verification"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Public-key_cryptography",
+      "https://en.wikipedia.org/wiki/Digital_signature"
+    ]
+  },
+  {
+    "id": "in_06",
+    "category": "in_domain_general",
+    "topic": "distributed-systems",
+    "difficulty": "medium",
+    "question": "What does the CAP theorem state, and what practical trade-off does it force on distributed data stores during a network partition?",
+    "reference_answer": "The CAP theorem (Brewer's theorem) states that a distributed data store can simultaneously provide at most two of three guarantees: Consistency (every read returns the most recent write or an error), Availability (every request to a non-failing node gets a response), and Partition tolerance (the system keeps working despite dropped or delayed messages between nodes). Because network partitions are unavoidable in real distributed systems, partition tolerance is effectively mandatory, so the practical choice during a partition is between consistency and availability: a system must either reject/limit requests to stay consistent (CP) or keep serving possibly stale data to stay available (AP). It was formalised and proven by Gilbert and Lynch in 2002.",
+    "answer_key_points": [
+      "At most two of Consistency, Availability, Partition tolerance simultaneously",
+      "Consistency = every read sees the latest write; Availability = every request gets a response; Partition tolerance = survives message loss between nodes",
+      "Partitions are unavoidable, so the real trade-off during a partition is consistency vs availability (CP vs AP)",
+      "Proposed by Eric Brewer; formally proven by Gilbert and Lynch (2002)"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/CAP_theorem",
+      "https://dl.acm.org/doi/10.1145/564585.564601"
+    ]
+  },
+  {
+    "id": "in_07",
+    "category": "in_domain_general",
+    "topic": "consensus",
+    "difficulty": "medium",
+    "question": "What problem does the Raft consensus algorithm solve, and what are its main mechanisms?",
+    "reference_answer": "Raft is a consensus algorithm for managing a replicated log, ensuring that a cluster of servers agrees on the same sequence of commands so they behave like a single reliable state machine even if some servers fail. It was designed to be more understandable than Paxos by decomposing consensus into relatively independent subproblems: leader election (the cluster elects one leader), log replication (the leader accepts client commands and replicates them to followers), and safety (guarantees ensuring committed entries are never lost or contradicted). Raft also defines a cluster-membership-change mechanism using overlapping majorities so the group can be reconfigured safely. It is equivalent to Paxos in fault tolerance and performance.",
+    "answer_key_points": [
+      "Solves consensus over a replicated log for state-machine replication across servers",
+      "Explicit design goal: more understandable than Paxos",
+      "Decomposes into leader election, log replication, and safety",
+      "A single elected leader accepts client commands and replicates to followers",
+      "Equivalent to Paxos in fault tolerance/performance; includes safe membership changes"
+    ],
+    "cited_sources": [
+      "https://raft.github.io/raft.pdf",
+      "https://raft.github.io/"
+    ]
+  },
+  {
+    "id": "in_08",
+    "category": "in_domain_general",
+    "topic": "blockchain-data-structures",
+    "difficulty": "medium",
+    "question": "What is a Merkle tree, and why do blockchains use them?",
+    "reference_answer": "A Merkle tree (hash tree) is a tree in which every leaf is labelled with the cryptographic hash of a data block and every internal node is labelled with the hash of its children's labels, so the single root hash acts as a compact cryptographic commitment to all the underlying data. This lets you verify that a particular piece of data belongs to the set by checking only a short 'Merkle proof' (a path of sibling hashes up to the root) rather than examining all the data. Blockchains use them because a block header need only store the Merkle root of its transactions, so light clients can verify that a given transaction is included in a block using a small proof instead of downloading the entire block, and any tampering with a transaction changes the root.",
+    "answer_key_points": [
+      "Leaves = hashes of data blocks; internal nodes = hashes of their children",
+      "The root hash is a compact commitment to all leaves",
+      "Membership can be verified with a short Merkle proof (path of hashes), not all the data",
+      "Blockchains store only the Merkle root in the block header; enables light-client verification (e.g. SPV)",
+      "Any change to underlying data changes the root, so it detects tampering"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Merkle_tree"
+    ]
+  },
+  {
+    "id": "in_09",
+    "category": "in_domain_general",
+    "topic": "blockchain-consensus",
+    "difficulty": "medium",
+    "question": "How do Proof of Work and Proof of Stake differ in how they achieve consensus and Sybil resistance?",
+    "reference_answer": "Both are Sybil-resistance mechanisms that decide who gets to propose the next block, but they tie influence to different scarce resources. In Proof of Work, miners compete to solve a computational puzzle and the first to find a valid solution earns the right to add the next block; influence is proportional to computing (hash) power, so an attacker would need a large fraction of the total hash rate, which is expensive and energy-intensive. In Proof of Stake, validators are selected to produce and attest to blocks with probability proportional to the stake (cryptocurrency) they lock up; influence is tied to economic stake rather than computation, so an attacker would need to control a large fraction of the total stake. PoS therefore consumes far less energy because it removes the mining race.",
+    "answer_key_points": [
+      "Both provide Sybil resistance by tying block-proposal influence to a scarce resource",
+      "PoW: miners solve computational puzzles; influence proportional to hash power",
+      "Attacking PoW needs a large share of total hash rate (costly, energy-intensive)",
+      "PoS: validators chosen proportional to staked coins; influence proportional to stake",
+      "Attacking PoS needs a large share of total stake; PoS uses far less energy"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Proof_of_work",
+      "https://en.wikipedia.org/wiki/Proof_of_stake"
+    ]
+  },
+  {
+    "id": "in_10",
+    "category": "in_domain_general",
+    "topic": "optimization",
+    "difficulty": "medium",
+    "question": "How does gradient descent work, and what role does the learning rate play?",
+    "reference_answer": "Gradient descent is a first-order iterative optimisation algorithm that finds a local minimum of a differentiable function by repeatedly stepping in the direction of the negative gradient (the direction of steepest decrease). The update rule is x_{t+1} = x_t - gamma * grad f(x_t), where gamma is the learning rate (step size) that controls how far to move along the negative gradient each iteration. If the learning rate is too large the algorithm can overshoot, oscillate or diverge; if it is too small convergence is very slow. In neural networks, backpropagation supplies the gradients of the loss with respect to the weights, and gradient descent (or a variant such as SGD or Adam) uses them to iteratively reduce the loss.",
+    "answer_key_points": [
+      "Iterative first-order method that steps in the direction of the negative gradient",
+      "Update rule x_{t+1} = x_t - learning_rate * gradient",
+      "Learning rate (step size) controls how far each step moves",
+      "Too large: overshoot/diverge/oscillate; too small: slow convergence",
+      "In neural nets, gradients come from backpropagation; used to minimise the loss"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Gradient_descent"
+    ]
+  },
+  {
+    "id": "in_11",
+    "category": "in_domain_general",
+    "topic": "ml-generalisation",
+    "difficulty": "medium",
+    "question": "What is overfitting in machine learning, and how does regularisation help combat it?",
+    "reference_answer": "Overfitting occurs when a model fits the training data too closely, capturing noise and idiosyncrasies rather than the underlying pattern, so it achieves low training error but generalises poorly (low training error, high test error, i.e. high variance). It typically happens when a model is more complex or has more parameters than the data justifies. Regularisation combats this by adding information or constraints, usually a penalty term to the loss function of the form min sum V(f(x_i), y_i) + lambda*R(f), that favours simpler models and reduces generalisation error. Common techniques include L1/L2 weight penalties (discouraging large weights), early stopping and dropout, with lambda controlling the strength of the penalty.",
+    "answer_key_points": [
+      "Overfitting = fitting noise in training data; low training error but poor generalisation",
+      "Symptom: high variance, low training error but high test error",
+      "Often caused by excessive model complexity/parameters relative to data",
+      "Regularisation adds a penalty/constraint (e.g. + lambda*R(f)) favouring simpler models",
+      "Examples: L1/L2 weight penalties, early stopping, dropout; lambda tunes strength"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Overfitting",
+      "https://en.wikipedia.org/wiki/Regularization_(machine_learning)"
+    ]
+  },
+  {
+    "id": "in_12",
+    "category": "in_domain_general",
+    "topic": "vector-representations",
+    "difficulty": "medium",
+    "question": "What are vector embeddings in machine learning, and why is cosine similarity commonly used to compare them?",
+    "reference_answer": "A vector embedding is a mapping of discrete objects (words, sentences, images, graph nodes, etc.) into dense numeric vectors in a continuous space, learned so that semantically or structurally similar objects have nearby vectors. Word embeddings such as word2vec and GloVe, for instance, place words that appear in similar contexts close together. Cosine similarity measures the similarity of two vectors as the cosine of the angle between them, cos_sim(u, v) = (u . v) / (||u|| ||v||), giving 1 for vectors pointing the same way and 0 for orthogonal ones. It is popular because it depends on the direction (orientation) of the vectors rather than their magnitude, which suits high-dimensional embeddings where relative orientation encodes meaning.",
+    "answer_key_points": [
+      "Embeddings map discrete objects to dense numeric vectors in a continuous space",
+      "Learned so similar items have nearby vectors (e.g. word2vec, GloVe)",
+      "Cosine similarity = dot product divided by the product of norms (cosine of the angle)",
+      "Ranges ~1 (very similar) to 0 (orthogonal)",
+      "Measures direction not magnitude, well-suited to high-dimensional embeddings"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Word_embedding",
+      "https://en.wikipedia.org/wiki/Cosine_similarity"
+    ]
+  },
+  {
+    "id": "in_13",
+    "category": "in_domain_general",
+    "topic": "llm-architectures",
+    "difficulty": "medium",
+    "question": "What is Retrieval-Augmented Generation (RAG), and what problem does it address for large language models?",
+    "reference_answer": "Retrieval-Augmented Generation, introduced by Lewis et al. in 2020, combines a pretrained sequence-to-sequence generator (parametric memory) with an external retrieval module over a document corpus (non-parametric memory). At inference time the system retrieves passages relevant to the query, for example from Wikipedia, and conditions the generator on them, so answers can draw on an updatable text index rather than only on knowledge frozen in the model's weights. This addresses limitations of purely parametric LLMs such as stale or missing knowledge and hallucination, and lets the knowledge source be updated without retraining. The paper defines two variants, RAG-Sequence (same retrieved documents for the whole output) and RAG-Token (different documents can be attended to per generated token).",
+    "answer_key_points": [
+      "Combines a pretrained generator (parametric memory) with a retriever over an external corpus (non-parametric memory)",
+      "Retrieves relevant documents at inference and conditions generation on them",
+      "Addresses stale/missing knowledge and hallucination; knowledge can be updated without retraining",
+      "Introduced by Lewis et al. (2020)",
+      "Two variants: RAG-Sequence and RAG-Token"
+    ],
+    "cited_sources": [
+      "https://arxiv.org/abs/2005.11401"
+    ]
+  },
+  {
+    "id": "in_14",
+    "category": "in_domain_general",
+    "topic": "xr-slam",
+    "difficulty": "medium",
+    "question": "What is SLAM (Simultaneous Localization and Mapping), and why is the problem considered a 'chicken-and-egg' one?",
+    "reference_answer": "SLAM is the process by which a robot or device builds or updates a map of an unknown environment while at the same time estimating its own position within that map, typically in real time from sensors such as cameras or LiDAR. It is a coupled 'chicken-and-egg' problem because accurate localisation needs a good map, yet building a consistent map needs to know where the sensor is; SLAM algorithms solve both jointly and approximately. Common approaches include particle-filter-based methods, extended Kalman filter (EKF) methods, and graph-based methods (GraphSLAM). SLAM underpins robot navigation and the spatial tracking that lets AR/VR devices place virtual content stably in the real world.",
+    "answer_key_points": [
+      "Builds/updates a map of an unknown environment while estimating the device's own pose within it",
+      "Coupled problem: localisation needs a map, mapping needs localisation, so both solved jointly",
+      "Runs approximately in real time from sensors (cameras, LiDAR)",
+      "Method families: particle filter, EKF, graph-based (GraphSLAM)",
+      "Used in robot navigation and AR/VR spatial tracking"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping"
+    ]
+  },
+  {
+    "id": "in_15",
+    "category": "in_domain_general",
+    "topic": "semantic-web-ontology",
+    "difficulty": "medium",
+    "question": "In the semantic web, what is an ontology expressed in OWL, and what kinds of things does it define?",
+    "reference_answer": "OWL (the Web Ontology Language) is a W3C standard ontology language for the semantic web, built on top of RDF and RDFS, with a formally defined meaning that supports automated reasoning. An OWL ontology is a formal description of a domain, itself represented as an RDF graph, that defines classes (categories of things), properties (relationships between things or between things and data values), and individuals (specific instances), along with logical axioms constraining them. Because the semantics are formal, reasoners can perform tasks such as checking consistency, classifying entities under classes, and inferring implicit facts that are not stated explicitly.",
+    "answer_key_points": [
+      "OWL is a W3C ontology language for the semantic web, built on RDF/RDFS",
+      "An ontology is a formal description of a domain (itself an RDF graph)",
+      "Defines classes, properties, and individuals (plus axioms)",
+      "Formally defined meaning enables automated reasoning",
+      "Reasoners can check consistency, classify, and infer implicit facts"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/TR/owl2-primer/",
+      "https://en.wikipedia.org/wiki/Web_Ontology_Language"
+    ]
+  },
+  {
+    "id": "in_16",
+    "category": "in_domain_general",
+    "topic": "byzantine-fault-tolerance",
+    "difficulty": "hard",
+    "question": "What is the Byzantine Generals Problem, and what is the classic requirement for reaching agreement when up to f nodes can be Byzantine faulty?",
+    "reference_answer": "The Byzantine Generals Problem, formalised by Lamport, Shostak and Pease, is an allegory for how distributed processes can reach agreement (consensus) when some participants may be 'traitors' that behave arbitrarily or maliciously, sending conflicting information to different peers. Such arbitrary, possibly deceptive failures are called Byzantine faults, in contrast to simple crash faults. Their classic result is that in a synchronous system without cryptographic signatures, tolerating up to f Byzantine faulty processes requires at least 3f+1 total processes (so more than two-thirds must be honest); this bound is both necessary and sufficient. If authenticated messages (digital signatures) are used, the requirement can be relaxed, allowing agreement with fewer processes.",
+    "answer_key_points": [
+      "Consensus among distributed processes when some may behave arbitrarily/maliciously (traitors)",
+      "A Byzantine fault is arbitrary/deceptive behaviour, unlike a crash fault",
+      "Formalised by Lamport, Shostak and Pease",
+      "Without signatures, tolerating f faults needs at least 3f+1 total nodes (>2/3 honest); bound is tight",
+      "Digital signatures (authenticated messages) relax the requirement"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Byzantine_fault",
+      "https://www.microsoft.com/en-us/research/publication/byzantine-generals-problem/"
+    ]
+  },
+  {
+    "id": "in_17",
+    "category": "in_domain_general",
+    "topic": "zero-knowledge-proofs",
+    "difficulty": "hard",
+    "question": "What is a zero-knowledge proof, and what are its three defining properties?",
+    "reference_answer": "A zero-knowledge proof is an interactive protocol in which a prover convinces a verifier that a statement is true without revealing any information beyond the mere fact that it is true. It is defined by three properties. Completeness: if the statement is true and both parties behave honestly, the verifier will be convinced. Soundness: if the statement is false, no cheating prover can convince an honest verifier except with negligible probability. Zero-knowledge: if the statement is true, the verifier learns nothing beyond its truth, formalised by the existence of a simulator that can reproduce the verifier's view from the statement alone (without the secret). The concept was introduced by Goldwasser, Micali and Rackoff.",
+    "answer_key_points": [
+      "Prover convinces a verifier a statement is true without revealing anything beyond its truth",
+      "Completeness: true statement + honest parties => verifier is convinced",
+      "Soundness: false statement => no cheating prover convinces the verifier except with negligible probability",
+      "Zero-knowledge: verifier learns nothing beyond truth; formalised via a simulator reproducing the verifier's view",
+      "Introduced by Goldwasser, Micali and Rackoff"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Zero-knowledge_proof",
+      "https://doi.org/10.1137/0218012"
+    ]
+  },
+  {
+    "id": "in_18",
+    "category": "in_domain_general",
+    "topic": "transformers",
+    "difficulty": "hard",
+    "question": "How does the self-attention mechanism at the heart of the Transformer architecture work, and why did Transformers replace recurrent models for many sequence tasks?",
+    "reference_answer": "The Transformer, introduced in Vaswani et al.'s 2017 'Attention Is All You Need', relies entirely on attention and dispenses with recurrence and convolution. Its core operation is scaled dot-product attention: Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) V, where queries Q, keys K and values V are all derived from the same sequence in self-attention, and each token attends to every other token to build a context-aware representation that captures long-range dependencies. Multi-head attention runs several such attentions in parallel. Because self-attention processes all tokens simultaneously rather than step-by-step, Transformers parallelise well and train much faster than recurrent networks, while modelling long-range dependencies more directly; since attention is permutation-invariant, positional encodings are added so token order matters.",
+    "answer_key_points": [
+      "Transformer (Vaswani et al. 2017) uses attention only, no recurrence/convolution",
+      "Scaled dot-product attention: softmax(QK^T / sqrt(d_k))V with queries, keys, values",
+      "Self-attention: Q, K, V from the same sequence; each token attends to all others (long-range dependencies)",
+      "Multi-head attention runs several attentions in parallel; all tokens processed simultaneously => parallelism/faster training",
+      "Positional encodings added because self-attention is permutation-invariant"
+    ],
+    "cited_sources": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://en.wikipedia.org/wiki/Transformer_(deep_learning)"
+    ]
+  },
+  {
+    "id": "in_19",
+    "category": "in_domain_general",
+    "topic": "neural-network-training",
+    "difficulty": "hard",
+    "question": "What does the backpropagation algorithm compute, and how does it do so efficiently?",
+    "reference_answer": "Backpropagation (backward propagation of errors) is the algorithm that computes the gradient of a neural network's loss function with respect to every weight in the network. It works by applying the chain rule of calculus layer by layer: after a forward pass produces an output and its error, the error signal is propagated backwards from the output layer through the hidden layers, reusing intermediate results so that all partial derivatives are obtained in roughly the cost of one backward pass rather than recomputing each independently. These gradients are then fed to gradient descent (or a variant) to update the weights and reduce the loss. Popularised by Rumelhart, Hinton and Williams (1986), it made it practical to train multilayer networks with hidden units to learn useful internal representations.",
+    "answer_key_points": [
+      "Computes the gradient of the loss with respect to every weight",
+      "Applies the chain rule layer by layer, propagating the error backwards from output to input layers",
+      "Reuses intermediate values so gradients are computed efficiently (one backward pass)",
+      "Gradients feed gradient descent to update weights and minimise loss",
+      "Popularised by Rumelhart, Hinton and Williams (1986); enabled training of multilayer nets with hidden units"
+    ],
+    "cited_sources": [
+      "https://www.nature.com/articles/323533a0",
+      "https://en.wikipedia.org/wiki/Backpropagation"
+    ]
+  },
+  {
+    "id": "in_20",
+    "category": "in_domain_general",
+    "topic": "vector-search",
+    "difficulty": "hard",
+    "question": "What is approximate nearest neighbour (ANN) search, and how does an HNSW (Hierarchical Navigable Small World) index make it fast?",
+    "reference_answer": "Nearest neighbour search finds the stored point closest to a query point under some distance metric; in high dimensions exact search becomes prohibitively expensive, so approximate nearest neighbour (ANN) search trades exactness for speed, returning a point that is within a bounded factor of the true nearest distance. HNSW is a graph-based ANN index that builds a multi-layer proximity graph: each vector is a node linked to nearby vectors, upper layers hold a sparse subset with long-range 'express' links, and the bottom layer is a dense graph over all vectors. A query starts at an entry point in the top layer and greedily hops toward the query, descending layer by layer to a local minimum, then runs a bounded beam search in the dense bottom layer to collect the nearest neighbours, giving logarithmic-scale navigation over huge datasets.",
+    "answer_key_points": [
+      "Nearest neighbour search finds the closest stored point to a query under a distance metric",
+      "ANN trades exactness for speed; result is within a bounded factor of the true nearest distance",
+      "HNSW is a graph-based, multi-layer proximity graph index",
+      "Upper layers are sparse with long-range links; bottom layer is a dense graph over all vectors",
+      "Query greedily descends from a top-layer entry point, then beam-searches the bottom layer; near-logarithmic navigation"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Nearest_neighbor_search",
+      "https://arxiv.org/abs/1603.09320"
+    ]
+  },
+  {
+    "id": "off01",
+    "category": "off_domain",
+    "topic": "geography",
+    "difficulty": "easy",
+    "question": "What is the capital city of Australia?",
+    "reference_answer": "The capital of Australia is Canberra, not Sydney or Melbourne. It was purpose-built as a compromise capital after the two larger cities competed for the honour, and it sits in the Australian Capital Territory in the south-east of the country.",
+    "answer_key_points": [
+      "Canberra is the capital",
+      "Not Sydney and not Melbourne (a common misconception)",
+      "Located in the Australian Capital Territory (ACT)",
+      "Purpose-built as a compromise between Sydney and Melbourne"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Canberra"
+    ]
+  },
+  {
+    "id": "off02",
+    "category": "off_domain",
+    "topic": "history",
+    "difficulty": "easy",
+    "question": "In what year did the Berlin Wall fall?",
+    "reference_answer": "The Berlin Wall fell in 1989, with the border opening on the night of 9 November 1989. It had divided East and West Berlin since 1961, and its fall became a defining symbol of the end of the Cold War, paving the way for German reunification in 1990.",
+    "answer_key_points": [
+      "1989 (specifically 9 November 1989)",
+      "Divided East and West Berlin since 1961",
+      "Symbolised the end of the Cold War",
+      "Led to German reunification in 1990"
+    ],
+    "cited_sources": [
+      "https://www.britannica.com/topic/Berlin-Wall"
+    ]
+  },
+  {
+    "id": "off03",
+    "category": "off_domain",
+    "topic": "biology",
+    "difficulty": "easy",
+    "question": "Which gas do plants take in from the air during photosynthesis, and which gas do they release?",
+    "reference_answer": "During photosynthesis plants take in carbon dioxide (CO2) from the air and release oxygen (O2). Using energy from sunlight captured by chlorophyll, they combine carbon dioxide with water to make glucose (sugar), releasing oxygen as a by-product.",
+    "answer_key_points": [
+      "Takes in carbon dioxide (CO2)",
+      "Releases oxygen (O2)",
+      "Driven by light energy captured by chlorophyll",
+      "Produces glucose/sugar from CO2 and water"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Photosynthesis"
+    ]
+  },
+  {
+    "id": "off04",
+    "category": "off_domain",
+    "topic": "chemistry",
+    "difficulty": "easy",
+    "question": "What is the chemical symbol for gold, and why isn't it 'Go' or 'Gd'?",
+    "reference_answer": "The chemical symbol for gold is Au. It derives from the Latin name for gold, aurum, which is why the symbol does not match the English word. Its atomic number is 79.",
+    "answer_key_points": [
+      "Symbol is Au",
+      "Derived from the Latin word aurum",
+      "Atomic number 79",
+      "English name and symbol differ because the symbol comes from Latin"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Gold"
+    ]
+  },
+  {
+    "id": "off05",
+    "category": "off_domain",
+    "topic": "literature",
+    "difficulty": "easy",
+    "question": "Who wrote the novel 'Pride and Prejudice'?",
+    "reference_answer": "Pride and Prejudice was written by the English author Jane Austen and first published in 1813. It follows Elizabeth Bennet and her relationship with the wealthy Mr Darcy, and is one of the most widely read novels in English literature.",
+    "answer_key_points": [
+      "Jane Austen is the author",
+      "First published in 1813",
+      "Central characters Elizabeth Bennet and Mr Darcy",
+      "A classic of English literature / novel of manners"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Pride_and_Prejudice"
+    ]
+  },
+  {
+    "id": "off06",
+    "category": "off_domain",
+    "topic": "physics",
+    "difficulty": "medium",
+    "question": "Why does the sky appear blue during the day?",
+    "reference_answer": "The sky appears blue because of Rayleigh scattering. Air molecules scatter sunlight, and the amount of scattering is much stronger for shorter (blue) wavelengths than for longer (red) wavelengths. As a result blue light is scattered across the sky in all directions, so when we look up away from the Sun we see this scattered blue light. The same effect explains red sunrises and sunsets, when light travels through more atmosphere and the blue is scattered out before it reaches us.",
+    "answer_key_points": [
+      "Caused by Rayleigh scattering of sunlight by air molecules",
+      "Shorter (blue) wavelengths are scattered much more strongly than longer (red) ones",
+      "Scattered blue light reaches the eye from all parts of the sky",
+      "The same mechanism explains reddish sunsets (blue scattered out over a longer path)"
+    ],
+    "cited_sources": [
+      "https://www.britannica.com/science/Rayleigh-scattering"
+    ]
+  },
+  {
+    "id": "off07",
+    "category": "off_domain",
+    "topic": "economics",
+    "difficulty": "medium",
+    "question": "What is the difference between fiscal policy and monetary policy?",
+    "reference_answer": "Fiscal policy is the use of government taxation and public spending to influence the economy, and it is set by the government/treasury. Monetary policy is conducted by the central bank and manages the money supply and interest rates (and broader credit conditions) to pursue objectives such as stable prices and full employment. In short, fiscal policy works through tax-and-spend decisions, while monetary policy works through interest rates and the money supply.",
+    "answer_key_points": [
+      "Fiscal policy = government taxation and spending decisions",
+      "Set by the government/treasury (elected fiscal authority)",
+      "Monetary policy = central bank control of money supply and interest rates",
+      "Monetary policy aims at goals like price stability and employment",
+      "Key distinction: tax-and-spend vs interest rates/money supply"
+    ],
+    "cited_sources": [
+      "https://www.federalreserve.gov/faqs/money_12855.htm",
+      "https://www.investopedia.com/ask/answers/100314/whats-difference-between-monetary-policy-and-fiscal-policy.asp"
+    ]
+  },
+  {
+    "id": "off08",
+    "category": "off_domain",
+    "topic": "medicine",
+    "difficulty": "medium",
+    "question": "What is the fundamental difference between Type 1 and Type 2 diabetes?",
+    "reference_answer": "Type 1 diabetes is an autoimmune disease in which the body's immune system destroys the insulin-producing beta cells of the pancreas, causing an absolute deficiency of insulin; patients therefore depend on insulin injections. Type 2 diabetes is characterised by insulin resistance (the body's cells respond poorly to insulin) combined with a relative deficiency of insulin secretion, and it is strongly associated with obesity and lifestyle factors. Type 1 usually appears in childhood or young adulthood, whereas Type 2 typically develops later in life.",
+    "answer_key_points": [
+      "Type 1 is autoimmune destruction of pancreatic beta cells (absolute insulin deficiency)",
+      "Type 1 patients require insulin",
+      "Type 2 is insulin resistance with relative insulin deficiency",
+      "Type 2 is strongly linked to obesity/lifestyle",
+      "Different typical age of onset (Type 1 younger, Type 2 later)"
+    ],
+    "cited_sources": [
+      "https://www.ncbi.nlm.nih.gov/books/NBK279119/",
+      "https://joslin.org/news-stories/all-news-stories/education/2019/09/difference-between-type-1-and-type-2"
+    ]
+  },
+  {
+    "id": "off09",
+    "category": "off_domain",
+    "topic": "biology",
+    "difficulty": "medium",
+    "question": "How does natural selection work, as proposed by Charles Darwin?",
+    "reference_answer": "Natural selection works because individuals within a population vary in their heritable traits, more offspring are produced than can survive, and individuals whose traits make them better suited to their environment tend to survive and reproduce more successfully. Because these advantageous traits are inherited, they become more common in the population over generations. Over long timescales this differential survival and reproduction drives the evolution of species and their adaptation to their environments.",
+    "answer_key_points": [
+      "Variation exists among individuals in a population",
+      "Some of that variation is heritable (passed to offspring)",
+      "More offspring are produced than can survive (competition/struggle for existence)",
+      "Individuals with advantageous traits survive and reproduce more (differential reproductive success)",
+      "Favourable traits accumulate over generations, driving adaptation/evolution"
+    ],
+    "cited_sources": [
+      "https://evolution.berkeley.edu/evolution-101/mechanisms-the-processes-of-evolution/natural-selection/",
+      "https://en.wikipedia.org/wiki/Natural_selection"
+    ]
+  },
+  {
+    "id": "off10",
+    "category": "off_domain",
+    "topic": "geography",
+    "difficulty": "medium",
+    "question": "What causes the Earth to have seasons?",
+    "reference_answer": "Seasons are caused by the tilt of the Earth's rotational axis, which is inclined at about 23.5 degrees relative to its orbit around the Sun. As the Earth orbits the Sun, this tilt means different hemispheres lean toward or away from the Sun at different times of year, changing the angle and duration of sunlight they receive. When a hemisphere is tilted toward the Sun it experiences summer; when tilted away it experiences winter. Crucially, seasons are not caused by changes in the Earth's distance from the Sun.",
+    "answer_key_points": [
+      "Caused by the tilt of Earth's axis (about 23.5 degrees)",
+      "As Earth orbits, hemispheres tilt toward or away from the Sun",
+      "This changes the angle/intensity and length of daylight",
+      "Hemisphere tilted toward the Sun has summer; tilted away has winter",
+      "NOT caused by varying Earth-Sun distance"
+    ],
+    "cited_sources": [
+      "https://www.ces.fau.edu/nasa/module-3/why-does-temperature-vary/seasons.php",
+      "https://www.weather.gov/fsd/season"
+    ]
+  },
+  {
+    "id": "off11",
+    "category": "off_domain",
+    "topic": "art",
+    "difficulty": "medium",
+    "question": "How did the Impressionist movement get its name, and what characterises Impressionist painting?",
+    "reference_answer": "Impressionism took its name from Claude Monet's painting 'Impression, Sunrise' (Impression, soleil levant), shown at an independent group exhibition in Paris in 1874; a critic used the word 'Impressionist' mockingly, and it stuck. The style is characterised by loose, visible brushstrokes, an emphasis on capturing fleeting effects of light and atmosphere, often painting outdoors (en plein air), and everyday modern subjects rather than grand historical scenes. Leading figures included Monet, Renoir, Degas, Pissarro and Morisot.",
+    "answer_key_points": [
+      "Named after Monet's painting 'Impression, Sunrise' (1872), shown in 1874",
+      "The 1874 independent Paris exhibition; a critic coined the term (originally derisive)",
+      "Loose visible brushwork; focus on light and atmosphere",
+      "Often painted outdoors (en plein air), everyday modern subjects",
+      "Key artists include Monet, Renoir, Degas, Pissarro, Morisot"
+    ],
+    "cited_sources": [
+      "https://www.britannica.com/topic/Impression-Sunrise",
+      "https://en.wikipedia.org/wiki/Impression,_Sunrise"
+    ]
+  },
+  {
+    "id": "off12",
+    "category": "off_domain",
+    "topic": "chemistry",
+    "difficulty": "medium",
+    "question": "What does the pH scale measure, and what distinguishes an acid from a base?",
+    "reference_answer": "The pH scale measures how acidic or basic a solution is, defined as the negative logarithm of the hydrogen ion concentration (pH = -log[H+]). It typically runs from 0 to 14: a pH below 7 is acidic (higher hydrogen ion concentration), a pH of 7 is neutral (as in pure water), and a pH above 7 is basic or alkaline (lower hydrogen ion concentration). Because it is logarithmic, each whole pH unit represents a tenfold change in hydrogen ion concentration.",
+    "answer_key_points": [
+      "pH measures acidity/basicity, defined as -log of hydrogen ion concentration",
+      "Scale typically 0-14",
+      "Below 7 = acidic; 7 = neutral; above 7 = basic/alkaline",
+      "Acids have higher [H+], bases have lower [H+]",
+      "Logarithmic: each unit is a tenfold change in [H+]"
+    ],
+    "cited_sources": [
+      "https://chem.libretexts.org/Courses/Monterey_Peninsula_College/CHEM_30A:_Introduction_to_Chemistry_for_Health_Sciences/11:_Acids_Bases_and_Buffers/11.05:_The_pH_Scale"
+    ]
+  },
+  {
+    "id": "off13",
+    "category": "off_domain",
+    "topic": "history",
+    "difficulty": "hard",
+    "question": "What were the main long-term causes of the First World War, and what event triggered it?",
+    "reference_answer": "The long-term causes are often summarised by the acronym MAIN: militarism (an arms race and the glorification of military power), alliances (Europe divided into the Triple Alliance and the Triple Entente, so a local conflict could drag in the great powers), imperialism (rivalry over colonies and prestige), and nationalism (aggressive national ambitions, especially Slavic nationalism in the Balkans against Austria-Hungary). The immediate trigger was the assassination of Archduke Franz Ferdinand, heir to the Austro-Hungarian throne, by Gavrilo Princip in Sarajevo on 28 June 1914. This set off the July Crisis, and within weeks the alliance system and mobilisation plans turned a regional dispute into a general European war.",
+    "answer_key_points": [
+      "Long-term causes summarised as MAIN: Militarism, Alliances, Imperialism, Nationalism",
+      "Rival alliance blocs: Triple Alliance vs Triple Entente",
+      "Immediate trigger: assassination of Archduke Franz Ferdinand",
+      "Carried out by Gavrilo Princip in Sarajevo on 28 June 1914",
+      "Triggered the July Crisis; alliances and mobilisation escalated it into a general war"
+    ],
+    "cited_sources": [
+      "https://www.bbc.co.uk/bitesize/articles/z9cvf82",
+      "https://historycrunch.com/long-term-causes-of-world-war-i/"
+    ]
+  },
+  {
+    "id": "off14",
+    "category": "off_domain",
+    "topic": "physics",
+    "difficulty": "hard",
+    "question": "State the second law of thermodynamics and explain what entropy has to do with it and with the 'arrow of time'.",
+    "reference_answer": "The second law of thermodynamics states that in any spontaneous process the total entropy of an isolated system (system plus surroundings) never decreases; it increases for irreversible processes and stays constant only for idealised reversible ones. Entropy is a measure of the number of microscopic arrangements consistent with a system's macroscopic state (Boltzmann's S = k ln W), often described intuitively as the degree of energy dispersal or disorder. Equivalent statements are that heat flows spontaneously from hot to cold, and that no engine can convert heat entirely into work from a single reservoir (Kelvin-Planck). Because total entropy can only increase, it gives a direction to time: this one-way increase is why many physical processes are irreversible and defines the 'arrow of time'.",
+    "answer_key_points": [
+      "Total entropy of an isolated system never decreases (increases or stays constant)",
+      "Equality only for reversible processes; increase for irreversible/spontaneous ones",
+      "Entropy relates to number of microstates (Boltzmann S = k ln W) / energy dispersal",
+      "Equivalent forms: heat flows hot to cold; can't fully convert heat to work from one reservoir (Kelvin-Planck)",
+      "The one-way increase in entropy defines the arrow of time / irreversibility"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Second_law_of_thermodynamics",
+      "https://www.britannica.com/science/thermodynamics/The-second-law-of-thermodynamics"
+    ]
+  },
+  {
+    "id": "off15",
+    "category": "off_domain",
+    "topic": "literature",
+    "difficulty": "hard",
+    "question": "What is the 'stream of consciousness' technique, and why is James Joyce's 'Ulysses' a famous example of it?",
+    "reference_answer": "Stream of consciousness is a narrative technique that tries to render the continuous, often unstructured flow of a character's thoughts, sensations and associations as they occur, rather than presenting orderly, grammatically tidy narration. James Joyce's 'Ulysses' (1922) is the landmark modernist example: it follows Leopold Bloom and Stephen Dedalus through a single day in Dublin, using interior monologue to plunge the reader directly into their shifting inner lives. The technique reaches its most famous extreme in Molly Bloom's closing soliloquy, a long, largely unpunctuated passage that mimics the drift of half-conscious thought.",
+    "answer_key_points": [
+      "Stream of consciousness renders the continuous, associative flow of a character's inner thoughts",
+      "Often uses interior monologue and unconventional, loosely punctuated prose",
+      "Joyce's Ulysses (1922) is the landmark modernist example",
+      "Set over a single day in Dublin, following Leopold Bloom and Stephen Dedalus",
+      "Molly Bloom's closing soliloquy is the classic unpunctuated example"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Ulysses_(novel)",
+      "https://en.wikipedia.org/wiki/Stream_of_consciousness"
+    ]
+  },
+  {
+    "id": "off16",
+    "category": "off_domain",
+    "topic": "history",
+    "difficulty": "medium",
+    "question": "In what year was Nelson Mandela released from prison, and when did he become President of South Africa?",
+    "reference_answer": "Nelson Mandela was released from prison on 11 February 1990, after 27 years of imprisonment, most of it for his opposition to apartheid. He then became President of South Africa in 1994, taking office on 10 May 1994 after the country's first fully democratic, multiracial elections, making him the nation's first black head of state.",
+    "answer_key_points": [
+      "Released from prison in 1990 (11 February 1990)",
+      "Had been imprisoned for 27 years",
+      "Became President in 1994 (inaugurated 10 May 1994)",
+      "Followed South Africa's first fully democratic multiracial elections",
+      "First black President of South Africa"
+    ],
+    "cited_sources": [
+      "https://www.nelsonmandela.org/biography",
+      "https://www.britannica.com/biography/Nelson-Mandela"
+    ]
+  },
+  {
+    "id": "off17",
+    "category": "off_domain",
+    "topic": "medicine",
+    "difficulty": "hard",
+    "question": "How do mRNA COVID-19 vaccines work at the molecular level?",
+    "reference_answer": "An mRNA vaccine delivers a strand of messenger RNA that codes for the SARS-CoV-2 spike protein, packaged inside a lipid nanoparticle that protects the fragile mRNA and helps it enter cells after injection. Once inside the cytoplasm, the cell's own ribosomes translate the mRNA into spike protein, which is then displayed to the immune system. This trains the immune system to recognise the spike: B cells produce neutralising antibodies and T cells are primed, generating immune memory so the body can respond quickly to a real infection. Importantly, the mRNA never enters the cell nucleus or alters DNA, and it is broken down by the cell within hours to days after the protein is made.",
+    "answer_key_points": [
+      "mRNA encodes the SARS-CoV-2 spike protein",
+      "Delivered inside a lipid nanoparticle that protects it and aids cell entry",
+      "Cell's ribosomes translate the mRNA into spike protein in the cytoplasm",
+      "Immune system responds: neutralising antibodies (B cells) and T-cell response, creating memory",
+      "mRNA does not enter the nucleus or alter DNA; it is degraded after use"
+    ],
+    "cited_sources": [
+      "https://www.cdc.gov/covid/vaccines/how-they-work.html",
+      "https://www.nature.com/articles/s41573-021-00283-5"
+    ]
+  },
+  {
+    "id": "off18",
+    "category": "off_domain",
+    "topic": "geography",
+    "difficulty": "medium",
+    "question": "Which is the longest river in the world, and why is the answer disputed?",
+    "reference_answer": "Traditionally the Nile in Africa is regarded as the longest river in the world, at roughly 6,650 km (some measurements give up to around 6,850-7,000 km), and it is the answer given by most standard references. However, the answer is disputed: the Amazon in South America is comparable in length (roughly 6,400-7,000 km depending on method), and some studies, particularly Brazilian ones, argue it is actually longer. The dispute arises because a river's measured length depends on which headwater is chosen as the true source and how the winding course and mouth are measured, so different methods yield different rankings.",
+    "answer_key_points": [
+      "The Nile is traditionally considered the longest (about 6,650 km, some measures ~6,850-7,000 km)",
+      "The Amazon is comparable (roughly 6,400-7,000 km) and some studies claim it is longer",
+      "The ranking is genuinely disputed",
+      "Dispute arises from how the source/headwater is defined and how the course is measured",
+      "The Amazon is far larger by water volume/discharge even where length is contested"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Nile",
+      "https://www.livescience.com/57023-nile-river-facts.html"
+    ]
+  },
+  {
+    "id": "off19",
+    "category": "off_domain",
+    "topic": "economics",
+    "difficulty": "hard",
+    "question": "Explain David Ricardo's theory of comparative advantage. How can two countries both gain from trade even if one is better at producing everything?",
+    "reference_answer": "Comparative advantage, set out by David Ricardo, shows that mutually beneficial trade depends on relative (opportunity) costs, not absolute efficiency. In his classic example, Portugal can produce both cloth and wine using less labour than England (an absolute advantage in both), yet the countries still gain from trade. This is because each should specialise in the good it produces at lower opportunity cost: England gives up less wine to make cloth, so it has a comparative advantage in cloth, while Portugal gives up less cloth to make wine, so its comparative advantage is in wine. If each specialises accordingly and they trade, total output rises and both countries can end up with more of both goods than they could produce alone. The key insight is that even a country that is worse at making everything still has a comparative advantage in something.",
+    "answer_key_points": [
+      "Comparative advantage depends on relative/opportunity cost, not absolute efficiency",
+      "Ricardo's England-Portugal cloth-and-wine example (Portugal has absolute advantage in both)",
+      "Each country specialises in the good with the lower opportunity cost",
+      "England specialises in cloth, Portugal in wine",
+      "Specialisation plus trade raises total output; both countries can gain",
+      "Even a country worse at everything still has a comparative advantage in something"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Comparative_advantage",
+      "https://socialsci.libretexts.org/Bookshelves/Economics/International_Economics/International_Trade_-_Theory_and_Policy/02:_The_Ricardian_Theory_of_Comparative_Advantage/2.02:_The_Theory_of_Comparative_Advantage-_Overview"
+    ]
+  },
+  {
+    "id": "off20",
+    "category": "off_domain",
+    "topic": "chemistry",
+    "difficulty": "medium",
+    "question": "Who is credited with creating the periodic table, and what fundamental property are the elements now arranged by?",
+    "reference_answer": "The periodic table is credited to the Russian chemist Dmitri Mendeleev, who published his version in 1869, arranging the known elements by atomic weight and grouping those with similar chemical properties; he even left gaps and successfully predicted undiscovered elements. The modern table is fundamentally organised by atomic number (the number of protons in an element's nucleus) rather than atomic weight, a refinement established after Henry Moseley's work in the early twentieth century, which resolved anomalies in Mendeleev's weight-based ordering.",
+    "answer_key_points": [
+      "Dmitri Mendeleev is credited with the periodic table (published 1869)",
+      "He originally arranged elements by atomic weight and grouped by similar properties",
+      "He left gaps and predicted undiscovered elements",
+      "The modern table is organised by atomic number (number of protons)",
+      "The shift to atomic number followed Henry Moseley's work"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Periodic_table",
+      "https://www.britannica.com/science/periodic-table"
+    ]
+  }
+]

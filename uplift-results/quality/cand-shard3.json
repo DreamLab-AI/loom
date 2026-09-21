@@ -1,0 +1,867 @@
+[
+  {
+    "id": "q0025",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Mapping?",
+    "gold_titles": [
+      "Semantic Mapping",
+      "Topological Map"
+    ],
+    "ontology_source": [
+      {
+        "title": "Mapping",
+        "definition": "Mapping is the process of creating structured correspondences between two or more domains, spaces, or data representations \u2014 including cartographic, semantic, and data-schema contexts. In spatial computing it denotes the construction of environment models; in knowledge engineering it describes the alignment of ontologies, schemas, or concept hierarchies; in AI it encompasses learned transformation",
+        "parents": [
+          "Knowledge Graph"
+        ],
+        "ancestors": [
+          "Content and Assets",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Semantic Mapping",
+            "metric-map",
+            "Topological Map"
+          ],
+          "requires": [
+            "Sensor Fusion",
+            "Feature Extraction"
+          ],
+          "enables": [
+            "Data Integration",
+            "Autonomous Navigation",
+            "Knowledge Graph Construction",
+            "Semantic Interoperability",
+            "Path Planning",
+            "Scene Understanding"
+          ],
+          "uses": [
+            "SLAM",
+            "Localisation",
+            "Lidar",
+            "Depth Camera",
+            "Point Cloud"
+          ],
+          "relatedTo": [
+            "Simultaneous Localisation and Mapping",
+            "Spatial Mapping",
+            "Geospatial Technology",
+            "Ontology Alignment",
+            "Coordinate System"
+          ],
+          "bridgesTo": [
+            "Spatial Computing",
+            "Robotics",
+            "Data"
+          ],
+          "contrastsWith": [
+            "Localisation"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0045",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does Edge AI Security require?",
+    "gold_titles": [
+      "Adversarial Robustness",
+      "Hardware Security Module",
+      "Federated Learning"
+    ],
+    "ontology_source": [
+      {
+        "title": "Edge AI Security",
+        "definition": "The discipline of protecting machine learning systems deployed on distributed edge devices against adversarial attacks, model theft, data poisoning, physical tampering, and unauthorised access, while respecting the severe resource constraints of embedded and IoT environments. Edge AI Security integrates hardware-level protections (Trusted Execution Environments, secure boot), software hardening (m",
+        "parents": [
+          "AI Governance and Ethics"
+        ],
+        "ancestors": [
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "requires": [
+            "Adversarial Robustness",
+            "Hardware Security Module",
+            "Federated Learning"
+          ],
+          "dependsOn": [
+            "Edge Computing",
+            "Internet of Things",
+            "Model Compression for Edge"
+          ],
+          "relatedTo": [
+            "Privacy Preserving Technology",
+            "AI Safety",
+            "Cybersecurity"
+          ],
+          "supports": [
+            "Edge AI System"
+          ],
+          "contrastsWith": [
+            "Adversarial Attacks"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0087",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Financial Reporting enable?",
+    "gold_titles": [
+      "Transparency",
+      "Treasury Management"
+    ],
+    "ontology_source": [
+      {
+        "title": "Financial Reporting",
+        "definition": "Financial reporting is the structured disclosure of an organisation's financial position, performance, and cash flows to stakeholders through standardised statements and supporting notes. It rests on recognised accounting frameworks and audit assurance to provide a faithful, comparable, and verifiable view of economic activity. In blockchain and decentralised contexts, financial reporting extends ",
+        "parents": [
+          "Blockchain",
+          "Governance and Regulation"
+        ],
+        "ancestors": [],
+        "relations": {
+          "hasPart": [
+            "Disclosure Requirements",
+            "Audit"
+          ],
+          "requires": [
+            "Compliance",
+            "Regulatory Compliance",
+            "Audit"
+          ],
+          "enables": [
+            "Transparency",
+            "Treasury Management"
+          ],
+          "dependsOn": [
+            "Compliance"
+          ],
+          "uses": [
+            "Proof of Reserves",
+            "Disclosure Requirements"
+          ],
+          "partOf": [
+            "Blockchain"
+          ],
+          "relatedTo": [
+            "Tokenomics",
+            "Taxation",
+            "Regulatory Compliance"
+          ],
+          "bridgesTo": [
+            "Proof of Reserves"
+          ],
+          "supports": [
+            "Transparency",
+            "Treasury Management"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0137",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Schema enable?",
+    "gold_titles": [
+      "Data Validation",
+      "Interoperability"
+    ],
+    "ontology_source": [
+      {
+        "title": "Schema",
+        "definition": "A schema is a formal specification of the structure, types and constraints that valid data must satisfy within a given system. It defines entities, their attributes, relationships and permissible values, acting as a contract between data producers and consumers. Schemas underpin validation, interoperability and the reliable exchange of structured data across applications.",
+        "parents": [
+          "Data Model"
+        ],
+        "ancestors": [
+          "Data Management (Infrastructure)",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "Type System"
+          ],
+          "requires": [
+            "Data Validation"
+          ],
+          "enables": [
+            "Data Validation",
+            "Interoperability"
+          ],
+          "dependsOn": [
+            "Type System"
+          ],
+          "implements": [
+            "Data Schema"
+          ],
+          "uses": [
+            "Structured Data"
+          ],
+          "partOf": [
+            "Data Model"
+          ],
+          "relatedTo": [
+            "Metadata",
+            "Ontology",
+            "Data Format"
+          ],
+          "bridgesTo": [
+            "Knowledge Graph"
+          ],
+          "supports": [
+            "Data Management"
+          ],
+          "standardizedBy": [
+            "xml-schema"
+          ],
+          "contrastsWith": [
+            "Data Format"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0171",
+    "domain": "distributed-collaboration",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Organisational Theory? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Protocol and Infrastructure"
+    ],
+    "ontology_source": [
+      {
+        "title": "Organisational Theory",
+        "definition": "The study of structural, behavioural, and governance patterns within organisations as they adopt distributed collaboration and immersive technologies. Organisational theory examines how hierarchies, communication channels, decision-making processes, and incentive structures must adapt to support decentralised, asynchronous, and spatially distributed teams operating within metaverse and mixed-reali",
+        "parents": [
+          "Protocol and Infrastructure"
+        ],
+        "ancestors": [
+          "Distributed Collaboration"
+        ],
+        "relations": {
+          "enables": [
+            "Community Governance",
+            "Decentralized Governance"
+          ],
+          "relatedTo": [
+            "Collaboration Platform",
+            "Knowledge Management"
+          ],
+          "supports": [
+            "Collaboration",
+            "Governance Model"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0205",
+    "domain": "distributed-systems",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Partial Synchrony? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Consensus Protocol"
+    ],
+    "ontology_source": [
+      {
+        "title": "Partial Synchrony",
+        "definition": "Partial synchrony is a timing model for distributed systems that sits between the fully synchronous model, where message delays are bounded and known, and the fully asynchronous model, where delays are unbounded. In the partially synchronous model there exists an unknown bound on message delay that eventually holds after some unknown global stabilisation time (GST), or alternatively a known bound ",
+        "parents": [
+          "Consensus Protocol"
+        ],
+        "ancestors": [
+          "Protocol and Consensus",
+          "Blockchain"
+        ],
+        "relations": {
+          "requires": [
+            "Consensus Protocol",
+            "Leader Election"
+          ],
+          "enables": [
+            "Byzantine Fault Tolerance",
+            "Blockchain Consensus",
+            "Deterministic Finality"
+          ],
+          "implements": [
+            "Consensus Mechanism"
+          ],
+          "uses": [
+            "Gossip Protocol"
+          ],
+          "relatedTo": [
+            "Fault Tolerance",
+            "Quorum",
+            "Distributed Computing"
+          ],
+          "supports": [
+            "Tendermint",
+            "Paxos",
+            "Raft"
+          ],
+          "contrastsWith": [
+            "FLP Impossibility"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0230",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does FATF enable?",
+    "gold_titles": [
+      "Anti-Money Laundering",
+      "Counter-Terrorist Financing",
+      "Financial Stability"
+    ],
+    "ontology_source": [
+      {
+        "title": "FATF",
+        "definition": "The Financial Action Task Force (FATF) is an intergovernmental policy-making body established in 1989 by the G7 that sets internationally recognised standards for combating money laundering, terrorist financing, and proliferation financing. Its Forty Recommendations and Nine Special Recommendations constitute the normative AML/CFT/CPF framework that member jurisdictions implement through national ",
+        "parents": [
+          "Regulatory Framework"
+        ],
+        "ancestors": [
+          "Legal Framework",
+          "Legal and Regulatory",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "FATF Travel Rule",
+            "FATF 40 Recommendations"
+          ],
+          "requires": [
+            "Customer Due Diligence",
+            "Suspicious Activity Report",
+            "Know Your Customer"
+          ],
+          "enables": [
+            "Anti-Money Laundering",
+            "Counter-Terrorist Financing",
+            "Financial Stability"
+          ],
+          "implements": [
+            "financial-intelligence-unit",
+            "Risk-Based Approach"
+          ],
+          "relatedTo": [
+            "Compliance Framework",
+            "Virtual Asset",
+            "BC-0456-virtual-asset-service-providers",
+            "Decentralised Finance",
+            "Central Bank Digital Currency"
+          ],
+          "bridgesTo": [
+            "Blockchain Analytics",
+            "Digital Identity"
+          ],
+          "supports": [
+            "Correspondent Banking",
+            "international-sanctions",
+            "Financial Crime Prevention"
+          ],
+          "standardizedBy": [
+            "Standards Organization",
+            "Financial Stability Board"
+          ],
+          "contrastsWith": [
+            "self-regulatory-organisation"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0270",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Industrial Strategy? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Public Policy"
+    ],
+    "ontology_source": [
+      {
+        "title": "Industrial Strategy",
+        "definition": "The UK government's long-term policy framework for shaping the structure of the national economy through targeted support for priority sectors, exemplified by the 2017 Industrial Strategy white paper and the 2025 Modern Industrial Strategy, which designate growth-driving sectors \u2014 including digital technologies and artificial intelligence \u2014 for coordinated investment, skills development, regulator",
+        "parents": [
+          "Public Policy"
+        ],
+        "ancestors": [
+          "Governance Framework",
+          "Legal and Regulatory",
+          "Infrastructure"
+        ],
+        "relations": {
+          "enables": [
+            "AI Investment",
+            "Economic Growth"
+          ],
+          "relatedTo": [
+            "National Ai Strategy",
+            "UK National AI Strategy"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0302",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Over The Air Update require?",
+    "gold_titles": [
+      "Non Volatile Memory",
+      "Firmware"
+    ],
+    "ontology_source": [
+      {
+        "title": "Over The Air Update",
+        "definition": "An over-the-air (OTA) update is the wireless delivery of new software, firmware, or configuration to a deployed device without physical access. OTA mechanisms package an update, transport it over a network, verify its authenticity and integrity, and apply it safely with rollback protection. They are essential to maintaining, securing, and extending the capabilities of fleets of embedded and connec",
+        "parents": [
+          "Infrastructure",
+          "Firmware"
+        ],
+        "ancestors": [
+          "Embedded Systems",
+          "Computing and Cloud"
+        ],
+        "relations": {
+          "requires": [
+            "Non Volatile Memory",
+            "Firmware"
+          ],
+          "enables": [
+            "Vulnerability Management",
+            "Incident Response"
+          ],
+          "dependsOn": [
+            "Telemetry"
+          ],
+          "implements": [
+            "Cryptographic Proof"
+          ],
+          "uses": [
+            "Wireless Communication",
+            "Encryption"
+          ],
+          "partOf": [
+            "IoT"
+          ],
+          "relatedTo": [
+            "IoT",
+            "Edge Computing",
+            "Microcontroller"
+          ],
+          "bridgesTo": [
+            "Cybersecurity"
+          ],
+          "supports": [
+            "Embedded Systems",
+            "Reliability"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0340",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Reinforcement Learning enable?",
+    "gold_titles": [
+      "Autonomous Navigation",
+      "Autonomous Robot",
+      "AI Game Agent",
+      "Recommendation System"
+    ],
+    "ontology_source": [
+      {
+        "title": "Reinforcement Learning",
+        "definition": "Reinforcement learning is a machine learning paradigm in which agents learn optimal policies through interaction with an environment, receiving reward signals for actions and iteratively improving their decision-making through trial and error, encompassing model-free and model-based methods, policy gradient techniques, and value-based approaches.",
+        "parents": [
+          "Machine Learning",
+          "AI Technique"
+        ],
+        "ancestors": [
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "hasPart": [
+            "Policy Gradient Methods",
+            "Q Learning",
+            "Temporal Difference Learning",
+            "Value Function"
+          ],
+          "requires": [
+            "Reward Signal",
+            "Markov Decision Process"
+          ],
+          "enables": [
+            "Autonomous Navigation",
+            "Autonomous Robot",
+            "AI Game Agent",
+            "Recommendation System"
+          ],
+          "implements": [
+            "Bellman Equation",
+            "Exploration Exploitation Tradeoff"
+          ],
+          "uses": [
+            "Deep Learning",
+            "Neural Network",
+            "Automated Planning"
+          ],
+          "partOf": [
+            "Machine Learning",
+            "Artificial Intelligence"
+          ],
+          "relatedTo": [
+            "Reinforcement Learning from Human Feedback",
+            "Multi-Agent System",
+            "Imitation Learning"
+          ],
+          "bridgesTo": [
+            "Robotic Control",
+            "Autonomous Vehicle"
+          ],
+          "contrastsWith": [
+            "Supervised Learning",
+            "Unsupervised Learning"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0360",
+    "domain": "metaverse",
+    "template": "T-REL",
+    "question_natural": "What does Metaverse Ontology enable?",
+    "gold_titles": [
+      "Metaverse",
+      "Knowledge Graphing",
+      "Cross-Platform Interoperability",
+      "Semantic Web Linked Data Standard"
+    ],
+    "ontology_source": [
+      {
+        "title": "Metaverse Ontology",
+        "definition": "The Metaverse Ontology is a formal knowledge representation that classifies the entities, relationships, and properties constituting a metaverse ecosystem\u2014including agents, scenes, digital assets, economies, governance structures, and communication protocols. It provides a shared semantic vocabulary enabling interoperability between platforms, AI systems, and toolchains operating within or around ",
+        "parents": [
+          "Standards and Interoperability"
+        ],
+        "ancestors": [
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Digital Asset",
+            "Virtual Economy",
+            "Governance Structure"
+          ],
+          "requires": [
+            "OWL 2 Web Ontology Language",
+            "RDF Schema"
+          ],
+          "enables": [
+            "Metaverse",
+            "Knowledge Graphing",
+            "Cross-Platform Interoperability",
+            "Semantic Web Linked Data Standard"
+          ],
+          "dependsOn": [
+            "Knowledge Graph",
+            "Linked Data"
+          ],
+          "implements": [
+            "Open World Assumption",
+            "Description Logic"
+          ],
+          "uses": [
+            "Knowledge Graph",
+            "JSON-LD",
+            "Ontology",
+            "Nostr Protocol",
+            "Large Language Models"
+          ],
+          "partOf": [
+            "Metaverse"
+          ],
+          "relatedTo": [
+            "Metaverse Ontology Schema",
+            "Universal Scene Description"
+          ],
+          "bridgesTo": [
+            "Bitcoin",
+            "RGB and Client Side Validation",
+            "Lightning and Similar L2"
+          ],
+          "supports": [
+            "Decentralized Identity",
+            "Digital Ownership",
+            "Agentic AI"
+          ],
+          "standardizedBy": [
+            "Metaverse Standards Forum",
+            "W3C"
+          ],
+          "contrastsWith": [
+            "Scene Graph",
+            "linked-json"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0389",
+    "domain": "robotics",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of rb 0012 wheeled mobile robot? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Robot Type",
+      "Mobile Robot"
+    ],
+    "ontology_source": [
+      {
+        "title": "rb 0012 wheeled mobile robot",
+        "definition": "A wheeled mobile robot (WMR) is a ground-based autonomous or semi-autonomous robot that uses wheels for locomotion. WMRs range from differential-drive platforms to omnidirectional holonomic designs; they rely on odometry for dead-reckoning, SLAM for map building, and path-planning algorithms for autonomous navigation in structured or semi-structured environments.",
+        "parents": [
+          "Robot Type",
+          "Mobile Robot"
+        ],
+        "ancestors": [
+          "Robot",
+          "Robotics"
+        ],
+        "relations": {
+          "dependsOn": [
+            "Path Planning",
+            "Autonomous Navigation"
+          ],
+          "uses": [
+            "Odometry",
+            "SLAM",
+            "rb 0075 range finder"
+          ],
+          "relatedTo": [
+            "Differential Drive Robot",
+            "Mobile Robot Platform",
+            "Wheeled Mobile Robot"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0428",
+    "domain": "security",
+    "template": "T-REL",
+    "question_natural": "What does Privacy-Preserving Computation depend on?",
+    "gold_titles": [
+      "Zero-Knowledge Proof",
+      "Public Key Infrastructure"
+    ],
+    "ontology_source": [
+      {
+        "title": "Privacy-Preserving Computation",
+        "definition": "Privacy-preserving computation is a family of techniques that allow data to be processed or analysed without exposing the underlying plaintext to the computing party. It includes homomorphic encryption, secure multiparty computation, trusted execution environments, federated learning, and differential privacy. These methods enable collaboration and analytics over sensitive data while maintaining c",
+        "parents": [
+          "Cryptography"
+        ],
+        "ancestors": [
+          "Cryptographic Security",
+          "Security and Identity",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "Homomorphic Encryption",
+            "Secure Multi-Party Computation",
+            "Differential Privacy",
+            "Trusted Execution Environment"
+          ],
+          "requires": [
+            "Cryptography",
+            "Key Management"
+          ],
+          "enables": [
+            "Federated Learning",
+            "Confidential Computing"
+          ],
+          "dependsOn": [
+            "Zero-Knowledge Proof",
+            "Public Key Infrastructure"
+          ],
+          "implements": [
+            "Data Minimisation",
+            "Privacy By Design"
+          ],
+          "relatedTo": [
+            "Edge Computing",
+            "Cryptography Security and Privacy"
+          ],
+          "bridgesTo": [
+            "Federated Learning",
+            "Edge Computing",
+            "Blockchain"
+          ],
+          "supports": [
+            "GDPR Compliance",
+            "Data Sovereignty"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0458",
+    "domain": "spatial-computing",
+    "template": "T-REL",
+    "question_natural": "What does Simulation Software enable?",
+    "gold_titles": [
+      "Digital Twin",
+      "Synthetic Data Generation",
+      "Reinforcement Learning"
+    ],
+    "ontology_source": [
+      {
+        "title": "Simulation Software",
+        "definition": "Application software that constructs, parameterises, and executes computational models of physical, biological, social, or engineered systems, enabling controlled experimentation and behaviour observation across time steps without manipulating real-world systems. Simulation software encompasses physics engines, agent-based modelling frameworks, discrete-event simulators, and real-time digital twin",
+        "parents": [
+          "Platform and Environment"
+        ],
+        "ancestors": [
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Simulation Engine",
+            "Physics Engine"
+          ],
+          "requires": [
+            "Computational Model",
+            "High-Performance Computing"
+          ],
+          "enables": [
+            "Digital Twin",
+            "Synthetic Data Generation",
+            "Reinforcement Learning"
+          ],
+          "dependsOn": [
+            "GPU Compute",
+            "Rendering Engine"
+          ],
+          "uses": [
+            "Agent-Based Modelling",
+            "Finite Element Analysis",
+            "Monte Carlo Methods",
+            "Discrete Event Simulation"
+          ],
+          "relatedTo": [
+            "Spatial Computing",
+            "Model-Based Systems Engineering"
+          ],
+          "bridgesTo": [
+            "Machine Learning Pipeline",
+            "Edge Computing"
+          ],
+          "supports": [
+            "Autonomous Vehicle Testing",
+            "Climate Modelling"
+          ]
+        },
+        "maturity": "mature"
+      }
+    ]
+  },
+  {
+    "id": "q0502",
+    "domain": "standards",
+    "template": "T-REL",
+    "question_natural": "What does Technical Committee require?",
+    "gold_titles": [
+      "Standards Organization",
+      "Interoperability"
+    ],
+    "ontology_source": [
+      {
+        "title": "Technical Committee",
+        "definition": "A Technical Committee is a chartered working body within a standards organisation responsible for developing, reviewing and maintaining standards in a defined subject area. It convenes domain experts and stakeholders to draft specifications, resolve comments and reach consensus through structured procedures before publication. Technical committees are the engine of formal standardisation, balancin",
+        "parents": [
+          "Standards Organization"
+        ],
+        "ancestors": [
+          "AI Governance and Ethics",
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "hasPart": [
+            "Compliance Testing"
+          ],
+          "requires": [
+            "Standards Organization",
+            "Interoperability"
+          ],
+          "enables": [
+            "Open Standards",
+            "Technical Standard",
+            "Interoperability"
+          ],
+          "implements": [
+            "Open Standards"
+          ],
+          "uses": [
+            "Technical Standard",
+            "Compliance Testing"
+          ],
+          "partOf": [
+            "Standards Organization",
+            "Standards Body"
+          ],
+          "relatedTo": [
+            "ISO",
+            "IETF",
+            "Standards Organization"
+          ],
+          "bridgesTo": [
+            "Vendor Neutrality"
+          ],
+          "supports": [
+            "Standards Body",
+            "Vendor Neutrality"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  }
+]

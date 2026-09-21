@@ -1,0 +1,211 @@
+[
+  {
+    "id": "q0030",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "Signal processing draws on a well-established toolkit of transforms and estimators. Core tools include the Fast Fourier Transform (efficient frequency-domain analysis), the Wavelet Transform (time-frequency/multiresolution analysis), the Kalman Filter (recursive state estimation from noisy measurements), and Compressed Sensing (recovery of sparse signals from sub-Nyquist samples). These are canonical, textbook methods of the discipline.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Fast_Fourier_transform",
+      "https://en.wikipedia.org/wiki/Wavelet_transform",
+      "https://en.wikipedia.org/wiki/Kalman_filter",
+      "https://en.wikipedia.org/wiki/Compressed_sensing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "All four are standard, widely-documented signal-processing methods; the 'uses' relation is uncontroversially public."
+  },
+  {
+    "id": "q0050",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "Model width (d_model / hidden dimension) is a property of the Transformer architecture and is set as a Hyperparameter of the model. It defines the dimensionality of per-token internal representations and scales attention-head and feed-forward projection sizes; as such it is a designer-chosen hyperparameter within a transformer, and one of the primary axes in neural scaling-law studies alongside depth and data.",
+    "cited_sources": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2001.08361"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "'Model Width' as a named class is niche, but d_model as a transformer hyperparameter is thoroughly documented (Attention Is All You Need; scaling-laws papers). The 'depends on Transformer, Hyperparameter' framing is idiosyncratic but conceptually correct."
+  },
+  {
+    "id": "q0090",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "ISO 22739 (Blockchain and distributed ledger technologies — Vocabulary) is a terminology standard, so strictly it defines rather than imposes requirements. Its definitions presuppose Distributed Ledger Technology (blockchain is defined as a distributed ledger with confirmed blocks) and Cryptographic Hash Functions (blocks are chained via cryptographic hash links). Those two concepts are therefore the foundational dependencies the standard's vocabulary is built on.",
+    "cited_sources": [
+      "https://www.iso.org/standard/73771.html",
+      "https://cdn.standards.iteh.ai/samples/73771/0bfb11e9f93042189985604955d92cfe/ISO-22739-2020.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Caveat: ISO 22739 is a vocabulary standard and contains no auditable requirements, so 'require' is loose. The underlying dependencies (DLT, cryptographic hash/links) are explicit in the standard text and publicly verifiable."
+  },
+  {
+    "id": "q0139",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Usability testing draws on User Research and Research Methods, and operationally uses Participant Recruitment (securing representative users) plus quality-assurance / software-testing practices when the artefact under test is a running product or prototype. Participant recruitment and structured research methods are its clearest, publicly-documented dependencies; the QA/software-testing linkage reflects its role within a product QA workflow.",
+    "cited_sources": [
+      "https://www.nngroup.com/articles/usability-testing-101/",
+      "https://www.usability.gov/how-to-and-tools/methods/usability-testing.html"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "Participant recruitment and research methods are strongly public; 'Quality Assurance' and 'Software Testing' as 'uses' targets read as an idiosyncratic ontology linkage rather than a standard usability-testing dependency."
+  },
+  {
+    "id": "q0173",
+    "stratum": "public",
+    "web_findability": 0.5,
+    "answer": "STUN and TURN sit under the category of NAT-traversal / connectivity protocols (the ontology labels this parent 'Protocol and Infrastructure'). Broader ancestor concepts are network/communication protocols and, in this corpus, the distributed-collaboration domain — they are the building blocks of the ICE framework that underpins peer-to-peer connectivity in WebRTC and real-time communication.",
+    "cited_sources": [
+      "https://datatracker.ietf.org/doc/html/rfc8445",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Protocols"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "The general parent (NAT-traversal / network protocols, part of ICE) is highly public; the exact ontology category labels 'Protocol and Infrastructure' / 'Distributed Collaboration' are internal groupings, so the precise wording is not web-findable."
+  },
+  {
+    "id": "q0208",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Real-time collaboration's immediate parents are distributed collaboration and, more specifically, synchronous collaboration (concurrent, low-latency co-working, as opposed to asynchronous). Broader ancestors are communication technology and telecollaboration (remote group work). In the CSCW literature it is the synchronous, same-time branch of computer-supported cooperative work / groupware.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Computer-supported_cooperative_work",
+      "https://en.wikipedia.org/wiki/Collaborative_real-time_editor"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "The synchronous-vs-asynchronous distinction and CSCW/groupware framing is public; the specific label set (Distributed Collaboration, Synchronous Collaboration, Telecollaboration) is a reasonable but corpus-specific taxonomy."
+  },
+  {
+    "id": "q0240",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Prudential regulation requires ongoing Risk Assessment (of capital adequacy, liquidity, credit, market and operational risk) and Regulatory Reporting (supervisory returns through which firms disclose their financial position and risk exposures to the supervisor). These are the core mechanisms by which supervisors monitor the safety and soundness of institutions under regimes such as Basel III.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Prudential_regulation",
+      "https://www.bis.org/bcbs/basel3.htm"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Risk assessment and regulatory/supervisory reporting are widely documented as central pillars of prudential regulation."
+  },
+  {
+    "id": "q0273",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "The NIST AI RMF is designed to enable structured AI Risk Management (its four Govern-Map-Measure-Manage functions) and to advance Trustworthy AI, with Accountability an explicit governance outcome (e.g. the GOVERN function's accountability structures). It also supports building organisational AI-governance maturity. Its stated purpose is to incorporate trustworthiness into the design, development, use and evaluation of AI systems.",
+    "cited_sources": [
+      "https://www.nist.gov/itl/ai-risk-management-framework",
+      "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "AI risk management, trustworthy AI and accountability are directly documented by NIST; 'AI Governance Maturity Model' as a named enabled artefact is less standard but consistent with the framework's intent."
+  },
+  {
+    "id": "q0309",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Resilience enables Business Continuity (sustaining essential operations through disruption), High Availability (minimal downtime via redundancy and failover), and Graceful Degradation (continuing to provide reduced but functional service when components fail rather than failing completely). These are the standard operational outcomes of designing systems to withstand and recover from adverse conditions.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Resilience_(network)",
+      "https://en.wikipedia.org/wiki/Business_continuity_planning"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Business continuity, high availability and graceful degradation are all conventionally-cited outcomes of system resilience; the relation is publicly grounded."
+  },
+  {
+    "id": "q0341",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Reinforcement learning comprises value-based and policy-based components: Value Functions (estimating expected return of states/actions), Q-Learning (off-policy value-based control), Temporal-Difference Learning (bootstrapped value updates from experience), and Policy Gradient Methods (directly optimising the parameterised policy). These are the canonical building-block method families of RL as set out in Sutton & Barto.",
+    "cited_sources": [
+      "http://incompleteideas.net/book/the-book-2nd.html",
+      "https://en.wikipedia.org/wiki/Reinforcement_learning"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Standard RL taxonomy; all four parts are textbook components (Sutton & Barto). Uncontroversially public."
+  },
+  {
+    "id": "q0372",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "In this ontology, Hardware Security (under Computer Hardware) and Mastercard (under Payment Network) share the broad ancestor concepts 'Computing and Cloud' and, above that, 'Infrastructure'. That is the only level at which the two meet: hardware security via the AI/Digital Infrastructure branch, and Mastercard via the Financial Infrastructure / Economic Layer branch, both rolling up into the corpus's overarching Infrastructure category.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "No public source would group a hardware-security discipline with a card-payment network under a shared concept; the common ancestor ('Computing and Cloud' / 'Infrastructure') is an artefact of this corpus's top-level taxonomy, so authored from the ontology_source."
+  },
+  {
+    "id": "q0402",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Social (human-aware) navigation uses Reinforcement Learning — especially deep RL for socially-compliant policy learning — together with SLAM (simultaneous localisation and mapping for spatial awareness) and Sensor Fusion (integrating lidar, camera and other sensors to perceive people and the environment). Recent robotics surveys centre deep-RL approaches built on these perception and mapping foundations.",
+    "cited_sources": [
+      "https://arxiv.org/abs/2512.00049",
+      "https://www.frontiersin.org/journals/robotics-and-ai/articles/10.3389/frobt.2025.1658643/full"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Deep-RL for social navigation is heavily documented; SLAM and multi-sensor fusion are standard supporting components in the same literature."
+  },
+  {
+    "id": "q0430",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "A revocation registry uses Cryptographic Proofs to let verifiers check status without trusting the issuer online, Selective Disclosure and privacy-preserving Cryptographic Accumulators (compact membership/non-membership proofs), and W3C Bitstring Status Lists (compressed bitstrings encoding revocation/suspension of verifiable credentials). In blockchain-anchored SSI systems the registry may also use Smart Contracts to publish and update status.",
+    "cited_sources": [
+      "https://www.w3.org/TR/vc-bitstring-status-list/",
+      "https://www.w3.org/TR/vc-overview-1.0/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Bitstring status lists, accumulators and selective disclosure for VC revocation are documented by W3C and SSI literature; smart-contract-based registries are common in decentralized-identity ecosystems (e.g. Hyperledger Indy/AnonCreds)."
+  },
+  {
+    "id": "q0470",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "A virtual wedding requires a Virtual Reality / metaverse Platform to host the ceremony space and an Avatar System so participants can be represented and interact as digital personas. These are the two enabling prerequisites: the immersive venue and the embodied representation of attendees, without which a metaverse ceremony cannot be conducted.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Metaverse",
+      "https://en.wikipedia.org/wiki/Avatar_(computing)"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "'Virtual Wedding' as a formal class is niche and coverage is thin, but the two requirements (a VR/metaverse platform and an avatar system) are near-definitional and inferable from general public sources on metaverse events."
+  },
+  {
+    "id": "q0507",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "YAML's immediate parent concept is Data Serialization (it is a human-readable data-serialisation language, YAML Ain't Markup Language, and a strict superset of JSON). Broader ancestors are Data Format, Data Management, and — at the top of this corpus — Infrastructure. It is widely used for configuration files, contrasting with JSON and XML.",
+    "cited_sources": [
+      "https://yaml.org/spec/1.2.2/",
+      "https://en.wikipedia.org/wiki/YAML"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "YAML as a data-serialization language/format is unambiguously public; only the highest ancestor label ('Infrastructure') is a corpus-specific top-level category."
+  }
+]

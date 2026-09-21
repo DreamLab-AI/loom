@@ -1,0 +1,211 @@
+[
+  {
+    "id": "q0035",
+    "stratum": "private",
+    "web_findability": 0.15,
+    "answer": "There is no publicly-recognised broader concept that groups Signal Processing together with Treatment Planning. Publicly, signal processing is an electrical-engineering/applied-mathematics discipline and treatment planning is a clinical (radiotherapy/surgery) activity; they only converge in the narrow sense that both can employ AI/ML methods. In this corpus's taxonomy both are classified under Artificial Intelligence (Signal Processing as an 'AI Technique', Treatment Planning as an 'AI Application' under Healthcare), so the intended common ancestor is Artificial Intelligence.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.5,
+    "notes": "Idiosyncratic grouping: no public source places signal processing and clinical treatment planning under a single parent. Classifying signal processing as an AI technique is itself non-standard. Answer authored from corpus ancestry."
+  },
+  {
+    "id": "q0055",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "A modern (embedding-based) Retrieval-Augmented Generation pipeline requires: (1) an embedding model to vectorise queries and documents; (2) document chunking to split source material into retrievable passages; (3) a vector database/store holding those embeddings; and (4) nearest-neighbour / vector-similarity search to fetch the most relevant chunks at query time. These retrieved passages are concatenated into the LLM context before generation. Note that in the broadest architectural sense the only mandatory pieces are a retriever plus a generator (sparse retrievers such as BM25 can substitute for embeddings), but the vector-DB + embedding + chunking + ANN stack is the standard requirement.",
+    "cited_sources": [
+      "https://www.ibm.com/think/topics/retrieval-augmented-generation",
+      "https://www.pinecone.io/learn/retrieval-augmented-generation/",
+      "https://customgpt.ai/components-of-a-rag-system/",
+      "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Well-documented. Matches gold. Minor caveat: these are the requirements of the canonical embedding-based RAG, not strictly universal to every RAG definition."
+  },
+  {
+    "id": "q0109",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Both fall under Blockchain. Curve (Curve Finance) is a decentralised exchange / automated market maker on Ethereum optimised for low-slippage stablecoin swaps (DeFi), and Eclair is ACINQ's Scala implementation of the Bitcoin Lightning Network (a layer-2 payment-channel network). Different sub-domains (DeFi vs Bitcoin layer-2 scaling) but their shared broader concept is blockchain technology.",
+    "cited_sources": [
+      "https://curve.fi/",
+      "https://github.com/ACINQ/eclair",
+      "https://en.wikipedia.org/wiki/Lightning_Network"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Both are publicly and unambiguously blockchain technologies; the common ancestor Blockchain is easily verifiable."
+  },
+  {
+    "id": "q0146",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "Both fall under Data Management (the broader data-infrastructure / data-engineering discipline). Data Integration combines heterogeneous sources (ETL/ELT, CDC) into a unified representation, while OLAP (Online Analytical Processing) is a multidimensional analytical processing category for slicing/dicing aggregated data. Both are components of the enterprise data-management / data-warehousing stack.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Data_integration",
+      "https://en.wikipedia.org/wiki/Online_analytical_processing",
+      "https://en.wikipedia.org/wiki/Data_management"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "'Data Management' is a defensible public common ancestor; the exact corpus label 'Data Management (Infrastructure)' is a taxonomy-internal wording but the concept is public."
+  },
+  {
+    "id": "q0174",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "Teleoperation systems use feedback control (closed-loop control of the remote robot, often bilateral force/haptic feedback), actuators (motors/effectors that execute the operator's commanded motion on the robot side), and human-robot interaction (the master interface and sensory feedback coupling the human operator to the remote robot). These are standard elements of master-slave / supervisory teleoperation architectures.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Teleoperation",
+      "https://en.wikipedia.org/wiki/Telerobotics"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Feedback control, actuators and HRI are well-established teleoperation elements; publicly supportable though the exact three-item list is corpus-shaped."
+  },
+  {
+    "id": "q0211",
+    "stratum": "public",
+    "web_findability": 0.72,
+    "answer": "The immediate parent of State Machine Replication is Distributed Computing (distributed systems). SMR is a fault-tolerance/consistency technique (formalised by Lamport and Fred Schneider) in which replicas execute the same totally-ordered command sequence. Broader ancestor concepts include Distributed Systems / Fault-Tolerant Computing, Computer Science, and (per this corpus) Computing and Cloud and Infrastructure.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/State_machine_replication",
+      "https://en.wikipedia.org/wiki/Distributed_computing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Parent 'Distributed Computing' is public and matches gold. The specific ancestor chain (Computing and Cloud, Network and Communication, Infrastructure) is corpus-internal."
+  },
+  {
+    "id": "q0243",
+    "stratum": "public",
+    "web_findability": 0.88,
+    "answer": "Sustainable finance uses ESG (environmental, social and governance criteria), the EU Taxonomy (classification of environmentally sustainable activities), TCFD (Task Force on Climate-related Financial Disclosures recommendations, structured around governance, strategy, risk management, and metrics & targets), and IFRS S1 (the ISSB's General Requirements for Disclosure of Sustainability-related Financial Information). These are central classification and disclosure frameworks in the sustainable-finance toolkit.",
+    "cited_sources": [
+      "https://finance.ec.europa.eu/sustainable-finance/tools-and-standards/eu-taxonomy-sustainable-activities_en",
+      "https://www.ifrs.org/issued-standards/ifrs-sustainability-standards-navigator/ifrs-s1-general-requirements/",
+      "https://www.fsb-tcfd.org/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "All four frameworks confirmed via Perplexity/IFRS/EC sources; matches gold."
+  },
+  {
+    "id": "q0275",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "The immediate parent of the NIST AI RMF is an AI Governance / AI Risk-Management Framework. The NIST AI Risk Management Framework (AI RMF 1.0, published January 2023) is a voluntary, technology-agnostic framework structured around four functions (Govern, Map, Measure, Manage) for managing risks of AI systems. Broader ancestor concepts include AI Governance and Ethics, Risk Management, and Artificial Intelligence.",
+    "cited_sources": [
+      "https://www.nist.gov/itl/ai-risk-management-framework",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Parent 'AI Governance Framework' is publicly clear and matches gold; ancestor labels align with corpus."
+  },
+  {
+    "id": "q0311",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "Virtual world infrastructure (the cloud/edge compute, distributed systems, real-time rendering, networking and blockchain layer underpinning metaverse platforms) enables persistent, scalable virtual worlds and immersive virtual experiences, digital twins, and gaming/interactive entertainment. In short, it is the technical foundation that makes low-latency, persistent shared virtual environments possible.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Metaverse",
+      "https://en.wikipedia.org/wiki/Digital_twin"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "'Virtual World Infrastructure' as a named class is corpus-shaped; the conceptual answer (enables virtual worlds, virtual experiences, digital twins, gaming) is publicly reasonable but the exact enable-list derives from the corpus. Moderate findability."
+  },
+  {
+    "id": "q0343",
+    "stratum": "public",
+    "web_findability": 0.78,
+    "answer": "Score matching requires probability theory and statistics as its mathematical foundations. Introduced by Hyvarinen (2005), it fits a (possibly unnormalised) probability model by matching the gradient of the model's log-density (the score) to that of the data via the Fisher divergence, avoiding the intractable normalising constant. It draws specifically on probability distributions, estimation/statistical theory, and differential calculus on log-densities, and it underpins score-based and diffusion generative models.",
+    "cited_sources": [
+      "https://jmlr.org/papers/v6/hyvarinen05a.html",
+      "https://en.wikipedia.org/wiki/Score_matching"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Probability theory + statistics as prerequisites is well-supported by the Hyvarinen JMLR source; matches gold."
+  },
+  {
+    "id": "q0374",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "There is no publicly-recognised broader concept that groups Mastercard (a global card-payment network) with STARK (a Scalable Transparent ARgument of Knowledge cryptographic proof system). They belong to entirely different domains — financial payments infrastructure versus zero-knowledge cryptography. In this corpus's taxonomy both roll up, via different intermediate ancestors (Financial Infrastructure/Economic Layer for Mastercard; Cryptographic Security/Security and Identity for STARK), to the top-level category Infrastructure, which is the intended common ancestor.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.5,
+    "notes": "Idiosyncratic top-level grouping under a very broad 'Infrastructure' node; not publicly findable as a meaningful shared concept. Authored from corpus ancestry."
+  },
+  {
+    "id": "q0406",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "Both fall under Robotics. Path Planning is the computational problem of finding a collision-free feasible path from a start to a goal configuration (a sub-field of motion planning/navigation), and Robot Dynamics is the mechanics of forces, torques and inertias governing robot motion (forward and inverse dynamics). Both are core sub-disciplines of robotics.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Motion_planning",
+      "https://en.wikipedia.org/wiki/Robot_kinematics",
+      "https://en.wikipedia.org/wiki/Robotics"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Unambiguous public common ancestor Robotics; matches gold."
+  },
+  {
+    "id": "q0440",
+    "stratum": "public",
+    "web_findability": 0.62,
+    "answer": "Both fall under authentication / identity and access management (the broader security-and-identity domain). A Revocation Registry maintains the validity status of issued credentials/certificates (CRL/OCSP in PKI, or ledger-based status lists in decentralised identity), and WebAuthn is the W3C/FIDO public-key web authentication standard for passwordless login. Both are mechanisms within digital identity and access-management security.",
+    "cited_sources": [
+      "https://www.w3.org/TR/webauthn-2/",
+      "https://en.wikipedia.org/wiki/WebAuthn",
+      "https://en.wikipedia.org/wiki/Certificate_revocation_list"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "'Authentication / Identity and Access Management / Security and Identity' is a defensible public common ancestor; matches gold."
+  },
+  {
+    "id": "q0475",
+    "stratum": "private",
+    "web_findability": 0.15,
+    "answer": "There is no standard public concept grouping 'ETSI_Domain_Virtual_Society' with 'Virtual Wedding'. Both are metaverse/virtual-world topics — the former an ETSI standardisation domain covering XR, virtual economies and interoperable virtual worlds, the latter a marriage ceremony held via avatars in a VR/metaverse platform. In this corpus both are classified under 'Platform and Environment' rolling up to the top-level category Spatial Computing, which is the intended common ancestor.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.5,
+    "notes": "The 'ETSI_Domain_Virtual_Society' class label is corpus-internal, and the grouping under 'Spatial Computing' is idiosyncratic (both are more naturally 'metaverse'). Authored from corpus ancestry."
+  },
+  {
+    "id": "q0509",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Both 3GPP and IETF are standards development organisations (standards bodies). 3GPP develops mobile-telecommunications specifications (3G/4G/5G and 6G) as a partnership of regional SDOs; the IETF develops voluntary Internet standards (the TCP/IP protocol suite) published as RFCs. Their shared broader concept is 'standards development organisation'. (Note: this corpus instead rolls them up under its top-level 'Legal and Regulatory' / 'Infrastructure' nodes, but the natural public common concept is standards body.)",
+    "cited_sources": [
+      "https://www.3gpp.org/about-us",
+      "https://www.ietf.org/about/",
+      "https://en.wikipedia.org/wiki/Standards_organization"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Public common concept is clearly 'standards development organisation'; the corpus gold ('Legal and Regulatory'/'Infrastructure') is a taxonomy-internal roll-up that differs from the natural public label. Answered from web."
+  }
+]

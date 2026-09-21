@@ -1,0 +1,591 @@
+[11:36:31] gpt-4.1-mini RAW ...
+run [openai/gpt-4.1-mini/raw]: 10/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 20/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 30/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 40/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 50/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 60/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 70/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 80/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 90/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 100/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 110/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 120/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 130/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 140/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 150/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 160/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 170/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 180/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 190/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 200/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 210/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 220/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 230/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 240/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 250/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 260/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 270/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 280/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 290/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 300/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 310/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 320/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 330/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 340/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 350/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 360/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 370/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 380/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 390/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 400/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 410/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 420/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 430/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 440/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 450/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 460/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 470/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 480/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 490/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 500/510 (0 errors)
+run [openai/gpt-4.1-mini/raw]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gpt-4.1-mini-raw.jsonl (510 rows, 0 errors)
+[11:51:30] gpt-4.1-mini SCAFFOLD ...
+run [openai/gpt-4.1-mini/scaffold]: 10/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 20/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 30/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 40/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 50/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 60/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 70/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 80/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 90/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 100/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 110/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 120/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 130/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 140/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 150/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 160/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 170/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 180/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 190/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 200/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 210/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 220/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 230/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 240/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 250/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 260/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 270/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 280/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 290/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 300/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 310/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 320/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 330/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 340/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 350/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 360/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 370/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 380/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 390/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 400/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 410/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 420/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 430/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 440/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 450/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 460/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 470/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 480/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 490/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 500/510 (0 errors)
+run [openai/gpt-4.1-mini/scaffold]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gpt-4.1-mini-scaffold.jsonl (510 rows, 0 errors)
+score: openai/gpt-4.1-mini/raw -> uplift-results/sweep/scores-gpt-4.1-mini-raw.jsonl
+{
+  "model": "openai/gpt-4.1-mini",
+  "mode": "raw",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.1616658823529412,
+  "mean_recall_engaged_only": null,
+  "n_engaged": 0,
+  "engagement_rate": 0.0,
+  "mean_extra_recall": 0.11220872093023257,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.037091503267973856,
+  "recall_gain_over_exposure": 0.1246,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 1,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 0.0,
+  "mean_latency_ms": 1462.1664705882354,
+  "per_domain_mean_recall": {
+    "ai": 0.2057142857142857,
+    "artificial-intelligence": 0.08657222222222222,
+    "blockchain": 0.20175263157894738,
+    "data": 0.13640263157894736,
+    "distributed-collaboration": 0.06428571428571428,
+    "distributed-systems": 0.1319057142857143,
+    "finance": 0.14639729729729728,
+    "governance": 0.27873448275862067,
+    "infrastructure": 0.08564722222222222,
+    "machine-learning": 0.2930096774193548,
+    "metaverse": 0.2041666666666667,
+    "robotics": 0.166665625,
+    "security": 0.24068529411764703,
+    "spatial-computing": 0.07207297297297298,
+    "standards": 0.1717121212121212
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.1111111111111111,
+    "T-REL": 0.10859508771929825,
+    "T-TAX": 0.25833333333333336
+  }
+}
+score: openai/gpt-4.1-mini/scaffold -> uplift-results/sweep/scores-gpt-4.1-mini-scaffold.jsonl
+{
+  "model": "openai/gpt-4.1-mini",
+  "mode": "scaffold",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.9048694117647059,
+  "mean_recall_engaged_only": 0.9048694117647059,
+  "n_engaged": 510,
+  "engagement_rate": 1.0,
+  "mean_extra_recall": 0.9590116279069767,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.9644771241830066,
+  "recall_gain_over_exposure": -0.0596,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 1342.7196078431373,
+  "mean_latency_ms": 1202.4441176470589,
+  "per_domain_mean_recall": {
+    "ai": 0.8890485714285715,
+    "artificial-intelligence": 0.9041666666666666,
+    "blockchain": 0.9192973684210527,
+    "data": 0.8688605263157895,
+    "distributed-collaboration": 0.9261914285714286,
+    "distributed-systems": 0.8742857142857143,
+    "finance": 0.9234243243243243,
+    "governance": 0.8620689655172413,
+    "infrastructure": 0.9500000000000001,
+    "machine-learning": 0.885483870967742,
+    "metaverse": 0.9208333333333334,
+    "robotics": 0.911978125,
+    "security": 0.8573529411764705,
+    "spatial-computing": 0.9554054054054054,
+    "standards": 0.9166666666666666
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.7555555555555555,
+    "T-REL": 0.8888308771929825,
+    "T-TAX": 0.9675922222222222
+  }
+}
+[12:04:25] gpt-4.1-mini DONE
+[12:04:25] claude-haiku-4.5 RAW ...
+run [anthropic/claude-haiku-4.5/raw]: 10/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 20/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 30/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 40/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 50/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 60/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 70/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 80/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 90/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 100/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 110/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 120/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 130/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 140/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 150/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 160/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 170/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 180/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 190/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 200/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 210/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 220/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 230/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 240/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 250/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 260/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 270/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 280/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 290/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 300/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 310/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 320/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 330/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 340/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 350/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 360/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 370/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 380/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 390/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 400/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 410/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 420/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 430/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 440/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 450/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 460/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 470/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 480/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 490/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 500/510 (0 errors)
+run [anthropic/claude-haiku-4.5/raw]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-claude-haiku-4.5-raw.jsonl (510 rows, 0 errors)
+[12:27:03] claude-haiku-4.5 SCAFFOLD ...
+run [anthropic/claude-haiku-4.5/scaffold]: 10/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 20/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 30/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 40/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 50/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 60/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 70/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 80/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 90/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 100/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 110/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 120/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 130/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 140/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 150/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 160/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 170/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 180/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 190/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 200/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 210/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 220/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 230/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 240/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 250/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 260/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 270/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 280/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 290/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 300/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 310/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 320/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 330/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 340/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 350/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 360/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 370/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 380/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 390/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 400/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 410/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 420/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 430/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 440/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 450/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 460/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 470/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 480/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 490/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 500/510 (0 errors)
+run [anthropic/claude-haiku-4.5/scaffold]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-claude-haiku-4.5-scaffold.jsonl (510 rows, 0 errors)
+score: anthropic/claude-haiku-4.5/raw -> uplift-results/sweep/scores-claude-haiku-4.5-raw.jsonl
+{
+  "model": "anthropic/claude-haiku-4.5",
+  "mode": "raw",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.15127392156862746,
+  "mean_recall_engaged_only": null,
+  "n_engaged": 0,
+  "engagement_rate": 0.0,
+  "mean_extra_recall": 0.06821627906976745,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.037091503267973856,
+  "recall_gain_over_exposure": 0.1142,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 0.0,
+  "mean_latency_ms": 2361.926862745098,
+  "per_domain_mean_recall": {
+    "ai": 0.13762,
+    "artificial-intelligence": 0.09861111111111111,
+    "blockchain": 0.05701578947368421,
+    "data": 0.1925421052631579,
+    "distributed-collaboration": 0.15714285714285714,
+    "distributed-systems": 0.28190571428571426,
+    "finance": 0.18243243243243243,
+    "governance": 0.10344827586206896,
+    "infrastructure": 0.030091666666666666,
+    "machine-learning": 0.2903225806451613,
+    "metaverse": 0.15208333333333332,
+    "robotics": 0.166665625,
+    "security": 0.23823529411764705,
+    "spatial-computing": 0.0545027027027027,
+    "standards": 0.1515121212121212
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.08888888888888889,
+    "T-REL": 0.10929719298245613,
+    "T-TAX": 0.23333333333333334
+  }
+}
+score: anthropic/claude-haiku-4.5/scaffold -> uplift-results/sweep/scores-claude-haiku-4.5-scaffold.jsonl
+{
+  "model": "anthropic/claude-haiku-4.5",
+  "mode": "scaffold",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.933823725490196,
+  "mean_recall_engaged_only": 0.933823725490196,
+  "n_engaged": 510,
+  "engagement_rate": 1.0,
+  "mean_extra_recall": 0.979360465116279,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.9644771241830066,
+  "recall_gain_over_exposure": -0.0307,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 1342.7196078431373,
+  "mean_latency_ms": 2234.7856862745098,
+  "per_domain_mean_recall": {
+    "ai": 0.8890485714285715,
+    "artificial-intelligence": 0.9388888888888888,
+    "blockchain": 0.9368421052631579,
+    "data": 0.9017552631578948,
+    "distributed-collaboration": 0.9547628571428571,
+    "distributed-systems": 0.9514285714285714,
+    "finance": 0.9234243243243243,
+    "governance": 0.9137931034482759,
+    "infrastructure": 0.9694444444444444,
+    "machine-learning": 0.9580645161290322,
+    "metaverse": 0.9208333333333334,
+    "robotics": 0.927603125,
+    "security": 0.9220588235294118,
+    "spatial-computing": 0.9756756756756757,
+    "standards": 0.9166666666666666
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.9111111111111111,
+    "T-REL": 0.8973687719298246,
+    "T-TAX": 0.9972222222222222
+  }
+}
+[12:48:46] claude-haiku-4.5 DONE
+[12:48:46] llama-3.3-70b RAW ...
+run [meta-llama/llama-3.3-70b-instruct/raw]: 10/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 20/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 30/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 40/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 50/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 60/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 70/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 80/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 90/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 100/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 110/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 120/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 130/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 140/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 150/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 160/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 170/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 180/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 190/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 200/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 210/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 220/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 230/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 240/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 250/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 260/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 270/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 280/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 290/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 300/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 310/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 320/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 330/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 340/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 350/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 360/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 370/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 380/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 390/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 400/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 410/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 420/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 430/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 440/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 450/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 460/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 470/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 480/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 490/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 500/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/raw]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-llama-3.3-70b-raw.jsonl (510 rows, 0 errors)
+[13:46:14] llama-3.3-70b SCAFFOLD ...
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 10/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 20/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 30/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 40/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 50/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 60/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 70/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 80/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 90/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 100/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 110/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 120/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 130/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 140/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 150/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 160/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 170/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 180/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 190/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 200/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 210/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 220/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 230/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 240/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 250/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 260/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 270/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 280/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 290/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 300/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 310/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 320/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 330/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 340/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 350/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 360/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 370/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 380/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 390/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 400/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 410/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 420/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 430/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 440/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 450/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 460/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 470/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 480/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 490/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 500/510 (0 errors)
+run [meta-llama/llama-3.3-70b-instruct/scaffold]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-llama-3.3-70b-scaffold.jsonl (510 rows, 0 errors)
+score: meta-llama/llama-3.3-70b-instruct/raw -> uplift-results/sweep/scores-llama-3.3-70b-raw.jsonl
+{
+  "model": "meta-llama/llama-3.3-70b-instruct",
+  "mode": "raw",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.2271886274509804,
+  "mean_recall_engaged_only": null,
+  "n_engaged": 0,
+  "engagement_rate": 0.0,
+  "mean_extra_recall": 0.11724709302325581,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.037091503267973856,
+  "recall_gain_over_exposure": 0.1901,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 1,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 0.0,
+  "mean_latency_ms": 6460.021764705883,
+  "per_domain_mean_recall": {
+    "ai": 0.32571428571428573,
+    "artificial-intelligence": 0.136575,
+    "blockchain": 0.1798236842105263,
+    "data": 0.1298236842105263,
+    "distributed-collaboration": 0.13333142857142857,
+    "distributed-systems": 0.2566657142857143,
+    "finance": 0.2545027027027027,
+    "governance": 0.39655172413793105,
+    "infrastructure": 0.13148055555555554,
+    "machine-learning": 0.386558064516129,
+    "metaverse": 0.225,
+    "robotics": 0.265621875,
+    "security": 0.27843235294117646,
+    "spatial-computing": 0.10720540540540541,
+    "standards": 0.27777575757575756
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.26666666666666666,
+    "T-REL": 0.18198666666666666,
+    "T-TAX": 0.28888888888888886
+  }
+}
+score: meta-llama/llama-3.3-70b-instruct/scaffold -> uplift-results/sweep/scores-llama-3.3-70b-scaffold.jsonl
+{
+  "model": "meta-llama/llama-3.3-70b-instruct",
+  "mode": "scaffold",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.9155884313725491,
+  "mean_recall_engaged_only": 0.9155884313725491,
+  "n_engaged": 510,
+  "engagement_rate": 1.0,
+  "mean_extra_recall": 0.9630813953488372,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.9644771241830066,
+  "recall_gain_over_exposure": -0.0489,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 1342.7196078431373,
+  "mean_latency_ms": 3521.759411764706,
+  "per_domain_mean_recall": {
+    "ai": 0.8747628571428572,
+    "artificial-intelligence": 0.9319444444444444,
+    "blockchain": 0.9631578947368421,
+    "data": 0.8964921052631578,
+    "distributed-collaboration": 0.9190485714285714,
+    "distributed-systems": 0.9171428571428571,
+    "finance": 0.930181081081081,
+    "governance": 0.8448275862068966,
+    "infrastructure": 0.9361111111111112,
+    "machine-learning": 0.917741935483871,
+    "metaverse": 0.9416666666666668,
+    "robotics": 0.927603125,
+    "security": 0.8647058823529411,
+    "spatial-computing": 0.8878378378378379,
+    "standards": 0.9772727272727273
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.8666666666666667,
+    "T-REL": 0.8963161403508771,
+    "T-TAX": 0.9583333333333334
+  }
+}
+[14:18:53] llama-3.3-70b DONE

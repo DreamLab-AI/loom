@@ -1,0 +1,591 @@
+[11:36:31] gemini-2.5-flash-lite RAW ...
+run [gemini-2.5-flash-lite/raw]: 10/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 20/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 30/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 40/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 50/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 60/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 70/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 80/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 90/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 100/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 110/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 120/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 130/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 140/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 150/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 160/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 170/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 180/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 190/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 200/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 210/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 220/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 230/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 240/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 250/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 260/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 270/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 280/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 290/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 300/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 310/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 320/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 330/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 340/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 350/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 360/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 370/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 380/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 390/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 400/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 410/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 420/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 430/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 440/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 450/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 460/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 470/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 480/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 490/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 500/510 (0 errors)
+run [gemini-2.5-flash-lite/raw]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gemini-2.5-flash-lite-raw.jsonl (510 rows, 0 errors)
+[11:51:27] gemini-2.5-flash-lite SCAFFOLD ...
+run [gemini-2.5-flash-lite/scaffold]: 10/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 20/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 30/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 40/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 50/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 60/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 70/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 80/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 90/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 100/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 110/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 120/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 130/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 140/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 150/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 160/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 170/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 180/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 190/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 200/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 210/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 220/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 230/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 240/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 250/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 260/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 270/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 280/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 290/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 300/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 310/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 320/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 330/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 340/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 350/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 360/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 370/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 380/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 390/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 400/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 410/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 420/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 430/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 440/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 450/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 460/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 470/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 480/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 490/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 500/510 (0 errors)
+run [gemini-2.5-flash-lite/scaffold]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gemini-2.5-flash-lite-scaffold.jsonl (510 rows, 0 errors)
+score: gemini-2.5-flash-lite/raw -> uplift-results/sweep/scores-gemini-2.5-flash-lite-raw.jsonl
+{
+  "model": "gemini-2.5-flash-lite",
+  "mode": "raw",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.22741745098039215,
+  "mean_recall_engaged_only": null,
+  "n_engaged": 0,
+  "engagement_rate": 0.0,
+  "mean_extra_recall": 0.10232500000000001,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.037091503267973856,
+  "recall_gain_over_exposure": 0.1903,
+  "n_truncated_finish_length": 16,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 0.0,
+  "mean_latency_ms": 1455.7023529411763,
+  "per_domain_mean_recall": {
+    "ai": 0.24523714285714285,
+    "artificial-intelligence": 0.1412,
+    "blockchain": 0.21052368421052634,
+    "data": 0.23859736842105264,
+    "distributed-collaboration": 0.13333142857142857,
+    "distributed-systems": 0.25571428571428567,
+    "finance": 0.2612621621621622,
+    "governance": 0.31896551724137934,
+    "infrastructure": 0.16527777777777777,
+    "machine-learning": 0.34408387096774196,
+    "metaverse": 0.24583333333333335,
+    "robotics": 0.2546875,
+    "security": 0.25441176470588234,
+    "spatial-computing": 0.14594594594594595,
+    "standards": 0.24242121212121212
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.24444444444444444,
+    "T-REL": 0.2087119298245614,
+    "T-TAX": 0.25277777777777777
+  }
+}
+score: gemini-2.5-flash-lite/scaffold -> uplift-results/sweep/scores-gemini-2.5-flash-lite-scaffold.jsonl
+{
+  "model": "gemini-2.5-flash-lite",
+  "mode": "scaffold",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.8971245098039216,
+  "mean_recall_engaged_only": 0.8971245098039216,
+  "n_engaged": 510,
+  "engagement_rate": 1.0,
+  "mean_extra_recall": 0.9533918604651163,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.9644771241830066,
+  "recall_gain_over_exposure": -0.0674,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 1342.7196078431373,
+  "mean_latency_ms": 671.7474509803922,
+  "per_domain_mean_recall": {
+    "ai": 0.8890485714285715,
+    "artificial-intelligence": 0.9041666666666666,
+    "blockchain": 0.9368421052631579,
+    "data": 0.8596499999999999,
+    "distributed-collaboration": 0.9261914285714286,
+    "distributed-systems": 0.8314285714285715,
+    "finance": 0.8963972972972972,
+    "governance": 0.8793103448275862,
+    "infrastructure": 0.963888888888889,
+    "machine-learning": 0.8586032258064517,
+    "metaverse": 0.9208333333333334,
+    "robotics": 0.9015625,
+    "security": 0.8397058823529412,
+    "spatial-computing": 0.9689189189189189,
+    "standards": 0.8712121212121212
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.6888888888888889,
+    "T-REL": 0.8790649122807017,
+    "T-TAX": 0.9777777777777777
+  }
+}
+[11:59:51] gemini-2.5-flash-lite DONE
+[11:59:51] gemini-3.5-flash-lite RAW ...
+run [gemini-3.5-flash-lite/raw]: 10/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 20/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 30/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 40/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 50/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 60/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 70/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 80/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 90/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 100/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 110/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 120/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 130/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 140/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 150/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 160/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 170/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 180/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 190/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 200/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 210/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 220/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 230/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 240/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 250/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 260/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 270/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 280/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 290/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 300/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 310/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 320/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 330/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 340/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 350/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 360/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 370/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 380/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 390/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 400/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 410/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 420/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 430/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 440/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 450/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 460/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 470/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 480/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 490/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 500/510 (0 errors)
+run [gemini-3.5-flash-lite/raw]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gemini-3.5-flash-lite-raw.jsonl (510 rows, 0 errors)
+[12:25:32] gemini-3.5-flash-lite SCAFFOLD ...
+run [gemini-3.5-flash-lite/scaffold]: 10/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 20/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 30/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 40/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 50/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 60/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 70/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 80/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 90/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 100/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 110/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 120/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 130/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 140/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 150/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 160/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 170/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 180/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 190/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 200/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 210/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 220/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 230/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 240/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 250/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 260/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 270/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 280/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 290/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 300/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 310/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 320/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 330/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 340/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 350/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 360/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 370/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 380/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 390/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 400/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 410/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 420/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 430/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 440/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 450/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 460/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 470/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 480/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 490/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 500/510 (0 errors)
+run [gemini-3.5-flash-lite/scaffold]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gemini-3.5-flash-lite-scaffold.jsonl (510 rows, 0 errors)
+score: gemini-3.5-flash-lite/raw -> uplift-results/sweep/scores-gemini-3.5-flash-lite-raw.jsonl
+{
+  "model": "gemini-3.5-flash-lite",
+  "mode": "raw",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.32264607843137255,
+  "mean_recall_engaged_only": null,
+  "n_engaged": 0,
+  "engagement_rate": 0.0,
+  "mean_extra_recall": 0.1698622093023256,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.037091503267973856,
+  "recall_gain_over_exposure": 0.2856,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 0.0,
+  "mean_latency_ms": 2720.7280392156863,
+  "per_domain_mean_recall": {
+    "ai": 0.3728571428571429,
+    "artificial-intelligence": 0.2629611111111111,
+    "blockchain": 0.2780657894736842,
+    "data": 0.2951736842105263,
+    "distributed-collaboration": 0.19999714285714287,
+    "distributed-systems": 0.4271428571428571,
+    "finance": 0.322072972972973,
+    "governance": 0.3850586206896552,
+    "infrastructure": 0.23379444444444447,
+    "machine-learning": 0.3870935483870968,
+    "metaverse": 0.24582916666666665,
+    "robotics": 0.344271875,
+    "security": 0.4455882352941177,
+    "spatial-computing": 0.15045135135135135,
+    "standards": 0.5202030303030303
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.3333333333333333,
+    "T-REL": 0.25806842105263156,
+    "T-TAX": 0.4222222222222222
+  }
+}
+score: gemini-3.5-flash-lite/scaffold -> uplift-results/sweep/scores-gemini-3.5-flash-lite-scaffold.jsonl
+{
+  "model": "gemini-3.5-flash-lite",
+  "mode": "scaffold",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.938039411764706,
+  "mean_recall_engaged_only": 0.938039411764706,
+  "n_engaged": 510,
+  "engagement_rate": 1.0,
+  "mean_extra_recall": 0.9962209302325581,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.9644771241830066,
+  "recall_gain_over_exposure": -0.0264,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 1342.7196078431373,
+  "mean_latency_ms": 802.2049019607844,
+  "per_domain_mean_recall": {
+    "ai": 0.8890485714285715,
+    "artificial-intelligence": 0.9319444444444444,
+    "blockchain": 0.9368421052631579,
+    "data": 0.9017552631578948,
+    "distributed-collaboration": 0.94762,
+    "distributed-systems": 0.9457142857142857,
+    "finance": 0.930181081081081,
+    "governance": 0.9482758620689655,
+    "infrastructure": 0.963888888888889,
+    "machine-learning": 0.95,
+    "metaverse": 0.9416666666666668,
+    "robotics": 0.927603125,
+    "security": 0.9161764705882353,
+    "spatial-computing": 0.9689189189189189,
+    "standards": 0.9772727272727273
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.9777777777777777,
+    "T-REL": 0.8926319298245614,
+    "T-TAX": 1.0
+  }
+}
+[12:35:03] gemini-3.5-flash-lite DONE
+[12:35:03] gemini-3.7-flash-t0 RAW ...
+run [gemini-3.7-flash/raw]: 10/510 (0 errors)
+run [gemini-3.7-flash/raw]: 20/510 (0 errors)
+run [gemini-3.7-flash/raw]: 30/510 (0 errors)
+run [gemini-3.7-flash/raw]: 40/510 (0 errors)
+run [gemini-3.7-flash/raw]: 50/510 (0 errors)
+run [gemini-3.7-flash/raw]: 60/510 (0 errors)
+run [gemini-3.7-flash/raw]: 70/510 (0 errors)
+run [gemini-3.7-flash/raw]: 80/510 (0 errors)
+run [gemini-3.7-flash/raw]: 90/510 (0 errors)
+run [gemini-3.7-flash/raw]: 100/510 (0 errors)
+run [gemini-3.7-flash/raw]: 110/510 (0 errors)
+run [gemini-3.7-flash/raw]: 120/510 (0 errors)
+run [gemini-3.7-flash/raw]: 130/510 (0 errors)
+run [gemini-3.7-flash/raw]: 140/510 (0 errors)
+run [gemini-3.7-flash/raw]: 150/510 (0 errors)
+run [gemini-3.7-flash/raw]: 160/510 (0 errors)
+run [gemini-3.7-flash/raw]: 170/510 (0 errors)
+run [gemini-3.7-flash/raw]: 180/510 (0 errors)
+run [gemini-3.7-flash/raw]: 190/510 (0 errors)
+run [gemini-3.7-flash/raw]: 200/510 (0 errors)
+run [gemini-3.7-flash/raw]: 210/510 (0 errors)
+run [gemini-3.7-flash/raw]: 220/510 (0 errors)
+run [gemini-3.7-flash/raw]: 230/510 (0 errors)
+run [gemini-3.7-flash/raw]: 240/510 (0 errors)
+run [gemini-3.7-flash/raw]: 250/510 (0 errors)
+run [gemini-3.7-flash/raw]: 260/510 (0 errors)
+run [gemini-3.7-flash/raw]: 270/510 (0 errors)
+run [gemini-3.7-flash/raw]: 280/510 (0 errors)
+run [gemini-3.7-flash/raw]: 290/510 (0 errors)
+run [gemini-3.7-flash/raw]: 300/510 (0 errors)
+run [gemini-3.7-flash/raw]: 310/510 (0 errors)
+run [gemini-3.7-flash/raw]: 320/510 (0 errors)
+run [gemini-3.7-flash/raw]: 330/510 (0 errors)
+run [gemini-3.7-flash/raw]: 340/510 (0 errors)
+run [gemini-3.7-flash/raw]: 350/510 (0 errors)
+run [gemini-3.7-flash/raw]: 360/510 (0 errors)
+run [gemini-3.7-flash/raw]: 370/510 (0 errors)
+run [gemini-3.7-flash/raw]: 380/510 (0 errors)
+run [gemini-3.7-flash/raw]: 390/510 (0 errors)
+run [gemini-3.7-flash/raw]: 400/510 (0 errors)
+run [gemini-3.7-flash/raw]: 410/510 (0 errors)
+run [gemini-3.7-flash/raw]: 420/510 (0 errors)
+run [gemini-3.7-flash/raw]: 430/510 (0 errors)
+run [gemini-3.7-flash/raw]: 440/510 (0 errors)
+run [gemini-3.7-flash/raw]: 450/510 (0 errors)
+run [gemini-3.7-flash/raw]: 460/510 (0 errors)
+run [gemini-3.7-flash/raw]: 470/510 (0 errors)
+run [gemini-3.7-flash/raw]: 480/510 (0 errors)
+run [gemini-3.7-flash/raw]: 490/510 (0 errors)
+run [gemini-3.7-flash/raw]: 500/510 (0 errors)
+run [gemini-3.7-flash/raw]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gemini-3.7-flash-t0-raw.jsonl (510 rows, 0 errors)
+[12:58:38] gemini-3.7-flash-t0 SCAFFOLD ...
+run [gemini-3.7-flash/scaffold]: 10/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 20/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 30/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 40/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 50/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 60/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 70/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 80/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 90/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 100/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 110/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 120/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 130/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 140/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 150/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 160/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 170/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 180/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 190/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 200/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 210/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 220/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 230/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 240/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 250/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 260/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 270/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 280/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 290/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 300/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 310/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 320/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 330/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 340/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 350/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 360/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 370/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 380/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 390/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 400/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 410/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 420/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 430/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 440/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 450/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 460/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 470/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 480/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 490/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 500/510 (0 errors)
+run [gemini-3.7-flash/scaffold]: 510/510 (0 errors)
+run: wrote uplift-results/sweep/results-gemini-3.7-flash-t0-scaffold.jsonl (510 rows, 0 errors)
+score: gemini-3.7-flash/raw -> uplift-results/sweep/scores-gemini-3.7-flash-t0-raw.jsonl
+{
+  "model": "gemini-3.7-flash",
+  "mode": "raw",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.3749021568627451,
+  "mean_recall_engaged_only": null,
+  "n_engaged": 0,
+  "engagement_rate": 0.0,
+  "mean_extra_recall": 0.17005697674418604,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.037091503267973856,
+  "recall_gain_over_exposure": 0.3378,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 0.0,
+  "mean_latency_ms": 2473.7427450980394,
+  "per_domain_mean_recall": {
+    "ai": 0.4747628571428572,
+    "artificial-intelligence": 0.2754638888888889,
+    "blockchain": 0.3745631578947368,
+    "data": 0.346928947368421,
+    "distributed-collaboration": 0.18809428571428569,
+    "distributed-systems": 0.40095142857142857,
+    "finance": 0.39864864864864863,
+    "governance": 0.47988620689655176,
+    "infrastructure": 0.3555527777777778,
+    "machine-learning": 0.3629064516129032,
+    "metaverse": 0.4333291666666667,
+    "robotics": 0.371353125,
+    "security": 0.4460794117647059,
+    "spatial-computing": 0.28288648648648645,
+    "standards": 0.48484848484848486
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 0.28888888888888886,
+    "T-REL": 0.3667838596491228,
+    "T-TAX": 0.40925944444444445
+  }
+}
+score: gemini-3.7-flash/scaffold -> uplift-results/sweep/scores-gemini-3.7-flash-t0-scaffold.jsonl
+{
+  "model": "gemini-3.7-flash",
+  "mode": "scaffold",
+  "n": 510,
+  "n_scored": 510,
+  "n_errors": 0,
+  "mean_recall": 0.9422550980392157,
+  "mean_recall_engaged_only": 0.9422550980392157,
+  "n_engaged": 510,
+  "engagement_rate": 1.0,
+  "mean_extra_recall": 1.0,
+  "n_extra_scored": 172,
+  "mean_gold_exposed_recall": 0.9644771241830066,
+  "recall_gain_over_exposure": -0.0222,
+  "n_truncated_finish_length": 0,
+  "n_with_retries_gt1": 0,
+  "judge_mean": null,
+  "n_judged": 0,
+  "n_judge_failures": 0,
+  "mean_injected_tokens": 1342.7196078431373,
+  "mean_latency_ms": 1508.1819607843138,
+  "per_domain_mean_recall": {
+    "ai": 0.8890485714285715,
+    "artificial-intelligence": 0.9430555555555556,
+    "blockchain": 0.9631578947368421,
+    "data": 0.9083342105263158,
+    "distributed-collaboration": 0.94762,
+    "distributed-systems": 0.9457142857142857,
+    "finance": 0.9572081081081081,
+    "governance": 0.9482758620689655,
+    "infrastructure": 0.963888888888889,
+    "machine-learning": 0.95,
+    "metaverse": 0.9416666666666668,
+    "robotics": 0.911978125,
+    "security": 0.9161764705882353,
+    "spatial-computing": 0.9689189189189189,
+    "standards": 0.9772727272727273
+  },
+  "per_template_mean_recall": {
+    "T-COMMON": 1.0,
+    "T-REL": 0.8984214035087719,
+    "T-TAX": 0.9972222222222222
+  }
+}
+[13:14:09] gemini-3.7-flash-t0 DONE

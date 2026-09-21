@@ -1,0 +1,1141 @@
+[
+  {
+    "id": "q0003",
+    "domain": "ai",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Affective Computing? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Human Computer Interaction"
+    ]
+  },
+  {
+    "id": "q0009",
+    "domain": "ai",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Automated Reasoning? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Reasoning"
+    ]
+  },
+  {
+    "id": "q0010",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What does Autonomous Behavior enable?",
+    "gold_titles": [
+      "Autonomous Agent",
+      "Autonomous Task Execution",
+      "Swarm Intelligence",
+      "Multi-Agent Systems"
+    ]
+  },
+  {
+    "id": "q0025",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Mapping?",
+    "gold_titles": [
+      "Semantic Mapping",
+      "Topological Map"
+    ]
+  },
+  {
+    "id": "q0030",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What does Signal Processing use?",
+    "gold_titles": [
+      "Fast Fourier Transform",
+      "Wavelet Transform",
+      "Kalman Filter",
+      "Compressed Sensing"
+    ]
+  },
+  {
+    "id": "q0035",
+    "domain": "ai",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Signal Processing and Treatment Planning both fall under?",
+    "gold_titles": [
+      "Artificial Intelligence"
+    ]
+  },
+  {
+    "id": "q0038",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does Dialogue Systems enable?",
+    "gold_titles": [
+      "Customer Support Automation",
+      "Chatbot",
+      "Virtual Assistant",
+      "Question Answering"
+    ]
+  },
+  {
+    "id": "q0042",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Edge AI Accelerators?",
+    "gold_titles": [
+      "NPU",
+      "TPU",
+      "FPGA",
+      "GPU Compute"
+    ]
+  },
+  {
+    "id": "q0043",
+    "domain": "artificial-intelligence",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Edge AI Accelerators? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "AI Infrastructure"
+    ]
+  },
+  {
+    "id": "q0045",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does Edge AI Security require?",
+    "gold_titles": [
+      "Adversarial Robustness",
+      "Hardware Security Module",
+      "Federated Learning"
+    ]
+  },
+  {
+    "id": "q0050",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does Model Width depend on?",
+    "gold_titles": [
+      "Transformer",
+      "Hyperparameter"
+    ]
+  },
+  {
+    "id": "q0055",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does Retrieval-Augmented Generation require?",
+    "gold_titles": [
+      "Vector Database",
+      "Embedding Model",
+      "Chunking",
+      "Nearest Neighbor Search"
+    ]
+  },
+  {
+    "id": "q0074",
+    "domain": "blockchain",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Across Protocol? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Cross-Chain Bridge"
+    ]
+  },
+  {
+    "id": "q0078",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Chainlink Oracles enable?",
+    "gold_titles": [
+      "Decentralized Finance (DeFi)",
+      "Smart Contract",
+      "Cross-Chain Interoperability"
+    ]
+  },
+  {
+    "id": "q0086",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Financial Reporting require?",
+    "gold_titles": [
+      "Compliance",
+      "Regulatory Compliance",
+      "Audit"
+    ]
+  },
+  {
+    "id": "q0087",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Financial Reporting enable?",
+    "gold_titles": [
+      "Transparency",
+      "Treasury Management"
+    ]
+  },
+  {
+    "id": "q0090",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does ISO 22739 require?",
+    "gold_titles": [
+      "Distributed Ledger Technology",
+      "Cryptographic Hash Function"
+    ]
+  },
+  {
+    "id": "q0109",
+    "domain": "blockchain",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Curve and Eclair both fall under?",
+    "gold_titles": [
+      "Blockchain"
+    ]
+  },
+  {
+    "id": "q0123",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Event Streaming require?",
+    "gold_titles": [
+      "Message Broker",
+      "Distributed Storage",
+      "Serialisation Format"
+    ]
+  },
+  {
+    "id": "q0125",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Linked Data use?",
+    "gold_titles": [
+      "JSON-LD",
+      "SPARQL",
+      "Turtle",
+      "OWL",
+      "Schema.org"
+    ]
+  },
+  {
+    "id": "q0129",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Metadata use?",
+    "gold_titles": [
+      "Data Schema",
+      "Data Standards",
+      "Controlled Vocabulary",
+      "RDF"
+    ]
+  },
+  {
+    "id": "q0137",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Schema enable?",
+    "gold_titles": [
+      "Data Validation",
+      "Interoperability"
+    ]
+  },
+  {
+    "id": "q0139",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Usability Testing use?",
+    "gold_titles": [
+      "Quality Assurance",
+      "Software Testing",
+      "Participant Recruitment",
+      "Research Methods"
+    ]
+  },
+  {
+    "id": "q0146",
+    "domain": "data",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Data Integration and Olap both fall under?",
+    "gold_titles": [
+      "Data Management (Infrastructure)",
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0149",
+    "domain": "distributed-collaboration",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Collaboration Platform?",
+    "gold_titles": [
+      "Real Time Messaging",
+      "Video Conferencing",
+      "tc 0002 collaborative document editing",
+      "Workflow Automation"
+    ]
+  },
+  {
+    "id": "q0154",
+    "domain": "distributed-collaboration",
+    "template": "T-REL",
+    "question_natural": "What does Conflict Free Replicated Data Type enable?",
+    "gold_titles": [
+      "Operational Transformation",
+      "State Synchronisation",
+      "Conflict Resolution"
+    ]
+  },
+  {
+    "id": "q0166",
+    "domain": "distributed-collaboration",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Knowledge Sharing? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Content and Assets"
+    ]
+  },
+  {
+    "id": "q0171",
+    "domain": "distributed-collaboration",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Organisational Theory? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Protocol and Infrastructure"
+    ]
+  },
+  {
+    "id": "q0173",
+    "domain": "distributed-collaboration",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of STUN and TURN? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Protocol and Infrastructure"
+    ]
+  },
+  {
+    "id": "q0174",
+    "domain": "distributed-collaboration",
+    "template": "T-REL",
+    "question_natural": "What does Teleoperation Systems use?",
+    "gold_titles": [
+      "Feedback Control",
+      "Actuator",
+      "Human Robot Interaction"
+    ]
+  },
+  {
+    "id": "q0188",
+    "domain": "distributed-systems",
+    "template": "T-REL",
+    "question_natural": "What does Decentralisation enable?",
+    "gold_titles": [
+      "Decentralised Finance",
+      "Decentralised Identity",
+      "Censorship Resistance",
+      "Permissionless Innovation"
+    ]
+  },
+  {
+    "id": "q0190",
+    "domain": "distributed-systems",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Decentralisation? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Governance Framework"
+    ]
+  },
+  {
+    "id": "q0192",
+    "domain": "distributed-systems",
+    "template": "T-REL",
+    "question_natural": "What does Distributed Hash Table require?",
+    "gold_titles": [
+      "Hash Function",
+      "Consistent Hashing",
+      "Node"
+    ]
+  },
+  {
+    "id": "q0205",
+    "domain": "distributed-systems",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Partial Synchrony? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Consensus Protocol"
+    ]
+  },
+  {
+    "id": "q0208",
+    "domain": "distributed-systems",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Real Time Collaboration? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Distributed Collaboration",
+      "Synchronous Collaboration"
+    ]
+  },
+  {
+    "id": "q0211",
+    "domain": "distributed-systems",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of State Machine Replication? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Distributed Computing"
+    ]
+  },
+  {
+    "id": "q0222",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does Banking enable?",
+    "gold_titles": [
+      "Fintech",
+      "Open Banking"
+    ]
+  },
+  {
+    "id": "q0224",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Cryptocurrency Exchange?",
+    "gold_titles": [
+      "Order Book",
+      "Hot Wallet",
+      "Wallet"
+    ]
+  },
+  {
+    "id": "q0225",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does Cryptocurrency Exchange require?",
+    "gold_titles": [
+      "Custody",
+      "Blockchain"
+    ]
+  },
+  {
+    "id": "q0230",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does FATF enable?",
+    "gold_titles": [
+      "Anti-Money Laundering",
+      "Counter-Terrorist Financing",
+      "Financial Stability"
+    ]
+  },
+  {
+    "id": "q0240",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does Prudential Regulation require?",
+    "gold_titles": [
+      "Risk Assessment",
+      "Regulatory Reporting"
+    ]
+  },
+  {
+    "id": "q0243",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does Sustainable Finance use?",
+    "gold_titles": [
+      "ESG",
+      "EU Taxonomy",
+      "TCFD",
+      "IFRS S1"
+    ]
+  },
+  {
+    "id": "q0257",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Compliance? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Governance"
+    ]
+  },
+  {
+    "id": "q0264",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Digital Rights Management? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Content Protection"
+    ]
+  },
+  {
+    "id": "q0267",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of eIDAS? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Regulatory Framework"
+    ]
+  },
+  {
+    "id": "q0270",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Industrial Strategy? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Public Policy"
+    ]
+  },
+  {
+    "id": "q0273",
+    "domain": "governance",
+    "template": "T-REL",
+    "question_natural": "What does NIST AI RMF enable?",
+    "gold_titles": [
+      "AI Risk Management",
+      "Accountability",
+      "Trustworthy AI",
+      "AI Governance Maturity Model"
+    ]
+  },
+  {
+    "id": "q0275",
+    "domain": "governance",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of NIST AI RMF? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "AI Governance Framework"
+    ]
+  },
+  {
+    "id": "q0290",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Energy Management use?",
+    "gold_titles": [
+      "IoT Sensor Network",
+      "Monitoring System",
+      "Digital Twin",
+      "Building Automation",
+      "Predictive Analytics"
+    ]
+  },
+  {
+    "id": "q0292",
+    "domain": "infrastructure",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Energy Management? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Power Management"
+    ]
+  },
+  {
+    "id": "q0294",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Knowledge Artefact Update Cycle use?",
+    "gold_titles": [
+      "Continuous Integration",
+      "Data Lineage"
+    ]
+  },
+  {
+    "id": "q0302",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Over The Air Update require?",
+    "gold_titles": [
+      "Non Volatile Memory",
+      "Firmware"
+    ]
+  },
+  {
+    "id": "q0309",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Resilience enable?",
+    "gold_titles": [
+      "Business Continuity",
+      "High Availability",
+      "Graceful Degradation"
+    ]
+  },
+  {
+    "id": "q0311",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Virtual World Infrastructure enable?",
+    "gold_titles": [
+      "Virtual World",
+      "Virtual Experience",
+      "Digital Twin",
+      "gaming"
+    ]
+  },
+  {
+    "id": "q0327",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Maximum Likelihood Estimation enable?",
+    "gold_titles": [
+      "System Identification",
+      "Generative Model"
+    ]
+  },
+  {
+    "id": "q0332",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Neural Network Text Tokenisation enable?",
+    "gold_titles": [
+      "Large Language Models",
+      "Transformer Architecture",
+      "Text Generation",
+      "Machine Translation",
+      "Text Classification"
+    ]
+  },
+  {
+    "id": "q0339",
+    "domain": "machine-learning",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Principal Component Analysis? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Dimensionality Reduction"
+    ]
+  },
+  {
+    "id": "q0340",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Reinforcement Learning enable?",
+    "gold_titles": [
+      "Autonomous Navigation",
+      "Autonomous Robot",
+      "AI Game Agent",
+      "Recommendation System"
+    ]
+  },
+  {
+    "id": "q0341",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Reinforcement Learning?",
+    "gold_titles": [
+      "Policy Gradient Methods",
+      "Q Learning",
+      "Temporal Difference Learning",
+      "Value Function"
+    ]
+  },
+  {
+    "id": "q0343",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Score Matching require?",
+    "gold_titles": [
+      "Probability Theory",
+      "Statistics"
+    ]
+  },
+  {
+    "id": "q0352",
+    "domain": "metaverse",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of 3D Asset Creation? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Asset Creation"
+    ]
+  },
+  {
+    "id": "q0353",
+    "domain": "metaverse",
+    "template": "T-REL",
+    "question_natural": "What does Cultural Heritage enable?",
+    "gold_titles": [
+      "Virtual Tourism",
+      "Education"
+    ]
+  },
+  {
+    "id": "q0358",
+    "domain": "metaverse",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Melvin Carvalho Decentralised Web Advocate? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Decentralized Identity"
+    ]
+  },
+  {
+    "id": "q0360",
+    "domain": "metaverse",
+    "template": "T-REL",
+    "question_natural": "What does Metaverse Ontology enable?",
+    "gold_titles": [
+      "Metaverse",
+      "Knowledge Graphing",
+      "Cross-Platform Interoperability",
+      "Semantic Web Linked Data Standard"
+    ]
+  },
+  {
+    "id": "q0372",
+    "domain": "metaverse",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Hardware Security and Mastercard both fall under?",
+    "gold_titles": [
+      "Computing and Cloud",
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0374",
+    "domain": "metaverse",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Mastercard and STARK both fall under?",
+    "gold_titles": [
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0378",
+    "domain": "robotics",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Hazard Identification? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Risk Assessment"
+    ]
+  },
+  {
+    "id": "q0383",
+    "domain": "robotics",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Inertia Tensor? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Robot Dynamics"
+    ]
+  },
+  {
+    "id": "q0387",
+    "domain": "robotics",
+    "template": "T-REL",
+    "question_natural": "What does rb 0012 wheeled mobile robot use?",
+    "gold_titles": [
+      "Odometry",
+      "SLAM",
+      "rb 0075 range finder"
+    ]
+  },
+  {
+    "id": "q0389",
+    "domain": "robotics",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of rb 0012 wheeled mobile robot? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Robot Type",
+      "Mobile Robot"
+    ]
+  },
+  {
+    "id": "q0402",
+    "domain": "robotics",
+    "template": "T-REL",
+    "question_natural": "What does Social Navigation use?",
+    "gold_titles": [
+      "Reinforcement Learning",
+      "SLAM",
+      "Sensor Fusion"
+    ]
+  },
+  {
+    "id": "q0406",
+    "domain": "robotics",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Path Planning and Robot Dynamics both fall under?",
+    "gold_titles": [
+      "Robotics"
+    ]
+  },
+  {
+    "id": "q0413",
+    "domain": "security",
+    "template": "T-REL",
+    "question_natural": "What does BLAKE3 use?",
+    "gold_titles": [
+      "Hardware Acceleration",
+      "Cryptographic Primitive"
+    ]
+  },
+  {
+    "id": "q0417",
+    "domain": "security",
+    "template": "T-REL",
+    "question_natural": "What does Digital Onboarding depend on?",
+    "gold_titles": [
+      "Identity Verification",
+      "Compliance"
+    ]
+  },
+  {
+    "id": "q0418",
+    "domain": "security",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Digital Onboarding? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Identity Verification"
+    ]
+  },
+  {
+    "id": "q0428",
+    "domain": "security",
+    "template": "T-REL",
+    "question_natural": "What does Privacy-Preserving Computation depend on?",
+    "gold_titles": [
+      "Zero-Knowledge Proof",
+      "Public Key Infrastructure"
+    ]
+  },
+  {
+    "id": "q0430",
+    "domain": "security",
+    "template": "T-REL",
+    "question_natural": "What does Revocation Registry use?",
+    "gold_titles": [
+      "Cryptographic Proof",
+      "Selective Disclosure",
+      "Cryptographic Accumulator",
+      "Bitstring Status List",
+      "Smart Contract"
+    ]
+  },
+  {
+    "id": "q0440",
+    "domain": "security",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Revocation Registry and WebAuthn both fall under?",
+    "gold_titles": [
+      "Authentication",
+      "Identity and Access Management",
+      "Security and Identity"
+    ]
+  },
+  {
+    "id": "q0445",
+    "domain": "spatial-computing",
+    "template": "T-REL",
+    "question_natural": "What does GPU Driver depend on?",
+    "gold_titles": [
+      "Operating System",
+      "GPU"
+    ]
+  },
+  {
+    "id": "q0451",
+    "domain": "spatial-computing",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Mesh Data?",
+    "gold_titles": [
+      "Vertex Buffer",
+      "Surface Normal"
+    ]
+  },
+  {
+    "id": "q0456",
+    "domain": "spatial-computing",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Content and Assets? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Spatial Computing"
+    ]
+  },
+  {
+    "id": "q0458",
+    "domain": "spatial-computing",
+    "template": "T-REL",
+    "question_natural": "What does Simulation Software enable?",
+    "gold_titles": [
+      "Digital Twin",
+      "Synthetic Data Generation",
+      "Reinforcement Learning"
+    ]
+  },
+  {
+    "id": "q0470",
+    "domain": "spatial-computing",
+    "template": "T-REL",
+    "question_natural": "What does Virtual Wedding require?",
+    "gold_titles": [
+      "Virtual Reality Platform",
+      "Avatar System"
+    ]
+  },
+  {
+    "id": "q0475",
+    "domain": "spatial-computing",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do ETSI_Domain_Virtual_Society and Virtual Wedding both fall under?",
+    "gold_titles": [
+      "Spatial Computing"
+    ]
+  },
+  {
+    "id": "q0495",
+    "domain": "standards",
+    "template": "T-REL",
+    "question_natural": "What does Metadata Standards enable?",
+    "gold_titles": [
+      "Data Interoperability",
+      "Digital Asset Management",
+      "Knowledge Discovery"
+    ]
+  },
+  {
+    "id": "q0498",
+    "domain": "standards",
+    "template": "T-REL",
+    "question_natural": "What does Schema.org enable?",
+    "gold_titles": [
+      "Knowledge Graph",
+      "Semantic Web Linked Data Standard",
+      "Named Entity Recognition"
+    ]
+  },
+  {
+    "id": "q0500",
+    "domain": "standards",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Schema.org? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Linked Data"
+    ]
+  },
+  {
+    "id": "q0502",
+    "domain": "standards",
+    "template": "T-REL",
+    "question_natural": "What does Technical Committee require?",
+    "gold_titles": [
+      "Standards Organization",
+      "Interoperability"
+    ]
+  },
+  {
+    "id": "q0507",
+    "domain": "standards",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of YAML? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Data Serialization"
+    ]
+  },
+  {
+    "id": "q0509",
+    "domain": "standards",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do 3GPP and IETF both fall under?",
+    "gold_titles": [
+      "Legal and Regulatory",
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0033",
+    "domain": "ai",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Affective Computing and Automated Reasoning both fall under?",
+    "gold_titles": [
+      "AI Research Area",
+      "Artificial Intelligence"
+    ]
+  },
+  {
+    "id": "q0001",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What does Affective Computing enable?",
+    "gold_titles": [
+      "Emotion Aware Interaction",
+      "Emotional Analytics Engine",
+      "Cognitive Feedback Interface",
+      "Mental Health Monitoring",
+      "Human Robot Interaction"
+    ]
+  },
+  {
+    "id": "q0069",
+    "domain": "artificial-intelligence",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Encoder Decoder Architecture and Model Width both fall under?",
+    "gold_titles": [
+      "Artificial Intelligence"
+    ]
+  },
+  {
+    "id": "q0036",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does AI Application use?",
+    "gold_titles": [
+      "Machine Learning Discipline",
+      "Deep Learning"
+    ]
+  },
+  {
+    "id": "q0107",
+    "domain": "blockchain",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Across Protocol and Transaction both fall under?",
+    "gold_titles": [
+      "Network Component (Blockchain)",
+      "Blockchain"
+    ]
+  },
+  {
+    "id": "q0072",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Across Protocol depend on?",
+    "gold_titles": [
+      "Ethereum Smart Contract Platform",
+      "Layer 2 Solutions"
+    ]
+  },
+  {
+    "id": "q0145",
+    "domain": "data",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Data Analytics and Linked Data both fall under?",
+    "gold_titles": [
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0110",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Climate Modelling enable?",
+    "gold_titles": [
+      "Carbon Footprint Measurement",
+      "SustainabilityReporting",
+      "Carbon Neutrality Planning",
+      "Climate Risk Assessment"
+    ]
+  },
+  {
+    "id": "q0180",
+    "domain": "distributed-collaboration",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Instant Messaging and Organisational Theory both fall under?",
+    "gold_titles": [
+      "Distributed Collaboration"
+    ]
+  },
+  {
+    "id": "q0148",
+    "domain": "distributed-collaboration",
+    "template": "T-REL",
+    "question_natural": "What does Collaboration Platform enable?",
+    "gold_titles": [
+      "Augmented Reality Collaboration",
+      "Digital Twin Collaboration",
+      "Remote Work",
+      "TC-0080-Team-Coordination"
+    ]
+  },
+  {
+    "id": "q0215",
+    "domain": "distributed-systems",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Decentralisation and Two-Phase Commit both fall under?",
+    "gold_titles": [
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0183",
+    "domain": "distributed-systems",
+    "template": "T-REL",
+    "question_natural": "What does Byzantine Generals Problem depend on?",
+    "gold_titles": [
+      "Fault Tolerance",
+      "Distributed System"
+    ]
+  },
+  {
+    "id": "q0252",
+    "domain": "finance",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Asset Management and Cryptocurrency Exchange both fall under?",
+    "gold_titles": [
+      "Economic Systems",
+      "Platform and Environment",
+      "Spatial Computing"
+    ]
+  },
+  {
+    "id": "q0218",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Asset Management?",
+    "gold_titles": [
+      "Portfolio Management",
+      "Risk Management",
+      "Custody",
+      "performance"
+    ]
+  },
+  {
+    "id": "q0281",
+    "domain": "governance",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Data Residency and eIDAS both fall under?",
+    "gold_titles": [
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0255",
+    "domain": "governance",
+    "template": "T-REL",
+    "question_natural": "What does Compliance require?",
+    "gold_titles": [
+      "Audit",
+      "Risk Assessment",
+      "Audit Trail",
+      "Policy"
+    ]
+  },
+  {
+    "id": "q0317",
+    "domain": "infrastructure",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Chaos Engineering and Phase Transition both fall under?",
+    "gold_titles": [
+      "Software Engineering (Infrastructure)",
+      "Infrastructure"
+    ]
+  },
+  {
+    "id": "q0284",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Chaos Engineering depend on?",
+    "gold_titles": [
+      "Observability",
+      "Monitoring"
+    ]
+  },
+  {
+    "id": "q0348",
+    "domain": "machine-learning",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Calculus and Distributed Inference both fall under?",
+    "gold_titles": [
+      "AI Research Area",
+      "AI Technique",
+      "Artificial Intelligence"
+    ]
+  },
+  {
+    "id": "q0320",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Calculus enable?",
+    "gold_titles": [
+      "Optimisation",
+      "Backpropagation",
+      "Automatic Differentiation",
+      "Stochastic Gradient Descent",
+      "Convex Optimisation"
+    ]
+  }
+]

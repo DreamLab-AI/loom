@@ -1,0 +1,209 @@
+[
+  {
+    "id": "q0025",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "In robotic mapping, maps are conventionally decomposed into three principal representational types, which are the parts of Mapping here: metric maps (exact geometric representations such as occupancy grids or point clouds), topological maps (graphs whose nodes are places and edges are connectivity/traversability), and semantic maps (which add object categories, region labels and higher-level meaning). Hybrid/topometric maps combine these. The corpus's hasPart list (Semantic Mapping, metric-map, Topological Map) matches this standard trichotomy, though the corpus's 'Mapping' umbrella also spans cartographic and data-schema senses.",
+    "cited_sources": [
+      "https://kshitijtiwari.com/all-resources/mobile-robots/robot-mapping/",
+      "https://arxiv.org/html/2501.05750v1",
+      "https://ceur-ws.org/Vol-3919/short26.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "The metric/topological/semantic map trichotomy is well-established robotics knowledge and matches the gold hasPart list. Findability moderate because the corpus's broad 'Mapping' class blends robotics, cartographic and schema senses that no single public source unifies."
+  },
+  {
+    "id": "q0045",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Edge AI security requires hardware-rooted protections (hardware security modules, TPMs, trusted execution environments, secure boot) to guard keys and models on constrained devices, and adversarial robustness (adversarial training, input validation, red-teaming) to harden models against evasion and poisoning attacks. Privacy-preserving/distributed learning such as federated learning is commonly cited as a complementary technique for training on edge data without centralising it. The gold triple (Adversarial Robustness, Hardware Security Module, Federated Learning) is directly supported for the first two and associated for the third.",
+    "cited_sources": [
+      "https://www.blockchain-council.org/edge-ai/edge-ai-security-best-practices-devices-data-models-networks/",
+      "https://arxiv.org/html/2410.05349v1",
+      "https://nvlpubs.nist.gov/nistpubs/ir/2022/NIST.IR.8320.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Adversarial robustness and HSM/hardware security are firmly public as edge-AI-security requirements. Federated learning is a weaker/associative match (a privacy technique rather than a strict security requirement), lowering findability."
+  },
+  {
+    "id": "q0087",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "Financial reporting is widely described as a key pillar of transparency and accountability: standardised financial statements give stakeholders (investors, creditors, regulators) a faithful view of an organisation's position and performance, thereby enabling transparency. Its role in enabling treasury management (cash, liquidity and funding decisions) is a looser, more corpus-specific relation. The gold pair (Transparency, Treasury Management) is strongly supported for the first and plausibly for the second.",
+    "cited_sources": [
+      "https://www.abacademies.org/articles/financial-reporting-a-key-pillar-of-transparency-and-accountability.pdf",
+      "https://rsisinternational.org/journals/ijriss/articles/the-role-of-financial-statement-disclosures-in-enhancing-stakeholder-trust-a-cross-sector-analysis/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "Transparency is a canonical, well-cited outcome of financial reporting. Treasury Management is a weaker link and appears corpus-specific, so findability is moderate."
+  },
+  {
+    "id": "q0137",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "A schema is a formal specification of the structure, types and constraints valid data must satisfy, acting as a contract between data producers and consumers. It therefore enables data validation (checking that instances conform to declared types and constraints) and interoperability (reliable exchange and integration of structured data across heterogeneous systems). This matches the gold pair (Data Validation, Interoperability).",
+    "cited_sources": [
+      "https://docs.confluent.io/platform/current/schema-registry/fundamentals/data-contracts.html",
+      "https://users.soe.ucsc.edu/~kolaitis/talks/bertinorof.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Both enabled outcomes are standard, well-documented properties of data schemas; high public findability."
+  },
+  {
+    "id": "q0171",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "In the corpus, Organisational Theory (framed as the study of structural, behavioural and governance patterns as organisations adopt distributed-collaboration and immersive technologies) sits immediately under 'Protocol and Infrastructure', with the broader ancestor 'Distributed Collaboration'. This is an idiosyncratic placement: in the public literature organisational theory is a branch of management studies / organisation studies / sociology, not a child of protocol or infrastructure. The taxonomic parent asked for is therefore corpus-internal.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Concept is public but the parent classification (Protocol and Infrastructure, under Distributed Collaboration) is a DreamLab-internal grouping with no public counterpart. Answered from ontology_source."
+  },
+  {
+    "id": "q0205",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Partial synchrony (Dwork, Lynch & Stockmeyer, JACM 1988) is a timing model for distributed systems that lies between the fully synchronous and fully asynchronous models: message-delay/relative-speed bounds exist but are unknown, or hold only after an unknown Global Stabilisation Time (GST). Publicly its natural parent is 'distributed-system timing/synchrony model' within distributed computing; it is the standard model used to circumvent FLP impossibility and build fault-tolerant consensus, so the corpus's parent 'Consensus Protocol' (ancestors Protocol and Consensus, Blockchain) is a domain-specific placement rather than the literal public parent.",
+    "cited_sources": [
+      "https://groups.csail.mit.edu/tds/papers/Lynch/jacm88.pdf",
+      "https://www.podc.org/dijkstra/2007-dijkstra-prize/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "The concept is highly public (Dijkstra-Prize paper). But partial synchrony is a system/timing model, not itself a consensus protocol, so the corpus parent is idiosyncratic; I answer the publicly-grounded taxonomy and flag the divergence."
+  },
+  {
+    "id": "q0230",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "The Financial Action Task Force (FATF), an intergovernmental body formed by the G7 in 1989, sets the global standards (its 40 Recommendations plus special recommendations) that enable anti-money laundering (AML) and, since its 2001 mandate expansion, counter-terrorist financing (CFT/counter-terrorism financing). By protecting the integrity of the international financial system against illicit finance it also underpins financial stability. This directly matches the gold triple (Anti-Money Laundering, Counter-Terrorist Financing, Financial Stability).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Financial_Action_Task_Force",
+      "https://www.fatf-gafi.org/content/dam/fatf-gafi/recommendations/FATF%20Recommendations%202012.pdf.coredownload.inline.pdf",
+      "https://home.treasury.gov/policy-issues/terrorism-and-illicit-finance/financial-action-task-force"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Very strong public findability; FATF's AML/CFT purpose and its role in protecting the integrity/stability of the financial system are authoritatively documented."
+  },
+  {
+    "id": "q0270",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Industrial strategy is government intervention that supports or develops particular sectors/technologies to alter the structure of economic activity and drive growth (e.g. the UK's 2017 Industrial Strategy and 2025 Modern Industrial Strategy / Invest 2035). It is a form of public / economic policy, so the corpus's immediate parent 'Public Policy' is publicly well-grounded; broader ancestors are governance/economic-policy frameworks. Matches the gold parent (Public Policy).",
+    "cited_sources": [
+      "https://commonslibrary.parliament.uk/research-briefings/cbp-7682/",
+      "https://www.gov.uk/government/publications/industrial-strategy",
+      "https://researchbriefings.files.parliament.uk/documents/SN06857/SN06857.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Industrial strategy is standardly described as a species of economic/public policy; the parent is publicly verifiable."
+  },
+  {
+    "id": "q0302",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "An over-the-air (OTA) update is the wireless delivery, verification and installation of new firmware/software to a deployed device without physical access. It requires firmware (the update payload and an OTA-capable bootloader) and non-volatile memory (typically on-chip flash, usually partitioned into bootloader plus current/update slots for A/B rollback) to receive, stage and persist the image across power cycles. This matches the gold pair (Non Volatile Memory, Firmware).",
+    "cited_sources": [
+      "https://www.analog.com/en/resources/analog-dialogue/articles/over-the-air-ota-updates-in-embedded-microcontroller-applications.html",
+      "https://infinum.com/blog/iot-embedded-devices-firmware-updates/",
+      "https://digikogu.taltech.ee/et/Download/55cf9d09-f708-4bc5-8093-34c3fc584e32"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Embedded-systems sources consistently identify non-volatile (flash) memory partitioning and firmware/bootloader as prerequisites for OTA; strong public support."
+  },
+  {
+    "id": "q0340",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Reinforcement learning (agents learning policies from reward via trial-and-error) enables autonomous navigation and autonomous robots (locomotion, obstacle avoidance, path following), superhuman game-playing agents (e.g. AlphaGo, Atari/continuous-control), and recommendation systems that optimise long-term user engagement. These are the canonical RL application areas, matching the gold list (Autonomous Navigation, Autonomous Robot, AI Game Agent, Recommendation System).",
+    "cited_sources": [
+      "https://www.mdpi.com/1996-1073/16/3/1512",
+      "https://arxiv.org/html/2510.21758v3",
+      "https://www.tencentcloud.com/techpedia/106681"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "All four enabled applications are widely surveyed as core RL use cases; high public findability."
+  },
+  {
+    "id": "q0360",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "A metaverse ontology is a formal knowledge representation (OWL/RDF/RDFS) of metaverse entities, relationships and properties, providing a shared semantic vocabulary. Publicly, such ontologies (e.g. the academic MetaOntology) are described as enabling cross-platform/semantic interoperability and integration of heterogeneous data via Semantic Web / Linked Data standards, and as underpinning knowledge-graph construction. The corpus's enables list (Metaverse, Knowledge Graphing, Cross-Platform Interoperability, Semantic Web Linked Data Standard) is partly public (interoperability, semantic-web standards) and partly corpus-specific phrasing.",
+    "cited_sources": [
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC9493250/",
+      "https://www.w3.org/2001/sw/BestPractices/OEP/SemInt/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The generic function of a metaverse ontology (interoperability + semantic-web/linked-data enablement) is publicly grounded (MetaOntology, W3C), but this specific named class and its exact enables list (e.g. 'enables Metaverse', 'Knowledge Graphing') are corpus-flavoured; moderate findability."
+  },
+  {
+    "id": "q0389",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "A wheeled mobile robot (WMR) is a ground-based robot that uses wheels for locomotion (differential-drive to omnidirectional/holonomic designs), relying on odometry, SLAM and path planning for autonomous navigation. Its immediate public parent is Mobile Robot, with broader ancestors Robot and Robotics. This matches the gold (parent Mobile Robot; the corpus's additional 'Robot Type' is a meta-classifier layer). The 'rb 0012' prefix is an internal corpus identifier, not a public term.",
+    "cited_sources": [
+      "https://kshitijtiwari.com/all-resources/mobile-robots/robot-mapping/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Wheeled mobile robot as a subclass of mobile robot (a robot) is standard robotics taxonomy and publicly verifiable; only the 'rb 0012' internal ID and the abstract 'Robot Type' meta-parent are corpus-specific."
+  },
+  {
+    "id": "q0428",
+    "stratum": "private",
+    "web_findability": 0.25,
+    "answer": "Privacy-preserving computation is a family of techniques (homomorphic encryption, secure multi-party computation, differential privacy, trusted execution environments, federated learning) that process data without exposing plaintext. In the corpus it is placed under Cryptography and is said to depend on Zero-Knowledge Proof and Public Key Infrastructure. Publicly its foundational dependency is cryptography and key management generally; PKI (for key distribution/trust) is a defensible dependency, but a blanket dependence on zero-knowledge proofs is idiosyncratic (ZKPs are a related privacy primitive, not a prerequisite of HE/SMPC/DP/TEE). Answered from the ontology_source.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "PPC itself is highly public, but the specific dependsOn pair (ZKP + PKI) is a curated relation not established by public sources; ZKP is not generally a dependency of privacy-preserving computation. Treated as private."
+  },
+  {
+    "id": "q0458",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Simulation software constructs and executes computational models of physical/engineered systems (physics engines, agent-based, discrete-event, real-time digital-twin simulators), enabling controlled experimentation without touching the real system. It thereby enables digital twins (high-fidelity virtual replicas), synthetic data generation (labelled training data for perception/ML), and reinforcement learning (safe, GPU-parallel training environments for agents), as exemplified by platforms like NVIDIA Isaac Sim. Matches the gold triple (Digital Twin, Synthetic Data Generation, Reinforcement Learning).",
+    "cited_sources": [
+      "https://docs.isaacsim.omniverse.nvidia.com/4.2.0/index.html",
+      "https://github.com/isaac-sim/IsaacSim",
+      "https://arxiv.org/html/2506.06580v2"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "The digital-twin / synthetic-data / RL-training triad is exactly how modern simulation platforms are described; strong public support."
+  },
+  {
+    "id": "q0502",
+    "stratum": "private",
+    "web_findability": 0.3,
+    "answer": "A technical committee is a chartered working body within a standards organisation (e.g. ISO TCs, IETF working groups) that convenes domain experts to draft, review and reach consensus on standards. Its dependence on a parent standards organisation is publicly evident, so 'requires Standards Organization' is defensible; however 'requires Interoperability' is an idiosyncratic corpus relation (technical committees typically produce/promote interoperability rather than require it as an input). Authored from the ontology_source, which lists requires = Standards Organization, Interoperability.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The concept (a committee inside a standards body) is public, but the specific 'requires' list (esp. Interoperability as a requirement) is a corpus-internal relation not publicly verifiable; treated as private."
+  }
+]

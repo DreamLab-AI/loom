@@ -1,0 +1,4 @@
+usage: harness_arm.py [-h] --questions QUESTIONS [--loom LOOM] --outdir OUTDIR
+                      --models MODELS [--max-tokens MAX_TOKENS]
+                      [--sleep SLEEP]
+harness_arm.py: error: unrecognized arguments: --timeout 120

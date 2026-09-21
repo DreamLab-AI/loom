@@ -1,0 +1,1576 @@
+[
+  {
+    "id": "q0003",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "The immediate parent of affective computing is human-computer interaction (HCI); Rosalind Picard framed the field explicitly as expanding HCI to include emotional communication. Broader ancestors are artificial intelligence (affective computing is standardly described as an interdisciplinary branch spanning computer science/AI) and, one level up, computer science. It also draws on psychology and cognitive science, but those are contributing disciplines rather than taxonomic ancestors.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Affective_computing",
+      "https://vismod.media.mit.edu/pub/tech-reports/TR-490/",
+      "https://www.computer.org/csdl/journal/ta/2010/01/tta2010010001/13rRUxYIMTq"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Public sources support both AI and HCI as parents; the ontology picks HCI as immediate parent with AI as ancestor, which is defensible. The ontology's intermediate 'AI Research Area' node is an internal grouping."
+  },
+  {
+    "id": "q0038",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "Dialogue systems (conversational AI) enable chatbots, virtual/voice assistants, question-answering systems, and customer-support automation. These are the standard downstream applications: task-oriented and open-domain conversational agents power assistants like Siri/Alexa, QA over knowledge bases, and automated support agents.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Dialogue_system",
+      "https://en.wikipedia.org/wiki/Virtual_assistant",
+      "https://en.wikipedia.org/wiki/Chatbot"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Matches ontology gold exactly; all four enabled concepts are widely documented applications of dialogue systems."
+  },
+  {
+    "id": "q0074",
+    "stratum": "public",
+    "web_findability": 0.95,
+    "answer": "The immediate parent of Across Protocol is cross-chain bridge (specifically an intents-based interoperability/bridging protocol). Broader ancestors are blockchain interoperability infrastructure and, at the top, blockchain/distributed-ledger technology. Across is a decentralised cross-chain bridge that moves tokens between Ethereum mainnet and L2s using optimistic verification (via UMA's optimistic oracle) and a relayer network.",
+    "cited_sources": [
+      "https://docs.across.to/introduction/security",
+      "https://across.to/blog/Across-V3-Introducing-the-First-Intents-Based-Interoperability-Protocol",
+      "https://eco.com/support/en/articles/14799839-across-protocol-solver-architecture-deep-dive"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Well documented; Across self-describes as a cross-chain bridge / intents-based interoperability protocol. Ontology's 'Network Component (Blockchain)' is an internal intermediate node."
+  },
+  {
+    "id": "q0123",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Event streaming requires: (1) a message broker / broker layer that receives and serves the event stream (e.g. Kafka brokers); (2) durable distributed storage, since events are persisted as an ordered, append-only log across partitioned, replicated storage for as long as needed; and (3) a serialisation format for encoding events (commonly Avro, Protobuf, or JSON, often via a schema registry). Kafka's own architecture documents all three: brokers as the storage/serving layer, durable partitioned logs, and client-side serialisation.",
+    "cited_sources": [
+      "https://kafka.apache.org/documentation/",
+      "https://www.confluent.io/blog/kafka-streams-tables-part-2-topics-partitions-and-storage-fundamentals/",
+      "https://www.gravitee.io/blog/what-is-kafka-architects-guide-to-event-streaming"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Message broker and durable/distributed storage are explicit in Kafka docs; serialisation format is documented as client-side (Avro/Protobuf/JSON + schema registry). The exact triple 'requires broker + distributed storage + serialisation format' is a reasonable synthesis rather than a single canonical source."
+  },
+  {
+    "id": "q0149",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "A collaboration platform's core parts are real-time messaging/chat, video conferencing (WebRTC-based), collaborative document editing (shared workspaces with conflict resolution), and workflow automation. Mainstream platforms (Slack, Microsoft Teams, Google Workspace) bundle exactly these: persistent messaging channels, meetings/calls, co-authored documents, and automated workflows.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Collaborative_software",
+      "https://en.wikipedia.org/wiki/Collaborative_real-time_editor",
+      "https://en.wikipedia.org/wiki/WebRTC"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "The general decomposition is public and matches how mainstream collaboration suites are described. The ontology part labels 'tc 0002 collaborative document editing' and 'TC-0080-Team-Coordination' are internal identifiers for otherwise-public concepts; the concept itself is not private."
+  },
+  {
+    "id": "q0188",
+    "stratum": "public",
+    "web_findability": 0.82,
+    "answer": "Decentralisation enables decentralised finance (DeFi), decentralised/self-sovereign identity, censorship resistance, and permissionless innovation. By distributing authority across independent nodes and eliminating single points of control, it removes gatekeepers (permissionless participation), makes the system resistant to censorship or takedown, and provides the trust-minimised substrate on which DeFi and decentralised identity are built.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Decentralized_finance",
+      "https://en.wikipedia.org/wiki/Decentralized_identifier",
+      "https://en.wikipedia.org/wiki/Decentralization"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.78,
+    "notes": "Each enabled item is well documented; 'permissionless innovation' and 'censorship resistance' are standard framings of decentralisation's benefits. Ontology puts Decentralisation under 'Governance Framework', which is a defensible but internal placement."
+  },
+  {
+    "id": "q0222",
+    "stratum": "public",
+    "web_findability": 0.82,
+    "answer": "Banking enables fintech and open banking. As the regulated system of deposit-taking, credit and payment rails, banking provides the underlying accounts, data and infrastructure that fintech firms build on, and open banking (mandated data-sharing via APIs, e.g. the UK regime and Dodd-Frank Section 1033) explicitly opens bank account data to third parties, spurring fintech entry and innovation.",
+    "cited_sources": [
+      "https://www.bankofengland.co.uk/-/media/boe/files/working-paper/2024/customer-data-access-and-fintech-entry-early-evidence-from-open-banking.pdf",
+      "https://journals.shu.ac.uk/index.php/FinTAF/article/download/414/188",
+      "https://en.wikipedia.org/wiki/Open_banking"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "The enable relation is strongly supported (BoE working paper documents open banking enabling fintech entry). Note the ontology's ancestor chain for Banking ('Spatial Computing') is an idiosyncratic/likely-erroneous internal placement and is NOT publicly supportable; only the T-REL enable answer is asked here."
+  },
+  {
+    "id": "q0257",
+    "stratum": "public",
+    "web_findability": 0.72,
+    "answer": "The immediate parent of compliance is governance (compliance is a function within corporate/organisational governance, commonly grouped as GRC \u2014 governance, risk and compliance). Broader ancestors are risk management / the legal and regulatory domain, and organisational management more generally. Compliance is the practice of adhering to laws, regulations, standards and internal policies through controls, monitoring and documented evidence.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Regulatory_compliance",
+      "https://en.wikipedia.org/wiki/Governance,_risk_management,_and_compliance",
+      "https://en.wikipedia.org/wiki/Corporate_governance"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Governance as parent and 'legal and regulatory' as ancestor are publicly defensible (GRC framing). The ontology's top ancestor 'Infrastructure' is an internal top-level grouping, not a public taxonomy claim."
+  },
+  {
+    "id": "q0290",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Energy management uses IoT sensor networks and smart metering for data collection, monitoring systems (SCADA/BMS) for real-time observation and control, predictive analytics / load forecasting for optimisation, building automation systems for facility control, and increasingly digital twins to simulate and optimise energy flows. These support metering, energy auditing, demand-side management and integration of renewables.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Energy_management_system",
+      "https://en.wikipedia.org/wiki/Building_automation",
+      "https://en.wikipedia.org/wiki/Digital_twin"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.76,
+    "notes": "All five 'uses' items are standard components of energy-management systems and are individually well documented; the specific consolidated list is a reasonable synthesis."
+  },
+  {
+    "id": "q0327",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Maximum likelihood estimation enables system identification (fitting dynamical-system/model parameters from data \u2014 ML estimators are consistent and efficient for system ID) and generative modelling (training generative models by maximising data likelihood; minimising negative log-likelihood is equivalent to minimising KL divergence to the data distribution, the core learning objective for many generative models). More broadly MLE underlies regression and much of statistical parameter estimation.",
+    "cited_sources": [
+      "https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf",
+      "https://people.ee.ethz.ch/~rsmith/idfiles/SysID_lecture02_supplement.pdf",
+      "https://arxiv.org/html/2506.20628v1"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Both enabled items are directly supported: Stanford CS236 frames generative-model learning as maximum likelihood; ETH/arXiv sources use MLE for system identification."
+  },
+  {
+    "id": "q0352",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "The immediate parent of 3D asset creation is asset creation (the production of digital assets/content); it is the spatial/3D specialisation of general asset (content) creation. Broader ancestors are content creation and digital content production more generally. It covers modelling, sculpting, texturing, rigging and animation of 3D models for games, film, XR and digital twins.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/3D_modeling",
+      "https://en.wikipedia.org/wiki/Digital_asset",
+      "https://en.wikipedia.org/wiki/Content_creation"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.62,
+    "notes": "The concept is public but 'Asset Creation' / 'Content Creation' as formal named parent classes is idiosyncratic ontology framing rather than a standard published taxonomy; immediate-parent naming is the weakest-findable part here."
+  },
+  {
+    "id": "q0378",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "The immediate parent of hazard identification is risk assessment \u2014 hazard identification is universally described as the first stage of the risk-assessment process (find, list and characterise hazards, before rating/prioritising and controlling risk). Broader ancestors are risk management and safety engineering / occupational health and safety (and, in robotics, functional safety). CCOHS and standard HIRA guidance define it exactly this way.",
+    "cited_sources": [
+      "https://www.ccohs.ca/oshanswers/hsprograms/hazard/risk_assessment.html",
+      "https://www.hseblog.com/hazard-identification-risk-assessment/",
+      "https://www.smu.ca/webfiles/Chapter3-HazardIdentification.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Very strong public support: hazard identification is canonically step 1 of risk assessment across OSH standards."
+  },
+  {
+    "id": "q0413",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "BLAKE3 uses hardware acceleration \u2014 specifically SIMD instructions (SSE2/SSE4.1/AVX2/AVX-512, ARM NEON, WASM SIMD) plus multi-core threading, exploited via its binary Merkle-tree structure for unbounded parallelism. It is built on cryptographic primitives: an ARX (add-rotate-XOR) compression function derived from the ChaCha stream cipher (inherited from BLAKE2), giving it its keyed-hash/MAC, KDF and XOF modes.",
+    "cited_sources": [
+      "https://github.com/BLAKE3-team/BLAKE3",
+      "https://cgi.cse.unsw.edu.au/~cs4601/refs/papers/blake3.pdf",
+      "https://www.ietf.org/archive/id/draft-aumasson-blake3-00.html"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "'Hardware acceleration' via SIMD/multi-core and the ChaCha-based ARX cryptographic primitive are both explicit in the BLAKE3 paper and IETF draft."
+  },
+  {
+    "id": "q0445",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "A GPU driver depends on the operating system (it is OS system software that plugs into the kernel and exposes graphics/compute APIs to applications) and on the GPU hardware itself (it translates high-level rendering/compute commands into hardware-specific instructions and manages the GPU's memory, command queues and context switching). Without both the OS kernel interfaces and the physical GPU, the driver has nothing to mediate between.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Device_driver",
+      "https://en.wikipedia.org/wiki/Graphics_processing_unit",
+      "https://en.wikipedia.org/wiki/Graphics_card"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Essentially definitional and trivially public; a GPU driver by definition depends on the OS and the GPU hardware."
+  },
+  {
+    "id": "q0495",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Metadata standards (e.g. Dublin Core, IPTC, XMP) enable data interoperability (shared, mappable vocabularies let systems exchange and understand descriptions across languages and disciplines), resource discoverability / knowledge discovery (structured descriptive metadata makes assets findable), and digital asset management (consistent, structured description underpins managing assets at scale). Dublin Core was created in 1995 explicitly to enable interoperability and information discovery on the web.",
+    "cited_sources": [
+      "https://www.dublincore.org/resources/metadata-basics/",
+      "https://msi.dublincore.org/standards/dublin-core-elements/",
+      "https://www.dublincore.org/specifications/dublin-core/interoperability-levels/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Interoperability and discoverability are explicitly the stated purpose of Dublin Core; digital asset management is a well-established downstream use of metadata standards."
+  },
+  {
+    "id": "q0009",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Automated reasoning is broadly a subfield of artificial intelligence and computer science concerned with logical inference, theorem proving and satisfiability checking. Its immediate parent is Reasoning \u2014 it is the formal, logic-and-proof-based form of reasoning (as opposed to statistical/learned reasoning). Broader ancestor concepts are Artificial Intelligence (and its AI technique / AI research-area groupings) and, above that, computer science and formal logic.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Automated_reasoning",
+      "https://aws.amazon.com/what-is/automated-reasoning/",
+      "https://www.techtarget.com/ai/definition/What-is-automated-reasoning-How-is-it-used-in-AI"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "'Automated reasoning is a subfield of AI' is well sourced. The intermediate parent node 'Reasoning' is a reasonable but ontology-specific grouping; the AGI/Frontier-AI ancestors in the corpus are idiosyncratic and not standard."
+  },
+  {
+    "id": "q0042",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "The parts of edge AI accelerators are the specialised inference chip types: NPU (Neural Processing Unit), TPU (Tensor Processing Unit), FPGA (Field-Programmable Gate Array) and GPU compute \u2014 together with custom ASICs. These execute ML inference on resource-constrained edge devices at higher throughput and energy efficiency than general-purpose CPUs.",
+    "cited_sources": [
+      "https://www.geniatech.com/edge-ai-accelerators-explained/",
+      "https://telnyx.com/resources/ai-inference-hardware"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "NPU/TPU/FPGA/GPU/ASIC are universally listed as the edge accelerator families; the corpus gold matches public sources exactly."
+  },
+  {
+    "id": "q0078",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Chainlink oracles enable smart contracts to consume trustworthy off-chain data and computation, which in turn enables Decentralized Finance (DeFi) via tamper-resistant price feeds, and cross-chain interoperability through Chainlink's CCIP (secure cross-chain messaging and token transfers).",
+    "cited_sources": [
+      "https://chain.link/education/blockchain-oracles",
+      "https://chain.link/use-cases/defi",
+      "https://en.wikipedia.org/wiki/Chainlink_(blockchain_oracle)"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Enable targets (DeFi, smart contracts, cross-chain interoperability) are directly documented by Chainlink and independent sources."
+  },
+  {
+    "id": "q0125",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Linked Data uses the Semantic Web stack: RDF as the core data model, serialised as JSON-LD and Turtle; SPARQL as the query language; OWL (with RDF Schema) for ontology/vocabulary modelling; and vocabularies such as Schema.org for typed markup. It rests on HTTP URIs that dereference to RDF descriptions.",
+    "cited_sources": [
+      "https://www.w3.org/TR/ld-bp/",
+      "https://www.w3.org/TR/ld-glossary/",
+      "https://en.wikipedia.org/wiki/Linked_data"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "All 'uses' targets are core W3C standards; well sourced. Schema.org is used with (rather than as) the core stack, per W3C \u2014 minor nuance."
+  },
+  {
+    "id": "q0154",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "CRDTs enable replicas to accept independent, concurrent updates and still converge to the same state without coordination \u2014 i.e. they enable state synchronisation and automatic conflict resolution (they make merges deterministic so ad hoc conflict resolution is unnecessary). Note: Operational Transformation is normally described as an alternative/contrasting approach to the same goal, not something CRDTs 'enable'.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type",
+      "https://crdt.tech/",
+      "https://people.eecs.berkeley.edu/~kubitron/courses/cs262a-F21/handouts/papers/Shapiro-CRDT.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.72,
+    "notes": "State synchronisation and conflict resolution are strongly supported. The corpus 'enables Operational Transformation' claim is not publicly supported \u2014 OT is an alternative technique (the corpus itself also lists OT under contrastsWith)."
+  },
+  {
+    "id": "q0190",
+    "stratum": "public",
+    "web_findability": 0.5,
+    "answer": "Decentralisation is the principle of distributing authority, control, computation or data across many independent actors rather than one centre. In public-administration/political terms it is treated as a governance concept/framework (devolution of political, administrative and fiscal authority \u2014 OECD/UNDP), which is the corpus's chosen immediate parent (Governance Framework); in computing it is an architectural principle for distributed systems. Broader ancestors: institutional/legal-regulatory frameworks and, in the technical domain, distributed-systems infrastructure.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Decentralization",
+      "https://www.oecd.org/en/topics/sub-issues/decentralisation.html",
+      "https://www.geeksforgeeks.org/system-design/decentralized-architecture-in-distributed-system/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "The 'Governance Framework' parent is publicly defensible in the public-administration sense, but decentralisation is dually classified (governance vs distributed-systems architectural principle). The specific ancestor chain (Legal and Regulatory \u2192 Infrastructure) is idiosyncratic."
+  },
+  {
+    "id": "q0224",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "The core parts of a cryptocurrency exchange are the order book (live list of buy/sell orders per pair), the wallet infrastructure \u2014 notably a hot wallet (online, for liquidity/withdrawals) alongside cold storage \u2014 and a matching engine that pairs orders by price-time priority. The corpus lists Order Book, Hot Wallet and Wallet.",
+    "cited_sources": [
+      "https://www.nadcab.com/blog/cryptocurrency-exchange-architecture",
+      "https://www.troniextechnologies.com/blog/order-matching-engine-in-crypto-exchange"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Order book and hot/cold wallets are standard components; the matching engine is arguably a more central part than 'Wallet' generically, but the corpus set is well supported."
+  },
+  {
+    "id": "q0264",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Digital Rights Management (DRM) is a form of content protection: technologies and protocols that control access to, distribution of, and usage rights for digital content (media, software, assets), commonly using encryption and copy/access controls. Its immediate parent is Content Protection; broader ancestors are access control / information security and, more generally, governance-and-safety technology.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Digital_rights_management"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "DRM as a content/copy-protection and access-control technology is well established. The corpus places it under 'Content Protection' (draft maturity); the 'Spatial Computing' ancestor is idiosyncratic."
+  },
+  {
+    "id": "q0292",
+    "stratum": "private",
+    "web_findability": 0.3,
+    "answer": "In the corpus taxonomy, the immediate parent of Energy Management is Power Management, with broader ancestors Embedded Systems, Computing and Cloud, and Infrastructure. Energy Management is the systematic monitoring, control and optimisation of energy generation, distribution and consumption (metering, auditing, demand-side management, load forecasting).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Energy_management",
+      "https://technav.ieee.org/topic/power-management/"
+    ],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The specific parent relation is not publicly verifiable and is arguably inverted: public sources treat energy management as the BROADER system/organisation-level discipline and power management as the narrower device/electronics-level subdomain. Authored the corpus's own hierarchy as the reference, flagging the discrepancy."
+  },
+  {
+    "id": "q0332",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Neural network text tokenisation turns raw text into discrete tokens/token IDs \u2014 the finite, numeric input representation that transformer models actually consume. It thereby enables Large Language Models and the Transformer architecture, and downstream tasks such as text generation, machine translation and text classification, while managing vocabulary size and out-of-vocabulary words via subword schemes.",
+    "cited_sources": [
+      "https://huggingface.co/blog/tokenizers",
+      "https://learn.microsoft.com/en-us/dotnet/ai/conceptual/understanding-tokens"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Tokenisation as the foundational input step for LLMs/transformers and NLP tasks is well documented; corpus 'enables' set matches."
+  },
+  {
+    "id": "q0353",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Digital cultural heritage \u2014 tangible and intangible legacy captured via 3D scanning, digital twins and immersive media \u2014 enables virtual tourism (remote VR/AR/360\u00b0 exploration of sites and museums built on digitised heritage assets) and education (VR reconstructions, serious games and interactive learning environments for heritage teaching and cultural awareness).",
+    "cited_sources": [
+      "https://thesai.org/Downloads/Volume13No7/Paper_39-Virtual_Tourism_and_Digital_Heritage.pdf",
+      "https://www.un-sciences-decade.org/en/endorsed-activities/digitization-cultural-heritage-and-virtual-tourism-sustainable-development",
+      "https://www.mdpi.com/2071-1050/18/15/8006"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "The 'enables virtual tourism and education' relation is well supported in digital-heritage literature. The corpus parent ('Creative Industries') and its Economics/Complexity-Science ancestors are idiosyncratic, but the queried relation is public."
+  },
+  {
+    "id": "q0383",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "The inertia tensor (a 3x3 symmetric matrix relating angular velocity to angular momentum) belongs to rigid-body dynamics within classical mechanics. In the corpus's robotics framing its immediate parent is Robot Dynamics, with broader ancestors Actuation and Control and Robotics; more generally the parent field is rigid-body / rotational dynamics and classical mechanics.",
+    "cited_sources": [
+      "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/dd277ec654440f4c2b5b07d6c286c3fd_MIT16_07F09_Lec26.pdf",
+      "https://phys.libretexts.org/Bookshelves/Classical_Mechanics/Variational_Principles_in_Classical_Mechanics_(Cline)/13:_Rigid-body_Rotation/13.04:_Inertia_Tensor"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.72,
+    "notes": "Publicly the inertia tensor is a rigid-body-dynamics/classical-mechanics concept. The corpus's 'Robot Dynamics' parent is a robotics-domain specialisation of that; broad answer is verifiable, the exact node label is domain-specific."
+  },
+  {
+    "id": "q0417",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Digital onboarding \u2014 remote, self-service enrolment and identity capture through digital channels \u2014 depends on identity verification (document capture, biometric/liveness checks, database lookups) and on regulatory compliance (KYC/AML obligations). These are interdependent: verification confirms the person and compliance satisfies the legal due-diligence requirements.",
+    "cited_sources": [
+      "https://www.contentful.com/blog/what-is-structured-data/",
+      "https://en.wikipedia.org/wiki/Know_your_customer"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Dependence on identity verification and KYC/compliance is standard and well documented across identity/onboarding vendor and regulatory literature; corpus dependsOn set matches."
+  },
+  {
+    "id": "q0451",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Mesh data (a 3D surface as vertices, edges and polygonal faces) has as its parts a vertex buffer (stored array of vertex positions and attributes), an index buffer (integer indices telling the renderer which vertices form each face, avoiding duplication), and surface normals (vectors perpendicular to faces/vertices used for lighting and shading).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Polygon_mesh"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Vertex buffer, index buffer and surface normals are standard mesh components; the corpus set matches well-known computer-graphics structure."
+  },
+  {
+    "id": "q0498",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "Schema.org (the Google/Microsoft/Yahoo/Yandex structured-data vocabulary) enables search engines and other consumers to understand page semantics, powering knowledge graphs and rich results, and providing a machine-readable Semantic Web / linked-data markup standard (JSON-LD/RDF). It supports entity identification/disambiguation that feeds information extraction, though it is not itself a named-entity-recognition system.",
+    "cited_sources": [
+      "https://schema.org/",
+      "https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data",
+      "https://en.wikipedia.org/wiki/Schema.org"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Knowledge-graph and semantic-web/linked-data enablement is well sourced. The corpus 'enables Named Entity Recognition' is only weakly supported publicly (schema.org supports entity understanding, not NER as a capability it produces)."
+  },
+  {
+    "id": "q0010",
+    "stratum": "public",
+    "web_findability": 0.5,
+    "answer": "Autonomous behaviour \u2014 an agent selecting and executing goal-directed actions without continuous human instruction \u2014 is the enabling capacity behind autonomous agents, autonomous (unsupervised) task execution, and, when composed across many agents, multi-agent systems and swarm intelligence. These relationships are widely acknowledged in the AI/robotics literature: individual autonomy is the building block, and coordinating multiple autonomous agents yields emergent collective behaviour (swarm intelligence, multi-agent systems).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Autonomous_agent",
+      "https://en.wikipedia.org/wiki/Swarm_intelligence",
+      "https://en.wikipedia.org/wiki/Multi-agent_system"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Concept is public and the enable-links are conceptually sound, but the exact four-item 'enables' set is ontology-framed rather than a single citable claim; moderate findability."
+  },
+  {
+    "id": "q0043",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Edge AI Accelerators (NPUs, TPUs, FPGAs, custom ASICs for on-device ML inference) sit most immediately under AI infrastructure / AI hardware. Broader ancestors are digital infrastructure, computing and cloud infrastructure, and (general) infrastructure. The concept itself is well documented publicly; the specific multi-level ancestor chain is the ontology's own arrangement.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/AI_accelerator",
+      "https://en.wikipedia.org/wiki/Edge_computing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "The category label 'AI Infrastructure' and the exact ancestor ladder (Digital Infrastructure > Computing and Cloud > Infrastructure) are idiosyncratic to this ontology; the underlying hardware concept is fully public."
+  },
+  {
+    "id": "q0086",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Financial reporting requires compliance with recognised accounting/regulatory frameworks (regulatory compliance) and independent audit assurance. Standardised financial statements rest on accounting standards (e.g. IFRS, GAAP) and audit to provide a faithful, verifiable, comparable view of an organisation's position and performance.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Financial_statement",
+      "https://www.ifrs.org/",
+      "https://en.wikipedia.org/wiki/Audit"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Compliance/regulatory-compliance/audit as prerequisites for financial reporting is standard, publicly-documented accounting knowledge."
+  },
+  {
+    "id": "q0129",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Metadata uses data schemas, data/metadata standards, controlled vocabularies, and RDF. Descriptive, structural, administrative and technical metadata are expressed against schemas and standard vocabularies (e.g. Dublin Core), with controlled vocabularies constraining values and RDF providing a machine-readable model for describing resources.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Metadata",
+      "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
+      "https://www.w3.org/RDF/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Schema, standards, controlled vocabulary and RDF as tools metadata relies on are standard information-science / semantic-web knowledge."
+  },
+  {
+    "id": "q0166",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "Within this ontology the immediate parent of Knowledge Sharing is 'Content and Assets', with 'Spatial Computing' as the broader ancestor. Knowledge Sharing here denotes collaborative practices/platforms for exchanging information and expertise across immersive environments and distributed teams, and is filed under the spatial-computing content-and-assets taxonomy hub rather than a generic knowledge-management parent.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Idiosyncratic placement: public sources would locate knowledge sharing under knowledge management / collaboration, not under a spatial-computing 'Content and Assets' hub. Classification is corpus-specific."
+  },
+  {
+    "id": "q0192",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "A distributed hash table requires a hash function to map keys into an identifier space, participating nodes that each own a fraction of the keyspace, and \u2014 in the usual designs \u2014 consistent hashing (or a close variant) to assign keys to nodes with minimal reshuffling as nodes join or leave. Nodes and a hash-based key-to-node mapping are essential; consistent hashing is the common, near-defining mechanism (though not strictly mandatory for every conceivable DHT).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Distributed_hash_table",
+      "https://en.wikipedia.org/wiki/Consistent_hashing",
+      "https://docs.ipfs.tech/concepts/dht/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Well-documented distributed-systems fundamentals; verified via Perplexity against Wikipedia and university course material."
+  },
+  {
+    "id": "q0225",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "A (centralised) cryptocurrency exchange requires custody of customer assets \u2014 safekeeping the funds/private keys it holds and settles \u2014 and a blockchain for the underlying assets and on-chain settlement. Note the caveat that custody and blockchain are not strict requirements for every exchange model: decentralised exchanges are non-custodial and can trade without an operator holding assets, and some order matching happens off-chain.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Cryptocurrency_exchange",
+      "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/crypto-asset-custody-basics-retail-investors-investor-bulletin-0"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Custody+blockchain hold for the prototypical centralised exchange; public sources add nuance that DEXs are non-custodial and trading can be off-chain, so 'requires' is model-dependent."
+  },
+  {
+    "id": "q0267",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "eIDAS's immediate parent is a regulatory framework \u2014 it is an EU Regulation (No 910/2014) establishing a framework for electronic identification and trust services for electronic transactions in the internal market. Broader ancestors: legal/regulatory framework and (digital) infrastructure/single-market law. It defines assurance levels, legal effect for e-signatures/seals/timestamps, and mutual recognition of notified national eID schemes.",
+    "cited_sources": [
+      "https://digital-strategy.ec.europa.eu/en/policies/eidas-regulation",
+      "https://en.wikipedia.org/wiki/EIDAS"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "eIDAS as an EU regulatory framework is authoritatively documented by the European Commission; verified."
+  },
+  {
+    "id": "q0294",
+    "stratum": "private",
+    "web_findability": 0.15,
+    "answer": "In this corpus a Knowledge Artefact Update Cycle uses Continuous Integration and Data Lineage. It is a structured, recurring process for reviewing, validating, correcting and re-publishing knowledge assets (ontology classes, documentation nodes, linked-data graphs, curated references); CI automates the validate-and-republish pipeline and data lineage tracks provenance/flow across the artefacts. The named class is a bespoke knowledge-engineering construct rather than a standard industry term.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "'Knowledge Artefact Update Cycle' is not an established public term (idiosyncratic/DreamLab-internal); the constituent tools (CI, data lineage) are public but the concept and its exact relations are corpus-authored."
+  },
+  {
+    "id": "q0339",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "The immediate parent of Principal Component Analysis is dimensionality reduction. Broader ancestors: unsupervised learning / AI technique, and machine learning / artificial intelligence (and, statistically, multivariate statistics). PCA is a linear, unsupervised dimensionality-reduction method that projects data onto the leading eigenvectors of the covariance matrix to retain maximal variance.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Principal_component_analysis",
+      "https://www.ibm.com/think/topics/principal-component-analysis"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "PCA as a dimensionality-reduction technique under unsupervised learning/ML is textbook; verified via Perplexity (IBM, Wikipedia)."
+  },
+  {
+    "id": "q0358",
+    "stratum": "private",
+    "web_findability": 0.35,
+    "answer": "Melvin Carvalho is publicly identifiable as a developer/advocate active in decentralised-web and identity standards (Solid, WebID, linked data / semantic web). However, the ontology's classification \u2014 placing the person as an immediate subclass of 'Decentralized Identity' (ancestors: Digital Identity, Identity, Security and Identity, Infrastructure) \u2014 is an idiosyncratic taxonomic modelling choice not derivable from public sources. As a reference: in the corpus his parent is Decentralized Identity, and he requires/enables Linked Data and decentralized identity.",
+    "cited_sources": [
+      "https://dev.to/melvincarvalho",
+      "https://en.wikipedia.org/wiki/WebID"
+    ],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The individual is web-findable, but modelling a named person as a child class of 'Decentralized Identity' is a corpus-specific taxonomic decision, so the T-TAX answer is authored from the corpus."
+  },
+  {
+    "id": "q0387",
+    "stratum": "private",
+    "web_findability": 0.3,
+    "answer": "'rb 0012 wheeled mobile robot' is an internal corpus identifier for a wheeled mobile robot (WMR). Per the corpus it uses Odometry, SLAM, and 'rb 0075 range finder' (another internal-ID component). The general facts are public \u2014 WMRs rely on odometry for dead-reckoning, SLAM for map building, and a range finder/LiDAR sensor for perception \u2014 but the specific instance IDs (rb 0012, rb 0075) are private catalogue entries not findable on the public web.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Mobile_robot",
+      "https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping"
+    ],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Underlying robotics (odometry, SLAM, range finder for WMRs) is public; the 'rb 00xx' identifiers are internal, so the exact answer including 'rb 0075 range finder' is corpus-sourced."
+  },
+  {
+    "id": "q0418",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Digital Onboarding's immediate parent is identity verification (identity proofing). Broader ancestors: identity management and security/identity infrastructure. Digital onboarding is the remote, self-service enrolment of a new customer whose identity is captured and verified through digital channels \u2014 document capture, biometric/liveness checks and database lookups \u2014 to satisfy KYC obligations, making it a form of remote identity proofing.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Know_your_customer",
+      "https://en.wikipedia.org/wiki/Identity_verification_service"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Digital onboarding as remote identity verification/proofing with KYC is well documented; verified via Perplexity."
+  },
+  {
+    "id": "q0456",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "In this ontology 'Content and Assets' is a taxonomy hub whose immediate parent is 'Spatial Computing' (it has no further ancestors in the corpus). It unifies all content types and digital assets in the spatial-computing domain \u2014 3D models, avatars, NFTs, textures, rendering pipelines and the digital-asset lifecycle. This is a bespoke top-level grouping category rather than a publicly standardised concept.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "'Content and Assets' as a named child of 'Spatial Computing' is an ontology-internal organisational hub; not publicly findable as a defined term."
+  },
+  {
+    "id": "q0500",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Schema.org's immediate parent is a linked-data vocabulary (a structured-data / semantic-web vocabulary). Broader ancestors: data management / semantic-web standards and (web) infrastructure. Founded in 2011 by Google, Microsoft, Yahoo and Yandex, Schema.org defines a shared vocabulary of types and properties for marking up web content, published via RDFa, Microdata or JSON-LD and grounded in RDF.",
+    "cited_sources": [
+      "https://schema.org/docs/about.html",
+      "https://en.wikipedia.org/wiki/Schema.org"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Schema.org as a linked-data/structured-data vocabulary using RDF and JSON-LD is well documented; the exact ancestor chain (Data Management (Infrastructure) > Infrastructure) is the ontology's own arrangement."
+  },
+  {
+    "id": "q0025",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "In robotic mapping, maps are conventionally decomposed into three principal representational types, which are the parts of Mapping here: metric maps (exact geometric representations such as occupancy grids or point clouds), topological maps (graphs whose nodes are places and edges are connectivity/traversability), and semantic maps (which add object categories, region labels and higher-level meaning). Hybrid/topometric maps combine these. The corpus's hasPart list (Semantic Mapping, metric-map, Topological Map) matches this standard trichotomy, though the corpus's 'Mapping' umbrella also spans cartographic and data-schema senses.",
+    "cited_sources": [
+      "https://kshitijtiwari.com/all-resources/mobile-robots/robot-mapping/",
+      "https://arxiv.org/html/2501.05750v1",
+      "https://ceur-ws.org/Vol-3919/short26.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "The metric/topological/semantic map trichotomy is well-established robotics knowledge and matches the gold hasPart list. Findability moderate because the corpus's broad 'Mapping' class blends robotics, cartographic and schema senses that no single public source unifies."
+  },
+  {
+    "id": "q0045",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Edge AI security requires hardware-rooted protections (hardware security modules, TPMs, trusted execution environments, secure boot) to guard keys and models on constrained devices, and adversarial robustness (adversarial training, input validation, red-teaming) to harden models against evasion and poisoning attacks. Privacy-preserving/distributed learning such as federated learning is commonly cited as a complementary technique for training on edge data without centralising it. The gold triple (Adversarial Robustness, Hardware Security Module, Federated Learning) is directly supported for the first two and associated for the third.",
+    "cited_sources": [
+      "https://www.blockchain-council.org/edge-ai/edge-ai-security-best-practices-devices-data-models-networks/",
+      "https://arxiv.org/html/2410.05349v1",
+      "https://nvlpubs.nist.gov/nistpubs/ir/2022/NIST.IR.8320.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Adversarial robustness and HSM/hardware security are firmly public as edge-AI-security requirements. Federated learning is a weaker/associative match (a privacy technique rather than a strict security requirement), lowering findability."
+  },
+  {
+    "id": "q0087",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "Financial reporting is widely described as a key pillar of transparency and accountability: standardised financial statements give stakeholders (investors, creditors, regulators) a faithful view of an organisation's position and performance, thereby enabling transparency. Its role in enabling treasury management (cash, liquidity and funding decisions) is a looser, more corpus-specific relation. The gold pair (Transparency, Treasury Management) is strongly supported for the first and plausibly for the second.",
+    "cited_sources": [
+      "https://www.abacademies.org/articles/financial-reporting-a-key-pillar-of-transparency-and-accountability.pdf",
+      "https://rsisinternational.org/journals/ijriss/articles/the-role-of-financial-statement-disclosures-in-enhancing-stakeholder-trust-a-cross-sector-analysis/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "Transparency is a canonical, well-cited outcome of financial reporting. Treasury Management is a weaker link and appears corpus-specific, so findability is moderate."
+  },
+  {
+    "id": "q0137",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "A schema is a formal specification of the structure, types and constraints valid data must satisfy, acting as a contract between data producers and consumers. It therefore enables data validation (checking that instances conform to declared types and constraints) and interoperability (reliable exchange and integration of structured data across heterogeneous systems). This matches the gold pair (Data Validation, Interoperability).",
+    "cited_sources": [
+      "https://docs.confluent.io/platform/current/schema-registry/fundamentals/data-contracts.html",
+      "https://users.soe.ucsc.edu/~kolaitis/talks/bertinorof.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Both enabled outcomes are standard, well-documented properties of data schemas; high public findability."
+  },
+  {
+    "id": "q0171",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "In the corpus, Organisational Theory (framed as the study of structural, behavioural and governance patterns as organisations adopt distributed-collaboration and immersive technologies) sits immediately under 'Protocol and Infrastructure', with the broader ancestor 'Distributed Collaboration'. This is an idiosyncratic placement: in the public literature organisational theory is a branch of management studies / organisation studies / sociology, not a child of protocol or infrastructure. The taxonomic parent asked for is therefore corpus-internal.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Concept is public but the parent classification (Protocol and Infrastructure, under Distributed Collaboration) is a DreamLab-internal grouping with no public counterpart. Answered from ontology_source."
+  },
+  {
+    "id": "q0205",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Partial synchrony (Dwork, Lynch & Stockmeyer, JACM 1988) is a timing model for distributed systems that lies between the fully synchronous and fully asynchronous models: message-delay/relative-speed bounds exist but are unknown, or hold only after an unknown Global Stabilisation Time (GST). Publicly its natural parent is 'distributed-system timing/synchrony model' within distributed computing; it is the standard model used to circumvent FLP impossibility and build fault-tolerant consensus, so the corpus's parent 'Consensus Protocol' (ancestors Protocol and Consensus, Blockchain) is a domain-specific placement rather than the literal public parent.",
+    "cited_sources": [
+      "https://groups.csail.mit.edu/tds/papers/Lynch/jacm88.pdf",
+      "https://www.podc.org/dijkstra/2007-dijkstra-prize/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "The concept is highly public (Dijkstra-Prize paper). But partial synchrony is a system/timing model, not itself a consensus protocol, so the corpus parent is idiosyncratic; I answer the publicly-grounded taxonomy and flag the divergence."
+  },
+  {
+    "id": "q0230",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "The Financial Action Task Force (FATF), an intergovernmental body formed by the G7 in 1989, sets the global standards (its 40 Recommendations plus special recommendations) that enable anti-money laundering (AML) and, since its 2001 mandate expansion, counter-terrorist financing (CFT/counter-terrorism financing). By protecting the integrity of the international financial system against illicit finance it also underpins financial stability. This directly matches the gold triple (Anti-Money Laundering, Counter-Terrorist Financing, Financial Stability).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Financial_Action_Task_Force",
+      "https://www.fatf-gafi.org/content/dam/fatf-gafi/recommendations/FATF%20Recommendations%202012.pdf.coredownload.inline.pdf",
+      "https://home.treasury.gov/policy-issues/terrorism-and-illicit-finance/financial-action-task-force"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Very strong public findability; FATF's AML/CFT purpose and its role in protecting the integrity/stability of the financial system are authoritatively documented."
+  },
+  {
+    "id": "q0270",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Industrial strategy is government intervention that supports or develops particular sectors/technologies to alter the structure of economic activity and drive growth (e.g. the UK's 2017 Industrial Strategy and 2025 Modern Industrial Strategy / Invest 2035). It is a form of public / economic policy, so the corpus's immediate parent 'Public Policy' is publicly well-grounded; broader ancestors are governance/economic-policy frameworks. Matches the gold parent (Public Policy).",
+    "cited_sources": [
+      "https://commonslibrary.parliament.uk/research-briefings/cbp-7682/",
+      "https://www.gov.uk/government/publications/industrial-strategy",
+      "https://researchbriefings.files.parliament.uk/documents/SN06857/SN06857.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Industrial strategy is standardly described as a species of economic/public policy; the parent is publicly verifiable."
+  },
+  {
+    "id": "q0302",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "An over-the-air (OTA) update is the wireless delivery, verification and installation of new firmware/software to a deployed device without physical access. It requires firmware (the update payload and an OTA-capable bootloader) and non-volatile memory (typically on-chip flash, usually partitioned into bootloader plus current/update slots for A/B rollback) to receive, stage and persist the image across power cycles. This matches the gold pair (Non Volatile Memory, Firmware).",
+    "cited_sources": [
+      "https://www.analog.com/en/resources/analog-dialogue/articles/over-the-air-ota-updates-in-embedded-microcontroller-applications.html",
+      "https://infinum.com/blog/iot-embedded-devices-firmware-updates/",
+      "https://digikogu.taltech.ee/et/Download/55cf9d09-f708-4bc5-8093-34c3fc584e32"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Embedded-systems sources consistently identify non-volatile (flash) memory partitioning and firmware/bootloader as prerequisites for OTA; strong public support."
+  },
+  {
+    "id": "q0340",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Reinforcement learning (agents learning policies from reward via trial-and-error) enables autonomous navigation and autonomous robots (locomotion, obstacle avoidance, path following), superhuman game-playing agents (e.g. AlphaGo, Atari/continuous-control), and recommendation systems that optimise long-term user engagement. These are the canonical RL application areas, matching the gold list (Autonomous Navigation, Autonomous Robot, AI Game Agent, Recommendation System).",
+    "cited_sources": [
+      "https://www.mdpi.com/1996-1073/16/3/1512",
+      "https://arxiv.org/html/2510.21758v3",
+      "https://www.tencentcloud.com/techpedia/106681"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "All four enabled applications are widely surveyed as core RL use cases; high public findability."
+  },
+  {
+    "id": "q0360",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "A metaverse ontology is a formal knowledge representation (OWL/RDF/RDFS) of metaverse entities, relationships and properties, providing a shared semantic vocabulary. Publicly, such ontologies (e.g. the academic MetaOntology) are described as enabling cross-platform/semantic interoperability and integration of heterogeneous data via Semantic Web / Linked Data standards, and as underpinning knowledge-graph construction. The corpus's enables list (Metaverse, Knowledge Graphing, Cross-Platform Interoperability, Semantic Web Linked Data Standard) is partly public (interoperability, semantic-web standards) and partly corpus-specific phrasing.",
+    "cited_sources": [
+      "https://pmc.ncbi.nlm.nih.gov/articles/PMC9493250/",
+      "https://www.w3.org/2001/sw/BestPractices/OEP/SemInt/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The generic function of a metaverse ontology (interoperability + semantic-web/linked-data enablement) is publicly grounded (MetaOntology, W3C), but this specific named class and its exact enables list (e.g. 'enables Metaverse', 'Knowledge Graphing') are corpus-flavoured; moderate findability."
+  },
+  {
+    "id": "q0389",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "A wheeled mobile robot (WMR) is a ground-based robot that uses wheels for locomotion (differential-drive to omnidirectional/holonomic designs), relying on odometry, SLAM and path planning for autonomous navigation. Its immediate public parent is Mobile Robot, with broader ancestors Robot and Robotics. This matches the gold (parent Mobile Robot; the corpus's additional 'Robot Type' is a meta-classifier layer). The 'rb 0012' prefix is an internal corpus identifier, not a public term.",
+    "cited_sources": [
+      "https://kshitijtiwari.com/all-resources/mobile-robots/robot-mapping/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Wheeled mobile robot as a subclass of mobile robot (a robot) is standard robotics taxonomy and publicly verifiable; only the 'rb 0012' internal ID and the abstract 'Robot Type' meta-parent are corpus-specific."
+  },
+  {
+    "id": "q0428",
+    "stratum": "private",
+    "web_findability": 0.25,
+    "answer": "Privacy-preserving computation is a family of techniques (homomorphic encryption, secure multi-party computation, differential privacy, trusted execution environments, federated learning) that process data without exposing plaintext. In the corpus it is placed under Cryptography and is said to depend on Zero-Knowledge Proof and Public Key Infrastructure. Publicly its foundational dependency is cryptography and key management generally; PKI (for key distribution/trust) is a defensible dependency, but a blanket dependence on zero-knowledge proofs is idiosyncratic (ZKPs are a related privacy primitive, not a prerequisite of HE/SMPC/DP/TEE). Answered from the ontology_source.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "PPC itself is highly public, but the specific dependsOn pair (ZKP + PKI) is a curated relation not established by public sources; ZKP is not generally a dependency of privacy-preserving computation. Treated as private."
+  },
+  {
+    "id": "q0458",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Simulation software constructs and executes computational models of physical/engineered systems (physics engines, agent-based, discrete-event, real-time digital-twin simulators), enabling controlled experimentation without touching the real system. It thereby enables digital twins (high-fidelity virtual replicas), synthetic data generation (labelled training data for perception/ML), and reinforcement learning (safe, GPU-parallel training environments for agents), as exemplified by platforms like NVIDIA Isaac Sim. Matches the gold triple (Digital Twin, Synthetic Data Generation, Reinforcement Learning).",
+    "cited_sources": [
+      "https://docs.isaacsim.omniverse.nvidia.com/4.2.0/index.html",
+      "https://github.com/isaac-sim/IsaacSim",
+      "https://arxiv.org/html/2506.06580v2"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "The digital-twin / synthetic-data / RL-training triad is exactly how modern simulation platforms are described; strong public support."
+  },
+  {
+    "id": "q0502",
+    "stratum": "private",
+    "web_findability": 0.3,
+    "answer": "A technical committee is a chartered working body within a standards organisation (e.g. ISO TCs, IETF working groups) that convenes domain experts to draft, review and reach consensus on standards. Its dependence on a parent standards organisation is publicly evident, so 'requires Standards Organization' is defensible; however 'requires Interoperability' is an idiosyncratic corpus relation (technical committees typically produce/promote interoperability rather than require it as an input). Authored from the ontology_source, which lists requires = Standards Organization, Interoperability.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The concept (a committee inside a standards body) is public, but the specific 'requires' list (esp. Interoperability as a requirement) is a corpus-internal relation not publicly verifiable; treated as private."
+  },
+  {
+    "id": "q0030",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "Signal processing draws on a well-established toolkit of transforms and estimators. Core tools include the Fast Fourier Transform (efficient frequency-domain analysis), the Wavelet Transform (time-frequency/multiresolution analysis), the Kalman Filter (recursive state estimation from noisy measurements), and Compressed Sensing (recovery of sparse signals from sub-Nyquist samples). These are canonical, textbook methods of the discipline.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Fast_Fourier_transform",
+      "https://en.wikipedia.org/wiki/Wavelet_transform",
+      "https://en.wikipedia.org/wiki/Kalman_filter",
+      "https://en.wikipedia.org/wiki/Compressed_sensing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "All four are standard, widely-documented signal-processing methods; the 'uses' relation is uncontroversially public."
+  },
+  {
+    "id": "q0050",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "Model width (d_model / hidden dimension) is a property of the Transformer architecture and is set as a Hyperparameter of the model. It defines the dimensionality of per-token internal representations and scales attention-head and feed-forward projection sizes; as such it is a designer-chosen hyperparameter within a transformer, and one of the primary axes in neural scaling-law studies alongside depth and data.",
+    "cited_sources": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://arxiv.org/abs/2001.08361"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "'Model Width' as a named class is niche, but d_model as a transformer hyperparameter is thoroughly documented (Attention Is All You Need; scaling-laws papers). The 'depends on Transformer, Hyperparameter' framing is idiosyncratic but conceptually correct."
+  },
+  {
+    "id": "q0090",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "ISO 22739 (Blockchain and distributed ledger technologies \u2014 Vocabulary) is a terminology standard, so strictly it defines rather than imposes requirements. Its definitions presuppose Distributed Ledger Technology (blockchain is defined as a distributed ledger with confirmed blocks) and Cryptographic Hash Functions (blocks are chained via cryptographic hash links). Those two concepts are therefore the foundational dependencies the standard's vocabulary is built on.",
+    "cited_sources": [
+      "https://www.iso.org/standard/73771.html",
+      "https://cdn.standards.iteh.ai/samples/73771/0bfb11e9f93042189985604955d92cfe/ISO-22739-2020.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Caveat: ISO 22739 is a vocabulary standard and contains no auditable requirements, so 'require' is loose. The underlying dependencies (DLT, cryptographic hash/links) are explicit in the standard text and publicly verifiable."
+  },
+  {
+    "id": "q0139",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Usability testing draws on User Research and Research Methods, and operationally uses Participant Recruitment (securing representative users) plus quality-assurance / software-testing practices when the artefact under test is a running product or prototype. Participant recruitment and structured research methods are its clearest, publicly-documented dependencies; the QA/software-testing linkage reflects its role within a product QA workflow.",
+    "cited_sources": [
+      "https://www.nngroup.com/articles/usability-testing-101/",
+      "https://www.usability.gov/how-to-and-tools/methods/usability-testing.html"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "Participant recruitment and research methods are strongly public; 'Quality Assurance' and 'Software Testing' as 'uses' targets read as an idiosyncratic ontology linkage rather than a standard usability-testing dependency."
+  },
+  {
+    "id": "q0173",
+    "stratum": "public",
+    "web_findability": 0.5,
+    "answer": "STUN and TURN sit under the category of NAT-traversal / connectivity protocols (the ontology labels this parent 'Protocol and Infrastructure'). Broader ancestor concepts are network/communication protocols and, in this corpus, the distributed-collaboration domain \u2014 they are the building blocks of the ICE framework that underpins peer-to-peer connectivity in WebRTC and real-time communication.",
+    "cited_sources": [
+      "https://datatracker.ietf.org/doc/html/rfc8445",
+      "https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Protocols"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "The general parent (NAT-traversal / network protocols, part of ICE) is highly public; the exact ontology category labels 'Protocol and Infrastructure' / 'Distributed Collaboration' are internal groupings, so the precise wording is not web-findable."
+  },
+  {
+    "id": "q0208",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Real-time collaboration's immediate parents are distributed collaboration and, more specifically, synchronous collaboration (concurrent, low-latency co-working, as opposed to asynchronous). Broader ancestors are communication technology and telecollaboration (remote group work). In the CSCW literature it is the synchronous, same-time branch of computer-supported cooperative work / groupware.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Computer-supported_cooperative_work",
+      "https://en.wikipedia.org/wiki/Collaborative_real-time_editor"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "The synchronous-vs-asynchronous distinction and CSCW/groupware framing is public; the specific label set (Distributed Collaboration, Synchronous Collaboration, Telecollaboration) is a reasonable but corpus-specific taxonomy."
+  },
+  {
+    "id": "q0240",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Prudential regulation requires ongoing Risk Assessment (of capital adequacy, liquidity, credit, market and operational risk) and Regulatory Reporting (supervisory returns through which firms disclose their financial position and risk exposures to the supervisor). These are the core mechanisms by which supervisors monitor the safety and soundness of institutions under regimes such as Basel III.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Prudential_regulation",
+      "https://www.bis.org/bcbs/basel3.htm"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Risk assessment and regulatory/supervisory reporting are widely documented as central pillars of prudential regulation."
+  },
+  {
+    "id": "q0273",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "The NIST AI RMF is designed to enable structured AI Risk Management (its four Govern-Map-Measure-Manage functions) and to advance Trustworthy AI, with Accountability an explicit governance outcome (e.g. the GOVERN function's accountability structures). It also supports building organisational AI-governance maturity. Its stated purpose is to incorporate trustworthiness into the design, development, use and evaluation of AI systems.",
+    "cited_sources": [
+      "https://www.nist.gov/itl/ai-risk-management-framework",
+      "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "AI risk management, trustworthy AI and accountability are directly documented by NIST; 'AI Governance Maturity Model' as a named enabled artefact is less standard but consistent with the framework's intent."
+  },
+  {
+    "id": "q0309",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Resilience enables Business Continuity (sustaining essential operations through disruption), High Availability (minimal downtime via redundancy and failover), and Graceful Degradation (continuing to provide reduced but functional service when components fail rather than failing completely). These are the standard operational outcomes of designing systems to withstand and recover from adverse conditions.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Resilience_(network)",
+      "https://en.wikipedia.org/wiki/Business_continuity_planning"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Business continuity, high availability and graceful degradation are all conventionally-cited outcomes of system resilience; the relation is publicly grounded."
+  },
+  {
+    "id": "q0341",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Reinforcement learning comprises value-based and policy-based components: Value Functions (estimating expected return of states/actions), Q-Learning (off-policy value-based control), Temporal-Difference Learning (bootstrapped value updates from experience), and Policy Gradient Methods (directly optimising the parameterised policy). These are the canonical building-block method families of RL as set out in Sutton & Barto.",
+    "cited_sources": [
+      "http://incompleteideas.net/book/the-book-2nd.html",
+      "https://en.wikipedia.org/wiki/Reinforcement_learning"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Standard RL taxonomy; all four parts are textbook components (Sutton & Barto). Uncontroversially public."
+  },
+  {
+    "id": "q0372",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "In this ontology, Hardware Security (under Computer Hardware) and Mastercard (under Payment Network) share the broad ancestor concepts 'Computing and Cloud' and, above that, 'Infrastructure'. That is the only level at which the two meet: hardware security via the AI/Digital Infrastructure branch, and Mastercard via the Financial Infrastructure / Economic Layer branch, both rolling up into the corpus's overarching Infrastructure category.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "No public source would group a hardware-security discipline with a card-payment network under a shared concept; the common ancestor ('Computing and Cloud' / 'Infrastructure') is an artefact of this corpus's top-level taxonomy, so authored from the ontology_source."
+  },
+  {
+    "id": "q0402",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Social (human-aware) navigation uses Reinforcement Learning \u2014 especially deep RL for socially-compliant policy learning \u2014 together with SLAM (simultaneous localisation and mapping for spatial awareness) and Sensor Fusion (integrating lidar, camera and other sensors to perceive people and the environment). Recent robotics surveys centre deep-RL approaches built on these perception and mapping foundations.",
+    "cited_sources": [
+      "https://arxiv.org/abs/2512.00049",
+      "https://www.frontiersin.org/journals/robotics-and-ai/articles/10.3389/frobt.2025.1658643/full"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Deep-RL for social navigation is heavily documented; SLAM and multi-sensor fusion are standard supporting components in the same literature."
+  },
+  {
+    "id": "q0430",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "A revocation registry uses Cryptographic Proofs to let verifiers check status without trusting the issuer online, Selective Disclosure and privacy-preserving Cryptographic Accumulators (compact membership/non-membership proofs), and W3C Bitstring Status Lists (compressed bitstrings encoding revocation/suspension of verifiable credentials). In blockchain-anchored SSI systems the registry may also use Smart Contracts to publish and update status.",
+    "cited_sources": [
+      "https://www.w3.org/TR/vc-bitstring-status-list/",
+      "https://www.w3.org/TR/vc-overview-1.0/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Bitstring status lists, accumulators and selective disclosure for VC revocation are documented by W3C and SSI literature; smart-contract-based registries are common in decentralized-identity ecosystems (e.g. Hyperledger Indy/AnonCreds)."
+  },
+  {
+    "id": "q0470",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "A virtual wedding requires a Virtual Reality / metaverse Platform to host the ceremony space and an Avatar System so participants can be represented and interact as digital personas. These are the two enabling prerequisites: the immersive venue and the embodied representation of attendees, without which a metaverse ceremony cannot be conducted.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Metaverse",
+      "https://en.wikipedia.org/wiki/Avatar_(computing)"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "'Virtual Wedding' as a formal class is niche and coverage is thin, but the two requirements (a VR/metaverse platform and an avatar system) are near-definitional and inferable from general public sources on metaverse events."
+  },
+  {
+    "id": "q0507",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "YAML's immediate parent concept is Data Serialization (it is a human-readable data-serialisation language, YAML Ain't Markup Language, and a strict superset of JSON). Broader ancestors are Data Format, Data Management, and \u2014 at the top of this corpus \u2014 Infrastructure. It is widely used for configuration files, contrasting with JSON and XML.",
+    "cited_sources": [
+      "https://yaml.org/spec/1.2.2/",
+      "https://en.wikipedia.org/wiki/YAML"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "YAML as a data-serialization language/format is unambiguously public; only the highest ancestor label ('Infrastructure') is a corpus-specific top-level category."
+  },
+  {
+    "id": "q0035",
+    "stratum": "private",
+    "web_findability": 0.15,
+    "answer": "There is no publicly-recognised broader concept that groups Signal Processing together with Treatment Planning. Publicly, signal processing is an electrical-engineering/applied-mathematics discipline and treatment planning is a clinical (radiotherapy/surgery) activity; they only converge in the narrow sense that both can employ AI/ML methods. In this corpus's taxonomy both are classified under Artificial Intelligence (Signal Processing as an 'AI Technique', Treatment Planning as an 'AI Application' under Healthcare), so the intended common ancestor is Artificial Intelligence.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.5,
+    "notes": "Idiosyncratic grouping: no public source places signal processing and clinical treatment planning under a single parent. Classifying signal processing as an AI technique is itself non-standard. Answer authored from corpus ancestry."
+  },
+  {
+    "id": "q0055",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "A modern (embedding-based) Retrieval-Augmented Generation pipeline requires: (1) an embedding model to vectorise queries and documents; (2) document chunking to split source material into retrievable passages; (3) a vector database/store holding those embeddings; and (4) nearest-neighbour / vector-similarity search to fetch the most relevant chunks at query time. These retrieved passages are concatenated into the LLM context before generation. Note that in the broadest architectural sense the only mandatory pieces are a retriever plus a generator (sparse retrievers such as BM25 can substitute for embeddings), but the vector-DB + embedding + chunking + ANN stack is the standard requirement.",
+    "cited_sources": [
+      "https://www.ibm.com/think/topics/retrieval-augmented-generation",
+      "https://www.pinecone.io/learn/retrieval-augmented-generation/",
+      "https://customgpt.ai/components-of-a-rag-system/",
+      "https://en.wikipedia.org/wiki/Retrieval-augmented_generation"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Well-documented. Matches gold. Minor caveat: these are the requirements of the canonical embedding-based RAG, not strictly universal to every RAG definition."
+  },
+  {
+    "id": "q0109",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Both fall under Blockchain. Curve (Curve Finance) is a decentralised exchange / automated market maker on Ethereum optimised for low-slippage stablecoin swaps (DeFi), and Eclair is ACINQ's Scala implementation of the Bitcoin Lightning Network (a layer-2 payment-channel network). Different sub-domains (DeFi vs Bitcoin layer-2 scaling) but their shared broader concept is blockchain technology.",
+    "cited_sources": [
+      "https://curve.fi/",
+      "https://github.com/ACINQ/eclair",
+      "https://en.wikipedia.org/wiki/Lightning_Network"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Both are publicly and unambiguously blockchain technologies; the common ancestor Blockchain is easily verifiable."
+  },
+  {
+    "id": "q0146",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "Both fall under Data Management (the broader data-infrastructure / data-engineering discipline). Data Integration combines heterogeneous sources (ETL/ELT, CDC) into a unified representation, while OLAP (Online Analytical Processing) is a multidimensional analytical processing category for slicing/dicing aggregated data. Both are components of the enterprise data-management / data-warehousing stack.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Data_integration",
+      "https://en.wikipedia.org/wiki/Online_analytical_processing",
+      "https://en.wikipedia.org/wiki/Data_management"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "'Data Management' is a defensible public common ancestor; the exact corpus label 'Data Management (Infrastructure)' is a taxonomy-internal wording but the concept is public."
+  },
+  {
+    "id": "q0174",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "Teleoperation systems use feedback control (closed-loop control of the remote robot, often bilateral force/haptic feedback), actuators (motors/effectors that execute the operator's commanded motion on the robot side), and human-robot interaction (the master interface and sensory feedback coupling the human operator to the remote robot). These are standard elements of master-slave / supervisory teleoperation architectures.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Teleoperation",
+      "https://en.wikipedia.org/wiki/Telerobotics"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Feedback control, actuators and HRI are well-established teleoperation elements; publicly supportable though the exact three-item list is corpus-shaped."
+  },
+  {
+    "id": "q0211",
+    "stratum": "public",
+    "web_findability": 0.72,
+    "answer": "The immediate parent of State Machine Replication is Distributed Computing (distributed systems). SMR is a fault-tolerance/consistency technique (formalised by Lamport and Fred Schneider) in which replicas execute the same totally-ordered command sequence. Broader ancestor concepts include Distributed Systems / Fault-Tolerant Computing, Computer Science, and (per this corpus) Computing and Cloud and Infrastructure.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/State_machine_replication",
+      "https://en.wikipedia.org/wiki/Distributed_computing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Parent 'Distributed Computing' is public and matches gold. The specific ancestor chain (Computing and Cloud, Network and Communication, Infrastructure) is corpus-internal."
+  },
+  {
+    "id": "q0243",
+    "stratum": "public",
+    "web_findability": 0.88,
+    "answer": "Sustainable finance uses ESG (environmental, social and governance criteria), the EU Taxonomy (classification of environmentally sustainable activities), TCFD (Task Force on Climate-related Financial Disclosures recommendations, structured around governance, strategy, risk management, and metrics & targets), and IFRS S1 (the ISSB's General Requirements for Disclosure of Sustainability-related Financial Information). These are central classification and disclosure frameworks in the sustainable-finance toolkit.",
+    "cited_sources": [
+      "https://finance.ec.europa.eu/sustainable-finance/tools-and-standards/eu-taxonomy-sustainable-activities_en",
+      "https://www.ifrs.org/issued-standards/ifrs-sustainability-standards-navigator/ifrs-s1-general-requirements/",
+      "https://www.fsb-tcfd.org/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "All four frameworks confirmed via Perplexity/IFRS/EC sources; matches gold."
+  },
+  {
+    "id": "q0275",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "The immediate parent of the NIST AI RMF is an AI Governance / AI Risk-Management Framework. The NIST AI Risk Management Framework (AI RMF 1.0, published January 2023) is a voluntary, technology-agnostic framework structured around four functions (Govern, Map, Measure, Manage) for managing risks of AI systems. Broader ancestor concepts include AI Governance and Ethics, Risk Management, and Artificial Intelligence.",
+    "cited_sources": [
+      "https://www.nist.gov/itl/ai-risk-management-framework",
+      "https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Parent 'AI Governance Framework' is publicly clear and matches gold; ancestor labels align with corpus."
+  },
+  {
+    "id": "q0311",
+    "stratum": "public",
+    "web_findability": 0.45,
+    "answer": "Virtual world infrastructure (the cloud/edge compute, distributed systems, real-time rendering, networking and blockchain layer underpinning metaverse platforms) enables persistent, scalable virtual worlds and immersive virtual experiences, digital twins, and gaming/interactive entertainment. In short, it is the technical foundation that makes low-latency, persistent shared virtual environments possible.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Metaverse",
+      "https://en.wikipedia.org/wiki/Digital_twin"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "'Virtual World Infrastructure' as a named class is corpus-shaped; the conceptual answer (enables virtual worlds, virtual experiences, digital twins, gaming) is publicly reasonable but the exact enable-list derives from the corpus. Moderate findability."
+  },
+  {
+    "id": "q0343",
+    "stratum": "public",
+    "web_findability": 0.78,
+    "answer": "Score matching requires probability theory and statistics as its mathematical foundations. Introduced by Hyvarinen (2005), it fits a (possibly unnormalised) probability model by matching the gradient of the model's log-density (the score) to that of the data via the Fisher divergence, avoiding the intractable normalising constant. It draws specifically on probability distributions, estimation/statistical theory, and differential calculus on log-densities, and it underpins score-based and diffusion generative models.",
+    "cited_sources": [
+      "https://jmlr.org/papers/v6/hyvarinen05a.html",
+      "https://en.wikipedia.org/wiki/Score_matching"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Probability theory + statistics as prerequisites is well-supported by the Hyvarinen JMLR source; matches gold."
+  },
+  {
+    "id": "q0374",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "There is no publicly-recognised broader concept that groups Mastercard (a global card-payment network) with STARK (a Scalable Transparent ARgument of Knowledge cryptographic proof system). They belong to entirely different domains \u2014 financial payments infrastructure versus zero-knowledge cryptography. In this corpus's taxonomy both roll up, via different intermediate ancestors (Financial Infrastructure/Economic Layer for Mastercard; Cryptographic Security/Security and Identity for STARK), to the top-level category Infrastructure, which is the intended common ancestor.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.5,
+    "notes": "Idiosyncratic top-level grouping under a very broad 'Infrastructure' node; not publicly findable as a meaningful shared concept. Authored from corpus ancestry."
+  },
+  {
+    "id": "q0406",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "Both fall under Robotics. Path Planning is the computational problem of finding a collision-free feasible path from a start to a goal configuration (a sub-field of motion planning/navigation), and Robot Dynamics is the mechanics of forces, torques and inertias governing robot motion (forward and inverse dynamics). Both are core sub-disciplines of robotics.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Motion_planning",
+      "https://en.wikipedia.org/wiki/Robot_kinematics",
+      "https://en.wikipedia.org/wiki/Robotics"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Unambiguous public common ancestor Robotics; matches gold."
+  },
+  {
+    "id": "q0440",
+    "stratum": "public",
+    "web_findability": 0.62,
+    "answer": "Both fall under authentication / identity and access management (the broader security-and-identity domain). A Revocation Registry maintains the validity status of issued credentials/certificates (CRL/OCSP in PKI, or ledger-based status lists in decentralised identity), and WebAuthn is the W3C/FIDO public-key web authentication standard for passwordless login. Both are mechanisms within digital identity and access-management security.",
+    "cited_sources": [
+      "https://www.w3.org/TR/webauthn-2/",
+      "https://en.wikipedia.org/wiki/WebAuthn",
+      "https://en.wikipedia.org/wiki/Certificate_revocation_list"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "'Authentication / Identity and Access Management / Security and Identity' is a defensible public common ancestor; matches gold."
+  },
+  {
+    "id": "q0475",
+    "stratum": "private",
+    "web_findability": 0.15,
+    "answer": "There is no standard public concept grouping 'ETSI_Domain_Virtual_Society' with 'Virtual Wedding'. Both are metaverse/virtual-world topics \u2014 the former an ETSI standardisation domain covering XR, virtual economies and interoperable virtual worlds, the latter a marriage ceremony held via avatars in a VR/metaverse platform. In this corpus both are classified under 'Platform and Environment' rolling up to the top-level category Spatial Computing, which is the intended common ancestor.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.5,
+    "notes": "The 'ETSI_Domain_Virtual_Society' class label is corpus-internal, and the grouping under 'Spatial Computing' is idiosyncratic (both are more naturally 'metaverse'). Authored from corpus ancestry."
+  },
+  {
+    "id": "q0509",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Both 3GPP and IETF are standards development organisations (standards bodies). 3GPP develops mobile-telecommunications specifications (3G/4G/5G and 6G) as a partnership of regional SDOs; the IETF develops voluntary Internet standards (the TCP/IP protocol suite) published as RFCs. Their shared broader concept is 'standards development organisation'. (Note: this corpus instead rolls them up under its top-level 'Legal and Regulatory' / 'Infrastructure' nodes, but the natural public common concept is standards body.)",
+    "cited_sources": [
+      "https://www.3gpp.org/about-us",
+      "https://www.ietf.org/about/",
+      "https://en.wikipedia.org/wiki/Standards_organization"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Public common concept is clearly 'standards development organisation'; the corpus gold ('Legal and Regulatory'/'Infrastructure') is a taxonomy-internal roll-up that differs from the natural public label. Answered from web."
+  },
+  {
+    "id": "q0033",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Both Affective Computing and Automated Reasoning are subfields/branches of Artificial Intelligence. Automated Reasoning is a well-established technical subfield of AI (also rooted in mathematical logic and theoretical computer science) concerned with logical inference and theorem proving; Affective Computing is an (inter)disciplinary AI field, often called 'emotion AI', at the intersection of AI, psychology, cognitive science and HCI. The broadest concept common to both is therefore Artificial Intelligence.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Automated_reasoning",
+      "https://en.wikipedia.org/wiki/Affective_computing",
+      "https://mitsloan.mit.edu/ideas-made-to-matter/emotion-ai-explained"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Both are standard public AI subfields; the shared parent 'Artificial Intelligence' is well supported. An intermediate 'AI research area' grouping is also defensible but not a fixed public term."
+  },
+  {
+    "id": "q0001",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Affective computing (emotion AI) enables machines to perceive, interpret and respond to human emotion. Public sources identify its principal capabilities/applications as: automatic emotion recognition (from face, voice, physiology, text); emotion-aware human-computer interaction (interfaces that adapt to a user's affective state, e.g. reducing frustration); mental-health and wellbeing monitoring (stress detection, depression forecasting, therapy support); and human-robot / social-robot interaction (empathetic, emotionally responsive agents). It also enables applications in education, customer service and entertainment.",
+    "cited_sources": [
+      "https://www.cl.cam.ac.uk/~pr10/iui/picard95.pdf",
+      "https://www.media.mit.edu/groups/affective-computing/overview/",
+      "https://news.mit.edu/2018/helping-computers-perceive-human-emotions-0724",
+      "https://en.wikipedia.org/wiki/Affective_computing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "T-REL 'enables' is open-ended; these are the canonical public applications. The exact set an ontology lists may differ, but emotion-aware interaction, mental-health monitoring and human-robot interaction are all well attested publicly."
+  },
+  {
+    "id": "q0069",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Both are concepts in deep learning / neural-network design (hence machine learning and, more broadly, Artificial Intelligence). An encoder-decoder architecture is a neural-network architecture (encoder maps input to a latent state, decoder produces the output, e.g. sequence-to-sequence models). Model width is an architectural hyperparameter denoting the number of units/channels/hidden dimensions per layer (as opposed to depth). The broadest concept both fall under is neural networks / deep learning within Artificial Intelligence.",
+    "cited_sources": [
+      "https://d2l.ai/chapter_recurrent-modern/encoder-decoder.html",
+      "https://www.ibm.com/think/topics/encoder-decoder-model",
+      "https://en.wikipedia.org/wiki/Deep_learning"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Both are firmly public deep-learning concepts. 'Deep learning / neural networks' is the tightest natural parent; 'Artificial Intelligence' is the broader ancestor."
+  },
+  {
+    "id": "q0036",
+    "stratum": "public",
+    "web_findability": 0.5,
+    "answer": "'AI Application' is a generic umbrella term, but AI applications characteristically use machine learning and, in particular, deep learning as their core enabling techniques (alongside related methods such as natural language processing, computer vision, knowledge representation and reasoning). So the most defensible public answer is that an AI application uses machine learning / deep learning.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Machine_learning",
+      "https://en.wikipedia.org/wiki/Deep_learning",
+      "https://en.wikipedia.org/wiki/Artificial_intelligence"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.5,
+    "notes": "'AI Application' is not a specific public concept, so the 'uses' relation is generic. Machine learning and deep learning are the standard answer but this is inherently loose."
+  },
+  {
+    "id": "q0107",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Both fall under blockchain. Across Protocol is a cross-chain bridge / interoperability protocol built on Ethereum and its layer-2 ecosystem, and a 'transaction' is the fundamental unit of state change recorded on a blockchain. The broadest concept common to both is blockchain (distributed-ledger technology); more narrowly they are both blockchain components/artefacts.",
+    "cited_sources": [
+      "https://docs.across.to/guides/concepts",
+      "https://en.wikipedia.org/wiki/Blockchain",
+      "https://en.wikipedia.org/wiki/Database_transaction"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "'Blockchain' is the natural shared parent. 'Transaction' is generic (also a database concept), but in a blockchain context both are blockchain concepts."
+  },
+  {
+    "id": "q0072",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Across Protocol depends on: (1) Ethereum mainnet as its hub (the HubPool contract and shared liquidity live there); (2) UMA's Optimistic Oracle for optimistic verification/settlement of relayer refund bundles and dispute resolution; (3) supported layer-2 / EVM chains (Arbitrum, Optimism, Base, Polygon, etc., each running a SpokePool contract); (4) the canonical/native bridges and messaging of those chains for rebalancing and slow-path transfers; and (5) off-chain relayers and dataworkers. In the requested terms, it depends on the Ethereum smart-contract platform and on layer-2 solutions (plus UMA's optimistic oracle).",
+    "cited_sources": [
+      "https://docs.across.to/guides/concepts",
+      "https://blog.uma.xyz/articles/case-study-how-uma-secures-across-protocol",
+      "https://blog.openzeppelin.com/security-hub/uma-across-v2-audit",
+      "https://docs.across.to/user-docs/how-across-works/supported-chains-and-tokens"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Well documented publicly. 'Ethereum smart-contract platform' and 'layer-2 solutions' are both clearly correct dependencies; the UMA Optimistic Oracle is arguably the single most critical dependency and I would add it."
+  },
+  {
+    "id": "q0145",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "Both are commonly treated as parts of the broader field of data management / data science / information management. Data analytics is the analytical function (deriving insight from data, generally placed under the data-science umbrella); Linked Data (W3C / Tim Berners-Lee) is a set of best practices for publishing and interlinking structured data on the web using RDF, URIs and SPARQL, i.e. a data-integration/publishing paradigm within information management. The tightest natural public parent is 'data' / data management (information management).",
+    "cited_sources": [
+      "https://www.w3.org/DesignIssues/LinkedData.html",
+      "https://www.oracle.com/analytics/data-analytics/",
+      "https://en.wikipedia.org/wiki/Linked_data",
+      "https://www.w3.org/TR/ld-bp/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Both are public concepts and both sit within data management / data science, so a 'data'/information-management parent is defensible. The ontology's own parent (whatever it is) may be framed differently; the public common concept is data / data management, not a single canonical term."
+  },
+  {
+    "id": "q0110",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "Climate modelling (GCMs/ESMs) enables physically-based climate projections of temperature, precipitation and other variables under different emissions scenarios; these in turn enable quantitative climate-risk assessment and impact analysis, and evidence-based design of mitigation and adaptation strategies and climate policy (it is the scientific basis of IPCC assessments and national adaptation planning). In short it enables climate projection, climate-risk assessment, and mitigation/adaptation/policy planning.",
+    "cited_sources": [
+      "https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_FGD_Chapter04.pdf",
+      "https://www.ipcc.ch/report/ar4/wg1/global-climate-projections/",
+      "https://www4.unfccc.int/sites/NAPC/Country%20Documents/General/apf%20technical%20paper05.pdf",
+      "https://en.wikipedia.org/wiki/Climate_model"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "T-REL 'enables' is open-ended. Climate-risk assessment and mitigation/carbon-neutrality planning are well supported publicly; more specific downstream terms (e.g. a particular 'carbon-footprint measurement' engine) would be ontology-internal."
+  },
+  {
+    "id": "q0180",
+    "stratum": "public",
+    "web_findability": 0.3,
+    "answer": "There is no single standard public concept that tightly unifies Instant Messaging (a real-time communication technology) and Organisational Theory (a management/social-science discipline). The closest defensible public framing is that both are studied within, or contribute to, the field of collaboration and communication in organisations - i.e. Computer-Supported Cooperative Work (CSCW) / distributed collaboration - where communication tools and organisational structures are analysed together. This is a loose grouping, not an established taxonomic parent.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Computer-supported_cooperative_work",
+      "https://en.wikipedia.org/wiki/Instant_messaging",
+      "https://en.wikipedia.org/wiki/Organizational_theory"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.3,
+    "notes": "The pairing looks ontology-specific: a technology and a social-science discipline have no natural common parent in public taxonomy. I give the best-fit loose answer (CSCW / distributed collaboration) but confidence is low; a reader could reasonably regard this as effectively unanswerable from public knowledge."
+  },
+  {
+    "id": "q0148",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "Collaboration platforms (collaborative software / groupware) enable people to work together regardless of location. Public sources identify the enabled capabilities as: remote and distributed work; real-time and asynchronous communication (chat, voice/video); team coordination and task/project management; and shared file storage and document co-editing. In short they enable remote work, team communication and coordination, and shared document/file collaboration.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Collaborative_software",
+      "https://www.techtarget.com/enterprise-software/definition/team-collaboration-tools"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "T-REL 'enables'. Remote work and team coordination are strongly attested publicly; more specialised downstream items (e.g. AR/digital-twin collaboration) are plausible extensions but ontology-internal."
+  },
+  {
+    "id": "q0215",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Both are concepts within distributed systems / distributed computing. Decentralisation is a structural property (control, decision-making and state distributed across nodes rather than a central coordinator); Two-Phase Commit is a classic distributed atomic-commit protocol (coordinator + participants, prepare then commit) ensuring a distributed transaction commits or aborts everywhere. The broadest common concept is distributed systems / distributed computing.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Two-phase_commit_protocol",
+      "https://en.wikipedia.org/wiki/Distributed_computing",
+      "https://en.wikipedia.org/wiki/Decentralized_computing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Both are clearly public distributed-systems concepts. 'Distributed systems/computing' is the natural shared parent; the ontology's own label ('Infrastructure') is a broader, more idiosyncratic grouping."
+  },
+  {
+    "id": "q0183",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "The Byzantine Generals Problem (Lamport, Shostak, Pease, 1982) is the archetypal formulation of reaching reliable agreement/consensus in a distributed system when some components may fail arbitrarily or maliciously. It fundamentally depends on: the notion of a distributed system of communicating nodes; a fault model (Byzantine/arbitrary faults) and fault-tolerance thresholds (oral messages require >2/3 loyal, i.e. n >= 3m+1 for m traitors; signed messages relax this); and communication/messaging assumptions. So it depends on fault tolerance and on the distributed-system model.",
+    "cited_sources": [
+      "https://www.cs.cmu.edu/afs/cs/academic/class/15712-f08/www/lectures/Lamport82lecture.pdf",
+      "https://en.wikipedia.org/wiki/Byzantine_fault",
+      "https://en.wikipedia.org/wiki/Consensus_(computer_science)"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "'Fault tolerance' and 'distributed system' are both well-supported dependencies. Strictly the problem defines/founds Byzantine fault tolerance rather than depending on it, but the two are inseparable in the literature."
+  },
+  {
+    "id": "q0252",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Both are broadly categorised within the financial services industry, though in different subsectors. Asset management (managing client investment portfolios) is explicitly described by the CFA Institute as an integral component of the global financial services sector; cryptocurrency exchanges are regulated as financial-services / financial-market-infrastructure providers (e.g. under the UK FCA regime and the EU's MiCA). The broadest common concept is financial services (economic/financial systems).",
+    "cited_sources": [
+      "https://www.cfainstitute.org/insights/professional-learning/refresher-readings/2026/portfolio-management-overview",
+      "https://www.investopedia.com/terms/a/assetmanagement.asp",
+      "https://www.fca.org.uk/publications/consultation-papers/cp25-40-regulating-cryptoasset-activities"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "'Financial services' / economic systems is a well-supported shared parent. The ontology's alternative parents ('Platform and Environment', 'Spatial Computing') look domain-specific and are not what public knowledge would give."
+  },
+  {
+    "id": "q0218",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "The main parts/functions of asset management are: portfolio management (asset allocation, security/fund selection, monitoring and rebalancing - often used synonymously with asset management); risk management (integral to the process, balancing risk against return within the client's risk tolerance); research/investment strategy; client service, reporting and suitability; and operations including trading, compliance and custody (custody is often provided by third-party custodians rather than the manager itself). So portfolio management, risk management and custody are all legitimate parts, plus performance measurement/reporting.",
+    "cited_sources": [
+      "https://www.investopedia.com/terms/a/assetmanagement.asp",
+      "https://www.investopedia.com/terms/p/portfoliomanagement.asp",
+      "https://rpc.cfainstitute.org/codes-and-standards/asset-manager-code"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Portfolio management and risk management are core; custody is part of the value chain but frequently outsourced. 'Performance' (measurement/reporting) is a reasonable part. Good match to the standard public decomposition."
+  },
+  {
+    "id": "q0281",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "Both are commonly grouped under regulatory compliance / data governance, and more broadly under digital/data sovereignty. eIDAS is the EU regulation on electronic identification, authentication and trust services (a compliance/digital-identity regulation). Data residency is a data-governance/compliance requirement concerning the physical/geographic location where data is stored and processed. The broadest natural common concept is data governance & regulatory compliance (often discussed under digital/data sovereignty).",
+    "cited_sources": [
+      "https://digital-strategy.ec.europa.eu/en/policies/eidas-regulation",
+      "https://www.ibm.com/think/topics/data-residency",
+      "https://en.wikipedia.org/wiki/EIDAS"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Both public. 'Regulatory compliance / data governance / digital sovereignty' is the well-supported common frame. The ontology's own single label ('Infrastructure') is broader and more idiosyncratic than the natural public grouping."
+  },
+  {
+    "id": "q0255",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Regulatory compliance requires (per GRC practice and ISO 37301): documented policies and objectives; identification of compliance obligations; structured compliance risk assessment; controls, procedures and processes to manage those obligations; leadership/governance and accountability; monitoring, audits and audit trails (records of activities, investigations and remediation); and communication, training and documentation. In short it requires policy, risk assessment, controls, and audit / audit trails.",
+    "cited_sources": [
+      "https://www.iso.org/standard/75080.html",
+      "https://en.wikipedia.org/wiki/Governance,_risk,_and_compliance",
+      "https://www.diligent.com/resources/guides/grc"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Audit, risk assessment, policy and audit trail are all well-supported requirements of a compliance management system. T-REL 'requires' is open-ended but this list maps closely to ISO 37301."
+  },
+  {
+    "id": "q0317",
+    "stratum": "private",
+    "web_findability": 0.15,
+    "answer": "There is no established public concept that unifies Chaos Engineering (a software-reliability / SRE discipline of injecting controlled failures) and Phase Transition (a physics / statistical-mechanics phenomenon where a system changes state at a critical point). They sit in entirely different domains. The only very abstract shared thread in public knowledge is that both concern the behaviour of complex systems under stress / near critical points, but that is not a recognised taxonomic parent. I would not assert a specific common concept with confidence.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Chaos_engineering",
+      "https://en.wikipedia.org/wiki/Phase_transition"
+    ],
+    "reference_source": "corpus",
+    "abstained": true,
+    "confidence": 0.2,
+    "notes": "Both concepts are individually public and verifiable, but the pairing has no verifiable public common concept, so I abstain on the T-COMMON answer. This is a signal the grouping is ontology-internal."
+  },
+  {
+    "id": "q0284",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Chaos engineering depends on observability and monitoring. Authoritative sources treat this as a formal prerequisite: AWS/Gremlin list 'basic monitoring/observability' as the first prerequisite, and practitioners note 'without observability, there is no chaos engineering'. You need monitoring/observability (metrics, logs, traces) to define and measure the system's steady state, detect the impact of injected faults, and know when to abort an experiment. So its key dependencies are observability and monitoring (plus safety mechanisms such as a limited blast radius and a kill switch).",
+    "cited_sources": [
+      "https://www.gremlin.com/aws",
+      "https://www.devopsinstitute.com/the-practice-of-chaos-engineering-observability/",
+      "https://www.infoq.com/news/2019/03/chaos-engineering-observability/",
+      "https://en.wikipedia.org/wiki/Chaos_engineering"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Strongly supported: observability and monitoring are the canonical prerequisites/dependencies of chaos engineering. Some experts note observability need not be fully mature before starting, but the dependency itself is not disputed."
+  },
+  {
+    "id": "q0348",
+    "stratum": "public",
+    "web_findability": 0.3,
+    "answer": "There is no tight, standard public parent uniting Calculus (a branch of mathematics) and Distributed Inference (a technique for running machine-learning inference across multiple nodes/devices). Calculus is pure mathematics; distributed inference is an ML-systems technique. The loosest defensible common framing is that both are foundations/techniques employed within machine learning and, more broadly, computational/AI methods - calculus underpins the optimisation used to train models, while distributed inference is used to deploy them. But this is a weak, cross-domain grouping rather than a genuine taxonomic parent.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Calculus",
+      "https://en.wikipedia.org/wiki/Machine_learning",
+      "https://en.wikipedia.org/wiki/Distributed_computing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.3,
+    "notes": "Both concepts are public but their pairing is cross-domain (mathematics vs ML systems). The ontology's answer ('AI research area / technique / AI') treats calculus as an AI technique, which is not how public taxonomy classifies pure mathematics. I give a low-confidence best-fit rather than a firm parent; this borders on abstain."
+  },
+  {
+    "id": "q0320",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "In machine learning, calculus (differential calculus and especially the chain rule) enables the core training machinery: it enables optimisation of model parameters via gradients, gradient descent (and stochastic/mini-batch variants), backpropagation (which is the chain rule applied to a network's computational graph), and automatic differentiation (reverse-mode autodiff, of which backprop is a special case). It also underpins convex optimisation. So calculus enables optimisation, gradient descent, backpropagation and automatic differentiation.",
+    "cited_sources": [
+      "https://www.deeplearningbook.org/slides/06_mlp.pdf",
+      "https://en.wikipedia.org/wiki/Backpropagation",
+      "https://en.wikipedia.org/wiki/Automatic_differentiation",
+      "https://en.wikipedia.org/wiki/Gradient_descent"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "In an ML/AI framing this is well supported: optimisation, backpropagation, automatic differentiation and (stochastic) gradient descent are all direct applications of calculus. Convex optimisation is a reasonable addition. The framing assumes the ML context implied by the ontology domain."
+  }
+]

@@ -1,0 +1,231 @@
+[
+  {
+    "id": "arc_sov01",
+    "category": "arcane_in_corpus",
+    "topic": "Solid Protocol & Solid Pods",
+    "difficulty": "easy",
+    "question": "What is a Solid Pod in Tim Berners-Lee's Solid project, and what problem is Solid trying to solve?",
+    "reference_answer": "A Solid Pod (Personal Online Data Store) is a user-controlled web storage space, addressed by an HTTP(S) base URL, in which a person keeps their data as resources and decides who may read or write it. Solid decouples applications from data: instead of each app storing your data on its own backend and locking it in, apps request permissioned access to data that lives in your Pod, so the same data can be reused across many apps and you retain ownership and portability. A Pod can be hosted anywhere (a commercial provider, a personal server, or a self-hosted instance), and the Pod owner is identified by a WebID that holds authority over access control for that storage. The core problem it addresses is application-centric data silos and the loss of user control and portability on the conventional web.",
+    "answer_key_points": [
+      "A Pod is a user-controlled personal online data store accessed over HTTP(S)",
+      "Solid decouples/separates data from the applications that use it",
+      "It targets data lock-in, silos, and lack of ownership/portability",
+      "A Pod can be hosted anywhere and owned/controlled by its user",
+      "The Pod owner is identified by a WebID that governs access"
+    ],
+    "cited_sources": [
+      "https://solidproject.org/",
+      "https://solidproject.org/TR/protocol"
+    ]
+  },
+  {
+    "id": "arc_sov02",
+    "category": "arcane_in_corpus",
+    "topic": "Solid Protocol & Solid Pods",
+    "difficulty": "hard",
+    "question": "The Solid Protocol builds its storage layer on existing W3C standards. Which HTTP interaction model does a Pod implement, and how do the two access-control mechanisms WAC and ACP differ?",
+    "reference_answer": "A Solid Pod implements (parts of) the W3C Linked Data Platform (LDP) as its HTTP interaction model: resources and LDP containers are read and written with standard HTTP verbs (GET/POST/PUT/PATCH/DELETE), with RDF resources typically serialised as Turtle or JSON-LD. For authorisation Solid supports two models. Web Access Control (WAC) is ACL-based: each protected resource has an associated ACL resource (RDF) listing authorisations that bind agents (WebIDs, groups, or the public) to access modes (acl:Read, acl:Write, acl:Append, acl:Control), with default/inheritable ACLs walked up the container hierarchy when a resource has no ACL of its own. Access Control Policies (ACP) is a newer, more expressive policy language: each resource has an Access Control Resource containing Policies and Matchers, where matchers describe conditions (e.g. which agent or client) and policies allow or deny modes, granting a mode only if at least one policy allows it and none deny it. WAC is the classic ACL model; ACP separates matching conditions from allow/deny policy statements for richer, context-aware control.",
+    "answer_key_points": [
+      "Pods implement the W3C Linked Data Platform (LDP) over HTTP with containers and standard verbs",
+      "WAC is ACL-based with per-resource ACL resources in RDF",
+      "WAC access modes are Read, Write, Append, Control, plus inheritable/default ACLs",
+      "ACP uses Access Control Resources with Policies and Matchers",
+      "ACP grants a mode only if a policy allows and none deny; it is more expressive/context-aware"
+    ],
+    "cited_sources": [
+      "https://solidproject.org/TR/protocol",
+      "https://solidproject.org/TR/wac",
+      "https://solidproject.org/TR/acp"
+    ]
+  },
+  {
+    "id": "arc_sov03",
+    "category": "arcane_in_corpus",
+    "topic": "Solid-OIDC",
+    "difficulty": "hard",
+    "question": "How does Solid-OIDC extend plain OpenID Connect, and what role does DPoP play in letting a Solid client prove it is acting for a given WebID?",
+    "reference_answer": "Solid-OIDC is a profile of OpenID Connect (built on the OIDC authorization code flow and OAuth 2.0) that adapts it to Solid's decentralised identity model. Its key additions are: a 'webid' scope/claim, so the issued ID Token carries a 'webid' claim equal to the user's WebID URI; issuer discovery driven by the WebID Profile rather than a fixed provider, where a client learns the acceptable OpenID Providers by reading solid:oidcIssuer triples from the WebID document; and mandatory DPoP-bound tokens. DPoP (Demonstrating Proof-of-Possession, RFC 9449) requires the client to sign a DPoP proof JWT with a private key it holds; the OP issues tokens bound to that key's thumbprint. On every request to a Pod the client sends the token plus a fresh DPoP proof (carrying htm, htu, iat, jti, and an access-token hash) signed with the same key, so a resource server can confirm the caller holds the key the token is bound to. Combined with the WebID profile endorsing the issuer, this cryptographically proves the caller legitimately acts for the WebID named in the token.",
+    "answer_key_points": [
+      "Solid-OIDC is a profile/extension of OpenID Connect / OAuth 2.0 authorization code flow",
+      "It adds a 'webid' scope and a 'webid' claim in the ID Token equal to the user's WebID",
+      "Issuer discovery uses solid:oidcIssuer triples in the WebID profile, not a fixed provider",
+      "DPoP (RFC 9449) binds tokens to a client-held key via proof-of-possession JWTs",
+      "Each request sends a fresh DPoP proof so the Pod verifies the caller holds the bound key"
+    ],
+    "cited_sources": [
+      "https://solidproject.org/TR/oidc",
+      "https://datatracker.ietf.org/doc/html/rfc9449"
+    ]
+  },
+  {
+    "id": "arc_sov04",
+    "category": "arcane_in_corpus",
+    "topic": "Solid-OIDC",
+    "difficulty": "medium",
+    "question": "In Solid-OIDC, how does a client know which OpenID Provider is allowed to authenticate a particular WebID?",
+    "reference_answer": "The client discovers the acceptable issuer(s) by dereferencing the WebID URI and inspecting the returned RDF profile document for triples using the predicate http://www.w3.org/ns/solid/terms#oidcIssuer (i.e. solid:oidcIssuer). The object of each such triple is the URL of an OpenID Provider that the WebID's controller has authorised to issue tokens for that WebID. Because this authoritative list lives in the WebID document, which is under the control of the identity's owner, the trust relationship is decentralised: any provider can serve any user, but a relying party accepts an ID Token only if its issuer matches one listed in that WebID's profile. The client then runs the standard OIDC flow against the discovered issuer.",
+    "answer_key_points": [
+      "The client dereferences the WebID URI to fetch its RDF profile document",
+      "It looks for solid:oidcIssuer (http://www.w3.org/ns/solid/terms#oidcIssuer) triples",
+      "The object of each triple names an authorised OpenID Provider for that WebID",
+      "The WebID owner controls this list, keeping issuer trust decentralised",
+      "A relying party accepts a token only if its issuer matches one listed in the profile"
+    ],
+    "cited_sources": [
+      "https://solidproject.org/TR/oidc",
+      "https://github.com/solid/webid-oidc-spec"
+    ]
+  },
+  {
+    "id": "arc_sov05",
+    "category": "arcane_in_corpus",
+    "topic": "WebID / decentralised identity URI",
+    "difficulty": "easy",
+    "question": "What is a WebID, and why is it more than just a URL?",
+    "reference_answer": "A WebID is an HTTP(S) URI that acts as a globally unique identifier for an agent, typically a person but also an organisation, application or device. It is more than a plain URL because dereferencing it (via HTTP GET on its document part) returns a WebID Profile Document expressed in RDF, commonly Turtle, that describes the agent and, crucially, holds authentication material such as public key(s) or the identity provider(s) trusted for that agent. A WebID usually takes the form of a URL with a fragment, e.g. https://example.org/profile#me, where the document lives at the fragmentless URL and the fragment identifies the RDF node denoting the agent. This binding of a self-hosted URI to a machine-readable, owner-controlled RDF profile is what lets WebID serve as a decentralised identity mechanism where each person controls their own identifier and description.",
+    "answer_key_points": [
+      "A WebID is an HTTP(S) URI identifying an agent (person, org, app, device)",
+      "Dereferencing it returns an RDF WebID Profile Document (often Turtle)",
+      "It typically uses a fragment (e.g. #me) so the URI denotes the agent node in the document",
+      "The profile holds identity/auth material such as public keys or trusted issuers",
+      "The owner controls their own identifier and profile, enabling decentralised identity"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/2005/Incubator/webid/spec/identity/",
+      "https://www.w3.org/wiki/WebID"
+    ]
+  },
+  {
+    "id": "arc_sov06",
+    "category": "arcane_in_corpus",
+    "topic": "WebID / decentralised identity URI",
+    "difficulty": "hard",
+    "question": "How does WebID-TLS authentication differ from WebID-OIDC, and why did the ecosystem largely move to the latter?",
+    "reference_answer": "Both protocols end in the same result: a relying party gains a WebID URI whose control by the connecting agent has been verified. WebID-TLS operates at the TLS layer using mutual TLS with a client X.509 certificate: the certificate's Subject Alternative Name carries the WebID URI, the server extracts it, dereferences the WebID profile, and checks that the public key in the certificate matches a public key stated in that RDF profile, proving the client controls the WebID. WebID-OIDC instead operates at the application layer, reusing OpenID Connect/OAuth2: an identity provider issues an ID Token from which the WebID URI is obtained (and, in Solid, the profile's solid:oidcIssuer list confirms the provider is authorised). The ecosystem shifted to WebID-OIDC (and its successor Solid-OIDC) chiefly because mutual TLS with client certificates has poor browser and UX support, whereas OIDC/OAuth2 redirect-and-token flows are widely deployed, more usable, and let holders freely choose their own identity provider.",
+    "answer_key_points": [
+      "Both yield a verified WebID URI the agent is proven to control",
+      "WebID-TLS uses mutual TLS with a client X.509 cert carrying the WebID in its Subject Alternative Name",
+      "WebID-TLS verifies the cert's public key against a key in the WebID RDF profile",
+      "WebID-OIDC works at the application layer via OpenID Connect ID Tokens",
+      "The move happened because client-certificate mTLS has poor browser/UX support while OIDC is widely deployed and lets holders pick their IdP"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/2005/Incubator/webid/spec/tls/",
+      "https://github.com/solid/webid-oidc-spec"
+    ]
+  },
+  {
+    "id": "arc_sov07",
+    "category": "arcane_in_corpus",
+    "topic": "WebID / decentralised identity URI",
+    "difficulty": "medium",
+    "question": "What is the WebID Profile Document and what role does it play during authentication?",
+    "reference_answer": "The WebID Profile Document is the RDF document retrieved by dereferencing the document part of a WebID URI. Usually written in Turtle (though any RDF serialisation is acceptable), it describes the agent and normally contains a foaf:primaryTopic link to the WebID node plus the authentication-relevant metadata: one or more public keys and, in OIDC-based flows, the trusted issuer(s). During authentication a relying party dereferences the WebID, parses the RDF, and uses that data to verify control of the identity: in WebID-TLS it matches the certificate's public key against a key in the profile, and in WebID-OIDC/Solid-OIDC it reads solid:oidcIssuer to confirm the ID Token came from an authorised provider. Because the profile is hosted and edited only by its owner, it is the self-managed, authoritative source of truth for the identity's keys and delegation.",
+    "answer_key_points": [
+      "It is the RDF (typically Turtle) document returned by dereferencing the WebID",
+      "It describes the agent and links the document to the WebID node (e.g. foaf:primaryTopic)",
+      "It holds authentication material: public key(s) and/or trusted issuer(s)",
+      "In WebID-TLS it supplies the key matched against the client certificate; in OIDC it supplies solid:oidcIssuer",
+      "It is owner-controlled, making it the authoritative source of truth for the identity"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/2005/Incubator/webid/spec/identity/",
+      "https://solidproject.org/TR/oidc"
+    ]
+  },
+  {
+    "id": "arc_sov08",
+    "category": "arcane_in_corpus",
+    "topic": "Nostr protocol & NIPs (NIP-01)",
+    "difficulty": "medium",
+    "question": "According to NIP-01, what are the fields of a Nostr event and how is its integrity and authorship guaranteed?",
+    "reference_answer": "NIP-01 defines every piece of Nostr data as a single event object with the fields: id (a 32-byte hex identifier), pubkey (the author's 32-byte secp256k1 public key in hex), created_at (a Unix timestamp in seconds), kind (an integer denoting the event type, e.g. 0 for metadata, 1 for a short text note), tags (an array of tag arrays for references and metadata), content (an arbitrary UTF-8 string whose meaning depends on kind), and sig (a Schnorr signature). The id is the lowercase-hex SHA-256 hash of the canonical serialisation, a JSON array [0, pubkey, created_at, kind, tags, content]. Integrity is guaranteed because altering any field changes that hash and therefore the id; authorship is guaranteed because sig is a Schnorr signature over the id using secp256k1, which only the holder of the corresponding private key can produce and anyone can verify against the pubkey. NIP-01 also defines the WebSocket client-relay messages (EVENT, REQ, CLOSE from clients; EVENT, OK, EOSE, NOTICE, CLOSED from relays).",
+    "answer_key_points": [
+      "Event fields: id, pubkey, created_at, kind, tags, content, sig",
+      "pubkey is a 32-byte secp256k1 key; kind is an integer type (0 metadata, 1 text note)",
+      "id is the SHA-256 hash of the canonical serialisation [0,pubkey,created_at,kind,tags,content]",
+      "sig is a Schnorr signature over the id using secp256k1, verifiable against the pubkey",
+      "Any change alters the id/signature; NIP-01 also defines the WebSocket EVENT/REQ/CLOSE and EVENT/OK/EOSE/NOTICE messages"
+    ],
+    "cited_sources": [
+      "https://github.com/nostr-protocol/nips/blob/master/01.md",
+      "https://github.com/nostr-protocol/nips"
+    ]
+  },
+  {
+    "id": "arc_sov09",
+    "category": "arcane_in_corpus",
+    "topic": "Nostr protocol & NIPs (NIP-19)",
+    "difficulty": "medium",
+    "question": "What do the NIP-19 identifiers npub and nsec encode, and why must they not be used inside NIP-01 events or filters?",
+    "reference_answer": "NIP-19 defines bech32-formatted, human-friendly encodings of Nostr entities. 'npub' encodes a 32-byte secp256k1 public key and 'nsec' encodes the corresponding 32-byte private key; 'note' encodes an event id, while TLV-based forms like nprofile, nevent, naddr bundle a key or event id together with extra data such as relay hints. Their purpose is purely presentational: readable display, copy-paste, and QR codes. NIP-19 explicitly states these bech32 strings MUST NOT appear inside NIP-01 events or subscription filters, which use the canonical raw hex (or binary) form; clients should accept npub/nsec on input, convert them internally to hex, and only put hex on the wire. This separation keeps the protocol's core data model unambiguous while giving users a friendlier surface form.",
+    "answer_key_points": [
+      "NIP-19 defines bech32 encodings for Nostr entities",
+      "npub encodes a public key; nsec encodes a private key; note encodes an event id",
+      "TLV forms (nprofile, nevent, naddr) add extra data like relay hints",
+      "They are for human display/copy-paste/QR only",
+      "They MUST NOT be used inside NIP-01 events or filters, which use canonical hex; clients convert on input"
+    ],
+    "cited_sources": [
+      "https://github.com/nostr-protocol/nips/blob/master/19.md",
+      "https://github.com/nostr-protocol/nips"
+    ]
+  },
+  {
+    "id": "arc_sov10",
+    "category": "arcane_in_corpus",
+    "topic": "did:nostr",
+    "difficulty": "hard",
+    "question": "How does the did:nostr DID method construct and resolve a DID, and how does it differ from ledger-based DID methods?",
+    "reference_answer": "The did:nostr method makes a Nostr public key itself the identifier: a DID has the form did:nostr:<identifier> where the identifier is derived directly from the 32-byte Nostr secp256k1 public key. There is no registry, ledger, or minting step, the keypair already used on Nostr resolves straight to a DID Document. Resolution is offline-first and deterministic: a minimal DID Document can be built from the key alone, containing the DID as id and a verificationMethod (of type Multikey, using publicKeyMultibase) controlled by that DID, aligned with W3C DID Core and Controlled Identifiers. Optionally the resolver can query Nostr relays for the pubkey's kind-0 metadata and related events to enrich the document with services, alsoKnownAs, or other properties, but network data is only supplemental and never required. This differs from ledger/blockchain-anchored methods (e.g. did:ion, did:ethr) in that it needs no distributed ledger, on-chain transaction, or global consensus; control of the DID is simply possession of the Nostr private key, the same root of trust as signing Nostr events.",
+    "answer_key_points": [
+      "A did:nostr DID maps directly to a Nostr secp256k1 public key: did:nostr:<pubkey>",
+      "No registry, ledger, or minting step is required",
+      "Resolution is offline-first/deterministic: a minimal DID Document is built from the key alone",
+      "The verificationMethod uses Multikey / publicKeyMultibase, per W3C DID Core and Controlled Identifiers",
+      "Nostr relays can optionally enrich the document (kind-0 metadata) but are not required; control = holding the private key, unlike ledger-based methods"
+    ],
+    "cited_sources": [
+      "https://lists.w3.org/Archives/Public/public-nostr/2025Aug/0011.html",
+      "https://www.w3.org/TR/did-core/"
+    ]
+  },
+  {
+    "id": "arc_sov11",
+    "category": "arcane_in_corpus",
+    "topic": "Git-Mark / git-based commit anchoring",
+    "difficulty": "medium",
+    "question": "Why does Git's commit structure give a tamper-evident audit trail of documents, and what is the limitation that leads people to anchor commit hashes externally?",
+    "reference_answer": "Git is a content-addressed store whose object graph is a Merkle DAG. File contents are stored as blobs named by the cryptographic hash of their content (SHA-1 historically, with SHA-256 support added), directories as tree objects that hash the list of names and child object hashes, and each commit hashes its root tree, its parent commit(s), and its metadata. Because every identifier is the hash of its content, changing a file changes its blob hash, which changes the enclosing tree hash, which changes the commit hash, and rewriting history changes the parent links and hence every downstream commit id, so any tampering is detectable by recomputing hashes. ('Git-Mark' is not a standard Git term; it denotes this pattern of using commit hashes as anchors for a document trail.) The key limitation is that a Git commit's timestamp is just self-asserted local metadata and can be forged or back-dated; Git proves what changed relative to prior state but not independently when it existed. That is why provenance systems anchor a commit hash (or document hash) into an external, trusted timestamping layer such as a public blockchain, adding a proof of existence that does not rely on the repository's own clock.",
+    "answer_key_points": [
+      "Git is content-addressed: blobs, trees, and commits are named by cryptographic hashes",
+      "The commit graph is a Merkle DAG; a commit hashes its tree, parent(s), and metadata",
+      "Any content change or history rewrite changes hashes, making tampering detectable",
+      "Git commit timestamps are self-asserted local metadata and can be forged/back-dated",
+      "So commit or document hashes are anchored externally (e.g. a blockchain) for trusted proof-of-existence; 'Git-Mark' is a pattern name, not a Git feature"
+    ],
+    "cited_sources": [
+      "https://git-scm.com/book/en/v2/Git-Internals-Git-Objects",
+      "https://git-scm.com/docs/hash-function-transition"
+    ]
+  },
+  {
+    "id": "arc_sov12",
+    "category": "arcane_in_corpus",
+    "topic": "Blockchain document trail infrastructure",
+    "difficulty": "hard",
+    "question": "How does OpenTimestamps use a blockchain to create a tamper-evident, trust-minimised timestamp for a document, and what exactly does the resulting proof demonstrate?",
+    "reference_answer": "OpenTimestamps produces a proof of existence by anchoring a document's hash to a blockchain, usually Bitcoin, without ever revealing the document. The user hashes the document locally (SHA-256) and submits only that digest to public calendar servers. A calendar aggregates many submitted digests as leaves of a Merkle tree, computing a single Merkle root that commits to all of them, and periodically writes that root into a Bitcoin transaction (e.g. in an OP_RETURN output). Once the transaction is mined and confirmed, the root is permanently recorded in a block whose header carries a timestamp. The user receives a compact .ots proof file containing the document hash, the Merkle path of sibling hashes from the leaf up to the root, and the attestation linking that root to a specific Bitcoin block. To verify, one recomputes the document's hash, walks the Merkle path to reconstruct the root, and checks it is committed in the referenced block. The proof demonstrates that the document existed at or before that block's time (it could not be back-dated without rewriting proof-of-work history) and that the document is unaltered (any change breaks the hash match). Verification is trust-minimised: it depends only on the document, the .ots file, and public Bitcoin block headers, not on trusting the calendar server, and Merkle aggregation lets a single transaction timestamp thousands of documents at once.",
+    "answer_key_points": [
+      "Only the document's SHA-256 hash is submitted; the document never leaves the user",
+      "Calendar servers aggregate many hashes into a Merkle tree and anchor the Merkle root in a Bitcoin transaction (e.g. OP_RETURN)",
+      "The .ots proof holds the hash, the Merkle path, and the attestation to a specific block",
+      "Verification recomputes the hash, walks the Merkle path, and checks the block, proving existence-before-time and tamper-evidence",
+      "Trust-minimised: relies only on the document, proof file, and public block headers; one transaction timestamps many documents"
+    ],
+    "cited_sources": [
+      "https://opentimestamps.org/",
+      "https://en.wikipedia.org/wiki/OpenTimestamps"
+    ]
+  }
+]

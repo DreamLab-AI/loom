@@ -1,0 +1,770 @@
+[
+  {
+    "id": "adj01",
+    "domain": "adjacent",
+    "template": "hard",
+    "question_natural": "For a consumer payments application that needs fast, trustless settlement, would you build on an optimistic rollup or a zk-rollup? Explain the key differences in withdrawal/finality, security assumptions, and EVM compatibility that drive the decision.",
+    "gold_titles": [
+      "Optimistic rollups use fraud proofs with a ~7-day challenge window; zk-rollups use validity proofs verified on-chain per batch",
+      "zk-rollups give near-instant finality/withdrawals (minutes to <1 hour) vs ~7 days for optimistic L1 withdrawals (mitigated by fast-exit liquidity providers)",
+      "Optimistic security relies on at least one honest, live watcher (1-of-N); zk security is cryptographic and needs no challenge window",
+      "Optimistic rollups have fuller EVM equivalence; zkEVMs historically more partial, but EVM parity matters less for simple payments",
+      "For fast trustless settlement, zk-rollups are favoured; for maximal EVM/DeFi composability, optimistic rollups"
+    ]
+  },
+  {
+    "id": "adj02",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "When would you deliberately choose eventual consistency over strong consistency in a distributed system? Frame your answer around the CAP theorem and give examples where each is appropriate.",
+    "gold_titles": [
+      "CAP: under a partition you must choose consistency or availability; partition tolerance is non-negotiable in real distributed systems",
+      "Eventual consistency (AP) favours availability/latency and tolerates temporary staleness; strong consistency (CP) favours correctness",
+      "PACELC extends CAP: even without a partition you trade latency vs consistency",
+      "Eventual-consistency examples: shopping carts, DNS, social likes/counts",
+      "Strong-consistency examples: banking/ledgers, transfers, unique constraints, inventory",
+      "Consistency is best chosen per-operation, not system-wide (e.g. cart eventual, checkout strong)"
+    ]
+  },
+  {
+    "id": "adj03",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "A team wants to build an LLM assistant over a large, frequently-changing internal knowledge base. Should they lean on retrieval-augmented generation (RAG) or fine-tuning, and what are the main trade-offs?",
+    "gold_titles": [
+      "RAG handles knowledge freshness: add documents without retraining; fine-tuning bakes in stable knowledge and needs retraining to update",
+      "RAG lowers hallucination risk by grounding answers in retrieved sources and enabling citations",
+      "Fine-tuning is best for behaviour/style/format/domain adaptation, and needs a sizeable quality dataset",
+      "Cost profile: RAG low upfront but recurring retrieval/storage cost; fine-tuning high upfront, lower per-query at scale",
+      "They can be combined (fine-tune for behaviour + RAG for fresh facts), common in enterprise/regulated use"
+    ]
+  },
+  {
+    "id": "adj04",
+    "domain": "adjacent",
+    "template": "easy",
+    "question_natural": "Why do real-time video and voice applications typically send media over UDP instead of TCP?",
+    "gold_titles": [
+      "TCP's in-order reliable delivery causes head-of-line blocking that stalls later packets on a single loss",
+      "For live media a late packet is worse than a lost one, so retransmission latency and congestion backoff hurt quality",
+      "UDP has no ordering/retransmission, so packets play immediately and the app controls the reliability trade-off",
+      "Apps handle loss with jitter buffers, packet-loss concealment, resilient codecs, and optional FEC"
+    ]
+  },
+  {
+    "id": "adj05",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "Compare the token bucket and leaky bucket rate-limiting algorithms. How does each handle a sudden burst of requests, and when would you pick one over the other?",
+    "gold_titles": [
+      "Token bucket refills tokens at rate r up to capacity B; each request spends a token",
+      "Token bucket allows bursts up to B (accumulated during idle time) then throttles to the refill rate",
+      "Leaky bucket queues requests and leaks them at a constant rate, smoothing/flattening bursts and dropping overflow",
+      "Token bucket enforces average rate with controlled bursts; leaky bucket enforces a steady constant output rate",
+      "Pick token bucket for burst-tolerant APIs; leaky bucket for smooth output and protecting downstream systems"
+    ]
+  },
+  {
+    "id": "adj06",
+    "domain": "adjacent",
+    "template": "easy",
+    "question_natural": "Why do payment APIs like Stripe support idempotency keys, and what failure scenario do they protect against?",
+    "gold_titles": [
+      "A lost response or timeout leaves the client unsure whether a charge succeeded, so a blind retry risks a duplicate charge",
+      "Client attaches a unique idempotency key to a logical operation and reuses it on retries",
+      "Server stores the first result per key and returns it for repeats, executing the side effect only once",
+      "Provides effectively exactly-once semantics and makes automatic retries safe over unreliable networks"
+    ]
+  },
+  {
+    "id": "adj07",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "A startup with a small engineering team is debating microservices versus a monolith for a new product. What guidance would you give, and what are the main trade-offs?",
+    "gold_titles": [
+      "Default to a monolith/modular monolith for small teams; adopt microservices when named constraints appear",
+      "Microservices suit multiple independent teams, divergent scaling needs, fault isolation, and tech diversity",
+      "Microservices add operational complexity (discovery, tracing, observability) and network latency vs in-process calls",
+      "Cross-service transactions are hard: microservices push toward eventual consistency and sagas",
+      "Monoliths give simpler ops/testing, easy ACID transactions, and faster early development ('microservice premium')"
+    ]
+  },
+  {
+    "id": "adj08",
+    "domain": "adjacent",
+    "template": "easy",
+    "question_natural": "When would you choose a NoSQL database over a traditional relational (SQL) database for an application?",
+    "gold_titles": [
+      "NoSQL fits massive scale, simple/known access patterns, and flexible or fast-changing schemas",
+      "NoSQL is built for horizontal scaling across clusters and often uses BASE (eventual consistency)",
+      "Relational fits highly-related data with joins, ad-hoc queries/reporting, and multi-entity ACID transactions",
+      "Default to relational (e.g. PostgreSQL) if no clear pattern demands NoSQL; hybrid architectures are common"
+    ]
+  },
+  {
+    "id": "adj09",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "You are designing APIs for a system with both a public browser-facing surface and heavy internal service-to-service traffic. Where would you use gRPC and where REST/JSON, and why?",
+    "gold_titles": [
+      "gRPC uses HTTP/2 + Protobuf binary + typed .proto contracts: smaller payloads, lower latency, generated clients",
+      "gRPC has native streaming (unary/server/client/bidirectional), strong for internal high-volume traffic",
+      "Browsers can't use gRPC natively; needs gRPC-Web + proxy, and bidirectional streaming is limited",
+      "REST/JSON is browser-native, human-readable, easy to debug, best for public APIs and simple CRUD",
+      "Common hybrid: REST at the public edge, gRPC between internal services"
+    ]
+  },
+  {
+    "id": "adj10",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "Contrast blue-green and canary deployment strategies. How does each reduce release risk, and when would you prefer one over the other?",
+    "gold_titles": [
+      "Blue-green: two full environments, test on idle one, switch all traffic at once; near-instant rollback by re-routing",
+      "Blue-green costs more (duplicate production infrastructure)",
+      "Canary: run new version alongside baseline, route a small growing % of live traffic, monitor metrics to limit blast radius",
+      "Canary is cheaper on infra but rollback is more incremental/procedural and needs strong observability",
+      "Choose blue-green for zero downtime + fastest rollback; canary for fine-grained metric-gated exposure"
+    ]
+  },
+  {
+    "id": "adj11",
+    "domain": "adjacent",
+    "template": "easy",
+    "question_natural": "What is the difference between horizontal and vertical scaling, and what are the main trade-offs between them?",
+    "gold_titles": [
+      "Vertical = bigger single machine (more CPU/RAM); horizontal = more machines with load distributed",
+      "Vertical is simpler and cheaper at small scale, suits stateful monoliths, but keeps a single point of failure",
+      "Vertical hits a hard physical/cost ceiling; horizontal has no single-machine ceiling",
+      "Horizontal improves fault tolerance and elasticity but needs stateless/partitioned design",
+      "Horizontal adds complexity: load balancing, sharding/replication, operations"
+    ]
+  },
+  {
+    "id": "adj12",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "Symmetric and asymmetric encryption have very different speed and key-management properties. Why does TLS use both rather than just one?",
+    "gold_titles": [
+      "Symmetric encryption is fast but has a key-distribution problem (both sides must pre-share the secret)",
+      "Asymmetric encryption lets the public key be shared openly, solving key distribution and enabling authentication/signatures",
+      "Asymmetric is orders of magnitude slower, impractical for bulk data",
+      "TLS handshake uses asymmetric to authenticate the server and establish a shared session key",
+      "TLS record phase uses fast symmetric encryption for bulk data \u2014 a hybrid combining safe setup with speed"
+    ]
+  },
+  {
+    "id": "adj13",
+    "domain": "adjacent",
+    "template": "hard",
+    "question_natural": "A distributed cache currently maps keys to nodes with hash(key) % N. Why does this design cause problems when nodes are added or removed, and how do consistent hashing and virtual nodes address it?",
+    "gold_titles": [
+      "hash(key) % N depends on N, so changing node count remaps almost all keys (catastrophic reshuffle/cache invalidation)",
+      "Consistent hashing maps keys and nodes onto a fixed ring; a key goes to the first node clockwise",
+      "On membership change only the adjacent arc moves: ~K/N keys remap instead of ~all K",
+      "A single point per node causes uneven arcs and hotspots",
+      "Virtual nodes give each physical node many ring positions, balancing load, allowing capacity weighting, and spreading failed-node load across neighbours"
+    ]
+  },
+  {
+    "id": "adj14",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "What is a Bloom filter, what accuracy guarantee does it provide, and how do databases like Cassandra or RocksDB use it to speed up reads?",
+    "gold_titles": [
+      "Probabilistic set-membership structure: bit array + k hash functions; insert sets k bits, query checks them",
+      "No false negatives (a '0' bit means definitely absent) but false positives possible",
+      "Space vs false-positive-rate trade-off is tunable for a given element count",
+      "LSM-tree DBs (Cassandra, RocksDB, LevelDB, Bigtable) keep a Bloom filter per SSTable",
+      "A 'definitely not present' result lets the DB skip the disk read safely, cutting I/O for absent keys"
+    ]
+  },
+  {
+    "id": "adj15",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "When should services communicate through a message queue rather than synchronous request-response calls? Explain the benefits and what delivery guarantee you would typically rely on.",
+    "gold_titles": [
+      "Queues give temporal and spatial decoupling of producers and consumers",
+      "They provide load-leveling/backpressure: buffer bursts and drain at the consumer's rate",
+      "Best for work that can be done later (emails, thumbnails, analytics) with a fast 'accepted' response",
+      "Typically rely on at-least-once delivery plus idempotent consumers (and dead-letter queues)",
+      "Keep synchronous request-response when the caller needs the result immediately (login, payment auth)"
+    ]
+  },
+  {
+    "id": "adj16",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "For a new backend service, when would you choose serverless functions (e.g. AWS Lambda) over container- or VM-based deployment, and what are the trade-offs?",
+    "gold_titles": [
+      "Serverless suits event-driven, short-lived, stateless, often-idle workloads with pay-per-use and scale-to-zero",
+      "Lambda has cold-start latency (~100ms to seconds) and a 15-minute max execution time",
+      "Serverless is stateless: state must be externalised to databases/caches/queues",
+      "Containers/VMs: no cold start, no execution limit, better for long-running, stateful, persistent-connection, low-latency work",
+      "Rule of thumb: serverless wins when mostly idle/bursty; containers win when mostly busy/high-utilisation (cheaper, predictable at scale)"
+    ]
+  },
+  {
+    "id": "adj17",
+    "domain": "adjacent",
+    "template": "hard",
+    "question_natural": "For semantic similarity search over millions of text embeddings, why would you use a vector index such as HNSW rather than storing the vectors in a relational database and scanning them? Explain the recall-versus-latency trade-off involved.",
+    "gold_titles": [
+      "Relational B-tree/hash indexes can't accelerate nearest-neighbour search on high-dimensional vectors",
+      "Brute force is O(n): comparing the query to every vector is too slow at millions of high-dim vectors",
+      "HNSW builds a multi-layer proximity graph for approximate nearest-neighbour (ANN) search, ~1ms at ~1M vectors (100x+ speedup)",
+      "ANN trades exactness for speed; ef_search tunes recall vs latency (higher ef_search = higher recall but higher latency)",
+      "~0.95 recall usually suffices for RAG/search; brute-force relational scan only fits small data, offline, or exact-NN needs"
+    ]
+  },
+  {
+    "id": "adj18",
+    "domain": "adjacent",
+    "template": "medium",
+    "question_natural": "When should an API use OAuth 2.0 / OpenID Connect versus static API keys for authorising access, and what are the security trade-offs?",
+    "gold_titles": [
+      "API keys are static, long-lived bearer secrets identifying an app, not a user; broad access, no default expiry, manual revocation",
+      "A leaked API key grants broad, indefinite access and is hard to scope tightly",
+      "OAuth/OIDC issue short-lived tokens with scopes and expiry, representing delegated access; OIDC adds verified identity",
+      "OAuth supports central, fine-grained revocation (per user/client/grant), limiting a compromised token's blast radius",
+      "Use OAuth for user data/delegation/compliance (more complex); API keys for simple low-sensitivity server-to-server; combining both is common"
+    ]
+  },
+  {
+    "id": "adj19",
+    "domain": "adjacent",
+    "template": "easy",
+    "question_natural": "When is batch processing the right choice for a data pipeline, and when should you use stream processing instead? Give an example of each.",
+    "gold_titles": [
+      "Batch operates on bounded data with high latency (minutes-hours) but high throughput and simplicity",
+      "Stream operates on unbounded, continuous events with low latency (ms-seconds)",
+      "Batch is cheaper, simpler to reason about, and easy to re-run; example: nightly ETL, billing, reporting",
+      "Stream needs always-on infra and handles state/exactly-once; example: fraud detection, live dashboards, alerting",
+      "Choose batch for periodic latency-tolerant work; streaming for real-time event-driven reactions"
+    ]
+  },
+  {
+    "id": "adj20",
+    "domain": "adjacent",
+    "template": "hard",
+    "question_natural": "When would you model data as a knowledge graph with an ontology (RDF/OWL or a property graph) instead of a relational database, and what does an OWL ontology add that a relational schema cannot?",
+    "gold_titles": [
+      "Graphs fit highly-connected, heterogeneous, evolving data where relationships/traversals are central",
+      "Graph engines store relationships as first-class edges (index-free adjacency), making multi-hop traversal fast vs deep SQL joins that degrade beyond ~3-4 hops",
+      "RDF/OWL adds formal reasoning: subclass inference, transitivity, property chains, consistency checking",
+      "RDF/OWL gives standards-based interoperability (URIs, shared ontologies); relational has no native subclass/transitivity/axioms",
+      "Relational is better for stable tabular schemas, aggregations, ACID CRUD, shallow joins; hybrid (relational source-of-record + graph semantic layer) is common"
+    ]
+  },
+  {
+    "id": "in_01",
+    "domain": "in_domain_general",
+    "template": "easy",
+    "question_natural": "What is a smart contract in the context of blockchains, and how does it differ from a traditional paper contract?",
+    "gold_titles": [
+      "A program that automatically executes/enforces agreed terms when conditions are met, without an intermediary",
+      "Runs on a blockchain (e.g. Ethereum Virtual Machine); code and state are replicated across nodes",
+      "Provides tamper-resistance and verifiable, deterministic execution",
+      "Concept attributed to Nick Szabo (1990s); underpins dApps, DeFi and token standards like ERC-20/ERC-721"
+    ]
+  },
+  {
+    "id": "in_02",
+    "domain": "in_domain_general",
+    "template": "easy",
+    "question_natural": "What is the difference between supervised and unsupervised learning in machine learning?",
+    "gold_titles": [
+      "Supervised learning uses labelled data (input-output pairs)",
+      "Supervised tasks: classification and regression; goal is to generalise to unseen inputs",
+      "Unsupervised learning uses unlabelled data to find hidden structure",
+      "Unsupervised tasks: clustering, dimensionality reduction; core distinction is presence/absence of labels"
+    ]
+  },
+  {
+    "id": "in_03",
+    "domain": "in_domain_general",
+    "template": "easy",
+    "question_natural": "In VR/XR, what does 'six degrees of freedom' (6DoF) mean, and how does it differ from 3DoF?",
+    "gold_titles": [
+      "6DoF = three translations plus three rotations of a rigid body in 3D",
+      "Translations along three perpendicular axes; rotations are yaw, pitch, roll",
+      "3DoF tracks only orientation/rotation (looking around)",
+      "6DoF adds positional tracking (x, y, z), enabling movement through space"
+    ]
+  },
+  {
+    "id": "in_04",
+    "domain": "in_domain_general",
+    "template": "easy",
+    "question_natural": "What is an RDF triple, and how do RDF triples form a knowledge graph?",
+    "gold_titles": [
+      "An RDF triple is a subject-predicate-object statement",
+      "Subject is an IRI/blank node; predicate is an IRI (a property); object is an IRI, blank node, or literal",
+      "A set of triples forms an RDF graph",
+      "Nodes = subjects/objects, labelled arcs = predicates; basis for knowledge graphs"
+    ]
+  },
+  {
+    "id": "in_05",
+    "domain": "in_domain_general",
+    "template": "easy",
+    "question_natural": "How does public-key (asymmetric) cryptography work, and how is it used to create a digital signature?",
+    "gold_titles": [
+      "Uses a related key pair: public key shared, private key secret",
+      "Infeasible to derive private key from public key (one-way functions)",
+      "Encryption: encrypt with recipient's public key, decrypt with private key",
+      "Signature: sign with private key (over the message/hash), verify with public key",
+      "Provides authenticity and integrity; scheme = key generation, signing, verification"
+    ]
+  },
+  {
+    "id": "in_06",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "What does the CAP theorem state, and what practical trade-off does it force on distributed data stores during a network partition?",
+    "gold_titles": [
+      "At most two of Consistency, Availability, Partition tolerance simultaneously",
+      "Consistency = every read sees the latest write; Availability = every request gets a response; Partition tolerance = survives message loss between nodes",
+      "Partitions are unavoidable, so the real trade-off during a partition is consistency vs availability (CP vs AP)",
+      "Proposed by Eric Brewer; formally proven by Gilbert and Lynch (2002)"
+    ]
+  },
+  {
+    "id": "in_07",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "What problem does the Raft consensus algorithm solve, and what are its main mechanisms?",
+    "gold_titles": [
+      "Solves consensus over a replicated log for state-machine replication across servers",
+      "Explicit design goal: more understandable than Paxos",
+      "Decomposes into leader election, log replication, and safety",
+      "A single elected leader accepts client commands and replicates to followers",
+      "Equivalent to Paxos in fault tolerance/performance; includes safe membership changes"
+    ]
+  },
+  {
+    "id": "in_08",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "What is a Merkle tree, and why do blockchains use them?",
+    "gold_titles": [
+      "Leaves = hashes of data blocks; internal nodes = hashes of their children",
+      "The root hash is a compact commitment to all leaves",
+      "Membership can be verified with a short Merkle proof (path of hashes), not all the data",
+      "Blockchains store only the Merkle root in the block header; enables light-client verification (e.g. SPV)",
+      "Any change to underlying data changes the root, so it detects tampering"
+    ]
+  },
+  {
+    "id": "in_09",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "How do Proof of Work and Proof of Stake differ in how they achieve consensus and Sybil resistance?",
+    "gold_titles": [
+      "Both provide Sybil resistance by tying block-proposal influence to a scarce resource",
+      "PoW: miners solve computational puzzles; influence proportional to hash power",
+      "Attacking PoW needs a large share of total hash rate (costly, energy-intensive)",
+      "PoS: validators chosen proportional to staked coins; influence proportional to stake",
+      "Attacking PoS needs a large share of total stake; PoS uses far less energy"
+    ]
+  },
+  {
+    "id": "in_10",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "How does gradient descent work, and what role does the learning rate play?",
+    "gold_titles": [
+      "Iterative first-order method that steps in the direction of the negative gradient",
+      "Update rule x_{t+1} = x_t - learning_rate * gradient",
+      "Learning rate (step size) controls how far each step moves",
+      "Too large: overshoot/diverge/oscillate; too small: slow convergence",
+      "In neural nets, gradients come from backpropagation; used to minimise the loss"
+    ]
+  },
+  {
+    "id": "in_11",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "What is overfitting in machine learning, and how does regularisation help combat it?",
+    "gold_titles": [
+      "Overfitting = fitting noise in training data; low training error but poor generalisation",
+      "Symptom: high variance, low training error but high test error",
+      "Often caused by excessive model complexity/parameters relative to data",
+      "Regularisation adds a penalty/constraint (e.g. + lambda*R(f)) favouring simpler models",
+      "Examples: L1/L2 weight penalties, early stopping, dropout; lambda tunes strength"
+    ]
+  },
+  {
+    "id": "in_12",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "What are vector embeddings in machine learning, and why is cosine similarity commonly used to compare them?",
+    "gold_titles": [
+      "Embeddings map discrete objects to dense numeric vectors in a continuous space",
+      "Learned so similar items have nearby vectors (e.g. word2vec, GloVe)",
+      "Cosine similarity = dot product divided by the product of norms (cosine of the angle)",
+      "Ranges ~1 (very similar) to 0 (orthogonal)",
+      "Measures direction not magnitude, well-suited to high-dimensional embeddings"
+    ]
+  },
+  {
+    "id": "in_13",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "What is Retrieval-Augmented Generation (RAG), and what problem does it address for large language models?",
+    "gold_titles": [
+      "Combines a pretrained generator (parametric memory) with a retriever over an external corpus (non-parametric memory)",
+      "Retrieves relevant documents at inference and conditions generation on them",
+      "Addresses stale/missing knowledge and hallucination; knowledge can be updated without retraining",
+      "Introduced by Lewis et al. (2020)",
+      "Two variants: RAG-Sequence and RAG-Token"
+    ]
+  },
+  {
+    "id": "in_14",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "What is SLAM (Simultaneous Localization and Mapping), and why is the problem considered a 'chicken-and-egg' one?",
+    "gold_titles": [
+      "Builds/updates a map of an unknown environment while estimating the device's own pose within it",
+      "Coupled problem: localisation needs a map, mapping needs localisation, so both solved jointly",
+      "Runs approximately in real time from sensors (cameras, LiDAR)",
+      "Method families: particle filter, EKF, graph-based (GraphSLAM)",
+      "Used in robot navigation and AR/VR spatial tracking"
+    ]
+  },
+  {
+    "id": "in_15",
+    "domain": "in_domain_general",
+    "template": "medium",
+    "question_natural": "In the semantic web, what is an ontology expressed in OWL, and what kinds of things does it define?",
+    "gold_titles": [
+      "OWL is a W3C ontology language for the semantic web, built on RDF/RDFS",
+      "An ontology is a formal description of a domain (itself an RDF graph)",
+      "Defines classes, properties, and individuals (plus axioms)",
+      "Formally defined meaning enables automated reasoning",
+      "Reasoners can check consistency, classify, and infer implicit facts"
+    ]
+  },
+  {
+    "id": "in_16",
+    "domain": "in_domain_general",
+    "template": "hard",
+    "question_natural": "What is the Byzantine Generals Problem, and what is the classic requirement for reaching agreement when up to f nodes can be Byzantine faulty?",
+    "gold_titles": [
+      "Consensus among distributed processes when some may behave arbitrarily/maliciously (traitors)",
+      "A Byzantine fault is arbitrary/deceptive behaviour, unlike a crash fault",
+      "Formalised by Lamport, Shostak and Pease",
+      "Without signatures, tolerating f faults needs at least 3f+1 total nodes (>2/3 honest); bound is tight",
+      "Digital signatures (authenticated messages) relax the requirement"
+    ]
+  },
+  {
+    "id": "in_17",
+    "domain": "in_domain_general",
+    "template": "hard",
+    "question_natural": "What is a zero-knowledge proof, and what are its three defining properties?",
+    "gold_titles": [
+      "Prover convinces a verifier a statement is true without revealing anything beyond its truth",
+      "Completeness: true statement + honest parties => verifier is convinced",
+      "Soundness: false statement => no cheating prover convinces the verifier except with negligible probability",
+      "Zero-knowledge: verifier learns nothing beyond truth; formalised via a simulator reproducing the verifier's view",
+      "Introduced by Goldwasser, Micali and Rackoff"
+    ]
+  },
+  {
+    "id": "in_18",
+    "domain": "in_domain_general",
+    "template": "hard",
+    "question_natural": "How does the self-attention mechanism at the heart of the Transformer architecture work, and why did Transformers replace recurrent models for many sequence tasks?",
+    "gold_titles": [
+      "Transformer (Vaswani et al. 2017) uses attention only, no recurrence/convolution",
+      "Scaled dot-product attention: softmax(QK^T / sqrt(d_k))V with queries, keys, values",
+      "Self-attention: Q, K, V from the same sequence; each token attends to all others (long-range dependencies)",
+      "Multi-head attention runs several attentions in parallel; all tokens processed simultaneously => parallelism/faster training",
+      "Positional encodings added because self-attention is permutation-invariant"
+    ]
+  },
+  {
+    "id": "in_19",
+    "domain": "in_domain_general",
+    "template": "hard",
+    "question_natural": "What does the backpropagation algorithm compute, and how does it do so efficiently?",
+    "gold_titles": [
+      "Computes the gradient of the loss with respect to every weight",
+      "Applies the chain rule layer by layer, propagating the error backwards from output to input layers",
+      "Reuses intermediate values so gradients are computed efficiently (one backward pass)",
+      "Gradients feed gradient descent to update weights and minimise loss",
+      "Popularised by Rumelhart, Hinton and Williams (1986); enabled training of multilayer nets with hidden units"
+    ]
+  },
+  {
+    "id": "in_20",
+    "domain": "in_domain_general",
+    "template": "hard",
+    "question_natural": "What is approximate nearest neighbour (ANN) search, and how does an HNSW (Hierarchical Navigable Small World) index make it fast?",
+    "gold_titles": [
+      "Nearest neighbour search finds the closest stored point to a query under a distance metric",
+      "ANN trades exactness for speed; result is within a bounded factor of the true nearest distance",
+      "HNSW is a graph-based, multi-layer proximity graph index",
+      "Upper layers are sparse with long-range links; bottom layer is a dense graph over all vectors",
+      "Query greedily descends from a top-layer entry point, then beam-searches the bottom layer; near-logarithmic navigation"
+    ]
+  },
+  {
+    "id": "off01",
+    "domain": "off_domain",
+    "template": "easy",
+    "question_natural": "What is the capital city of Australia?",
+    "gold_titles": [
+      "Canberra is the capital",
+      "Not Sydney and not Melbourne (a common misconception)",
+      "Located in the Australian Capital Territory (ACT)",
+      "Purpose-built as a compromise between Sydney and Melbourne"
+    ]
+  },
+  {
+    "id": "off02",
+    "domain": "off_domain",
+    "template": "easy",
+    "question_natural": "In what year did the Berlin Wall fall?",
+    "gold_titles": [
+      "1989 (specifically 9 November 1989)",
+      "Divided East and West Berlin since 1961",
+      "Symbolised the end of the Cold War",
+      "Led to German reunification in 1990"
+    ]
+  },
+  {
+    "id": "off03",
+    "domain": "off_domain",
+    "template": "easy",
+    "question_natural": "Which gas do plants take in from the air during photosynthesis, and which gas do they release?",
+    "gold_titles": [
+      "Takes in carbon dioxide (CO2)",
+      "Releases oxygen (O2)",
+      "Driven by light energy captured by chlorophyll",
+      "Produces glucose/sugar from CO2 and water"
+    ]
+  },
+  {
+    "id": "off04",
+    "domain": "off_domain",
+    "template": "easy",
+    "question_natural": "What is the chemical symbol for gold, and why isn't it 'Go' or 'Gd'?",
+    "gold_titles": [
+      "Symbol is Au",
+      "Derived from the Latin word aurum",
+      "Atomic number 79",
+      "English name and symbol differ because the symbol comes from Latin"
+    ]
+  },
+  {
+    "id": "off05",
+    "domain": "off_domain",
+    "template": "easy",
+    "question_natural": "Who wrote the novel 'Pride and Prejudice'?",
+    "gold_titles": [
+      "Jane Austen is the author",
+      "First published in 1813",
+      "Central characters Elizabeth Bennet and Mr Darcy",
+      "A classic of English literature / novel of manners"
+    ]
+  },
+  {
+    "id": "off06",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "Why does the sky appear blue during the day?",
+    "gold_titles": [
+      "Caused by Rayleigh scattering of sunlight by air molecules",
+      "Shorter (blue) wavelengths are scattered much more strongly than longer (red) ones",
+      "Scattered blue light reaches the eye from all parts of the sky",
+      "The same mechanism explains reddish sunsets (blue scattered out over a longer path)"
+    ]
+  },
+  {
+    "id": "off07",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "What is the difference between fiscal policy and monetary policy?",
+    "gold_titles": [
+      "Fiscal policy = government taxation and spending decisions",
+      "Set by the government/treasury (elected fiscal authority)",
+      "Monetary policy = central bank control of money supply and interest rates",
+      "Monetary policy aims at goals like price stability and employment",
+      "Key distinction: tax-and-spend vs interest rates/money supply"
+    ]
+  },
+  {
+    "id": "off08",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "What is the fundamental difference between Type 1 and Type 2 diabetes?",
+    "gold_titles": [
+      "Type 1 is autoimmune destruction of pancreatic beta cells (absolute insulin deficiency)",
+      "Type 1 patients require insulin",
+      "Type 2 is insulin resistance with relative insulin deficiency",
+      "Type 2 is strongly linked to obesity/lifestyle",
+      "Different typical age of onset (Type 1 younger, Type 2 later)"
+    ]
+  },
+  {
+    "id": "off09",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "How does natural selection work, as proposed by Charles Darwin?",
+    "gold_titles": [
+      "Variation exists among individuals in a population",
+      "Some of that variation is heritable (passed to offspring)",
+      "More offspring are produced than can survive (competition/struggle for existence)",
+      "Individuals with advantageous traits survive and reproduce more (differential reproductive success)",
+      "Favourable traits accumulate over generations, driving adaptation/evolution"
+    ]
+  },
+  {
+    "id": "off10",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "What causes the Earth to have seasons?",
+    "gold_titles": [
+      "Caused by the tilt of Earth's axis (about 23.5 degrees)",
+      "As Earth orbits, hemispheres tilt toward or away from the Sun",
+      "This changes the angle/intensity and length of daylight",
+      "Hemisphere tilted toward the Sun has summer; tilted away has winter",
+      "NOT caused by varying Earth-Sun distance"
+    ]
+  },
+  {
+    "id": "off11",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "How did the Impressionist movement get its name, and what characterises Impressionist painting?",
+    "gold_titles": [
+      "Named after Monet's painting 'Impression, Sunrise' (1872), shown in 1874",
+      "The 1874 independent Paris exhibition; a critic coined the term (originally derisive)",
+      "Loose visible brushwork; focus on light and atmosphere",
+      "Often painted outdoors (en plein air), everyday modern subjects",
+      "Key artists include Monet, Renoir, Degas, Pissarro, Morisot"
+    ]
+  },
+  {
+    "id": "off12",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "What does the pH scale measure, and what distinguishes an acid from a base?",
+    "gold_titles": [
+      "pH measures acidity/basicity, defined as -log of hydrogen ion concentration",
+      "Scale typically 0-14",
+      "Below 7 = acidic; 7 = neutral; above 7 = basic/alkaline",
+      "Acids have higher [H+], bases have lower [H+]",
+      "Logarithmic: each unit is a tenfold change in [H+]"
+    ]
+  },
+  {
+    "id": "off13",
+    "domain": "off_domain",
+    "template": "hard",
+    "question_natural": "What were the main long-term causes of the First World War, and what event triggered it?",
+    "gold_titles": [
+      "Long-term causes summarised as MAIN: Militarism, Alliances, Imperialism, Nationalism",
+      "Rival alliance blocs: Triple Alliance vs Triple Entente",
+      "Immediate trigger: assassination of Archduke Franz Ferdinand",
+      "Carried out by Gavrilo Princip in Sarajevo on 28 June 1914",
+      "Triggered the July Crisis; alliances and mobilisation escalated it into a general war"
+    ]
+  },
+  {
+    "id": "off14",
+    "domain": "off_domain",
+    "template": "hard",
+    "question_natural": "State the second law of thermodynamics and explain what entropy has to do with it and with the 'arrow of time'.",
+    "gold_titles": [
+      "Total entropy of an isolated system never decreases (increases or stays constant)",
+      "Equality only for reversible processes; increase for irreversible/spontaneous ones",
+      "Entropy relates to number of microstates (Boltzmann S = k ln W) / energy dispersal",
+      "Equivalent forms: heat flows hot to cold; can't fully convert heat to work from one reservoir (Kelvin-Planck)",
+      "The one-way increase in entropy defines the arrow of time / irreversibility"
+    ]
+  },
+  {
+    "id": "off15",
+    "domain": "off_domain",
+    "template": "hard",
+    "question_natural": "What is the 'stream of consciousness' technique, and why is James Joyce's 'Ulysses' a famous example of it?",
+    "gold_titles": [
+      "Stream of consciousness renders the continuous, associative flow of a character's inner thoughts",
+      "Often uses interior monologue and unconventional, loosely punctuated prose",
+      "Joyce's Ulysses (1922) is the landmark modernist example",
+      "Set over a single day in Dublin, following Leopold Bloom and Stephen Dedalus",
+      "Molly Bloom's closing soliloquy is the classic unpunctuated example"
+    ]
+  },
+  {
+    "id": "off16",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "In what year was Nelson Mandela released from prison, and when did he become President of South Africa?",
+    "gold_titles": [
+      "Released from prison in 1990 (11 February 1990)",
+      "Had been imprisoned for 27 years",
+      "Became President in 1994 (inaugurated 10 May 1994)",
+      "Followed South Africa's first fully democratic multiracial elections",
+      "First black President of South Africa"
+    ]
+  },
+  {
+    "id": "off17",
+    "domain": "off_domain",
+    "template": "hard",
+    "question_natural": "How do mRNA COVID-19 vaccines work at the molecular level?",
+    "gold_titles": [
+      "mRNA encodes the SARS-CoV-2 spike protein",
+      "Delivered inside a lipid nanoparticle that protects it and aids cell entry",
+      "Cell's ribosomes translate the mRNA into spike protein in the cytoplasm",
+      "Immune system responds: neutralising antibodies (B cells) and T-cell response, creating memory",
+      "mRNA does not enter the nucleus or alter DNA; it is degraded after use"
+    ]
+  },
+  {
+    "id": "off18",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "Which is the longest river in the world, and why is the answer disputed?",
+    "gold_titles": [
+      "The Nile is traditionally considered the longest (about 6,650 km, some measures ~6,850-7,000 km)",
+      "The Amazon is comparable (roughly 6,400-7,000 km) and some studies claim it is longer",
+      "The ranking is genuinely disputed",
+      "Dispute arises from how the source/headwater is defined and how the course is measured",
+      "The Amazon is far larger by water volume/discharge even where length is contested"
+    ]
+  },
+  {
+    "id": "off19",
+    "domain": "off_domain",
+    "template": "hard",
+    "question_natural": "Explain David Ricardo's theory of comparative advantage. How can two countries both gain from trade even if one is better at producing everything?",
+    "gold_titles": [
+      "Comparative advantage depends on relative/opportunity cost, not absolute efficiency",
+      "Ricardo's England-Portugal cloth-and-wine example (Portugal has absolute advantage in both)",
+      "Each country specialises in the good with the lower opportunity cost",
+      "England specialises in cloth, Portugal in wine",
+      "Specialisation plus trade raises total output; both countries can gain",
+      "Even a country worse at everything still has a comparative advantage in something"
+    ]
+  },
+  {
+    "id": "off20",
+    "domain": "off_domain",
+    "template": "medium",
+    "question_natural": "Who is credited with creating the periodic table, and what fundamental property are the elements now arranged by?",
+    "gold_titles": [
+      "Dmitri Mendeleev is credited with the periodic table (published 1869)",
+      "He originally arranged elements by atomic weight and grouped by similar properties",
+      "He left gaps and predicted undiscovered elements",
+      "The modern table is organised by atomic number (number of protons)",
+      "The shift to atomic number followed Henry Moseley's work"
+    ]
+  }
+]

@@ -1,0 +1,4 @@
+harness: 33/33 questions engaged the confidence gate
+  qwen3.8-local: 15/33
+  qwen3.8-local: 30/33
+wrote qwen3.8-local bare+harness (33 each)

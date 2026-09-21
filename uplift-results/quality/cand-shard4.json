@@ -1,0 +1,842 @@
+[
+  {
+    "id": "q0030",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What does Signal Processing use?",
+    "gold_titles": [
+      "Fast Fourier Transform",
+      "Wavelet Transform",
+      "Kalman Filter",
+      "Compressed Sensing"
+    ],
+    "ontology_source": [
+      {
+        "title": "Signal Processing",
+        "definition": "Signal processing is the mathematical and engineering discipline concerned with the representation, analysis, transformation, synthesis, filtering, and compression of signals \u2014 time-varying or spatially varying quantities such as audio, video, sensor telemetry, radio-frequency waveforms, biomedical readings, and seismic data. It encompasses both continuous (analogue) and discrete (digital) domains",
+        "parents": [
+          "AI Technique"
+        ],
+        "ancestors": [
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "hasPart": [
+            "Digital Signal Processing",
+            "Fourier Transform",
+            "Sampling Theory"
+          ],
+          "requires": [
+            "Linear Algebra",
+            "Probability Theory"
+          ],
+          "enables": [
+            "Speech Recognition",
+            "Spatial Audio",
+            "Image Processing",
+            "Radar",
+            "Depth Sensing"
+          ],
+          "uses": [
+            "Fast Fourier Transform",
+            "Wavelet Transform",
+            "Kalman Filter",
+            "Compressed Sensing"
+          ],
+          "relatedTo": [
+            "Feature Extraction",
+            "Noise Reduction",
+            "Data Compression",
+            "Render Pipeline",
+            "Data"
+          ],
+          "bridgesTo": [
+            "Spatial Computing",
+            "Neural Network"
+          ],
+          "supports": [
+            "Machine Learning",
+            "Telecommunications",
+            "Motion Capture"
+          ],
+          "contrastsWith": [
+            "Symbolic AI"
+          ]
+        },
+        "maturity": "mature"
+      }
+    ]
+  },
+  {
+    "id": "q0050",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does Model Width depend on?",
+    "gold_titles": [
+      "Transformer",
+      "Hyperparameter"
+    ],
+    "ontology_source": [
+      {
+        "title": "Model Width",
+        "definition": "The dimensionality of internal representations at each transformer layer, commonly denoted d_model or hidden dimension. Width sets the information-carrying capacity per token and scales the size of attention heads and feed-forward projections, making it a primary axis alongside depth and data volume in neural scaling law research.",
+        "parents": [
+          "AI Technique"
+        ],
+        "ancestors": [
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "enables": [
+            "Mixture-of-Experts Architecture"
+          ],
+          "dependsOn": [
+            "Transformer",
+            "Hyperparameter"
+          ],
+          "relatedTo": [
+            "Attention Mechanism",
+            "Parameter Count"
+          ],
+          "contrastsWith": [
+            "Model Depth"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0090",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does ISO 22739 require?",
+    "gold_titles": [
+      "Distributed Ledger Technology",
+      "Cryptographic Hash Function"
+    ],
+    "ontology_source": [
+      {
+        "title": "ISO 22739",
+        "definition": "ISO 22739:2020 is the foundational International Organisation for Standardisation standard that establishes a comprehensive vocabulary of terms and definitions for distributed ledger technology (DLT) and blockchain systems, providing a normative reference for terminology used across all subsequent blockchain-related ISO standards, regulatory documents, and technical specifications. The standard wa",
+        "parents": [
+          "Iso Standards"
+        ],
+        "ancestors": [
+          "Standards and Interoperability",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Smart Contract",
+            "Distributed Ledger",
+            "Cryptographic Key",
+            "Digital Identity"
+          ],
+          "requires": [
+            "Distributed Ledger Technology",
+            "Cryptographic Hash Function"
+          ],
+          "enables": [
+            "regulatory-harmonisation",
+            "Blockchain Interoperability"
+          ],
+          "partOf": [
+            "ISO TC 307"
+          ],
+          "relatedTo": [
+            "Blockchain Governance",
+            "Consensus Mechanism",
+            "Digital Asset",
+            "Zero-Knowledge Proof",
+            "Decentralised Finance"
+          ],
+          "bridgesTo": [
+            "Governance",
+            "Finance",
+            "Security"
+          ],
+          "supports": [
+            "Compliance Standards",
+            "Blockchain Compliance",
+            "Interoperability Standard",
+            "Regulatory Compliance"
+          ],
+          "standardizedBy": [
+            "Blockchain",
+            "blockchain core concepts"
+          ],
+          "contrastsWith": [
+            "W3C DID Specification"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0139",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Usability Testing use?",
+    "gold_titles": [
+      "Quality Assurance",
+      "Software Testing",
+      "Participant Recruitment",
+      "Research Methods"
+    ],
+    "ontology_source": [
+      {
+        "title": "Usability Testing",
+        "definition": "Usability testing is an empirical user research method in which representative users are observed attempting to complete realistic tasks with a product, system, or prototype, while the evaluator records errors, task completion times, help-seeking behaviour, and verbal commentary to identify usability problems and inform design improvements. Unlike expert-based heuristic evaluation, usability testi",
+        "parents": [
+          "User Research"
+        ],
+        "ancestors": [
+          "Research Methods",
+          "Content and Assets",
+          "Spatial Computing"
+        ],
+        "relations": {
+          "hasPart": [
+            "Session Recording"
+          ],
+          "requires": [
+            "User Research",
+            "prototype",
+            "Research Methods"
+          ],
+          "enables": [
+            "Product Design",
+            "User Interface",
+            "iterative-design",
+            "Evidence-Based Design"
+          ],
+          "uses": [
+            "Quality Assurance",
+            "Software Testing",
+            "Participant Recruitment",
+            "Research Methods"
+          ],
+          "relatedTo": [
+            "User Experience",
+            "Human Computer Interaction",
+            "Accessibility",
+            "Heuristic Methods",
+            "Cognitive Load",
+            "Task Analysis",
+            "Think Aloud Protocol",
+            "Eye Tracking"
+          ],
+          "bridgesTo": [
+            "Spatial Computing",
+            "Artificial Intelligence"
+          ],
+          "standardizedBy": [
+            "iso-9241",
+            "WCAG 2.2"
+          ],
+          "contrastsWith": [
+            "Heuristic Evaluation",
+            "A/B Testing"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0173",
+    "domain": "distributed-collaboration",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of STUN and TURN? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Protocol and Infrastructure"
+    ],
+    "ontology_source": [
+      {
+        "title": "STUN and TURN",
+        "definition": "STUN (Session Traversal Utilities for NAT) and TURN (Traversal Using Relays around NAT) are complementary protocols used to establish peer-to-peer connectivity across Network Address Translators and firewalls. STUN allows a client to discover its public IP address and port mapping, while TURN provides a relay server as a fallback when direct connectivity cannot be achieved. Together they form the ",
+        "parents": [
+          "Protocol and Infrastructure"
+        ],
+        "ancestors": [
+          "Distributed Collaboration"
+        ],
+        "relations": {
+          "enables": [
+            "WebRTC",
+            "Signaling Server"
+          ],
+          "relatedTo": [
+            "Peer-to-Peer Network"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0208",
+    "domain": "distributed-systems",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of Real Time Collaboration? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Distributed Collaboration",
+      "Synchronous Collaboration"
+    ],
+    "ontology_source": [
+      {
+        "title": "Real Time Collaboration",
+        "definition": "Real-time collaboration is the practice and technology of multiple users working concurrently on shared content with changes propagated and merged with minimal latency. It relies on synchronisation algorithms that resolve concurrent edits while preserving each participant's intent. It underpins collaborative editors, shared design tools, and multi-user virtual environments.",
+        "parents": [
+          "Distributed Collaboration",
+          "Synchronous Collaboration"
+        ],
+        "ancestors": [
+          "Communication Technology",
+          "Telecollaboration"
+        ],
+        "relations": {
+          "requires": [
+            "Conflict Resolution",
+            "State Synchronisation"
+          ],
+          "enables": [
+            "Distributed Collaboration"
+          ],
+          "dependsOn": [
+            "Low Latency",
+            "Real-Time Communication"
+          ],
+          "uses": [
+            "Operational Transformation",
+            "CRDT"
+          ],
+          "partOf": [
+            "Distributed Collaboration"
+          ],
+          "relatedTo": [
+            "State Synchronisation",
+            "Distributed Systems"
+          ],
+          "bridgesTo": [
+            "Operational Transformation"
+          ],
+          "supports": [
+            "Version Control"
+          ],
+          "contrastsWith": [
+            "Version Control"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0240",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What does Prudential Regulation require?",
+    "gold_titles": [
+      "Risk Assessment",
+      "Regulatory Reporting"
+    ],
+    "ontology_source": [
+      {
+        "title": "Prudential Regulation",
+        "definition": "Prudential regulation is the body of supervisory rules and oversight aimed at ensuring the safety and soundness of individual financial institutions and the stability of the wider financial system. It sets requirements for capital adequacy, liquidity, governance and risk management, and grants supervisors powers to monitor, intervene and resolve failing firms. Microprudential measures protect depo",
+        "parents": [
+          "Financial Regulation"
+        ],
+        "ancestors": [
+          "Governance",
+          "Legal and Regulatory",
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "Capital Adequacy",
+            "Stress Testing"
+          ],
+          "requires": [
+            "Risk Assessment",
+            "Regulatory Reporting"
+          ],
+          "enables": [
+            "Financial Stability"
+          ],
+          "dependsOn": [
+            "Central Bank"
+          ],
+          "implements": [
+            "Basel III"
+          ],
+          "partOf": [
+            "Financial Regulation",
+            "Financial System"
+          ],
+          "relatedTo": [
+            "Risk Management",
+            "Scenario Analysis"
+          ],
+          "supports": [
+            "Regulatory Compliance"
+          ],
+          "contrastsWith": [
+            "Systemic Risk"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0273",
+    "domain": "governance",
+    "template": "T-REL",
+    "question_natural": "What does NIST AI RMF enable?",
+    "gold_titles": [
+      "AI Risk Management",
+      "Accountability",
+      "Trustworthy AI",
+      "AI Governance Maturity Model"
+    ],
+    "ontology_source": [
+      {
+        "title": "NIST AI RMF",
+        "definition": "The NIST AI Risk Management Framework (AI RMF) is a voluntary, technology-agnostic guidance document published by the National Institute of Standards and Technology in January 2023 that helps organisations identify, assess, and manage risks arising from the design, development, deployment, and operation of AI systems. It structures AI risk management practice through four core functions \u2014 Govern, ",
+        "parents": [
+          "AI Governance Framework"
+        ],
+        "ancestors": [
+          "AI Governance and Ethics",
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "requires": [
+            "Risk Assessment",
+            "Stakeholder Engagement"
+          ],
+          "enables": [
+            "AI Risk Management",
+            "Accountability",
+            "Trustworthy AI",
+            "AI Governance Maturity Model"
+          ],
+          "relatedTo": [
+            "AI Governance",
+            "Cybersecurity Framework",
+            "Risk Management",
+            "Algorithmic Impact Assessment"
+          ],
+          "bridgesTo": [
+            "AI Risk",
+            "Responsible AI",
+            "Machine Learning Operations"
+          ],
+          "supports": [
+            "AI Safety",
+            "Fairness",
+            "Transparency",
+            "Reliability",
+            "Explainability",
+            "Privacy"
+          ],
+          "standardizedBy": [
+            "NIST"
+          ],
+          "contrastsWith": [
+            "EU AI Act Regulatory Instrument",
+            "ISO 42001"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0309",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Resilience enable?",
+    "gold_titles": [
+      "Business Continuity",
+      "High Availability",
+      "Graceful Degradation"
+    ],
+    "ontology_source": [
+      {
+        "title": "Resilience",
+        "definition": "The capacity of a system, network, or organisation to anticipate, withstand, recover from, and adapt to adverse conditions, attacks, or failures whilst maintaining essential functions. In distributed and blockchain contexts, resilience is achieved through decentralisation, redundancy, byzantine fault tolerance, and adaptive response mechanisms.",
+        "parents": [
+          "Software Engineering (Infrastructure)"
+        ],
+        "ancestors": [
+          "Infrastructure"
+        ],
+        "relations": {
+          "hasPart": [
+            "Incident Response",
+            "Threat Detection"
+          ],
+          "requires": [
+            "Byzantine Fault Tolerance",
+            "Consensus Mechanism",
+            "Redundancy",
+            "Disaster Recovery"
+          ],
+          "enables": [
+            "Business Continuity",
+            "High Availability",
+            "Graceful Degradation"
+          ],
+          "dependsOn": [
+            "Distributed Systems",
+            "Monitoring"
+          ],
+          "relatedTo": [
+            "Blockchain Governance",
+            "Blockchain Network",
+            "Risk Management",
+            "Security By Design",
+            "Property"
+          ],
+          "bridgesTo": [
+            "Federated Learning",
+            "Supply Chain Security"
+          ],
+          "supports": [
+            "Cybersecurity",
+            "Data Security",
+            "Governance"
+          ],
+          "contrastsWith": [
+            "Blockchain Scalability"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0341",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Reinforcement Learning?",
+    "gold_titles": [
+      "Policy Gradient Methods",
+      "Q Learning",
+      "Temporal Difference Learning",
+      "Value Function"
+    ],
+    "ontology_source": [
+      {
+        "title": "Reinforcement Learning",
+        "definition": "Reinforcement learning is a machine learning paradigm in which agents learn optimal policies through interaction with an environment, receiving reward signals for actions and iteratively improving their decision-making through trial and error, encompassing model-free and model-based methods, policy gradient techniques, and value-based approaches.",
+        "parents": [
+          "Machine Learning",
+          "AI Technique"
+        ],
+        "ancestors": [
+          "Artificial Intelligence"
+        ],
+        "relations": {
+          "hasPart": [
+            "Policy Gradient Methods",
+            "Q Learning",
+            "Temporal Difference Learning",
+            "Value Function"
+          ],
+          "requires": [
+            "Reward Signal",
+            "Markov Decision Process"
+          ],
+          "enables": [
+            "Autonomous Navigation",
+            "Autonomous Robot",
+            "AI Game Agent",
+            "Recommendation System"
+          ],
+          "implements": [
+            "Bellman Equation",
+            "Exploration Exploitation Tradeoff"
+          ],
+          "uses": [
+            "Deep Learning",
+            "Neural Network",
+            "Automated Planning"
+          ],
+          "partOf": [
+            "Machine Learning",
+            "Artificial Intelligence"
+          ],
+          "relatedTo": [
+            "Reinforcement Learning from Human Feedback",
+            "Multi-Agent System",
+            "Imitation Learning"
+          ],
+          "bridgesTo": [
+            "Robotic Control",
+            "Autonomous Vehicle"
+          ],
+          "contrastsWith": [
+            "Supervised Learning",
+            "Unsupervised Learning"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0372",
+    "domain": "metaverse",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Hardware Security and Mastercard both fall under?",
+    "gold_titles": [
+      "Computing and Cloud",
+      "Infrastructure"
+    ],
+    "ontology_source": [
+      {
+        "title": "Hardware Security",
+        "definition": "Hardware security protects systems by building trust and isolation into physical components, using features such as secure enclaves, key storage and tamper resistance to defend against attacks software alone cannot stop.",
+        "parents": [
+          "Computer Hardware"
+        ],
+        "ancestors": [
+          "AI Infrastructure",
+          "Digital Infrastructure",
+          "Computing and Cloud",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Computer Hardware"
+          ],
+          "enables": [
+            "Trusted Execution Environment"
+          ]
+        },
+        "maturity": "established"
+      },
+      {
+        "title": "Mastercard",
+        "definition": "Mastercard is a global payments technology company operating a card network that authorises, clears and settles transactions between issuing and acquiring banks.",
+        "parents": [
+          "Payment Network"
+        ],
+        "ancestors": [
+          "Financial Infrastructure",
+          "Economic Layer",
+          "Computing and Cloud",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Payment Network"
+          ],
+          "enables": [
+            "Cross-Border Payments"
+          ]
+        },
+        "maturity": "established"
+      }
+    ]
+  },
+  {
+    "id": "q0402",
+    "domain": "robotics",
+    "template": "T-REL",
+    "question_natural": "What does Social Navigation use?",
+    "gold_titles": [
+      "Reinforcement Learning",
+      "SLAM",
+      "Sensor Fusion"
+    ],
+    "ontology_source": [
+      {
+        "title": "Social Navigation",
+        "definition": "Social Navigation is the discipline within robotics concerned with planning and executing robot motion through human-occupied spaces while respecting social norms, personal space conventions (proxemics), cultural context, and human comfort. It extends classical motion planning by incorporating models of human behaviour, pedestrian flow prediction, and non-verbal communication cues such as gaze and",
+        "parents": [
+          "Human Robot Interaction"
+        ],
+        "ancestors": [
+          "Robotics"
+        ],
+        "relations": {
+          "requires": [
+            "Path Planning",
+            "Motion Planning",
+            "Proxemics"
+          ],
+          "uses": [
+            "Reinforcement Learning",
+            "SLAM",
+            "Sensor Fusion"
+          ],
+          "partOf": [
+            "Robotics",
+            "Human Robot Interaction"
+          ],
+          "relatedTo": [
+            "Obstacle Avoidance",
+            "Autonomous Navigation",
+            "Social Robotics",
+            "Collision Avoidance"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0430",
+    "domain": "security",
+    "template": "T-REL",
+    "question_natural": "What does Revocation Registry use?",
+    "gold_titles": [
+      "Cryptographic Proof",
+      "Selective Disclosure",
+      "Cryptographic Accumulator",
+      "Bitstring Status List",
+      "Smart Contract"
+    ],
+    "ontology_source": [
+      {
+        "title": "Revocation Registry",
+        "definition": "A revocation registry is a data structure or service that maintains the validity status of issued verifiable credentials or digital certificates, allowing verifiers to check whether a credential has been revoked by its issuer before accepting a presentation. In traditional PKI systems this role is fulfilled by Certificate Revocation Lists (CRLs) and OCSP responders; in self-sovereign identity ecos",
+        "parents": [
+          "Credential Verification"
+        ],
+        "ancestors": [
+          "Authentication",
+          "Identity and Access Management",
+          "Security and Identity",
+          "Infrastructure"
+        ],
+        "relations": {
+          "requires": [
+            "Distributed Ledger",
+            "Digital Signature"
+          ],
+          "enables": [
+            "Decentralized Identity",
+            "Credential Issuance",
+            "Access Control",
+            "Trust Management"
+          ],
+          "implements": [
+            "Certificate Revocation List"
+          ],
+          "uses": [
+            "Cryptographic Proof",
+            "Selective Disclosure",
+            "Cryptographic Accumulator",
+            "Bitstring Status List",
+            "Smart Contract"
+          ],
+          "relatedTo": [
+            "Verifiable Credentials",
+            "Verifiable Credential Standard",
+            "Certificate Authority",
+            "Digital Certificate",
+            "Certificate Transparency",
+            "Self Sovereign Identity",
+            "Public Key Infrastructure"
+          ],
+          "bridgesTo": [
+            "Blockchain",
+            "Distributed Systems"
+          ],
+          "supports": [
+            "Privacy-Preserving Protocol",
+            "Zero-Knowledge Proof"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0470",
+    "domain": "spatial-computing",
+    "template": "T-REL",
+    "question_natural": "What does Virtual Wedding require?",
+    "gold_titles": [
+      "Virtual Reality Platform",
+      "Avatar System"
+    ],
+    "ontology_source": [
+      {
+        "title": "Virtual Wedding",
+        "definition": "A marriage ceremony conducted within a metaverse or virtual reality platform in which participants are represented by digital avatars, enabling global attendance without physical travel. Virtual weddings may incorporate NFT wedding gifts, custom virtual venues, and live-streamed officiants, but typically require separate legal proceedings for official recognition under applicable jurisdictional la",
+        "parents": [
+          "Platform and Environment"
+        ],
+        "ancestors": [
+          "Spatial Computing"
+        ],
+        "relations": {
+          "requires": [
+            "Virtual Reality Platform",
+            "Avatar System"
+          ],
+          "uses": [
+            "Avatar",
+            "Metaverse Venue",
+            "NFT"
+          ],
+          "partOf": [
+            "Metaverse Application"
+          ],
+          "relatedTo": [
+            "Social Platform",
+            "Legal Framework"
+          ],
+          "bridgesTo": [
+            "Virtual Event"
+          ]
+        },
+        "maturity": "emerging"
+      }
+    ]
+  },
+  {
+    "id": "q0507",
+    "domain": "standards",
+    "template": "T-TAX",
+    "question_natural": "What is the immediate parent concept of YAML? Also name up to three broader ancestor concepts.",
+    "gold_titles": [
+      "Data Serialization"
+    ],
+    "ontology_source": [
+      {
+        "title": "YAML",
+        "definition": "A human-readable data serialisation language (YAML Ain't Markup Language) that expresses mappings, sequences, and scalars through indentation-based structure rather than delimiters, and is a strict superset of JSON. Designed for legibility and hand-editing, it adds comments, anchors and aliases for reuse, and multi-document streams, which has made it the dominant format for configuration in the De",
+        "parents": [
+          "Data Serialization"
+        ],
+        "ancestors": [
+          "Data Format",
+          "Data Management",
+          "Data Management (Infrastructure)",
+          "Infrastructure"
+        ],
+        "relations": {
+          "relatedTo": [
+            "OpenAPI",
+            "Data Format"
+          ],
+          "contrastsWith": [
+            "JSON",
+            "XML"
+          ]
+        },
+        "maturity": "mature"
+      }
+    ]
+  }
+]

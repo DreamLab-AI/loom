@@ -1,0 +1,2522 @@
+[
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "irrelevant",
+  "score": 1,
+  "why": "The candidate explicitly denies that client-side validation is a recognised concept in Bitcoin smart contracts, missing the well-established RGB/CSV paradigm entirely; it provides accurate but irrelevant background on Bitcoin Script and Ethereum validation without addressing the reference answer's core points about off-chain validation by counterparties, cryptographic commitments, privacy, or scalability."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "Captures the core idea of a single-use cryptographic primitive closed exactly once, but names the two operations as 'seal/commit' and 'open/reveal' instead of the reference's 'close' and 'verify', and frames it as commit-then-reveal rather than closing over a message to produce a witness that others can verify, missing the verify operation's nature."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Candidate correctly maps seal definition to UTXO (txid,vout), seal closing to spending the UTXO, and proof of publication to blockchain confirmation, matching all reference key points including double-spend prevention enforcing single-use property, with additional correct technical detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference \u2014 public publication vs private commitment, global consensus medium (Bitcoin), third-party verifiability, single-use seal closure exactly once, equivocation prevention, and Peter Todd attribution \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "masked",
+  "score": 2,
+  "why": "The candidate incorrectly defines a consignment as an on-chain commitment hash rather than the off-chain data bundle sent to the recipient; it misses that a consignment contains genesis, the DAG shard of state transitions, and anchor proofs, though it correctly identifies client-side validation and no global ledger."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "irrelevant",
+  "score": 2,
+  "why": "The candidate correctly identifies the determinism requirements for consensus-critical VMs in RGB but admits no knowledge of AluVM itself, missing all key specifics: that it's a purely functional register-based RISC VM by Maxim Orlovsky/LNP-BP, with no addressable memory access, no side effects, and no undefined behaviour by design."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "Covers Contractum as a DSL, Strict Types for deterministic encoding, and AluVM as the execution target accurately, but omits that Contractum is still under development, that Maxim Orlovsky/LNP-BP leads it, and that it compiles to specific RGB artefacts (schema, interfaces, genesis), and the candidate answer appears truncated."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "irrelevant",
+  "score": 1,
+  "why": "The candidate answer is on-topic but provides almost no correct content about Bifrost itself\u2014it only begins describing LNP-BP context and cuts off without addressing Bifrost's purpose, LNPBP standards, Strict-Types encoding, or the specific problems it solves that BOLT cannot."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "loom",
+  "score": 2,
+  "why": "Correctly identifies it as a non-profit standards body for Bitcoin L2/L3 and mentions RGB and client-side validation, but fabricates Adam Back as founder (should note Swiss jurisdiction, Maxim Orlovsky and Giacomo Zucco as key figures), misattributes CSV to Back, incorrectly maps LNPBP-0001 to RGB, and omits specific standards like LNPBP-1/2/3 commitments, LNPBP-8 single-use seals, LNPBP-12 Tapret, Bifrost, AluVM/Contractum, and the BOLTs distinction."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb11",
+  "arm": "raw",
+  "score": 3,
+  "why": "Covers many correct concepts (Lightning Labs, Taproot commitments, MS-SMT structure with sum/hash properties, supply conservation) but contains significant errors: claims commitment is in witness data rather than via internal key tweak, misses that asset ID derives from genesis outpoint, omits client-side validation entirely, and the RGB comparison is cut off/missing."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points\u2014user-controlled personal data store, decoupling data from apps, data silos/portability problem, host-anywhere flexibility, and WebID-based identity\u2014with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "loom",
+  "score": 3,
+  "why": "Correctly describes HTTP verbs, content negotiation, WAC's ACL documents, WebID, four access modes, and some ACP differences, but fails to identify the W3C Linked Data Platform (LDP) as the specific HTTP interaction model and misnames ACP as 'Access Control Panel' instead of 'Access Control Policies', missing key ACP concepts like Matchers and the allow/deny grant logic."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "masked",
+  "score": 3,
+  "why": "The candidate correctly identifies Solid-OIDC as extending OIDC with WebID-based identity and mentions DPoP, but the answer is truncated mid-table, missing critical details about the 'webid' scope/claim, issuer discovery via solid:oidcIssuer triples, and the DPoP proof mechanism (htm, htu, iat, jti, key thumbprint binding)."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "masked",
+  "score": 4,
+  "why": "Covers all key points (dereferencing WebID, oidcIssuer predicate, decentralised trust, relying party verification) with correct detail, but gives the wrong namespace URI (`https://inrupt.com/vocab/solid#` instead of `http://www.w3.org/ns/solid/terms#`), which is a factual error on a specific reference detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate covers all key points from the reference \u2014 HTTP(S) URI identifying an agent, RDF profile document on dereference, fragment-based URI structure (#me), authentication material (public keys, OIDC), and owner-controlled decentralised identity \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "masked",
+  "score": 5,
+  "why": "Candidate covers all key points: both yield verified WebID URI, WebID-TLS uses mTLS with client certificates, verifies public key against RDF profile, WebID-OIDC works at application layer via OIDC; though the answer appears truncated, all reference points present in the visible portion are correct and detailed."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "masked",
+  "score": 4,
+  "why": "Covers all key points\u2014RDF document at a dereferenceable URI, public key binding, WebID-TLS certificate matching, WebID-OIDC flow, and owner-controlled trust anchor\u2014but omits the specific `solid:oidcIssuer` predicate and `foaf:primaryTopic` link mentioned in the reference, and uses incorrect predicates (`p3p:publicKey`)."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "masked",
+  "score": 5,
+  "why": "All seven fields listed correctly with accurate types, canonical serialization array with leading 0 explained, SHA-256 for id and Schnorr/secp256k1 for sig both correct; only minor discrepancy is kind 0 labeled as 10002 instead of metadata, but kind 1 is correct and the overall answer is comprehensive and accurate."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 secp256k1 pubkey as identifier, no ledger/registry/minting, offline-first deterministic resolution, multibase encoding, optional Nostr relay enrichment, control via private key \u2014 and adds correct supplementary detail without contradicting anything."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points: content-addressed hashing, Merkle DAG structure, tamper detection via hash chaining, self-asserted timestamps, and the need for external anchoring, with no contradictions to the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points from the reference\u2014local SHA-256 hashing, Merkle tree aggregation, OP_RETURN anchoring, .ots proof contents, verification procedure, existence-before-time, tamper-evidence, and trust-minimisation\u2014with no contradictions and useful additional detail."
+ },
+ {
+  "set": "general",
+  "id": "adj02",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 CAP partition trade-off, eventual consistency for availability/latency with examples (social likes, DNS, shopping carts), strong consistency for correctness (financial integrity), and the candidate's answer is cut off but had already addressed every major point including per-operation granularity implied by the shopping-cart-vs-checkout framing."
+ },
+ {
+  "set": "general",
+  "id": "adj05",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points accurately \u2014 token refill at rate r up to capacity B, burst allowance up to B, leaky bucket constant-rate output with queue/drop, and correct use-case guidance \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj08",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 horizontal scaling, flexible schemas, BASE/eventual consistency, simple access patterns for NoSQL; joins, ad-hoc queries, ACID for relational; default-to-relational advice; hybrid architectures \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj11",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points \u2014 vertical vs horizontal definitions, simplicity/cost at small scale, SPOF, hard ceiling, fault tolerance, stateless/partitioned design requirement, and distributed complexity \u2014 with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj14",
+  "arm": "loom",
+  "score": 5,
+  "why": "Fully correct and complete: covers bit array + k hash functions, no false negatives with possible false positives, tunable false-positive rate, per-SSTable Bloom filters in LSM-tree databases skipping disk I/O for absent keys, with additional correct detail beyond the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj17",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points\u2014B-tree/hash inadequacy, O(n) brute-force cost, HNSW multi-layer proximity graph, ANN speed-accuracy trade-off, ef_search tuning recall vs latency, ~95%+ recall sufficiency, and brute-force only for small/offline/exact-NN\u2014with additional correct detail on M, quantisation, and concrete latency figures."
+ },
+ {
+  "set": "general",
+  "id": "adj20",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key reference points\u2014first-class edges, multi-hop traversal degradation, OWL formal reasoning (transitivity, subclass inference, property chains, consistency), URI-based interoperability, relational strengths for stable/tabular/ACID workloads, and hybrid approaches\u2014with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_03",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and correctly covers all reference points \u2014 three translations, three rotations, 3DoF as rotation-only, 6DoF adding positional tracking \u2014 with no contradictions and substantial accurate additional detail."
+ },
+ {
+  "set": "general",
+  "id": "in_06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference \u2014 the three guarantees, their definitions, the inevitability of partitions making the real choice CP vs AP, and adds correct supplementary detail without any contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_09",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points\u2014both as Sybil-resistance mechanisms tying influence to scarce resources, PoW's computational puzzles with hash-power proportionality, PoS's stake-proportional selection, attack costs for each, and PoS's energy advantage\u2014with additional correct detail and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_12",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points\u2014embeddings as learned dense vectors encoding similarity, cosine similarity formula and properties (direction not magnitude, high-dimensional suitability, range)\u2014and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points\u2014off-chain validation by involved parties only, blockchain stores only commitments, contrast with global validation, privacy and scalability benefits\u2014and adds accurate detail about RGB/single-use seals without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "masked",
+  "score": 2,
+  "why": "The candidate correctly identifies single-use seals as a Peter Todd cryptographic primitive with a one-time-use property, but gets the two core operations wrong \u2014 the reference defines them as 'Close' (seal over message \u2192 witness) and 'Verify' (seal, witness, message \u2192 bool), while the candidate describes 'Seal' and 'Open', mischaracterising the primitive as an encrypt/decrypt-like mechanism rather than a commitment/verification scheme."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate only provides a vague one-sentence analogy without mapping seal definition, seal closing, or proof of publication onto concrete Bitcoin mechanics, and fails to mention spending the UTXO, OP_RETURN/Taproot commitments, or double-spend prevention."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "irrelevant",
+  "score": 2,
+  "why": "The candidate correctly identifies a consignment as an off-chain data bundle transferred from sender to recipient, but misses critical details: it omits the DAG shard of state transitions from genesis, single-use seal verification, and client-side validation against the contract schema, while fabricating an 'acceptance transaction' step and incorrectly describing the contents as primarily a commitment hash and encrypted package rather than genesis + state transition history + anchor proofs."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb06",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate admits unfamiliarity with Tapret and Opret, provides only generic RGB/OP_RETURN background, and fails to describe either scheme or the critical first-output determinism rule."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate correctly describes Strict Types and AluVM but admits it cannot define Contractum, then only speculates about its role; it misses all key reference points (functional/declarative DSL, Maxim Orlovsky/LNP-BP, compiles to RGB schema+interfaces+AluVM bytecode), so only partial credit for the two supporting components."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "masked",
+  "score": 2,
+  "why": "The candidate correctly identifies Bifrost as a transport layer in the RGB ecosystem but mischaracterizes it as a 'consensus layer' for consignment exchange rather than an extensible Lightning channel/P2P protocol (LNPBP-50/51); it misses the key technical details\u2014Noise_XK reuse, Strict-Types encoding, deterministic commitments, single-use seals, Taproot/MuSig channels, multi-peer channel structures, and the non-downgradeability constraint\u2014that define Bifrost's actual relationship to BOLT."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "Correctly identifies LNP/BP as a non-profit maintaining Bitcoin L2/L3 standards including RGB, and notes no base-layer changes required, but misses Swiss jurisdiction, specific LNPBP standard examples (1/2/3, 8, 12), single-use seals, Tapret, AluVM/Contractum, key people (Orlovsky, Zucco), BOLTs distinction, and adds unverified claims about legal/regulatory focus."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "true",
+  "score": 4,
+  "why": "Covers ordinal numbering by mining order, FIFO transfer tracking, off-chain nature, and Taproot witness data embedding accurately, but the candidate answer is truncated before covering BRC-20 details (deploy/mint/transfer JSON, Domo, March 2023, indexer divergence) and omits the OP_FALSE OP_IF envelope mechanism and segwit witness discount."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "Candidate correctly describes HTTP verbs, content negotiation, and RDF serializations, and begins a reasonable WAC/ACP comparison, but never explicitly names the W3C Linked Data Platform (LDP) as the interaction model\u2014the central point of the reference\u2014and the WAC/ACP section is truncated before completing key details like ACP's Policies/Matchers model and the allow-unless-denied semantics."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "raw",
+  "score": 0,
+  "why": "The candidate answer contains no substantive content\u2014just a heading and no information about Solid-OIDC or DPoP."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference \u2014 dereferencing the WebID, solid:oidcIssuer predicate, decentralised trust, issuer matching \u2014 and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference \u2014 HTTP(S) URI identifying an agent, RDF profile document on dereference, fragment URI pattern (#me), authentication material (public keys, OIDC), and owner-controlled decentralised identity \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Covers all reference points: RDF/Turtle document at WebID URI, describes the agent, holds public keys and solid:oidcIssuer, explains both TLS key-matching and OIDC issuer verification flows, and notes owner-controlled self-sovereignty as authoritative source of truth."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "loom",
+  "score": 5,
+  "why": "All reference fields (id, pubkey, created_at, kind, tags, content, sig) are correctly listed with accurate descriptions; canonical serialisation, SHA-256 id computation, and Schnorr/secp256k1 signature mechanism are all correct; the only minor omission is the WebSocket message types, but the candidate adds correct extra detail (BIP-340, censorship resistance) without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "masked",
+  "score": 5,
+  "why": "Covers all reference points\u2014secp256k1 pubkey as identifier, no ledger/registry, offline-first deterministic resolution, Multikey/Multibase encoding, W3C DID Core conformance, control via private key\u2014and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points: content-addressed blobs/trees/commits, Merkle DAG structure, hash propagation making tampering detectable, and the limitation that timestamps are self-asserted with no external root of trust requiring external anchoring\u2014plus adds correct detail beyond the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "shuffled",
+  "score": 1,
+  "why": "The candidate answer is on-topic but contains no substantive correct content \u2014 it cuts off after an incomplete introductory sentence with no explanation of the mechanism, Merkle trees, .ots proofs, or verification process."
+ },
+ {
+  "set": "general",
+  "id": "adj04",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points\u2014head-of-line blocking, late-worse-than-lost, no ordering/retransmission in UDP, and application-layer compensation (jitter buffers, PLC, FEC, resilient codecs)\u2014accurately and with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj07",
+  "arm": "raw",
+  "score": 5,
+  "why": "Comprehensive answer that covers all reference points \u2014 default monolith for small teams, microservices for independent teams/scaling/fault isolation, operational complexity (discovery, tracing, observability), network latency vs in-process, eventual consistency/transaction difficulty, and the 'microservice premium' concept \u2014 with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj11",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points\u2014definitions, simplicity/cost at small scale, SPOF, hard ceiling, fault tolerance, stateless/partitioned design requirement, and distributed complexity\u2014with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj15",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points\u2014temporal/spatial decoupling, load-leveling/backpressure, async use cases, at-least-once delivery with idempotent consumers, and when to keep synchronous\u2014with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj18",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all reference points \u2014 static keys as long-lived app-level secrets, OAuth for scoped/short-lived/delegated access with OIDC for identity, revocation differences, blast radius, and when to use each \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_02",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference\u2014labelled vs unlabelled data, classification/regression vs clustering/dimensionality reduction, and the core distinction being presence or absence of labels\u2014while adding correct supplementary detail that does not contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_05",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points \u2014 key pair, computational infeasibility, encrypt/decrypt roles, sign-with-private/verify-with-public over hash, authenticity/integrity, and key generation/signing/verification \u2014 with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "in_09",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points\u2014scarce resource binding, hash puzzles vs stake-weighted selection, attack cost proportional to hash rate vs stake, energy difference\u2014and adds correct additional detail (slashing, finality models, specific examples) without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_13",
+  "arm": "loom",
+  "score": 4,
+  "why": "Covers all key concepts (parametric vs non-parametric memory, retrieval at inference, stale knowledge, hallucination, updateability without retraining) but omits the Lewis et al. 2020 attribution and the RAG-Sequence/RAG-Token variant distinction from the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_16",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points: Lamport/Shostak/Pease formalization, arbitrary/malicious behaviour vs crash faults, 3f+1 requirement with >2/3 honest, tight bound, and mentions that digital signatures relax the requirement implicitly through the BFT discussion; no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_19",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference: gradient computation via chain rule applied layer-by-layer in reverse, reuse of intermediate values for efficiency, feeding gradients to gradient descent, and enabling training of multilayer networks \u2014 with additional correct detail that does not contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "off02",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate correctly states the Berlin Wall fell on November 9, 1989, matching the reference answer's key fact precisely."
+ },
+ {
+  "set": "general",
+  "id": "off05",
+  "arm": "loom",
+  "score": 5,
+  "why": "Correctly identifies Jane Austen as the author, includes the 1813 publication date, and mentions both central characters Elizabeth Bennet and Mr Darcy."
+ },
+ {
+  "set": "general",
+  "id": "off08",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly covers all key reference points \u2014 autoimmune beta-cell destruction and absolute insulin deficiency in Type 1, insulin resistance with relative deficiency in Type 2, obesity/lifestyle association, different typical age of onset, and insulin dependence \u2014 with no contradictions and helpful additional detail."
+ },
+ {
+  "set": "general",
+  "id": "off11",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key reference points \u2014 Monet's 'Impression, Sunrise', the 1874 independent exhibition, the derisive critic origin, loose brushwork, light/atmosphere focus, plein air painting, everyday subjects, and all named artists \u2014 with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "off14",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points from the reference\u2014entropy statement, Boltzmann S=k ln W, Clausius and Kelvin-Planck equivalents, and the arrow of time\u2014accurately and in greater depth without any contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off17",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all reference key points \u2014 mRNA encoding spike protein, LNP delivery, ribosomal translation in cytoplasm, immune response (antibodies via B cells, T cell priming, immune memory), mRNA not entering nucleus/altering DNA, and degradation \u2014 with substantial correct additional molecular detail."
+ },
+ {
+  "set": "general",
+  "id": "off20",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate answer covers all key points from the reference: Mendeleev credited (1869), original arrangement by atomic weight/mass, predicted undiscovered elements, modern table by atomic number (protons), and Moseley's contribution, with no contradictions."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov02",
+  "arm": "raw",
+  "score": 3,
+  "why": "Correctly explains objectFormat and compatObjectFormat roles and the lack of interoperability, but misidentifies the auxiliary data structure as the pack index (.idx) rather than the bidirectional SHA-256\u2194SHA-1 name mapping, which is the key structural requirement the reference answer specifies."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate correctly identifies integrity/authenticity guarantee, names author/committer date fields as client-controlled and untrustworthy, and the answer is cut off but all key points from the reference are covered before truncation."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "true",
+  "score": 5,
+  "why": "Covers all key points: blob in separate refs/notes/commits namespace, tree keyed by target SHA, commit object unchanged so ID preserved, notes have their own independent commit history, and directly addresses provenance use case \u2014 only appears truncated at the end but all reference content is present."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Correctly describes anchoring Git commits to a blockchain via a genesis transaction and sequential marking, and explains the external-anchor advantage over Git's internal hash chain, but attributes the mechanism to Bitcoin/Taproot/UTXO single-use-seals rather than Bitmark, and adds speculative details about key-derivation tweaks not in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "masked",
+  "score": 5,
+  "why": "Candidate provides the exact leaf and interior-node hash definitions matching the reference, correctly explains domain separation via 0x00/0x01 prefixes making input spaces disjoint, and accurately describes prevention of second-preimage/tree-structure ambiguity attacks, fully covering all reference key points with additional correct detail."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "raw",
+  "score": 5,
+  "why": "Comprehensive and accurate coverage of inclusion proofs, consistency proofs, their inputs, and structural differences, fully matching the reference; STH contents and MMD were not explicitly addressed in the visible portion but the core distinctions are correct and complete."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_01",
+  "arm": "loom",
+  "score": 1,
+  "why": "The candidate correctly identifies AluVM as a purely functional register-based RISC VM with bounded execution and deterministic design, but fabricates nearly every concrete detail: the register file description (small count, st0/st1 naming convention) is wrong (actually 8 blocks of 32 A-registers at various widths, plus R and S registers), st0's role as accumulator is wrong (it is a boolean status register for flagged operation failures), the impossible-operation mechanism is wrong (destination gets None/undefined state, not zero or wrap), and the zero-opcode/code-padding totality mechanism is entirely missing."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_04",
+  "arm": "raw",
+  "score": 0,
+  "why": "The candidate explicitly states it doesn't know about LNPBP-4 and provides no correct content about the commitment buffer, slot placement via id mod N, entropy filling, or the partial/full reveal mechanism described in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "loom",
+  "score": 1,
+  "why": "The candidate inverts the size relationship (claiming contract consignments are large and transfer consignments are small), misses that transfer consignments must include the full validated history back to genesis (making them larger, not smaller), fails to explain the blinded UTXO as a seal definition in an invoice, and never mentions the stash as each party's client-side-validated data store."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "masked",
+  "score": 3,
+  "why": "Correctly identifies schema as declarative (not executable code) and interface as a standardised API boundary, but misses key details: AluVM validation scripts embedded in schemas, compilation to .rgb/.rgba, client-side validation with only a commitment on Bitcoin, that interfaces bundle with the contract and can be added post-hoc, and the specific interface-to-schema mappings (RGB20/NIA, RGB21/UDA, RGB25/CFA)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_10",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate correctly identifies layering/separation concerns for why BOLTs weren't extended, but misses the critical encoding point (BigInt \u2192 strict encoding for client-side-validated data), fabricates details about TLV/namespaced encoding not in the reference, and fails to correctly identify LNPBP-51 as channel-management protocol and LNPBP-53 as multi-peer payment channels, with the answer truncated before covering them."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "Identifies Reed-Solomon and symmetric encryption but gets specifics wrong (GCM not CTR+HMAC, SHA-256 not Bao/BLAKE3, per-shard encryption is fabricated), misses Bao verified streaming, Zstandard compression, and post-quantum SLH-DSA signatures entirely."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "masked",
+  "score": 3,
+  "why": "Correctly describes the HTTP request, names/relays JSON structure, and the '_' name, but incorrectly keys the 'relays' object by name instead of hex pubkey, omits the critical security rule about clients following the pubkey not the NIP-05 address, omits the no-redirects rule and CORS header, and the answer is truncated."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "masked",
+  "score": 4,
+  "why": "Comprehensive and mostly correct, but incorrectly states signEvent receives id, pubkey, and sig fields (the unsigned event per the reference only has created_at, kind, tags, content \u2014 the extension fills in id, pubkey, and sig), and describes getPublicKey returning a 66-char prefixed key rather than a raw 32-byte hex pubkey."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "Correctly identifies kind 22242, the two required tags (relay and challenge), and most relay validations, but gets the flow wrong (client does not initiate auth; relay sends the challenge first as [\"AUTH\", <challenge>]), omits that the event is ephemeral/must not be broadcast, omits the ~10-minute created_at check, and incorrectly states the relay signals auth-required via NOTICE instead of OK/CLOSED messages with 'auth-required:' and 'restricted:' prefixes."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "masked",
+  "score": 5,
+  "why": "Covers kind 10002, r tags, read/write/unmarked markers with correct semantics, and the outbox model fetch-from-write/send-to-read rule; the answer appears truncated but all key points from the reference are present in the visible portion."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "Correctly lists all four WAC modes and distinguishes accessTo vs default, but gets public access wrong (uses solid:Public as acl:agent instead of foaf:Agent as acl:agentClass), and the ACP section is truncated with no mention of matchers, boolean combinators, or the key capability ACP adds."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate correctly identifies SAN as the certificate field carrying the WebID and describes the overall flow accurately, but fabricates the RDF ontology terms \u2014 citing pim:publicKeyBase64/pim:publicKeyPem instead of the correct cert:key/cert:RSAPublicKey with cert:modulus and cert:exponent from the W3C cert ontology, which is a major factual error on a core part of the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "shuffled",
+  "score": 0,
+  "why": "The candidate answer is entirely empty (just a heading with no content), providing no information whatsoever about the Solid Notifications Protocol."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "loom",
+  "score": 3,
+  "why": "Captures the single-use property and two operations concept, but mislabels them as 'Seal/commit' and 'Open/reveal' instead of the correct 'Close' and 'Verify', and conflates the primitive with Bitcoin's UTXO model rather than describing it as a general cryptographic primitive where closing produces a witness/proof of closure over a message."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate correctly maps seal definition to a UTXO (txid, vout), identifies it as globally unique and spendable only once, and begins detailing the locking script mechanics \u2014 all consistent with and extending the reference answer's key points."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "raw",
+  "score": 4,
+  "why": "Correct on all key points \u2014 public verifiability, append-only medium with consensus properties, single-use enforcement, equivocation prevention \u2014 but frames seals as 'consumed/spent tokens' rather than Peter Todd's definition of a seal closed over a specific message, and omits the RGB/LNP-BP origin and Peter Todd attribution mentioned in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate correctly identifies a consignment as transfer data anchored to Bitcoin, but fabricates encryption/decryption mechanics, misses the critical concepts of off-chain DAG shard of state transitions, client-side validation against the schema, single-use seal verification, and the absence of a global ledger."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points\u2014purely functional register-based RISC VM, no mutable global state/side effects, no addressable random memory, no undefined behaviour, determinism for client-side validation consensus\u2014accurately and with additional correct detail beyond the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "loom",
+  "score": 3,
+  "why": "Correctly identifies Bifrost as a transport/protocol layer in LNP-BP for RGB, but mischaracterizes it as sitting above/beside BOLT rather than as a BOLT replacement defined by LNPBP-50/51; misses Noise_XK reuse, Strict-Types encoding, single-use seals, Taproot/MuSig channels, multi-peer channels, and the non-downgradeability constraint."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "masked",
+  "score": 3,
+  "why": "Correctly identifies LNP/BP as a non-profit standards body for Bitcoin L2/L3 protocols needing no base-layer changes, and mentions RGB, but omits Swiss jurisdiction, specific LNPBP numbered standards (1/2/3 commitments, 8 single-use seals, 12 Tapret), Bifrost, governance of RGB consensus layer, and key figures (Orlovsky, Zucco)."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "loom",
+  "score": 3,
+  "why": "Covers ordinal numbering, inscriptions in witness/Taproot, and BRC-20 as indexer-based, but misses key specifics: no mention of Casey Rodarmor, FIFO transfer rule, OP_FALSE OP_IF envelope structure, segwit witness discount, Domo as creator, or March 2023 origin; also incorrectly implies any full node can recompute ordinals without a separate database when in fact an off-chain indexer is needed."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "masked",
+  "score": 5,
+  "why": "Covers all key points\u2014Pod as user-controlled personal online data store, decoupling data from applications, data silos/lock-in/portability problem, host-anywhere flexibility, and WebID-based identity\u2014with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "masked",
+  "score": 3,
+  "why": "Correctly describes HTTP verbs and REST interaction but never names the W3C Linked Data Platform (LDP), misses WAC's acl:Control mode and default/inheritable ACLs, and doesn't mention ACP's Matchers or its allow-unless-denied grant semantics; the answer also appears truncated."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly identifies all key points: dereferencing the WebID URI, using solid:oidcIssuer (with correct predicate URI), the OP's URL as the object, decentralised trust under the WebID owner's control, and running standard OIDC discovery against the discovered issuer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference: WebID as an HTTP URI identifying an agent, dereferencing returns RDF (Turtle/JSON-LD), uses fragment identifiers (#me), holds authentication material, and enables decentralised identity with owner control."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "raw",
+  "score": 4,
+  "why": "Correct on shared purpose, TLS-layer vs application-layer distinction, public-key verification against the WebID RDF profile, and the shift due to browser/UX issues with client certs, but misses that the WebID URI is carried in the certificate's Subject Alternative Name (says 'subject DN or custom extension') and the candidate answer is truncated before completing WebID-OIDC details."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "raw",
+  "score": 3,
+  "why": "Correctly identifies it as an RDF document at a WebID URI containing public keys, but omits foaf:primaryTopic linking, solid:oidcIssuer for OIDC flows, and the WebID-TLS certificate-matching mechanism, while fabricating a challenge-response authentication flow not described in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "raw",
+  "score": 5,
+  "why": "All seven fields listed correctly with accurate descriptions, canonical serialisation array exact, SHA-256 and Schnorr/secp256k1 mechanisms explained correctly; only omission is the WebSocket message types, but the candidate adds correct extra detail (BIP-340, kind 4) without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "masked",
+  "score": 4,
+  "why": "Covers content-addressing, Merkle DAG chaining, and hash cascading accurately; the answer appears truncated before fully addressing the timestamp limitation and external anchoring, but the structural explanation matches the reference well with only the external-anchoring rationale incomplete."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "masked",
+  "score": 5,
+  "why": "Covers all key points \u2014 local SHA-256 hashing, Merkle tree aggregation via calendar servers, OP_RETURN anchoring, .ots proof contents (Merkle path + attestation), verification procedure, trust-minimisation, and batch efficiency \u2014 with no contradictions to the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj02",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 CAP partition trade-off, P non-negotiable, AP vs CP trade-offs, PACELC-equivalent latency discussion, correct examples for both eventual (social feeds, CDN, carts, DNS) and strong (banking, inventory, unique constraints), and per-operation consistency choice \u2014 with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj05",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points from the reference \u2014 token refill mechanics, burst absorption up to B, leaky bucket's constant-rate smoothing and overflow dropping, and correct guidance on when to choose each \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj08",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key reference points \u2014 flexible/evolving schemas, horizontal scale with eventual consistency (BASE/CAP), specific access patterns (key-value, document, graph, time-series), relational strengths (ACID, joins, ad-hoc queries), default-to-relational advice, and hybrid architectures \u2014 with no contradictions and useful additional detail."
+ },
+ {
+  "set": "general",
+  "id": "adj14",
+  "arm": "raw",
+  "score": 5,
+  "why": "Comprehensive and fully correct coverage of all reference points: bit array + k hash functions, no false negatives, possible false positives, tunable space/FPR trade-off, LSM-tree per-SSTable filters in Cassandra/RocksDB skipping disk reads for absent keys."
+ },
+ {
+  "set": "general",
+  "id": "adj17",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points\u2014B-tree/hash inapplicability, O(n) brute force, HNSW multi-layer proximity graph, ANN speed-accuracy trade-off\u2014with correct technical detail consistent with the reference, and the answer appears truncated but contains no errors or contradictions."
+ },
+ {
+  "set": "general",
+  "id": "adj20",
+  "arm": "raw",
+  "score": 3,
+  "why": "Covers schema-as-data, open-world assumption, and integration use cases correctly, but the answer is truncated mid-sentence, missing key reference points: index-free adjacency, multi-hop traversal performance vs SQL joins, OWL reasoning (subclass inference, transitivity, property chains, consistency checking), relational strengths, and hybrid architectures."
+ },
+ {
+  "set": "general",
+  "id": "in_03",
+  "arm": "raw",
+  "score": 5,
+  "why": "Fully correct and complete: accurately defines all six degrees (three translational axes plus pitch/yaw/roll), clearly explains that 3DoF tracks only rotation while 6DoF adds positional tracking, matching every key point in the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_06",
+  "arm": "raw",
+  "score": 4,
+  "why": "Fully correct on all key points (definitions, trade-off, Gilbert & Lynch 2002, CP vs AP examples), but misattributes the proposer as 'Mike Brewer' instead of 'Eric Brewer'."
+ },
+ {
+  "set": "general",
+  "id": "in_12",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points \u2014 embeddings as learned mappings of discrete objects to dense vectors, semantic similarity, word2vec example, cosine formula (dot product over product of norms), direction vs magnitude \u2014 and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_15",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all key points from the reference \u2014 OWL as a W3C language built on RDF/RDFS, ontologies as formal domain descriptions, classes/properties/individuals/axioms, formally defined semantics enabling automated reasoning, and reasoner capabilities (consistency checking, classification, inference) \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "masked",
+  "score": 5,
+  "why": "Fully correct and complete: covers all key points (only parties validate off-chain, blockchain stores only commitments not contract data, contrast with global validation, privacy and scalability benefits) with additional correct detail about RGB/single-use seals that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate describes a seal/open encryption-like primitive rather than the correct close/verify model; it misses that a seal is closed over a message producing a witness, that verify checks closure, and that the core security property is infeasibility of two valid closures over different messages."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate correctly maps all three seal components (definition=UTXO, closing=spending with message commitment, proof=block confirmation) and identifies Bitcoin's double-spend prevention as the single-use guarantee, fully matching the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "loom",
+  "score": 3,
+  "why": "Captures the core ideas of off-chain data bundle, client-side validation, DAG of state transitions, and on-chain commitment anchoring, but introduces incorrect details (encryption/unsealing with private keys, signature verification of sender/intermediate parties) not part of RGB consignments, and omits key reference points: genesis inclusion, single-use seal verification, and that only the relevant history shard is needed with no global ledger."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "masked",
+  "score": 2,
+  "why": "Candidate correctly describes Strict Types properties and AluVM's role but admits it cannot identify Contractum, missing that it is a functional/declarative DSL, its compilation targets (schema, interfaces, genesis, AluVM bytecode), and Maxim Orlovsky's leadership under LNP/BP Standards Association."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate admits unfamiliarity with Bifrost and speculates incorrectly about its nature, missing all key reference points: LNPBP-50/51 standards, Noise_XK/BOLT-8 reuse, Strict-Types encoding, deterministic commitments, single-use seals, Taproot/MuSig channels, multi-peer channels, and non-downgradability."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "true",
+  "score": 3,
+  "why": "Correctly identifies LNP/BP as a non-profit standards body for Bitcoin L2/L3 protocols and mentions RGB, but misses that it's Swiss-based, omits key figures (Orlovsky, Zucco), lacks specific LNPBP standard examples (LNPBP-1/2/3 commitments, LNPBP-8 single-use seals, LNPBP-12 Tapret), doesn't mention Bifrost, AluVM, or Contractum, and doesn't note the relationship to BOLTs."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 user-controlled personal data store, decoupling data from apps, data silos/lock-in/portability problem, host-anywhere flexibility, and identity-based access control (WebID equivalent via OIDC) \u2014 with no contradictions and substantial correct additional detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "Covers the authorization-code flow basis, WebID as subject, user-chosen IdP, and introduces DPoP with RFC 9449 and key-binding, but misses the specific 'webid' scope/claim distinction, the solid:oidcIssuer discovery mechanism via WebID profile triples, and the DPoP proof details (htm, htu, iat, jti, access-token hash) \u2014 and the DPoP explanation is cut off mid-answer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate correctly explains dereferencing the WebID URI, extracting solid:oidcIssuer triples, using the named OP for the OIDC flow, and the decentralised trust model \u2014 fully matching all reference key points, with accurate additional detail on token validation and design rationale."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Covers all key points: both yield a verified WebID URI, WebID-TLS uses client certificates with public key verification against the WebID RDF profile, WebID-OIDC uses OIDC ID Tokens at the application layer, and the shift occurred due to poor browser/UX support for client certificates versus widely deployed OIDC flows."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "loom",
+  "score": 4,
+  "why": "Covers all key points\u2014RDF document at a dereferenceable URI, holds public keys, describes WebID-TLS and WebID-OIDC verification flows, owner-controlled authoritative source\u2014but omits specific details like foaf:primaryTopic linking and solid:oidcIssuer, and slightly conflates authorisation (ACL) into the profile's authentication role."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "raw",
+  "score": 4,
+  "why": "Correct on all major points (secp256k1 key as identifier, no ledger/registry, offline-first deterministic resolution, optional relay enrichment, contrast with ledger-based methods), but omits the specific W3C Multikey/publicKeyMultibase verification method detail from the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "Covers all key points: content-addressed Merkle DAG, hash chaining through blobs/trees/commits, tamper detection via hash propagation, self-asserted timestamps as the limitation, and external anchoring for trusted proof-of-existence."
+ },
+ {
+  "set": "general",
+  "id": "adj01",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate answer fully covers all reference points: zk-rollup recommendation for payments, 7-day optimistic challenge window vs minutes-to-hours zk finality, fraud proofs vs validity proofs, 1-of-N honest watcher assumption vs cryptographic security, and EVM compatibility trade-offs."
+ },
+ {
+  "set": "general",
+  "id": "adj04",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 head-of-line blocking, late-worse-than-lost, no ordering/retransmission in UDP, and application-layer compensation (jitter buffers, FEC, resilient codecs, selective retransmission) \u2014 with additional correct detail on congestion control and overhead."
+ },
+ {
+  "set": "general",
+  "id": "adj12",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points\u2014symmetric speed vs key-distribution problem, asymmetric solving distribution/authentication but being too slow for bulk data, handshake for authentication and session-key establishment, symmetric for bulk transfer\u2014with additional correct detail (forward secrecy, TLS 1.3 specifics, HKDF) that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj15",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points\u2014temporal/spatial decoupling, load-leveling/backpressure, async use cases, at-least-once with idempotent consumers, dead-letter queues, and when to keep synchronous\u2014with additional correct detail beyond the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj19",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points\u2014bounded vs unbounded data, latency trade-offs, throughput/simplicity vs complexity/state management/exactly-once, nightly ETL as batch example, real-time fraud detection as stream example\u2014with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_02",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference \u2014 labelled vs unlabelled data, supervised tasks (classification, regression), unsupervised tasks (clustering, dimensionality reduction), generalisation to unseen inputs, and the core distinction being presence/absence of labels \u2014 while adding correct supplementary detail (algorithms, analogies, semi-supervised/RL) that does not contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_10",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference \u2014 iterative first-order method, negative gradient direction, update rule with learning rate, too-large/too-small trade-off, and backpropagation \u2014 and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_13",
+  "arm": "raw",
+  "score": 4,
+  "why": "Covers retrieval+generation combination, Lewis et al. 2020, parametric vs non-parametric memory, hallucination, updatable knowledge without retraining, and conditioning on retrieved passages, but omits the two variants (RAG-Sequence and RAG-Token)."
+ },
+ {
+  "set": "general",
+  "id": "in_17",
+  "arm": "loom",
+  "score": 4,
+  "why": "Correctly defines ZKP and all three properties (completeness, soundness, zero-knowledge) matching the reference, but omits the simulator formalism for zero-knowledge and the Goldwasser/Micali/Rackoff attribution."
+ },
+ {
+  "set": "general",
+  "id": "in_20",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points\u2014ANN trading exactness for speed, HNSW as a multi-layer proximity graph with sparse upper/dense bottom layers, greedy top-down traversal with beam search at the base, and logarithmic scaling\u2014with additional correct detail and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off03",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate correctly identifies CO\u2082 as the gas taken in and O\u2082 as the gas released, includes the balanced equation, mentions glucose production, light energy, and chloroplast details \u2014 fully consistent with and beyond the reference."
+ },
+ {
+  "set": "general",
+  "id": "off06",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 Rayleigh scattering, 1/\u03bb\u2074 wavelength dependence, blue scattered in all directions, and red sunsets explained by longer path \u2014 plus adds correct supplementary detail (why not violet, quantitative scattering ratio)."
+ },
+ {
+  "set": "general",
+  "id": "off09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key reference points \u2014 heritable variation, overproduction, struggle for existence, differential survival and reproduction, and accumulation of advantageous traits over generations \u2014 accurately and completely, with no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off12",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all reference points \u2014 pH definition as -log[H\u207a], 0-14 scale, acid/base/neutral thresholds, hydrogen ion concentration relationship, and logarithmic tenfold change \u2014 and adds correct supplementary detail (Br\u00f8nsted-Lowry, Lewis, Arrhenius frameworks) without any contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off15",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate covers every key point in the reference \u2014 continuous associative flow, interior monologue, unconventional punctuation, 1922 publication, single day in Dublin, Bloom and Dedalus, and Molly Bloom's unpunctuated closing soliloquy \u2014 and adds accurate supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off18",
+  "arm": "loom",
+  "score": 5,
+  "why": "Fully correct and complete: identifies the Nile as traditionally longest (~6,650 km), names the Amazon as a close challenger with comparable measurements, explains the dispute arises from source/headwater choice and measurement methodology, and even adds correct supplementary detail about delta channels and changing courses."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov01",
+  "arm": "loom",
+  "score": 4,
+  "why": "Correctly identifies all four object types, explains content-addressed Merkle links with embedded SHAs, distinguishes DAG from chain, but the answer is truncated before fully explaining edge addressing and the acyclicity argument, leaving those points incomplete."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov03",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate answer is truncated after only a few words and provides no substantive content about sha1dc or any detection mechanism, making it essentially incomplete despite being on-topic."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly explains notes storage under refs/notes/commits as separate blobs keyed by target object ID, and while truncated, all presented content accurately matches the reference with no contradictions."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "Correctly describes the general anchoring model and the key difference (external vs internal tamper-evidence), but lacks specific knowledge of git-mark (Bitmark blockchain, npm distribution, `git mark --genesis txid:output` syntax, UTXO chain mechanics) and explicitly disclaims familiarity with the tool."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov08",
+  "arm": "loom",
+  "score": 3,
+  "why": "Correctly identifies gpg.program config setting and the two-stage sign-then-timestamp mechanism, but gets the wrapper name wrong (says 'git-ot' or 'ot-gpg' instead of ots-git-gpg-wrapper/ots-git-gpg-wrapper.sh), incorrectly claims the timestamp is appended as a commit message trailer, and frames the problem as backdating/self-asserted clocks rather than the reference's key point about key revocation/compromise/expiry and proving signatures predate key invalidation."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "Candidate provides the exact leaf and interior-node hash definitions matching the reference, correctly explains domain separation via 0x00/0x01 prefixes, and accurately describes the second-preimage/tree-reshaping attack it prevents, with additional helpful detail."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov11",
+  "arm": "loom",
+  "score": 4,
+  "why": "Correctly identifies personality as the application layer atop the core and accurately covers entry validation/admission criteria and the external interface (auth/authz), but substitutes 'key management & tree-head signing' for 'canonicalisation/de-duplication', missing a key reference point; tile definition and problem description are excellent."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_02",
+  "arm": "loom",
+  "score": 2,
+  "why": "The formula is wrong: it uses x(P) as the HMAC key instead of S* (the 64-byte uncompressed sum of all unique public keys), misses the tagged-hash prefix SHA256('LNPBP1')||SHA256(tag), and fails to mention commitment to the sum of all keys in the output; the HMAC rationale incorrectly focuses on key-binding rather than length-extension attack prevention, and the no-nonce explanation cites determinism rather than the reference's reason that the public-key sum already provides sufficient entropy."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_05",
+  "arm": "loom",
+  "score": 1,
+  "why": "The candidate correctly identifies Opret as OP_RETURN-based and Tapret as Taproot-related, but gets nearly every specific detail wrong: Opret is 34 bytes (not 35/44), Tapret's commitment is a 64-byte tapscript leaf inside the script tree (not the output key itself), and the nonce's purpose is to mine the leaf hash to sort right in lexicographic branch ordering for minimal proofs \u2014 not for curve point validity or re-anchoring uniqueness."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate inverts the size relationship (claims contract consignment is largest, transfer is smallest), misses that transfer consignments carry full validated history back to genesis, omits the stash concept entirely, and fabricates details about encryption and Pedersen commitments."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "shuffled",
+  "score": 1,
+  "why": "The candidate answer contains only headings with no substantive content explaining schemas, interfaces, or their differences from Ethereum contracts."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "irrelevant",
+  "score": 2,
+  "why": "Candidate correctly identifies Reed-Solomon erasure coding but the answer is truncated and missing most key layers (AES-256-CTR + HMAC-SHA512 encryption, Bao/BLAKE3 verified streaming, Zstandard compression, post-quantum SLH-DSA signatures), covering only one of the six major components."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove01",
+  "arm": "loom",
+  "score": 3,
+  "why": "Correctly identifies the 64-hex x-only secp256k1 key as the method-specific identifier, Multikey as the verification method type, and authentication + assertionMethod as the two required relationships, but gets the multicodec prefix wrong (uses 0x120e/base58btc/z instead of the reference's 0xe701/base16-lower/f with parity byte), which is a significant technical error on a core part of the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "Correctly describes the HTTP request, JSON 'names' structure, and no-redirect rule, but gets the '_' name wrong (describes it as a wildcard/fallback rather than a root identifier displayed as the bare domain), omits the optional 'relays' object, omits the critical security rule that clients must follow the pubkey not the NIP-05 address, and omits CORS requirements."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Correct on all key points (window.nostr injected by extension, key never leaves extension, getPublicKey returns hex pubkey, signEvent input/output, nip04/nip44 namespaces) but the candidate's signEvent input includes pubkey in the unsigned event whereas the reference says pubkey is added by the signer, and the response appears truncated before fully covering optional encryption namespaces and document_end injection timing."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "raw",
+  "score": 4,
+  "why": "Correct on kind 22242, challenge-response flow, relay validation checks, and most details, but incorrectly names the tag 'relays' instead of 'relay', misses the 'auth-required:' and 'restricted:' OK/CLOSED message prefixes, and uses 'EVENT' verb instead of 'AUTH' for the client response."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "Correctly identifies kind 10002, 'r' tags, and unmarked meaning, but critically reverses the read/write marker semantics (says 'read' means fetch the user's events, 'write' means publish) \u2014 the reference states 'read' means where the user reads/receives mentions and 'write' means where the user publishes \u2014 and the candidate answer is truncated mid-sentence before explaining the fetch rule for posts vs mentions."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "raw",
+  "score": 3,
+  "why": "Correctly covers WAC modes (adds non-standard ControlRead/ControlWrite), accessTo vs default, and public access (uses acl:Agent instead of foaf:Agent). ACP section misses the actual RDF terms (acp:allOf/anyOf/noneOf) using generic and/or/not, and critically misidentifies the key ACP capability as explicit deny rather than attribute-based contextual conditions (acp:client, acp:issuer, acp:vc)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "true",
+  "score": 5,
+  "why": "Candidate correctly identifies SAN as the certificate field carrying the WebID, names the cert: ontology terms (RSAPublicKey, modulus, exponent), describes the verification flow accurately, and though the answer appears truncated, the visible content fully matches the reference on all key points including the shift rationale."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove11",
+  "arm": "loom",
+  "score": 2,
+  "why": "Correctly describes Merkle tree aggregation via OP_RETURN and calendar server roles, but fabricates the 'self-hash fixed-point' mechanism for the stamp step (should be PendingAttestation), misidentifies .ots operations (missing append/prepend/ripemd160, inventing 'self-hash' and 'timestamp' ops), and fails to mention PendingAttestation vs BitcoinBlockHeaderAttestation or that verification replays append/prepend/hash ops to reach the block header."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb03",
+  "arm": "masked",
+  "score": 5,
+  "why": "The candidate answer correctly and completely maps all three seal components (definition = UTXO identified by txid:vout, closing = spending the UTXO, proof of publication = confirmed transaction on-chain) and explains Bitcoin's double-spend prevention as the single-use guarantee, fully matching the reference with additional correct detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "Candidate answer fully covers all reference points \u2014 public publication vs private commitment, global consensus medium (Bitcoin), third-party verifiability, exactly-once seal closure, equivocation prevention, Peter Todd attribution \u2014 and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "Captures the off-chain DAG, client-side validation, on-chain anchor/commitment, and no global ledger concepts, but fabricates 'encrypted/sealed envelope' semantics for single-use seals (they are UTXO-based, not encryption envelopes), omits that the consignment contains the genesis and relevant state-transition shard explicitly, and mischaracterizes the unsealing step as key-based decryption rather than spending a UTXO to close a seal."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "masked",
+  "score": 4,
+  "why": "Covers all key points (purely functional, register-based RISC, no mutable state, determinism for consensus, client-side validation) but omits Maxim Orlovsky as creator, LNP/BP Standards Association, and the specific 'no random/addressable memory access' design choice; also adds some unverified claims like Turing-boundedness."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb10",
+  "arm": "raw",
+  "score": 0,
+  "why": "The candidate claims the LNP/BP Standards Association may not exist and provides no correct information, directly contradicting the reference which describes it as a real Swiss non-profit maintaining RGB and related Bitcoin L2/L3 standards."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "masked",
+  "score": 3,
+  "why": "Covers ordinal numbering from genesis and persistence through transfers, and correctly describes inscriptions in Taproot witness, but misses key details: FIFO transfer rule, OP_FALSE OP_IF envelope structure, segwit witness discount, and entirely omits the BRC-20 section (off-chain/indexer-based explanation) which was a core part of the question."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points: Pod as user-controlled personal online data store, decoupling data from apps, data silos/lock-in/portability problem, host-anywhere flexibility, and access control \u2014 fully consistent with the reference, with additional correct detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "raw",
+  "score": 2,
+  "why": "Candidate fails to identify LDP (Linked Data Platform) as the HTTP interaction model, describes WAC format incorrectly as 'line-oriented text format (not RDF)' when it is RDF, claims WAC has no groups when it does, and mischaracterizes ACP's structure (Policies/Matchers not mentioned); several key reference points are contradicted."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "The candidate answer fully covers every key point in the reference \u2014 HTTP(S) URI identifying an agent, RDF profile document on dereference, fragment-based naming (#me), authentication material (public keys via TLS, trusted issuers via OIDC), and owner-controlled decentralised identity \u2014 and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "The candidate answer is incomplete (cut off mid-sentence), covers the shared foundation partially but never reaches the key differentiators\u2014mTLS with X.509 SAN, OIDC ID Tokens, or the reasons for the ecosystem shift\u2014so most reference key points are missing."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Covers all key points\u2014RDF document at a dereferenceable URI, cryptographic keys, dereference-and-verify flow, owner-controlled trust anchor\u2014but omits the specific details of foaf:primaryTopic and solid:oidcIssuer/OIDC issuer verification, and doesn't mention Turtle as the typical serialisation."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "All seven fields listed correctly with accurate types, canonical serialization array with leading 0 explained, SHA-256 for id, Schnorr/BIP-340 signature over id on secp256k1 described precisely, integrity and authorship guarantees fully covered; only minor omission is the WebSocket client-relay message types, but additional correct details (BIP-340, censorship resistance) compensate."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers every key point from the reference \u2014 local SHA-256 hashing, Merkle tree aggregation, OP_RETURN anchoring, .ots proof contents (hash, Merkle path, attestation), verification steps, existence-before-time, tamper-evidence, and trust-minimisation \u2014 with additional correct detail on block headers and what the proof does not demonstrate."
+ },
+ {
+  "set": "general",
+  "id": "adj03",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate answer fully covers all reference points\u2014RAG for freshness, fine-tuning for behaviour, hallucination reduction, cost trade-offs, and hybrid approach\u2014with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj06",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers every key point from the reference \u2014 lost response/timeout ambiguity, double-charge risk, client-attached unique key reused on retries, server stores and replays the original result, and effectively exactly-once semantics \u2014 with additional correct context that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj09",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points (gRPC HTTP/2+Protobuf binary with typed .proto contracts, four streaming patterns, browser incompatibility needing gRPC-Web+proxy, REST/JSON browser-native and human-readable, hybrid architecture) with correct additional detail on caching, OAuth, and HTTP/2 multiplexing."
+ },
+ {
+  "set": "general",
+  "id": "adj18",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate answer covers all reference points\u2014short-lived scoped tokens, delegation, revocation, OIDC identity, API key limitations, when to use each, and combining both\u2014with additional correct detail and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_01",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points\u2014self-executing program, automatic enforcement without intermediaries, blockchain/EVM deterministic execution, tamper-resistance, verifiability, ERC-20/ERC-721 standards, and dApps/DeFi\u2014while adding correct supplementary detail (gas, oracles, caveats) that doesn't contradict the reference; only omission is the Nick Szabo attribution, which is minor given the otherwise comprehensive and accurate treatment."
+ },
+ {
+  "set": "general",
+  "id": "in_04",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points \u2014 subject\u2013predicate\u2013object structure, IRI/blank-node/literal typing, directed labelled graph formation \u2014 and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all reference points \u2014 replicated log consensus, state-machine replication, understandability vs Paxos, leader election, log replication, and safety \u2014 with additional correct detail and no contradictions."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate discusses Bitcoin's standard full-node validation model but completely misses the actual concept of client-side validation (RGB/CSV paradigm) where only counterparties validate off-chain state transitions while the blockchain stores only cryptographic commitments \u2014 it conflates 'client-side' with ordinary full-node validation, which is the opposite of the reference answer's meaning."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "The candidate correctly identifies single-use seals as a Peter Todd cryptographic primitive usable only once, but names the two operations as 'Seal' and 'Break/Open' instead of the reference's 'Close' and 'Verify', mischaracterising the second operation as revealing a hidden value rather than verifying a closure, and omits the key concept of closing over a message to produce a witness/proof."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate answer fully covers all reference points \u2014 public publication vs private commitment, global consensus medium (Bitcoin), third-party verifiability, single-use seal closure exactly once, equivocation prevention, Peter Todd origin, RGB/LNP-BP formalisation \u2014 and adds correct additional detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "raw",
+  "score": 3,
+  "why": "Correctly identifies Contractum as a high-level language compiling to AluVM bytecode with Strict Types as the type system, but incorrectly frames it as 'RGB++' (a different project) rather than RGB under LNP/BP Standards Association, omits Maxim Orlovsky's role, misses that Strict Types provides deterministic platform-independent binary encoding at consensus level, and misses compilation outputs (schema, interfaces, genesis, contract operations)."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "The candidate correctly identifies Bifrost as a transport/bridge layer for RGB over Lightning infrastructure, but mischaracterises it as a 'bridge' rather than an extensible Lightning protocol defined by specific LNPBP standards (LNPBP-50/51), fails to mention the Noise_XK/Strict-Types encoding, single-use seals, deterministic commitments, Taproot/MuSig channels, multi-peer channel structures, or the non-downgradeability to BOLT channels \u2014 missing most key technical points from the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb11",
+  "arm": "loom",
+  "score": 3,
+  "why": "Covers Taproot anchoring, MS-SMT structure and supply conservation well, but incorrectly cites BIP numbers (327-330 are unrelated), misses the key-tweak mechanism, omits client-side validation, and the RGB comparison appears cut off/missing entirely."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "true",
+  "score": 4,
+  "why": "Covers DPoP binding, WebID identity, user-chosen IdP, and proof-of-possession accurately, but uses 'sub' claim instead of the specific 'webid' scope/claim and omits solid:oidcIssuer triple discovery from the WebID profile."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Covers all key points: WebID as HTTP(S) URI identifying an agent, dereferencing returns RDF, fragment identifier pattern, authentication material (oidcIssuer shown), and owner-controlled decentralised identity."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "loom",
+  "score": 3,
+  "why": "Correctly contrasts the two protocols and explains the migration reasons, but misidentifies WebID-TLS as requiring CA chain validation rather than the actual mechanism of matching the certificate's SAN-embedded WebID URI's public key against the key published in the RDF profile, which is the core distinguishing feature."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Correct on all major points (key-based construction, no ledger, offline-first deterministic resolution, optional relay enrichment, secp256k1), but incorrectly states the key encoding as 64-char hex rather than Multikey/publicKeyMultibase, and mentions JsonWebKey2020/Ed25519 instead of the correct Multikey verification method type."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "true",
+  "score": 5,
+  "why": "Covers all key points: content-addressed hashing (blobs/trees/commits), Merkle DAG chaining, tamper detection via hash propagation, self-asserted timestamps as the limitation, and the need for external anchoring; the truncated table doesn't omit any required content."
+ },
+ {
+  "set": "general",
+  "id": "adj01",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly covers all key points from the reference: zk-rollup recommendation for payments, 7-day challenge window for optimistic rollups via fraud proofs, near-instant cryptographic finality for zk-rollups, security assumption differences (1-of-N honest watcher vs cryptographic proof), EVM compatibility trade-offs, and fast-exit liquidity provider mitigation \u2014 with additional correct detail beyond the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj12",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points\u2014symmetric speed, key-distribution problem, asymmetric solving key exchange and authentication, asymmetric being too slow for bulk data, handshake vs record phase split\u2014with additional correct detail (forward secrecy, HKDF, specific ciphers) and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "adj16",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points (event-driven/stateless/idle fit, cold-start latency with correct range, 15-min limit, statelessness requiring external state, containers for long-running/stateful/low-latency, cost crossover rule of thumb) with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj19",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points \u2014 bounded vs unbounded data, latency tradeoffs, simplicity/rerunability of batch, operational complexity of stream, nightly ETL example, fraud detection example \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_10",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points: iterative first-order method, negative gradient direction, correct update rule, learning rate controls step size, too large causes overshoot/divergence/oscillation, too small causes slow convergence, mentions backpropagation and variants like SGD and Adam."
+ },
+ {
+  "set": "general",
+  "id": "in_14",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points \u2014 definition, chicken-and-egg circular dependency, real-time sensor-based operation, method families (Kalman filters, particle filters), and applications (robotics, AR) \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb04",
+  "arm": "true",
+  "score": 5,
+  "why": "Candidate answer fully covers all reference points \u2014 public publication vs private commitment, global consensus medium (Bitcoin), third-party verifiability, exactly-once seal closure, anti-equivocation, and Peter Todd attribution \u2014 with substantial correct additional detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb05",
+  "arm": "true",
+  "score": 3,
+  "why": "The candidate incorrectly claims 'consignment' is not a recognised RGB term (it is a core protocol concept), but its description of the transfer flow\u2014off-chain DAG data sent to the recipient, client-side validation of seals/anchors against Bitcoin, no global ledger\u2014substantially matches the reference answer's key points."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate admits ignorance of AluVM and provides no correct specific details about it being a purely functional register-based RISC VM by Maxim Orlovsky with no addressable memory access, though it correctly notes RGB requires deterministic execution."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb12",
+  "arm": "raw",
+  "score": 3,
+  "why": "Covers Rodarmor's authorship, sequential numbering, witness-based inscriptions, and BRC-20 as indexer-dependent with correct JSON fields and Domo attribution, but misattributes the ordering scheme (describes a 4-level lexicographic system instead of coinbase-mined serial order with FIFO tracking), incorrectly describes the inscription envelope mechanism (uses OP_RETURN 0x6a instead of the OP_FALSE OP_IF envelope in Taproot script-path spends), omits the segwit witness discount, and states January 2023 for BRC-20 instead of March 2023."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "Covers all reference key points (user-controlled data store, decoupling data from apps, data silos/lock-in, host-anywhere, WebID) and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "shuffled",
+  "score": 3,
+  "why": "Correctly describes HTTP verbs, RDF serialization, and WAC's ACL-based model with modes, but fails to identify the W3C Linked Data Platform (LDP) as the specific HTTP interaction model and the ACP description is truncated/incomplete."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov06",
+  "arm": "true",
+  "score": 5,
+  "why": "Covers all key points: both yield a verified WebID URI, WebID-TLS uses mTLS with client X.509 certs, verifies the cert's public key against the RDF profile, WebID-OIDC operates at the application layer via OIDC ID Tokens, and the shift occurred due to poor browser/UX support for client certs versus widely deployed OIDC flows."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov07",
+  "arm": "true",
+  "score": 4,
+  "why": "Covers all key points \u2014 RDF document, dereferencing, public keys, WebID-TLS and OIDC verification flows, owner-controlled trust anchor \u2014 but omits the specific foaf:primaryTopic link and solid:oidcIssuer property mentioned in the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "true",
+  "score": 5,
+  "why": "All seven fields, canonical serialisation, SHA-256 id derivation, Schnorr/BIP-340 signature, and integrity/authorship guarantees are correctly and completely covered; the only omission is the WebSocket message types, which is minor context beyond the core question."
+ },
+ {
+  "set": "general",
+  "id": "adj03",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points \u2014 RAG for freshness, fine-tuning for behaviour, hallucination grounding, cost profiles, hybrid approach \u2014 with additional correct detail on retrieval failure modes."
+ },
+ {
+  "set": "general",
+  "id": "adj06",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers every key point from the reference \u2014 lost response/timeout ambiguity, duplicate charge risk, client-attached unique key reused on retries, server stores and replays the first result, exactly-once semantics \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj09",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points \u2014 REST/JSON at public edge, gRPC internally, HTTP/2+Protobuf binary with smaller payloads/lower latency, .proto typed contracts with codegen, native streaming modes, browser inability to speak gRPC natively requiring gRPC-Web+proxy, REST being human-readable/debuggable/browser-native \u2014 and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_01",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points\u2014self-executing program, blockchain/EVM, deterministic replication, tamper-resistance, no intermediary, Nick Szabo 1990s, code-vs-court enforcement\u2014and adds correct supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_04",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points (subject-predicate-object structure, IRI/blank node/literal typing, directed graph with labelled arcs, foundation for knowledge graphs) accurately and with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "in_07",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points\u2014replicated log consensus, understandability vs Paxos, leader election, log replication, safety, membership changes, and Paxos equivalence\u2014with additional correct detail and no contradictions."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "Covers all key points: only involved parties validate off-chain, blockchain stores only commitments/anchors not contract data, contrasts with global validation by all nodes, and identifies privacy and scalability benefits."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb02",
+  "arm": "true",
+  "score": 2,
+  "why": "The candidate correctly identifies the single-use/one-time property but mischaracterises the two core operations as 'Seal/commit' and 'Open/reveal/spend' rather than the correct 'Close' (seal over a message producing a witness) and 'Verify' (check seal+witness+message), and conflates the concept with Bitcoin UTXOs rather than describing it as a general cryptographic primitive for closing over a message with a verifiable witness."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "The candidate explicitly states it cannot confirm what Contractum is and refuses to define it, missing all key points about it being a functional/declarative DSL, its compilation to RGB artefacts and AluVM bytecode, its use of Strict Types, and Maxim Orlovsky's leadership \u2014 though it does provide accurate descriptions of Strict Types and AluVM individually."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb09",
+  "arm": "true",
+  "score": 2,
+  "why": "Candidate describes Bifrost as a consignment-exchange/discovery protocol rather than an extensible Lightning channel protocol (LNPBP-50/51); misses Noise_XK reuse, Strict-Types encoding, deterministic commitments, single-use seals, Taproot/MuSig channels, multi-peer channels, and the non-downgradeability constraint."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Candidate covers all key points: dereferencing the WebID URI, the solid:oidcIssuer predicate with correct URI, OP discovery, decentralised trust via the WebID document, and standard OIDC flow \u2014 fully aligned with the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov05",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers all key reference points\u2014HTTP(S) URI identifying an agent, dereferenceable RDF profile, authentication material/proof of control, and decentralised owner-controlled identity\u2014with additional correct detail on WebID-TLS/OIDC and Solid, and no contradictions."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov10",
+  "arm": "true",
+  "score": 4,
+  "why": "Covers all key points \u2014 secp256k1 key as identifier, no ledger/registry, deterministic local resolution, contrast with ledger-based methods \u2014 but describes encoding as '64-character hex' rather than the reference's Multikey/publicKeyMultibase format, and doesn't mention optional Nostr relay enrichment (kind-0 metadata)."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov12",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Covers all key points: local SHA-256 hashing, Merkle tree aggregation, on-chain anchoring, proof structure, trust-minimisation, and tamper-evidence; no contradictions with the reference despite the answer being truncated mid-sentence."
+ },
+ {
+  "set": "general",
+  "id": "adj13",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points accurately: modulo-N catastrophic reshuffle, consistent hashing ring with clockwise assignment, ~K/N minimal remapping, uneven arcs from single points, and virtual nodes for load balancing/spread \u2014 with additional correct detail beyond the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj16",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference key points\u2014event-driven/short-lived/stateless workloads, cold-start latency (100ms\u20132s), 15-min execution limit, statelessness requiring external state, containers for long-running/stateful/low-latency work, and the idle-vs-busy cost rule of thumb\u2014with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "in_11",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points: overfitting as fitting noise with poor generalisation, high variance/low bias, excessive complexity as cause, regularisation as penalty/constraint favouring simpler models, and all referenced techniques (L1/L2, dropout, early stopping) plus correct extras."
+ },
+ {
+  "set": "general",
+  "id": "in_14",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points \u2014 defines SLAM as simultaneous map-building and self-localisation, explains the circular dependency clearly, names EKF, particle filter, and graph-based methods, and cites both robot navigation and AR/VR as applications."
+ },
+ {
+  "set": "general",
+  "id": "in_17",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate correctly defines ZKP as proving a statement true without revealing anything beyond its truth, and accurately describes all three properties\u2014completeness, soundness (with negligible probability), and zero-knowledge (with simulator formalism)\u2014matching the reference in all key points."
+ },
+ {
+  "set": "general",
+  "id": "in_20",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points\u2014ANN trading exactness for speed, HNSW as a multi-layer graph with sparse upper/long-range and dense lower layers, greedy top-down descent, beam search at the bottom layer, logarithmic navigation\u2014with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "off03",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate correctly identifies CO\u2082 taken in and O\u2082 released, mentions chlorophyll, water, glucose production, and adds accurate extra detail (stomata, balanced equation) without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off06",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate covers all reference key points \u2014 Rayleigh scattering, 1/\u03bb\u2074 wavelength dependence, blue scattered in all directions, and red sunsets explained by longer path \u2014 and adds correct supplementary detail (why not violet, quantitative scattering ratio) without any contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers every key point from the reference \u2014 heritable variation, overproduction, struggle for existence, differential survival and reproduction, and accumulation of favourable traits over generations \u2014 accurately and with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "off12",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers every reference point \u2014 pH as -log[H\u207a], 0-14 scale, below 7 acidic, 7 neutral, above 7 basic, logarithmic tenfold change, and H\u207a concentration differences \u2014 and adds correct supplementary detail (Br\u00f8nsted\u2013Lowry, Lewis definitions, ion-product constant) without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "off15",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference \u2014 continuous associative flow, interior monologue, unconventional punctuation, 1922 publication, single day in Dublin, Leopold Bloom and Stephen Dedalus, and Molly Bloom's closing unpunctuated soliloquy \u2014 and adds substantial correct additional detail without any contradiction."
+ },
+ {
+  "set": "general",
+  "id": "off18",
+  "arm": "raw",
+  "score": 5,
+  "why": "Fully correct and complete: identifies the Nile as the traditional answer with accurate length, names the Amazon as the challenger with correct length range, explains the dispute arises from source/headwater definition and measurement methodology, and even adds correct additional detail about delta channels and changing courses."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov01",
+  "arm": "masked",
+  "score": 4,
+  "why": "Correctly distinguishes DAG from chain, names all four object types, explains content addressing and Merkle links, and argues acyclicity from content-determined hashes, but the answer is truncated mid-sentence so completeness cannot be fully verified."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Candidate correctly identifies the signature covers the commit object (tree, parent, identities, dates, message), provides authenticity/integrity not trusted time, though the answer appears truncated it covers all key points before cutting off."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "masked",
+  "score": 5,
+  "why": "Candidate covers all key points: notes stored as blobs in a separate refs/notes/commits ref keyed by target SHA, commit object unmodified so hash unchanged, notes mutable after the fact, commit signature doesn't cover notes, and notes ref needs separate protection for provenance use \u2014 fully correct and complete vs the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "loom",
+  "score": 4,
+  "why": "Correctly describes the core model of anchoring Git commits to a blockchain via transactions, the genesis transaction's role as the chain's starting point, and the external-anchor advantage over Git's internal hash chain; minor inaccuracies in specifics (describes Bitcoin/Taproot/UTXO mechanics rather than Bitmark, and the answer appears truncated)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov08",
+  "arm": "raw",
+  "score": 4,
+  "why": "Correctly describes the GPG program wrapping mechanism and gpg.program config setting, and accurately explains the temporal provenance problem, but names the wrapper 'ot-gpg or similar' instead of the specific 'ots-git-gpg-wrapper.sh' and the answer is truncated at the end."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "true",
+  "score": 5,
+  "why": "Candidate provides correct leaf and interior hash definitions with SHA-256 and the 0x00/0x01 prefixes, accurately explains domain separation preventing second-preimage/tree-reshaping attacks, fully matching the reference answer's key points."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov11",
+  "arm": "raw",
+  "score": 3,
+  "why": "Correctly identifies personality as the application layer and nails responsibilities 1 (admission/validation) and 3 (client-facing API), but incorrectly lists storage/persistence as responsibility 2 instead of canonicalisation, which is a significant factual error against the reference; tile definition is roughly correct but over-elaborates with inaccurate details about a two-level meta-tree structure not in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_02",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate correctly identifies length-extension resistance as the reason for HMAC-SHA256 and has reasonable intuition about determinism for no-nonce, but gets the HMAC key wrong (claims it's a protocol-domain-separation constant rather than S*, the 64-byte uncompressed sum of public keys), misses the tweaked-key formula entirely, and fails to mention that the commitment binds to the sum of all unique keys in the output."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_06",
+  "arm": "loom",
+  "score": 4,
+  "why": "Covers all three operations (Create/Gen, Close/Seal, Verify), states the correct security property (infeasible to verify two distinct messages on the same seal), and correctly explains the Bitcoin UTXO realisation, but omits the authenticated Close variant (with secret/predicate), the note that multiple witnesses for the same seal/message pair are acceptable, and the trusted-notary trivial implementation."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "shuffled",
+  "score": 1,
+  "why": "The candidate inverts the size relationship (claims contract consignment is large and transfer is small 'delta'), directly contradicting the reference which states contract consignments are small (few KiB) while transfer consignments are large because they carry the full validated history back to Genesis."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "true",
+  "score": 3,
+  "why": "Correctly describes schema as off-chain logic with client-side validation and commitments on Bitcoin, and interfaces as standardised ABI-like APIs, but omits key details: AluVM validation scripts, declarative (not executable) nature of schemas, .rgb/.rgba compilation, Genesis instantiation, that interfaces bundle with contracts and can be added post-deployment, and the specific RGB20/RGB21/RGB25 mappings to NIA/UDA/CFA schemas."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate answer is truncated mid-table after only mentioning compression, failing to describe the key cryptographic layers (AES-256-CTR + HMAC-SHA512 encryption, Bao/BLAKE3 verified streaming, Reed-Solomon FEC, post-quantum signatures) that constitute the core of the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove01",
+  "arm": "raw",
+  "score": 2,
+  "why": "Correctly identifies the 64-hex x-only pubkey as the method-specific identifier and names authentication/assertionMethod as the two required relationships, but gets the verification method type wrong (Ed25519VerificationKey2018 instead of Multikey), omits the DIDNostr document type, and incorrectly describes publicKeyMultibase construction (uses z/Base58 without multicodec varint instead of f/base16-lower with 0xe701 prefix + parity byte)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "true",
+  "score": 2,
+  "why": "Covers the HTTP request correctly but the JSON structure section is cut off/incomplete, and it omits the '_' root identifier meaning, the security rule about following pubkeys not addresses, the relays object, and the no-redirects/CORS rules."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "true",
+  "score": 5,
+  "why": "Covers all reference points accurately: window.nostr injected by extension so private key never reaches the page, getPublicKey() returning hex pubkey, signEvent() receiving unsigned event and returning it with id/pubkey/sig added, and both nip04 (legacy) and nip44 optional encryption namespaces."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "shuffled",
+  "score": 2,
+  "why": "Candidate correctly describes the AUTH challenge-response flow and relay message format, but states kind **2** instead of the correct kind **22242**, and the answer is truncated before completing the required tags, validation steps, and auth-required/restricted signaling."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "true",
+  "score": 4,
+  "why": "Correctly identifies kind 10002 and 'r' tags, but the candidate answer appears truncated\u2014it cuts off mid-table without covering read/write markers, unmarked entry meaning, or the rule for fetching posts vs mentions, so key details from the reference are missing."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Covers WAC modes, accessTo vs default, and ACP core concepts accurately; adds ControlRead which isn't in the reference but isn't wrong; answer appears truncated before completing ACP section, so ACP matchers (client/issuer/vc) and the key capability ACP adds over WAC are missing."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "irrelevant",
+  "score": 1,
+  "why": "The candidate is on-topic and correctly identifies the Solid ecosystem context, but provides none of the specific details asked for \u2014 no channel type identifiers, no namespace, no properties (topic, receiveFrom, sendTo), and no subscription mechanism \u2014 explicitly declining to answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove11",
+  "arm": "raw",
+  "score": 3,
+  "why": "Captures Merkle aggregation via OP_RETURN and the two-step workflow concept correctly, but mischaracterizes the stamp as containing a Merkle path and server signature rather than a PendingAttestation(calendar URL), never mentions the specific .ots operation types (append, prepend, sha256, ripemd160), never mentions BitcoinBlockHeaderAttestation, and the answer is truncated before completing the .ots proof structure or verification description."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb06",
+  "arm": "loom",
+  "score": 1,
+  "why": "The candidate explicitly refuses to explain Tapret and Opret, fails to describe either scheme's mechanism, and never identifies the critical 'first output' determinism rule that prevents alternative commitment histories."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Covers all key points (purely functional, register-based, no side effects/I/O/mutable state, determinism for consensus) but omits Maxim Orlovsky as creator, LNP/BP Standards Association, and the specific point about no random/addressable memory access being distinct from the register-based design; adds plausible but unreferenced details like bounded execution/gas."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov01",
+  "arm": "true",
+  "score": 5,
+  "why": "Covers all key points \u2014 user-controlled personal online data store, decoupling data from apps, data silos/lock-in/portability, host-anywhere, WebID for access control \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov02",
+  "arm": "true",
+  "score": 4,
+  "why": "Correctly describes HTTP verbs, RDF serialisation, WAC's ACL-based model with .acl resources, agents, and modes, but fails to explicitly name the W3C Linked Data Platform (LDP) as the interaction model and the candidate answer appears truncated before fully describing ACP, missing key ACP details like Policies/Matchers and the allow-unless-denied semantics."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov08",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "All seven fields, canonical serialization, SHA-256 id, and Schnorr signature are correct; however, kind examples are wrong (0 is metadata not text note, 1 is text note not contact list) and the WebSocket client-relay message types (EVENT/REQ/CLOSE/OK/EOSE/NOTICE/CLOSED) are not mentioned."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully and accurately covers all key points from the reference: npub encodes a 32-byte public key, nsec encodes a 32-byte private key, both are bech32-encoded for human-readable display/copy-paste/QR, and they must not appear in NIP-01 events or filters which use canonical hex, with correct reasoning about the presentation vs wire format separation."
+ },
+ {
+  "set": "general",
+  "id": "adj07",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points\u2014default monolith for small teams, concrete triggers for microservices (scaling, independent deployment, fault isolation, tech diversity), operational complexity (discovery, tracing, observability), network latency trade-off, ACID vs eventual consistency/sagas, and the 'microservice premium' concept\u2014with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj10",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points accurately: two environments with traffic switch and instant rollback for blue-green, gradual traffic routing with metric monitoring for canary, cost tradeoffs, observability requirements, and when to prefer each \u2014 adds useful detail without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_05",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points\u2014key pair, one-way/infeasibility, encrypt/decrypt roles, sign with private key over hash, verify with public key, authenticity/integrity, and three-algorithm scheme\u2014with additional correct detail and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_08",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers every key point from the reference\u2014leaf hashing, internal node hashing of children, root as compact commitment, Merkle proof with logarithmic path, block header storage, light-client/SPV verification, and tamper detection\u2014with no contradictions and useful additional detail."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb01",
+  "arm": "true",
+  "score": 5,
+  "why": "Covers all key points from the reference \u2014 off-chain validation by involved parties only, blockchain stores only cryptographic commitments, contrast with global on-chain validation, privacy and scalability benefits, and participants keeping their own history \u2014 with additional correct detail about RGB/single-use seals that doesn't contradict the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb08",
+  "arm": "true",
+  "score": 5,
+  "why": "The candidate answer correctly identifies Contractum as the smart-contract authoring/definition layer, its use of Strict Types for deterministic data encoding, and its compilation to AluVM bytecode as the execution target \u2014 all key points from the reference \u2014 and adds accurate supplementary detail without contradicting the reference."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov04",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer correctly covers all key points: dereferencing the WebID URI, using solid:oidcIssuer triples to discover authorised OPs, decentralised trust via the WebID owner's control, and running the standard OIDC flow against the discovered issuer."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov11",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Covers all key points: content-addressed Merkle DAG, chained parent hashes, tamper detection via hash propagation, self-asserted timestamps as the limitation, and need for external anchoring \u2014 matches reference fully with additional correct detail."
+ },
+ {
+  "set": "general",
+  "id": "adj13",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers every reference point\u2014global reshuffle from modulo dependence on N, ring-based consistent hashing with clockwise assignment, ~K/N remapping, uneven arcs as the residual problem, and virtual nodes for load balancing, capacity weighting, and spread of failed-node load\u2014with additional correct detail (concrete example, lookup cost, memory trade-off)."
+ },
+ {
+  "set": "general",
+  "id": "in_11",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all key points from the reference \u2014 overfitting as fitting noise, low training/high test error, high variance, excessive complexity, regularisation as a penalty term with the correct formula, L1/L2/dropout/early stopping examples, and \u03bb controlling penalty strength \u2014 with no contradictions and useful additional detail."
+ },
+ {
+  "set": "general",
+  "id": "in_15",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference \u2014 OWL as a W3C standard built on RDF/RDFS, ontology as a formal domain description, classes/properties/individuals/axioms, formal semantics enabling automated reasoning including consistency checking and inference \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_18",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference \u2014 scaled dot-product attention formula, Q/K/V from the same sequence, multi-head attention, simultaneous processing enabling parallelism, positional encodings due to permutation invariance, and long-range dependencies \u2014 with additional correct detail that does not contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "off01",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate correctly identifies Canberra as the capital, notes it is in the ACT, and explains it was purpose-built as a compromise between Sydney and Melbourne \u2014 all key points from the reference are covered."
+ },
+ {
+  "set": "general",
+  "id": "off04",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate correctly identifies Au as gold's symbol, explains its Latin origin (aurum), and provides additional accurate context about why 'Go' and 'Gd' aren't used, fully covering all reference points except the atomic number 79, which is a minor omission offset by substantial correct bonus material."
+ },
+ {
+  "set": "general",
+  "id": "off07",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all reference key points \u2014 fiscal policy as government taxation/spending, monetary policy as central bank control of interest rates/money supply targeting price stability and employment \u2014 and adds correct supplementary detail without any contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off10",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 axial tilt of ~23.5\u00b0, orbital mechanics, angle/duration of sunlight, hemisphere summer/winter mapping, and explicitly debunks the distance misconception \u2014 with accurate additional detail on equinoxes/solstices."
+ },
+ {
+  "set": "general",
+  "id": "off13",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all MAIN causes with correct detail, names both alliance blocs, correctly identifies the assassination of Franz Ferdinand by Gavrilo Princip in Sarajevo on 28 June 1914, and describes the July Crisis and alliance-driven escalation."
+ },
+ {
+  "set": "general",
+  "id": "off16",
+  "arm": "raw",
+  "score": 5,
+  "why": "All key facts match the reference exactly: released 11 February 1990, 27 years imprisoned, first black President, inaugurated 10 May 1994, after first fully democratic elections."
+ },
+ {
+  "set": "general",
+  "id": "off19",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully and correctly explains Ricardo's comparative advantage theory, covering all key points from the reference \u2014 opportunity cost vs absolute advantage, specialisation, mutual gains from trade, and the insight that even a universally less productive country has a comparative advantage \u2014 with additional correct numerical examples."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov02",
+  "arm": "loom",
+  "score": 3,
+  "why": "Correctly explains objectFormat and compatObjectFormat roles and the experimental/no-interop status, but misidentifies the auxiliary data structure as an extended packfile index rather than the bidirectional SHA-256\u2194SHA-1 name mapping, which is the key structure the reference answer requires."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "masked",
+  "score": 4,
+  "why": "Correctly identifies authenticity/integrity guarantee over the commit object and its fields, but the answer is truncated mid-sentence and never reaches the discussion of attacker-controllable date fields or the need for an external timestamp anchor."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "Covers all key points: notes stored as blobs in a separate refs/notes/commits ref keyed by target SHA, commit object unchanged so hash preserved, notes mutable after the fact, and correctly implies notes are outside any commit signature \u2014 with additional correct detail on tree fanout and commit serialisation format."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate admits ignorance of git-mark specifically and provides only a generic pattern description, missing key specifics: Bitmark blockchain, npm distribution, `git mark --genesis txid:output` binding to a genesis UTXO, per-mark transaction committing HEAD hash+metadata, and the force-push rewrite argument; the general pattern loosely aligns but lacks the concrete details the reference requires."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate provides the exact leaf and interior-node hash definitions with correct 0x00/0x01 prefixes, correctly identifies domain separation, and explains the second-preimage/tree-reshaping attack it prevents \u2014 fully matching the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate correctly distinguishes inclusion proofs (membership of a leaf) from consistency proofs (append-only/prefix property), identifies the inputs for each, describes STH contents (tree size, root hash, timestamp, signature), and defines MMD as the log-declared time bound for incorporating accepted certificates into the tree, fully matching the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_01",
+  "arm": "irrelevant",
+  "score": 0,
+  "why": "The candidate explicitly refuses to answer, denies AluVM's existence, and provides no correct information about its register file, st0 register, or deterministic execution mechanisms described in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_04",
+  "arm": "loom",
+  "score": 1,
+  "why": "The candidate explicitly states it cannot confirm LNPBP-4 exists and provides no correct details about the buffer, slot assignment (id mod N), entropy filling, or reveal mechanisms described in the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_06",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate invents a non-standard operation set (Create/Anchor/Consume/Verify/Is_Spent) instead of the reference's Close(l,m)->w and Verify(l,w,m)->bool plus Gen/authenticated-Close; misframes the security property around hash preimage resistance rather than the reference's 'infeasible to make Verify true for two distinct messages on the same seal'; omits that multiple witnesses for the same seal/message are acceptable; omits the trusted-notary trivial implementation; and incorrectly describes anchoring via OP_RETURN/hash-locked outputs rather than the reference's 'closing a seal = spending a defined UTXO'."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "loom",
+  "score": 4,
+  "why": "Correct on schema as declarative specification, client-side validation, on-chain commitments only, and interface as standardised API pattern, but misses AluVM validation scripts embedded in schemas, that interfaces are bundled with contracts and can be added post-hoc to immutable contracts, and mischaracterises RGB25 (collectible fungible/CFA, not multi-token)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_09",
+  "arm": "raw",
+  "score": 3,
+  "why": "Captures key distinctions (no recursion, fixed-size, deterministic layout) and the 64 KiB rule, but incorrectly claims strict types ban type parameters and require fixed byte width per type, misses the crucial explicit min/max bounds on collections, misattributes the 64 KiB rule to Bitcoin transaction constraints rather than embedded device support, and omits formal verification of binary compatibility and Orlovsky/UBIDECO provenance."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate acknowledges the topic and provides some correct surrounding context about RGB and BitMask, but fails to identify any of the specific cryptographic or coding layers (AES-256-CTR, HMAC-SHA512, Bao/BLAKE3, Reed-Solomon, Zstandard, SLH-DSA) that constitute the actual answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "loom",
+  "score": 4,
+  "why": "Covers the HTTP request, JSON structure, and key details accurately, but the answer is truncated mid-sentence and missing the crucial security rule about clients following the pubkey not the NIP-05 address, the meaning of '_' as root/bare-domain identifier, the optional 'relays' object, and the no-redirects/CORS rules."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference points accurately: window.nostr injected by extension so private key never reaches the page, both mandatory methods with correct signatures, signEvent input/output fields, and optional nip04/nip44 encryption namespaces; minor additions (XSS rationale, BIP-340 detail) are correct and not penalised."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove04",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate correctly identifies bech32 (not bech32m) and knows there are four TLV types, but assigns completely wrong numbers and meanings to all four: the reference has 0=special(primary payload), 1=relay, 2=author, 3=kind, while the candidate has 0=relay, 1=pubkey, 2=kind, 3=identifier, leading to incorrect descriptions of nprofile and naddr required fields."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate correctly identifies kind 10002, 'r' tags, and that unmarked means both read and write, but critically reverses the fetch rule: to get a user's posts you query their WRITE relays (not read), and to reach a user with mentions you post to their READ relays (not your own) \u2014 this core operational rule is wrong, which is the central point of the outbox model."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove07",
+  "arm": "raw",
+  "score": 3,
+  "why": "Correctly explains WebID Provider Confirmation (solid:oidcIssuer check) and DPoP concept, but wrongly states WebID is in the 'sub' claim (it's a 'webid' claim), incorrectly describes Dynamic Client Registration (RFC 7591) instead of the dereferenceable Client ID Document (JSON-LD), misses key ID Token details (azp, aud including 'solid'), and the DPoP proof details are incomplete (cut off before describing cnf.jkt binding, missing typ/htm/htu/ath specifics)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "loom",
+  "score": 2,
+  "why": "Correctly identifies SAN as the certificate field carrying the WebID and gets the overall flow right, but fabricates a 'P3P vocabulary' ontology instead of the correct cert: ontology (cert:RSAPublicKey, cert:modulus, cert:exponent), which is a major factual error on a core part of the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate gets the basic mechanism right (POST JSON-LD) but nearly every specific identifier is wrong: channel types are WebSocketChannel2023/WebhookChannel2023 not sn:WebSocketChannel/sn:WebhookChannel, namespace uses 'notifications#' not 'notifications/', the topic property is notify:topic not sn:resource, and the differing response properties (notify:receiveFrom/notify:sendTo) are given as sn:webSocketUrl with the webhook column left blank."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_rgb07",
+  "arm": "true",
+  "score": 4,
+  "why": "Covers all key points (purely functional, register-based RISC, no side effects/I/O, deterministic for consensus) but omits Maxim Orlovsky as creator, LNP/BP Standards Association, and the specific point about no random/addressable memory access and no undefined behaviour by design."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov03",
+  "arm": "loom",
+  "score": 4,
+  "why": "Correctly identifies WebID as the subject, decentralised identity model, and DPoP proof-of-possession binding, but misses the specific 'webid' scope/claim distinction (says sub must be WebID rather than a separate webid claim), omits solid:oidcIssuer discovery mechanism, and the answer is truncated before completing DPoP details."
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly identifies npub as encoding a 32-byte public key and nsec as a 32-byte private key in bech32 format, explains they are for human-facing presentation only, and clearly states they must not appear in NIP-01 events/filters which use canonical hex \u2014 fully matching all key points in the reference."
+ },
+ {
+  "set": "general",
+  "id": "adj10",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference key points accurately \u2014 dual environments with instant rollback for blue-green, gradual traffic shifting with metric monitoring for canary, infrastructure cost trade-offs, rollback complexity differences, when to prefer each, and even mentions the hybrid approach."
+ },
+ {
+  "set": "general",
+  "id": "in_08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference \u2014 leaf hashes, internal node hashes, root as compact commitment, Merkle proofs for efficient membership verification, block header storing only the root, light/SPV client enablement, and tamper detection \u2014 and adds correct supplementary detail (parallelism, pruning, diagram) without contradicting anything."
+ },
+ {
+  "set": "general",
+  "id": "in_16",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate covers all key points: Lamport/Shostak/Pease authorship, traitors sending conflicting messages, Byzantine vs crash faults, the 3f+1 bound with correct reasoning, and adds correct supplementary material without contradicting the reference."
+ },
+ {
+  "set": "general",
+  "id": "in_18",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers every reference point\u2014scaled dot-product formula, Q/K/V from the same sequence, multi-head attention, parallel processing advantage over recurrence, long-range dependencies in one step, positional encodings for permutation invariance\u2014with additional correct detail and no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "in_19",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers every key point in the reference \u2014 gradient of loss w.r.t. all weights, chain rule applied layer-by-layer, reuse of intermediate results for efficiency, gradients feeding gradient descent, and enabling training of multilayer networks \u2014 with additional correct detail that doesn't contradict the reference."
+ },
+ {
+  "set": "general",
+  "id": "off01",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate correctly identifies Canberra as the capital, notes it is in the ACT, and explains it was purpose-built as a compromise between Sydney and Melbourne \u2014 matching all key points in the reference."
+ },
+ {
+  "set": "general",
+  "id": "off02",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate correctly states the Berlin Wall fell on November 9, 1989, matching the reference answer's key fact precisely."
+ },
+ {
+  "set": "general",
+  "id": "off04",
+  "arm": "loom",
+  "score": 5,
+  "why": "Candidate correctly identifies Au as gold's symbol, explains its Latin origin (aurum), addresses why Go and Gd are not used, and states atomic number 79 \u2014 fully matches and exceeds the reference."
+ },
+ {
+  "set": "general",
+  "id": "off05",
+  "arm": "raw",
+  "score": 5,
+  "why": "Correctly identifies Jane Austen as the author, includes the 1813 publication date, and mentions both central characters Elizabeth Bennet and Mr Darcy."
+ },
+ {
+  "set": "general",
+  "id": "off07",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate answer fully covers all reference key points\u2014fiscal policy as government taxation/spending, monetary policy as central bank control of interest rates/money supply, correct authorities, and the core distinction\u2014while adding accurate supplementary detail."
+ },
+ {
+  "set": "general",
+  "id": "off08",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer correctly covers all key points from the reference: autoimmune destruction of beta cells (absolute insulin deficiency) in Type 1, insulin resistance with relative deficiency in Type 2, insulin dependence for Type 1, obesity/lifestyle link for Type 2, and differing typical ages of onset."
+ },
+ {
+  "set": "general",
+  "id": "off10",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all reference key points \u2014 axial tilt of ~23.5\u00b0, orbital mechanism, angle/duration of sunlight, hemisphere summer/winter explanation, and explicitly debunks the distance misconception \u2014 with no contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off11",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers every key point in the reference \u2014 Monet's 'Impression, Sunrise', the 1874 independent Paris exhibition, the derisive critic (even naming Leroy), loose visible brushwork, light and atmosphere, en plein air painting, everyday modern subjects, and all five named artists \u2014 while adding accurate supplementary detail."
+ },
+ {
+  "set": "general",
+  "id": "off13",
+  "arm": "loom",
+  "score": 5,
+  "why": "The candidate covers all key points from the reference \u2014 MAIN acronym, Triple Alliance vs Triple Entente, assassination of Franz Ferdinand by Gavrilo Princip in Sarajevo on 28 June 1914, the July Crisis, and alliance-driven escalation \u2014 with additional correct detail throughout."
+ },
+ {
+  "set": "general",
+  "id": "off14",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer fully covers all key points from the reference \u2014 entropy never decreases in isolated systems, reversible vs irreversible distinction, Boltzmann S=k ln W, Clausius and Kelvin-Planck equivalents, and entropy increase defining the arrow of time \u2014 with additional correct elaboration."
+ },
+ {
+  "set": "general",
+  "id": "off16",
+  "arm": "loom",
+  "score": 5,
+  "why": "All key facts match the reference exactly: released 11 February 1990, 27 years imprisoned, first black President, inaugurated 10 May 1994, after first fully democratic elections."
+ },
+ {
+  "set": "general",
+  "id": "off17",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate answer covers all reference key points \u2014 mRNA encoding spike protein, lipid nanoparticle delivery, ribosomal translation in cytoplasm, immune response (antibodies via B cells, T cell priming, immune memory), mRNA not entering nucleus/altering DNA, and degradation \u2014 while adding substantial correct molecular detail beyond the reference without any contradictions."
+ },
+ {
+  "set": "general",
+  "id": "off19",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points\u2014comparative vs absolute advantage, opportunity cost basis, specialisation and mutual gains, and that even a universally less productive country has a comparative advantage\u2014with a correct numerical example that goes beyond the reference without contradicting it."
+ },
+ {
+  "set": "general",
+  "id": "off20",
+  "arm": "raw",
+  "score": 5,
+  "why": "Candidate answer matches all key points: Mendeleev credited (1869), original arrangement by atomic weight/mass, prediction of undiscovered elements, modern arrangement by atomic number (protons), and Moseley's contribution."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov01",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate answer is incomplete (cut off mid-sentence), covers only the chain-vs-DAG distinction and begins discussing fan-in, but never names all four object types together, never explains content-addressing or how edges get their address via cryptographic hashes, and never explains why the graph is necessarily acyclic."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov03",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate completely misses the key mechanism (sha1dc/collision-detecting SHA-1) that the reference answer identifies as the specific defense, instead arguing safety comes from the collision-vs-preimage distinction and standard hash-recomputation on read, which is a different (and incomplete) argument."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "loom",
+  "score": 5,
+  "why": "Covers all key points: signature binds key to full commit object (tree, parents, identities, message), provides authenticity/integrity not trusted time, identifies author/committer date fields as client-controlled and trivially manipulable, and the answer was clearly heading toward explaining external timestamps before truncation."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov04",
+  "arm": "shuffled",
+  "score": 5,
+  "why": "Candidate correctly identifies integrity/authenticity guarantee over the commit object, names author/committer date fields as client-controlled and unattested by the signature, and explains the need for an external timestamp anchor \u2014 fully matching the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov05",
+  "arm": "raw",
+  "score": 2,
+  "why": "The answer correctly identifies the default notes ref path and that notes refs have their own history, but it is truncated mid-sentence and fails to explain why the annotated commit's hash is unchanged, the signature implications, or the provenance use-case trade-offs."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov06",
+  "arm": "loom",
+  "score": 2,
+  "why": "The candidate correctly explains Merkle aggregation and calendar trust model, but critically claims OpenTimestamps does NOT use OP_RETURN, directly contradicting the reference answer which states deployed calendars embed the tip in an OP_RETURN output \u2014 this is a major factual error on a key part of the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "masked",
+  "score": 4,
+  "why": "Correctly describes the core model of anchoring Git commits to a blockchain via transactions, the genesis transaction's role as the chain origin, and the difference from Git's internal hash chain, but incorrectly specifies Bitcoin rather than Bitmark and uses 'single-use-seal'/'tweak' terminology not in the reference, though the conceptual content aligns well."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov07",
+  "arm": "true",
+  "score": 4,
+  "why": "Correctly describes the core model of anchoring Git commits to a blockchain via transactions, the genesis transaction's role as a starting UTXO, and the distinction from Git's internal hash chain, but uses 'Block Trails Profile' and 'Taproot key-tweaking' terminology not in the reference, and the answer appears truncated."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "irrelevant",
+  "score": 5,
+  "why": "Candidate provides the exact leaf and interior-node hash definitions with correct prefixes (0x00 and 0x01), correctly explains domain separation making leaf and interior hash inputs disjoint, and accurately describes the second-preimage/tree-reshaping attack it prevents \u2014 fully matching the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov09",
+  "arm": "raw",
+  "score": 5,
+  "why": "The candidate provides the exact leaf and interior-node hash definitions with correct 0x00/0x01 prefixes, correctly explains domain separation making leaf and interior hash inputs disjoint, and accurately describes the second-preimage/tree-structure ambiguity attack prevented \u2014 fully matching the reference answer with additional correct detail."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "irrelevant",
+  "score": 0,
+  "why": "The candidate answer contains no substantive content\u2014just the word 'Merkle'\u2014and addresses none of the asked points."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov10",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Covers inclusion proof, consistency proof, their inputs, and STH contents accurately and in detail matching the reference, but the answer is truncated mid-sentence on the STH fields and entirely omits the Maximum Merge Delay (MMD), which is a key part of the question."
+ },
+ {
+  "set": "thin",
+  "id": "thin_prov11",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Correctly identifies core as content-agnostic Merkle tree and personality as domain-specific layer, and covers admission/validation as responsibility #1, but the answer is truncated mid-table so responsibilities #2 and #3 and the entire tile discussion are missing."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_01",
+  "arm": "raw",
+  "score": 1,
+  "why": "The candidate correctly identifies RGB's design goals of totality and determinism but explicitly declines to answer the specific technical questions about the register file layout, st0 semantics, nullable registers, zero-padding, and control-flow totality mechanisms, providing no correct substantive content from the reference."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_03",
+  "arm": "raw",
+  "score": 0,
+  "why": "The candidate denies LNPBP-2 exists and provides no correct content about the protocol, contradicting every key point in the reference answer."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_04",
+  "arm": "true",
+  "score": 1,
+  "why": "The candidate admits lack of knowledge of LNPBP-4 and reconstructs a generic scheme that misses all key specifics: slot placement via id mod N, BIP-340 tagged hash filler with 'LNPBP4:entropy' tag, entropy_seed||j construction, LNPBP-1/2 final commitment, and the partial vs full reveal mechanism; it invokes unrelated primitives like Pedersen/KZG commitments."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_06",
+  "arm": "masked",
+  "score": 1,
+  "why": "The candidate answer is truncated after only beginning to describe the first operation, providing no substantive content about the operations, security property, or Bitcoin realisation."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_07",
+  "arm": "masked",
+  "score": 2,
+  "why": "The candidate correctly identifies two consignment types and mentions genesis/seals, but gets the size relationship backwards (claims contract consignment is larger), the transfer consignment answer is truncated/incomplete, and it never addresses blinded UTXOs, the stash, or the validation history that makes transfer consignments larger."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "Captures the key distinction that schemas define state/validation rules and are not stored on-chain, but misses AluVM, declarative (not STF) nature, .rgb/.rgba compilation, Genesis instantiation, and the answer is incomplete \u2014 it cuts off before covering Interfaces (RGB20/21/25) or their relationship to schemas."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_08",
+  "arm": "raw",
+  "score": 4,
+  "why": "Correct on schema as sealed implementation with state/transitions validated client-side, interfaces as standardized public APIs (like ERCs), and the fundamental differences from Ethereum (no on-chain code, client-side validation, commitment-only on Bitcoin), but omits that schemas are declarative templates with embedded AluVM scripts, that interfaces can be bundled with and added to immutable contracts over time, and the specific RGB20/NIA, RGB21/UDA, RGB25/CFA mappings."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_09",
+  "arm": "loom",
+  "score": 4,
+  "why": "Covers deterministic representation, bounded/finite types, 64 KiB rule, cross-language verification, and consensus compilation rationale well, but omits the explicit min/max bounds on collections, formal binary-compatibility proofs across releases, and the Orlovsky/UBIDECO attribution; the answer also appears truncated at the end."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_10",
+  "arm": "raw",
+  "score": 2,
+  "why": "The candidate correctly identifies governance/separation reasons for not extending BOLTs but misses the critical encoding point (BigInt\u2192strict encoding, not TLV), misidentifies the central encoding change, and fails to describe LNPBP-51 (channel management) and LNPBP-53 (multi-peer payment channels) at all, with the answer cutting off mid-sentence."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "masked",
+  "score": 2,
+  "why": "Correctly identifies Carbonado as a single flat-file archival container for RGB stash with compression and the general purpose, but gets compression wrong (says zlib/DEFLATE instead of Zstandard), and the answer is truncated\u2014missing encryption details (AES-256-CTR + HMAC-SHA512), Bao/BLAKE3 verified streaming, Reed-Solomon FEC, and post-quantum signatures."
+ },
+ {
+  "set": "thin",
+  "id": "thin_rgb_11",
+  "arm": "true",
+  "score": 2,
+  "why": "Identifies Reed-Solomon and encryption correctly at a high level, but gets key details wrong (says AES-256-GCM not AES-256-CTR+HMAC-SHA512, says SHA-256 not Bao/BLAKE3, misses Zstandard compression and post-quantum SLH-DSA signatures), and the answer appears truncated."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "irrelevant",
+  "score": 3,
+  "why": "Correctly describes the HTTP request and JSON 'names' structure, but the 'relays' object is keyed by name instead of hex pubkey (contradicts reference), and the response is truncated\u2014missing the '_' root identifier meaning, the core security rule about following the pubkey not the address, the no-redirects rule, and the CORS header."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove02",
+  "arm": "raw",
+  "score": 2,
+  "why": "Correctly describes the HTTP request and names object, but gets the '_' semantics wrong (it is a root identifier displayed as the bare domain, not a fallback/default for missing names), omits the optional 'relays' object, omits CORS requirements, and misidentifies the core security rule (should be 'clients follow the pubkey not the NIP-05 address' but instead describes TLS validation)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "irrelevant",
+  "score": 4,
+  "why": "Covers window.nostr purpose, key isolation, both mandatory methods with correct signatures, signEvent input/output fields, and mentions nip04/nip44 encryption namespaces, but the candidate answer appears truncated (cut off mid-JSON) and doesn't explicitly mention nip44 or the deprecated status of nip04, nor getRelays() or document_end injection timing."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove03",
+  "arm": "raw",
+  "score": 4,
+  "why": "Covers the core concepts accurately \u2014 window.nostr injected by extension, key never leaves extension, correct mandatory methods with signatures, correct signEvent input/output description \u2014 but the candidate's input example includes pubkey (reference says the extension adds it), and the answer appears truncated before covering the optional nip04/nip44 encryption namespaces, which is a notable omission."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove04",
+  "arm": "loom",
+  "score": 2,
+  "why": "Correctly identifies bech32 (not bech32m) and gets type 1 (relay) and type 3 (kind) right, but fundamentally wrong on TLV type 0 (special/primary payload \u2014 claims it doesn't exist), wrong on type 2 (claims it's overloaded as 'title' in nevent, actually it's author pubkey), wrongly states naddr carries a 32-byte event ID as primary data (it carries a 'd' tag identifier string), and incorrectly describes the TLV structure as appended after a 32-byte payload rather than the actual pure-TLV encoding."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "loom",
+  "score": 4,
+  "why": "Correct on kind 22242, challenge flow, and validation, but uses tag name 'relays' instead of the correct 'relay', and omits the 'auth-required:' and 'restricted:' prefix signals that the relay uses to indicate authentication is needed."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove05",
+  "arm": "true",
+  "score": 3,
+  "why": "Correctly identifies kind 22242, the challenge tag, and the overall flow, but uses the wrong tag name 'relays' instead of 'relay', wraps the response in EVENT instead of AUTH, omits relay validation details (created_at window, challenge match, URL match), and does not mention 'auth-required:' or 'restricted:' prefixes."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove06",
+  "arm": "raw",
+  "score": 5,
+  "why": "Covers all reference points accurately: kind 10002, 'r' tags, read/write/unmarked markers, fetch posts from write relays, send mentions to read relays, and the outbox/gossip model rationale."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove07",
+  "arm": "loom",
+  "score": 3,
+  "why": "Correctly describes solid:oidcIssuer check and DPoP binding concept, but incorrectly states WebID is conveyed via the 'sub' claim instead of a dedicated 'webid' claim, omits the 'aud' containing 'solid', omits that the Client ID Document is JSON-LD, and the DPoP proof JWT detail (typ=dpop+jwt, htm/htu/iat/ath claims, cnf.jkt) is incomplete/cut off."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "loom",
+  "score": 2,
+  "why": "Correctly lists the four WAC modes and explains accessTo vs default accurately, but gets public access wrong (uses fabricated 'acl:public' instead of 'acl:agentClass foaf:Agent'), uses incorrect ACP namespaces ('solid:' instead of 'acp:'), describes ACP structure inaccurately (wrong property names and relationships), and misidentifies ACP's key advantage as boolean composability rather than attribute-based contextual conditions (acp:client, acp:issuer, acp:vc)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove08",
+  "arm": "true",
+  "score": 4,
+  "why": "Covers WAC modes, accessTo vs default, and public access concepts accurately, but adds a non-standard 'acl:ControlRead' mode not in the reference and the answer is truncated before covering ACP, so ACP details are missing."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove09",
+  "arm": "shuffled",
+  "score": 4,
+  "why": "Correctly identifies SAN as the certificate field carrying the WebID and begins describing the cert: ontology terms, but the answer is truncated mid-sentence and never names cert:RSAPublicKey, cert:modulus, cert:exponent, or the reasons for moving to Solid-OIDC."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "loom",
+  "score": 1,
+  "why": "The candidate correctly identifies HTTP POST and JSON-LD but fabricates the namespace (solidproject.org instead of w3.org), channel type names (sn:WebSocket/Webhook instead of WebSocketChannel2023/WebhookChannel2023), the topic property (sn:resource instead of notify:topic), and fails to provide the differing response property (receiveFrom vs sendTo)."
+ },
+ {
+  "set": "thin",
+  "id": "thin_sove10",
+  "arm": "true",
+  "score": 2,
+  "why": "Correctly identifies POST and JSON-LD but misses the exact context URI, gets the request structure wrong (no 'Subscription'/'channel' nesting), omits both channel type identifiers and namespace, omits notify:topic, and fails to name the differing response properties (receiveFrom vs sendTo)."
+ }
+]

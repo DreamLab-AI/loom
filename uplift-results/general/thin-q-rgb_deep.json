@@ -1,0 +1,226 @@
+[
+  {
+    "id": "thin_rgb_01",
+    "category": "arcane_thin",
+    "topic": "AluVM registers and exceptionless design",
+    "difficulty": "hard",
+    "question": "AluVM is the RISC virtual machine that runs RGB contract validation scripts. Describe its register file and explain the concrete mechanisms by which it guarantees deterministic, exception-free execution with no undefined behaviour. In particular, what happens to a destination register on an impossible operation, what is the role of the st0 register, and how is control flow made total (no invalid jumps or instructions)?",
+    "reference_answer": "AluVM is a register-based (no random-access memory), purely functional RISC VM. Its integer arithmetic 'A' registers are organised as 8 blocks of 32 registers each, of widths 8, 16, 32, 64, 128, 256, 512 and 1024 bits; there are large 'R' registers reserved for cryptography (elliptic-curve/hashing) and a single block of 256 'S' string registers of up to 64 KiB each, plus control registers headed by the boolean status register st0. Exception-freedom comes from making every register nullable: any impossible, invalid or type-mismatched operation does not trap — it simply sets the destination register to a special undefined ('None') state, so there is always a representable result. Failures of flagged (checked) operations (e.g. checked-arithmetic overflow or a NaN float result) are signalled by setting st0 to false. Control flow is made total because the code is always zero-extended to 2^16 bytes, and the all-zero byte decodes to a valid opcode meaning 'set st0 to false and stop', so there are no invalid instructions and no out-of-range jumps; cycles and jumps are counted against a 2^16 limit to bound execution time.",
+    "answer_key_points": [
+      "A-registers: 8 blocks of 32 registers, widths 8/16/32/64/128/256/512/1024 bits",
+      "S-registers: one block of 256 registers, up to 64 KiB each; R-registers reserved for cryptography",
+      "Every register can hold an undefined/None state; impossible ops set destination to undefined instead of trapping",
+      "st0 is the boolean status register; flagged operations set st0=false on overflow/NaN/failure",
+      "Code is zero-padded to 2^16 bytes; the zero opcode means 'set st0=false and stop' -> no invalid instructions/jumps",
+      "Cycles and jumps are counted with a 2^16 limit for bounded-time execution"
+    ],
+    "cited_sources": [
+      "https://www.aluvm.org/",
+      "https://docs.aluvm.org/instruction-set-architecture/registers.md",
+      "https://github.com/AluVM/aluvm-spec",
+      "https://docs.rs/crate/aluvm/0.4.0/source/README.md"
+    ]
+  },
+  {
+    "id": "thin_rgb_02",
+    "category": "arcane_thin",
+    "topic": "LNPBP-1 elliptic-curve key tweaking",
+    "difficulty": "hard",
+    "question": "LNPBP-1 defines the base cryptographic-commitment primitive used throughout RGB. Give the exact tweaked-key formula, and explain three specific design choices: why the message is authenticated with HMAC-SHA256 rather than a plain hash, what the HMAC key is, and why the standard deliberately uses no nonce.",
+    "reference_answer": "LNPBP-1 commits to a message by tweaking a public key: T = Po + G * HMAC-SHA256(SHA256(\"LNPBP1\") || SHA256(tag) || msg, S*), where Po is the chosen original key from the set, G is the secp256k1 generator, and the commitment is added to the whole keyset via S* — the 64-byte uncompressed serialization (x||y, with the 0x04 prefix stripped) of the sum S of all unique public keys controlling the output. HMAC-SHA256 is used instead of a plain hash to make arbitrary-length messages immune to length-extension attacks, and the HMAC key is S* — using the public-key sum both binds the commitment to those keys and injects entropy. The double-tagged prefix SHA256(\"LNPBP1\") || SHA256(tag) is a BIP-340-style tagged-hash that prevents cross-protocol replay/reinterpretation. No nonce is added because the public key S already supplies enough entropy through the HMAC to defeat brute-force/dictionary attacks on short messages.",
+    "answer_key_points": [
+      "T = Po + G * HMAC-SHA256(SHA256(\"LNPBP1\") || SHA256(tag) || msg, S*)",
+      "Commits to the SUM of all unique keys in the output, not just one key",
+      "S* is the 64-byte uncompressed sum key (x||y, 0x04 prefix stripped) and serves as the HMAC key",
+      "HMAC-SHA256 chosen to prevent length-extension attacks on arbitrary-length messages",
+      "Double SHA256 tagged prefix prevents cross-protocol collision/replay",
+      "No nonce: the public-key sum already provides sufficient entropy"
+    ],
+    "cited_sources": [
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0001.md"
+    ]
+  },
+  {
+    "id": "thin_rgb_03",
+    "category": "arcane_thin",
+    "topic": "LNPBP-2 deterministic embedding into scriptPubkey",
+    "difficulty": "hard",
+    "question": "LNPBP-2 embeds an LNPBP-1 commitment deterministically into a Bitcoin output's scriptPubkey. Why does it commit to the sum of ALL public keys in the script, how does it deterministically decide which key carries the commitment across arbitrary script types, and what happens for a Taproot (P2TR) output? What extra data must be kept off-chain for verification?",
+    "reference_answer": "LNPBP-2 requires that exactly one key of all keys present in the scriptPubkey/redeemScript/witnessScript carries the LNPBP-1 tweak, but the tweak commits to the SUM of all original (pre-tweak) public keys controlling the output; committing to the sum is what makes the commitment 'deterministically singular', i.e. provably free of an alternative message under the protocol. To find keys deterministically and implementation-independently, the script is parsed with Miniscript and all pk keys are collected; if a key-hash (pk_h) is encountered that cannot be resolved to a known key the procedure fails, which blocks a multiple-commitment attack via differing extra-transaction proofs. For a Taproot output the internal (intermediate) key is tweaked rather than the output key, because tweaking the output key would break its BIP-341 commitment to the script tree and make the output unspendable. Verification needs an off-chain extra-transaction proof (ETP): the original untweaked key/keyset plus script-reconstruction data (e.g. the untweaked redeemScript/witnessScript, or the Taproot merkle-root/taptweak), which is replayed to regenerate and byte-match the scriptPubkey.",
+    "answer_key_points": [
+      "Exactly one key is tweaked, but it commits to the SUM of all original keys in the output -> deterministic singularity",
+      "Keys extracted deterministically via Miniscript parsing of the script",
+      "Procedure fails on an unresolvable pk_h to prevent multiple-commitment attacks",
+      "For P2TR the internal/intermediate key is tweaked, not the output key (else BIP-341 commitment breaks)",
+      "Verification requires an off-chain extra-transaction proof (ETP): original keys + script/taptweak reconstruction data"
+    ],
+    "cited_sources": [
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0002.md",
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0001.md"
+    ]
+  },
+  {
+    "id": "thin_rgb_04",
+    "category": "arcane_thin",
+    "topic": "LNPBP-4 multi-protocol commitments (MPC)",
+    "difficulty": "hard",
+    "question": "LNPBP-4 lets a single Bitcoin commitment carry messages from multiple independent protocols while proving uniqueness in zero knowledge. Describe how a message is placed into the commitment buffer, how empty slots are filled, and how the scheme proves both that a given protocol's commitment is present and that no second commitment under the same protocol exists.",
+    "reference_answer": "LNPBP-4 allocates a buffer of N 32-byte slots with N much greater than the number of messages M (N is a 16-bit number, so the buffer is capped at ~2 MB). Each protocol has a unique 256-bit id, and its commitment is written into slot n = id mod N; because the position is a deterministic function of the protocol id, two commitments under the same protocol id would collide on the same slot and thus cannot both be present — which is the uniqueness guarantee. Remaining empty slots are filled with deterministic pseudo-random data: a BIP-340 tagged hash (tag \"LNPBP4:entropy\") of entropy_seed || j for slot index j. The whole buffer is then committed with LNPBP-1/2 using the tag \"LNPBP4\". A partial (per-message) reveal discloses the message, its protocol id and the full buffer, letting a verifier recompute slot n and match it — without learning the other messages. A full-disclosure reveal additionally provides entropy_seed so a verifier can regenerate every filler slot and confirm the buffer contains only the declared commitments and no hidden extra ones.",
+    "answer_key_points": [
+      "Buffer of N 32-byte slots, N >> M, capped at ~2 MB (16-bit slot count)",
+      "Each protocol has a unique 256-bit id; commitment placed at slot n = id mod N",
+      "Same-protocol-id collision on the same slot is what guarantees per-protocol uniqueness",
+      "Empty slots filled with BIP-340 tagged hash (tag 'LNPBP4:entropy') of entropy_seed||j",
+      "Final buffer committed via LNPBP-1/2 with tag 'LNPBP4'",
+      "Partial reveal proves presence; full reveal (with entropy_seed) proves absence of other commitments"
+    ],
+    "cited_sources": [
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0004.md",
+      "https://docs.rgb.info/commitment-layer/multi-protocol-commitments-mpc.md"
+    ]
+  },
+  {
+    "id": "thin_rgb_05",
+    "category": "arcane_thin",
+    "topic": "Tapret vs Opret deterministic Bitcoin commitments",
+    "difficulty": "medium",
+    "question": "RGB anchors its MPC commitment into a Bitcoin transaction using one of two deterministic-bitcoin-commitment (DBC) schemes: Opret and Tapret. Contrast their exact on-chain form and byte sizes, and explain what the 1-byte nonce in a Tapret commitment is for.",
+    "reference_answer": "Opret is the simple scheme: the 32-byte MPC commitment is placed in the first OP_RETURN output of the witness transaction as 'OP_RETURN OP_PUSHBYTES_32 <mpc::Commitment>', a 34-byte script that is visible on-chain. Tapret hides the commitment inside a Taproot script tree instead, giving a smaller/indistinguishable chain footprint and better privacy. The Tapret commitment is a fixed 64-byte tapscript leaf: 29 bytes of a fixed prefix (OP_RESERVED) followed by OP_RETURN, a 33-byte push holding the 32-byte MPC commitment plus a 1-byte nonce; this leaf is inserted as an unspendable script at the first level of the tree, shifting any existing scripts one level down. Because Taproot hashes branch pairs in lexicographic order, the commitment leaf may land on the left, forcing a larger uniqueness proof that reveals sibling branches. The 1-byte nonce exists so the prover can 'mine' the leaf hash until it is greater than the rest of the tree and therefore sits on the right-hand side, which keeps the uniqueness/inclusion proof minimal and avoids revealing private sibling scripts.",
+    "answer_key_points": [
+      "Opret: 32-byte commitment in first OP_RETURN output; script = OP_RETURN OP_PUSHBYTES_32 <commit>, 34 bytes, on-chain visible",
+      "Tapret: commitment hidden in Taproot script tree for smaller footprint/better privacy",
+      "Tapret leaf is exactly 64 bytes: 29-byte fixed prefix + OP_RETURN + 33-byte push (32-byte MPC commitment + 1-byte nonce)",
+      "Tapret leaf inserted as unspendable script, shifting existing scripts down a level",
+      "Lexicographic branch ordering means left-placement needs a larger uniqueness proof",
+      "The 1-byte nonce is 'mined' so the leaf hash sorts to the right side, minimising the proof"
+    ],
+    "cited_sources": [
+      "https://docs.rgb.info/commitment-layer/deterministic-bitcoin-commitments-dbc/opret.md",
+      "https://docs.rgb.info/commitment-layer/deterministic-bitcoin-commitments-dbc/tapret.md",
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0012.md"
+    ]
+  },
+  {
+    "id": "thin_rgb_06",
+    "category": "arcane_thin",
+    "topic": "Single-use-seals (LNPBP-8 / Peter Todd)",
+    "difficulty": "medium",
+    "question": "Single-use-seals are the anti-double-spend primitive underpinning RGB. State the abstract operations a single-use-seal implementation must provide, give the precise security property a secure implementation must satisfy, and explain how Bitcoin is used to realise a trust-minimised seal.",
+    "reference_answer": "A single-use-seal is a unique object that can be 'closed' over a message exactly once. An implementation must support Close(l, m) -> w_l, producing a witness that the seal l was closed over message m, and Verify(l, w_l, m) -> bool; practical implementations also add Gen(p) -> l to generate a new seal bound to a public key (or arbitrary predicate) and an authenticated Close(l, m, s) -> w_l. The security property is that it must be infeasible for an attacker to make Verify return true for two distinct messages m1 != m2 closed over the same seal (multiple witnesses for the same seal/message pair are tolerable but non-ideal). A trivial realisation is a trusted notary that signs witnesses; the scalable, trust-minimised realisation replaces the notary with a proof-of-publication ledger whose state is agreed in a trust-minimised way — i.e. the Bitcoin blockchain, where closing a seal corresponds to spending a specified transaction output and the commitment is published on-chain.",
+    "answer_key_points": [
+      "Core ops: Close(l,m)->w and Verify(l,w,m)->bool; plus Gen(p)->l and authenticated Close(l,m,s)->w",
+      "A seal can be closed over a message exactly once",
+      "Security: infeasible to make Verify true for two distinct messages on the same seal",
+      "Multiple witnesses for the same seal/message pair are acceptable (non-ideal)",
+      "Trivial impl = trusted notary with disposable keys; trust-minimised = proof-of-publication ledger (Bitcoin)",
+      "On Bitcoin, closing a seal = spending the defined UTXO with an on-chain commitment"
+    ],
+    "cited_sources": [
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0008.md",
+      "https://petertodd.org/2016/commitments-and-single-use-seals"
+    ]
+  },
+  {
+    "id": "thin_rgb_07",
+    "category": "arcane_thin",
+    "topic": "RGB consignments and the transfer protocol",
+    "difficulty": "medium",
+    "question": "In RGB, data is moved between parties as 'consignments'. Distinguish a contract consignment from a transfer (terminal) consignment, explain why the two differ so much in size, and describe the role of the receiver's blinded UTXO and the 'stash' in a transfer.",
+    "reference_answer": "A contract consignment is the small package needed to bootstrap a contract: it carries the contract Genesis plus its Schema (each on the order of a couple of hundred bytes, so the whole thing is typically a few KiB) and can be distributed by any channel — website, email, QR, Nostr, etc. A transfer (terminal) consignment is much larger because, in addition to the final state transition addressed to the recipient, it must include the entire validated history of state transitions back to Genesis so the receiver can independently verify the asset against the Bitcoin anchors. The receiver starts a transfer by issuing an invoice that encodes a seal definition — usually one of their UTXOs in blinded form — telling the sender where to assign the new owned state without revealing the exact outpoint. Each party keeps a 'stash' of client-side-validated data; the sender builds a PSBT/witness transaction embedding the Opret/Tapret DBC commitment (plus any 'blank' transitions for other assets on the same seal), generates the terminal consignment, and the receiver runs 'rgb accept' to validate it and merge it into their stash before the witness transaction is broadcast.",
+    "answer_key_points": [
+      "Contract consignment = Genesis + Schema, only a few KiB",
+      "Transfer/terminal consignment = final state transition + full validated history since Genesis (hence much larger)",
+      "History is needed so the receiver can verify against Bitcoin anchors client-side",
+      "Invoice encodes a seal definition, typically the receiver's UTXO in blinded form",
+      "Stash = each party's store of client-side-validated data",
+      "Sender embeds Opret/Tapret DBC in a PSBT (plus blank transitions); receiver 'rgb accept' validates before broadcast"
+    ],
+    "cited_sources": [
+      "https://docs.rgb.info/annexes/contract-transfers.md",
+      "https://docs.rgb.info/distributed-computing-concepts/client-side-validation.md"
+    ]
+  },
+  {
+    "id": "thin_rgb_08",
+    "category": "arcane_thin",
+    "topic": "RGB schemas vs interfaces (RGB20/21/25)",
+    "difficulty": "medium",
+    "question": "RGB separates a contract 'Schema' from a contract 'Interface'. Explain what each is, how an RGB Schema differs fundamentally from an Ethereum on-chain contract, and how RGB interfaces (e.g. RGB20, RGB21, RGB25) relate to the concrete schemas an issuer uses.",
+    "reference_answer": "An RGB Schema is a declarative template — analogous to a class — that defines the kinds of owned state and assignments, the global state, the structure of Genesis, the permitted state transitions and their metadata, and, crucially, embeds the AluVM state-validation scripts that encode the business logic. It is compiled to a .rgb/.rgba binary and an issuer instantiates it by filling in values (ticker, name, precision, issued supply, initial allocations) in Genesis. This is fundamentally different from Ethereum, where the contract itself is executable bytecode whose state lives on-chain; in RGB the contract is purely declarative and validated client-side, with nothing but a commitment published on Bitcoin. Interfaces, introduced in v0.10, are the standardised APIs through which wallets read and act on a contract — comparable to Ethereum ABIs/ERCs — but, unlike ERCs, they need neither obligatory standardisation nor separate distribution because they travel bundled with the contract, and additional interfaces can be attached to an immutable contract over time. RGB20 is the fungible-asset interface (implemented by the NIA schema), RGB21 is for unique/collectible digital assets/NFTs (UDA), and RGB25 is for collectible fungible assets (CFA); the schema provides the implementation while the interface provides the semantic, wallet-facing view.",
+    "answer_key_points": [
+      "Schema = declarative template (like a class): owned/global state, assignments, transitions, metadata, embedded AluVM validation scripts",
+      "Issuer instantiates a schema in Genesis (ticker, precision, issued supply, allocations); compiled to .rgb/.rgba",
+      "Unlike Ethereum, the RGB contract is declarative and validated client-side; only a commitment goes on Bitcoin",
+      "Interfaces (v0.10+) are ABI/ERC-like APIs but bundled with the contract, needing no separate standardisation/distribution",
+      "Multiple interfaces can be added to an immutable contract over time",
+      "RGB20 = fungible (NIA), RGB21 = unique/NFT (UDA), RGB25 = collectible fungible (CFA)"
+    ],
+    "cited_sources": [
+      "https://docs.rgb.info/rgb-contract-implementation/schema.md",
+      "https://docs.rgb.info/rgb-contract-implementation/schema/supported-schemas.md",
+      "https://rgb.tech/blog/release-v0-10/"
+    ]
+  },
+  {
+    "id": "thin_rgb_09",
+    "category": "arcane_thin",
+    "topic": "Strict Types / strict encoding",
+    "difficulty": "medium",
+    "question": "RGB's consensus data is represented with 'Strict Types' rather than a conventional serialization. What distinguishes strict types from algebraic data types in languages like Haskell, what is the 64 KiB rule, and why does RGB compile its whole consensus layer into strict types?",
+    "reference_answer": "Strict types are a formal, deterministic notation for algebraic data types aimed at real computing/networking platforms rather than abstract theory. Their defining difference from Haskell/Idris-style ADTs is that every collection must carry explicit minimum and maximum bounds as part of the type itself, so resource requirements are known at compile time and runtime exceptions are avoided. They are deterministic (any two byte sequences that differ represent semantically distinct data) and impose a resource limit: no atomic encoded data piece may exceed 64 KiB, which lets even embedded/limited-memory devices process the data. Because the type system is formal, one can formally verify that (de)serialization matches a schema and prove statements about memory-layout equivalence and convertibility. RGB compiles its entire consensus layer into strict types so it can obtain compile-time size guarantees (helping hardware wallets) and, most importantly, produce formal proofs of binary compatibility between releases. Strict types were developed by Maxim Orlovsky under the UBIDECO Institute and are also used by AluVM and other client-side-validation systems.",
+    "answer_key_points": [
+      "Formal, deterministic notation for ADTs targeting real platforms, not abstract theory",
+      "Every collection has explicit min/max bounds baked into the type -> compile-time resource prediction, no runtime exceptions",
+      "Determinism: differing byte sequences always mean semantically distinct data",
+      "64 KiB rule: no atomic encoded piece may exceed 64 KiB, enabling embedded/limited-memory use",
+      "Enables formal verification of (de)serialization and memory-layout equivalence",
+      "RGB compiles its whole consensus layer to strict types for binary-compatibility proofs across releases; by Orlovsky/UBIDECO"
+    ],
+    "cited_sources": [
+      "https://www.strict-types.org/",
+      "https://rgb.tech/blog/release-v0-10/"
+    ]
+  },
+  {
+    "id": "thin_rgb_10",
+    "category": "arcane_thin",
+    "topic": "Bifrost (LNPBP-50/51/53)",
+    "difficulty": "hard",
+    "question": "Bifrost (LNPBP-50, with LNPBP-51 and LNPBP-53) is proposed as a replacement/extension networking layer for Lightning, in part to carry RGB data. Why did the LNP/BP designers introduce a new protocol instead of extending the BOLTs, what encoding change is central to it, and what do LNPBP-51 and LNPBP-53 add on top of the LNPBP-50 core?",
+    "reference_answer": "Bifrost was introduced because extending the BOLTs is painful: each atomic feature touches several separate standards, experimental features are hard to isolate from tested core code, and BOLT messaging was designed narrowly for payments — making non-payment state channels, messaging/DEX use and RGB data propagation awkward to bolt on. A central technical motivation is encoding: BOLTs use BigInt encoding, which is unsuitable for client-side-validated data, so Bifrost re-encodes all message fields with strict encoding. LNPBP-50 is the generalized networking core — it runs over TCP on a dedicated default port 9913, reuses Lightning's Noise_XK handshake/encryption and message framing (extracted as LNPBP-15/18), advertises support via a local-features flag, and defines bifrost:// URLs. On top of that core, LNPBP-51 specifies the channel-management protocol and LNPBP-53 specifies multi-peer payment channels for Bifrost (with further LNPBPs covering routed messaging, channel factories and HTLC/PTLC synchronization). Related standard LNPBP-35 defines the Bifrost message extensions used to propagate RGB data over Lightning.",
+    "answer_key_points": [
+      "Extending BOLTs is hard: features span multiple standards, no isolation of experimental code, payment-only design",
+      "BigInt encoding in BOLTs is unsuitable for client-side-validated data -> Bifrost uses strict encoding for all fields",
+      "LNPBP-50 = generalized core: TCP, dedicated default port 9913, Noise_XK (LNPBP-15) + framing (LNPBP-18), bifrost:// URLs, local-features flag",
+      "LNPBP-51 = channel-management protocol",
+      "LNPBP-53 = multi-peer payment channels for Bifrost",
+      "LNPBP-35 (related) carries RGB data propagation over Lightning"
+    ],
+    "cited_sources": [
+      "https://standards.lnp-bp.org/lightning-network-protocol/lnpbp-0050.md",
+      "https://standards.lnp-bp.org/lightning-network-protocol/lnpbp-0051.md",
+      "https://standards.lnp-bp.org/lightning-network-protocol/lnpbp-0053.md",
+      "https://standards.lnp-bp.org/"
+    ]
+  },
+  {
+    "id": "thin_rgb_11",
+    "category": "arcane_thin",
+    "topic": "Carbonado storage format",
+    "difficulty": "hard",
+    "question": "Carbonado is the archival storage format associated with RGB wallet stash persistence (notably in BitMask). It is described as 'apocalypse-resistant data storage for the truly paranoid'. What combination of cryptographic and coding techniques does it layer into a single flat-file container, and what problem is each layer solving?",
+    "reference_answer": "Carbonado is a single flat-file archival container designed for long-term, consensus-critical data such as an RGB stash, layering several independent techniques. It applies authenticated symmetric encryption (in the v2 format, AES-256-CTR with full HMAC-SHA512 encrypt-then-MAC) to provide confidentiality and integrity of the private client-side-validated data. It uses Bao — a BLAKE3-based tree hashing scheme — to give verified streaming with per-slice (4 KiB) verifiability, so any portion can be authenticated without reading the whole file. It adds Reed-Solomon forward error correction (a deterministic 4/8 scheme) so the archive survives bit-rot and partial media loss, and optional Zstandard compression to reduce size. Newer versions also attach post-quantum (SLH-DSA / FIPS-205) signatures as optional sidecars. Together these layers target the goal of data that stays private, verifiable and recoverable over very long horizons and degraded storage — matching RGB's model where losing your client-side history means losing the asset.",
+    "answer_key_points": [
+      "Single flat-file archival container for long-term consensus-critical data (e.g. RGB stash), used by BitMask",
+      "Authenticated encryption (v2: AES-256-CTR + HMAC-SHA512 encrypt-then-MAC) for confidentiality + integrity",
+      "Bao (BLAKE3-based) verified streaming with per-4 KiB-slice verifiability",
+      "Reed-Solomon forward error correction (deterministic 4/8) against bit-rot / partial loss",
+      "Optional Zstandard compression; optional post-quantum SLH-DSA (FIPS-205) signature sidecars",
+      "Purpose: private, verifiable, recoverable data because losing client-side history loses the RGB asset"
+    ],
+    "cited_sources": [
+      "https://github.com/bitmask-stack/carbonado",
+      "https://docs.rs/carbonado/latest/carbonado/"
+    ]
+  }
+]

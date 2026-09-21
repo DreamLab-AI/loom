@@ -1,0 +1,490 @@
+{
+  "arc_rgb01": {
+    "ctx": "## Client-Side Validation\nClient-Side Validation is the process of verifying user-supplied data within the browser or client application before that data is transmitted to a server, providing immediate feedback to users and reducing unnecessary network requests. In the context of Bitcoin and RGB Protocol, it refers to a distinct validation paradigm where the full state of off-chain assets is verified locally by the recipient rather than by all network nodes, enabling scalable, private asset transfers. The two usages share the principle of local verification but differ fundamentally in their security models and scope.\n\n## Client-Side Validation Theory\nClient-side validation theory is the conceptual framework in which the validity of state transitions is verified by the affected parties themselves rather than by every node of a global consensus layer, with the blockchain used only to commit to and order single-use seals. Data and proofs are kept off-chain and shared peer-to-peer, so the base chain provides ordering and double-spend prevention without learning transaction contents. It matters because it underpins scalable, private smart-contract systems such as RGB that inherit Bitcoin's security without bloating its chain.\n",
+    "titles": [
+      "Client-Side Validation",
+      "Client-Side Validation Theory"
+    ],
+    "chars": 1241,
+    "n_classes": 2
+  },
+  "arc_rgb02": {
+    "ctx": "## Single Use Seals\nA single-use seal is a cryptographic primitive, proposed by Peter Todd in 2016, that is a uniquely identifiable object which can be closed over ('sealed to') a message exactly once, producing a publicly verifiable proof that the seal was closed over that specific message and no other. The canonical implementation uses a Bitcoin UTXO as the seal: because the consensus rules permit each UTXO to be spent only once, the transaction that spends it can commit to exactly one message, giving a tamper-evident, non-equivocable 'open once' guarantee. Single-use seals, combined with proof of publication, form the foundation of client-side validation and underpin Bitcoin smart-contract systems such as RGB and primitives such as Block Trails.\n",
+    "titles": [
+      "Single Use Seals"
+    ],
+    "chars": 759,
+    "n_classes": 1
+  },
+  "arc_rgb03": {
+    "ctx": "## Single Use Seals\nA single-use seal is a cryptographic primitive, proposed by Peter Todd in 2016, that is a uniquely identifiable object which can be closed over ('sealed to') a message exactly once, producing a publicly verifiable proof that the seal was closed over that specific message and no other. The canonical implementation uses a Bitcoin UTXO as the seal: because the consensus rules permit each UTXO to be spent only once, the transaction that spends it can commit to exactly one message, giving a tamper-evident, non-equivocable 'open once' guarantee. Single-use seals, combined with proof of publication, form the foundation of client-side validation and underpin Bitcoin smart-contract systems such as RGB and primitives such as Block Trails.\n",
+    "titles": [
+      "Single Use Seals"
+    ],
+    "chars": 759,
+    "n_classes": 1
+  },
+  "arc_rgb04": {
+    "ctx": "## Proof of Publication\nProof of publication is a cryptographic guarantee that a given message has been published to, and ordered within, an append-only medium visible to all relevant parties, such that the publisher cannot later equivocate or hide it. Together with single-use seals it forms one of the two foundations of client-side validation: the publication medium (most commonly the Bitcoin blockchain, but also a Nostr relay set or other consensus system) provides ordering and non-equivocation, while seals bind specific messages to spendable objects. It is the property that lets off-chain smart-contract systems trust that a seal closure was witnessed once and only once.\n",
+    "titles": [
+      "Proof of Publication"
+    ],
+    "chars": 682,
+    "n_classes": 1
+  },
+  "arc_rgb05": {
+    "ctx": "## RGB Protocol\nRGB Protocol is a client-side validation smart-contract system built on Bitcoin and the Lightning Network that enables issuance, transfer, and programmable logic over tokenised assets (fungible and non-fungible) without placing contract state on the public blockchain. Contract state is stored in off-chain client-held directed acyclic graphs (DAGs), with only cryptographic commitments anchored to Bitcoin UTXOs via single-use seals, inheriting Bitcoin's security and censorship resistance while providing scalability, privacy, and programmability unavailable to purely on-chain designs. The AluVM virtual machine executes contract validation logic deterministically off-chain, and Lightning Network channels enable instant, low-fee RGB asset transfers. Developed by the LNP/BP Association from 2018 onward, RGB reached production stability in 2024 with standardised schemas RGB20 (fungible tokens) and RGB21 (non-fungible tokens).\n",
+    "titles": [
+      "RGB Protocol"
+    ],
+    "chars": 949,
+    "n_classes": 1
+  },
+  "arc_rgb06": {
+    "ctx": "## RGB Protocol\nRGB Protocol is a client-side validation smart-contract system built on Bitcoin and the Lightning Network that enables issuance, transfer, and programmable logic over tokenised assets (fungible and non-fungible) without placing contract state on the public blockchain. Contract state is stored in off-chain client-held directed acyclic graphs (DAGs), with only cryptographic commitments anchored to Bitcoin UTXOs via single-use seals, inheriting Bitcoin's security and censorship resistance while providing scalability, privacy, and programmability unavailable to purely on-chain designs. The AluVM virtual machine executes contract validation logic deterministically off-chain, and Lightning Network channels enable instant, low-fee RGB asset transfers. Developed by the LNP/BP Association from 2018 onward, RGB reached production stability in 2024 with standardised schemas RGB20 (fungible tokens) and RGB21 (non-fungible tokens).\n",
+    "titles": [
+      "RGB Protocol"
+    ],
+    "chars": 949,
+    "n_classes": 1
+  },
+  "arc_rgb07": {
+    "ctx": "## AluVM\nA purely functional, register-based virtual machine designed for deterministic execution of smart-contract validation logic within client-side validated Bitcoin protocol layers, notably the RGB Protocol. AluVM operates without mutable global state, using a RISC-like instruction set that guarantees bounded execution time and reproducible results across heterogeneous computing environments. Its architecture is specifically optimised for the constraints of client-side validation, where contract logic must execute identically across all validating parties without access to a shared blockchain state machine.\n",
+    "titles": [
+      "AluVM"
+    ],
+    "chars": 620,
+    "n_classes": 1
+  },
+  "arc_rgb08": {
+    "ctx": "## Contractum Language\nContractum is a high-level smart-contract programming language designed for the RGB protocol, which performs client-side validation of state transitions anchored to Bitcoin. It compiles to AluVM bytecode and lets developers express RGB schemas and contract logic in a readable, declarative form. It is central to authoring confidential, scalable contracts that settle off-chain while inheriting Bitcoin's security.\n",
+    "titles": [
+      "Contractum Language"
+    ],
+    "chars": 438,
+    "n_classes": 1
+  },
+  "arc_rgb09": {
+    "ctx": "## Bifrost Protocol\nBifrost is a Bitcoin-focused protocol stack associated with RGB and client-side validation, providing transport and interoperability for off-chain smart-contract state. In the RGB ecosystem it handles the peer-to-peer exchange of consignments and validation data so that asset and contract state can move between parties without publishing it on-chain. By keeping contract data client-side, it preserves Bitcoin's scalability and privacy while enabling rich asset issuance.\n",
+    "titles": [
+      "Bifrost Protocol"
+    ],
+    "chars": 494,
+    "n_classes": 1
+  },
+  "arc_rgb10": {
+    "ctx": "## LNP-BP Standards Association\nThe LNP-BP Standards Association is a non-profit body that develops and maintains specifications for Bitcoin and Lightning Network protocols, most notably the RGB smart-contract system and client-side validation. It curates the LNPBP specification series covering layer-2 and layer-3 constructs that extend Bitcoin without altering its base consensus. The association coordinates the engineers and researchers building these client-side-validated protocols.\n\n## IEEE Standards Association\nThe IEEE Standards Association (IEEE SA) is the standards development arm of the Institute of Electrical and Electronics Engineers, operating a consensus-based process through which industry, government, and academic stakeholders collaboratively develop and maintain technical standards covering electrical, electronic, computing, and communications technologies, with over 1,400 active standards and more than 900 standards under active development at any time.\n",
+    "titles": [
+      "LNP-BP Standards Association",
+      "IEEE Standards Association"
+    ],
+    "chars": 984,
+    "n_classes": 2
+  },
+  "arc_rgb11": {
+    "ctx": "## Taproot\nTaproot is a soft-fork upgrade to the Bitcoin protocol, activated at block 709,632 in November 2021, comprising BIPs 340, 341, and 342. It introduces Schnorr signatures (BIP 340), Pay-to-Taproot (P2TR) outputs with Merkelised Abstract Syntax Tree (MAST) spending-condition commitments (BIP 341), and Tapscript \u2014 an updated Bitcoin Script dialect (BIP 342). Together these improvements enhance transaction privacy by making complex multi-condition spends indistinguishable from simple key-path spends, improve efficiency via Schnorr signature aggregation, and expand smart-contract expressiveness on Bitcoin's base layer.\n",
+    "titles": [
+      "Taproot"
+    ],
+    "chars": 632,
+    "n_classes": 1
+  },
+  "arc_rgb12": {
+    "ctx": "## Bitcoin Ordinals\nBitcoin Ordinals is a numbering scheme and inscription protocol that assigns a unique serial number to every individual satoshi on the Bitcoin network based on the order of its mining, enabling arbitrary content \u2014 text, images, code \u2014 to be embedded directly into Bitcoin transactions via the witness data introduced by SegWit and Taproot. Each inscription is permanently stored on-chain without requiring a separate token contract, making it a native non-fungible artefact within the Bitcoin base layer. The protocol was introduced by Casey Rodarmor in January 2023.\n\n## BRC-20\nBRC-20 is an experimental fungible token standard on the Bitcoin blockchain that encodes deploy, mint, and transfer operations as JSON-formatted Ordinals inscriptions written onto individual satoshis. Token balances are not enforced by Bitcoin consensus rules but are instead computed off-chain by indexers that parse inscription data in sequential ordinal order. Proposed by the pseudonymous developer @domo in March 2023, BRC-20 was the first widely adopted approach to creating transferable fungible tokens natively on Bitcoin without requiring a sidechain or layer-2 network. Its simplicity and permissionless nature drove rapid experimentation but also exposed limitations around scalability, indexer consensus, and on-chain fee pressure.\n\n## Bitcoin\nBitcoin is the first decentralised, permissionless, peer-to-peer electronic cash system, introduced by the pseudonymous Satoshi Nakamoto in a 2008 whitepaper and launched as open-source software in January 2009. It maintains a globally shared, tamper-evident ledger \u2014 the blockchain \u2014 through a proof-of-work consensus mechanism called Nakamoto Consensus, in which miners compete to extend the chain by finding nonces satisfying a difficulty-adjusted SHA-256 hash target, earning new bitcoin and transaction fees as reward. The monetary supply is strictly bounded by a 21 million coin cap enforced deterministically via a halving schedule that reduces the block subsidy approximately every four years, conferring programmatic scarcity and censorship-resistant value transfer without reliance on any trusted intermediary. Bitcoin's UTXO model, Script-based transaction authorisation, and secp256k1 elliptic-curve cryptography together form the foundational substrate upon which Lightning Network payment channels, Taproot smart contracting, and a growing ecosystem of Layer 2 protocols are built.\n",
+    "titles": [
+      "Bitcoin Ordinals",
+      "BRC-20",
+      "Bitcoin"
+    ],
+    "chars": 2451,
+    "n_classes": 3
+  },
+  "arc_sov01": {
+    "ctx": "## A2A Protocol\nThe Agent-to-Agent (A2A) Protocol is an open communication specification, initially proposed by Google in April 2025 and transferred to the Linux Foundation in June 2025, that defines how autonomous AI agents discover one another, negotiate capabilities, delegate tasks, and exchange results across heterogeneous agent frameworks and cloud environments. It uses HTTP/HTTPS transport with JSON-RPC 2.0 structured messages and Server-Sent Events for streaming, an Agent Card system at a well-known URI for capability advertisement, and enterprise-grade authentication through OAuth 2.0, mTLS, and JWT, enabling cross-vendor agent interoperability without requiring shared infrastructure. A2A complements tool-access protocols such as the Model Context Protocol by standardising the agent-to-agent interaction layer, and reached v1.0 production readiness in 2026 with adoption by over 150 organisations including Microsoft, AWS, Salesforce, SAP, and ServiceNow.\n",
+    "titles": [
+      "A2A Protocol"
+    ],
+    "chars": 975,
+    "n_classes": 1
+  },
+  "arc_sov02": {
+    "ctx": "## A2A Protocol\nThe Agent-to-Agent (A2A) Protocol is an open communication specification, initially proposed by Google in April 2025 and transferred to the Linux Foundation in June 2025, that defines how autonomous AI agents discover one another, negotiate capabilities, delegate tasks, and exchange results across heterogeneous agent frameworks and cloud environments. It uses HTTP/HTTPS transport with JSON-RPC 2.0 structured messages and Server-Sent Events for streaming, an Agent Card system at a well-known URI for capability advertisement, and enterprise-grade authentication through OAuth 2.0, mTLS, and JWT, enabling cross-vendor agent interoperability without requiring shared infrastructure. A2A complements tool-access protocols such as the Model Context Protocol by standardising the agent-to-agent interaction layer, and reached v1.0 production readiness in 2026 with adoption by over 150 organisations including Microsoft, AWS, Salesforce, SAP, and ServiceNow.\n",
+    "titles": [
+      "A2A Protocol"
+    ],
+    "chars": 975,
+    "n_classes": 1
+  },
+  "arc_sov03": {
+    "ctx": "## Solid-OIDC\nSolid-OIDC is the authentication specification for the Solid ecosystem, extending OpenID Connect with decentralised identity so a user authenticates with their own WebID and identity provider rather than a centralised platform. It issues DPoP-bound access tokens that resource servers (Solid Pods) verify, enabling a user to control which applications access their personal data store. It is the identity layer that makes Solid's separation of identity, data, and application possible.\n",
+    "titles": [
+      "Solid-OIDC"
+    ],
+    "chars": 500,
+    "n_classes": 1
+  },
+  "arc_sov04": {
+    "ctx": "## Solid-OIDC\nSolid-OIDC is the authentication specification for the Solid ecosystem, extending OpenID Connect with decentralised identity so a user authenticates with their own WebID and identity provider rather than a centralised platform. It issues DPoP-bound access tokens that resource servers (Solid Pods) verify, enabling a user to control which applications access their personal data store. It is the identity layer that makes Solid's separation of identity, data, and application possible.\n",
+    "titles": [
+      "Solid-OIDC"
+    ],
+    "chars": 500,
+    "n_classes": 1
+  },
+  "arc_sov05": {
+    "ctx": "## Decentralised Identity\nDecentralised Identity is a model for digital identity management in which individuals, organisations, and devices create, own, and control their own cryptographic identifiers and verifiable credentials without dependence on centralised identity providers or registries. Identifiers are anchored to a verifiable data registry \u2014 typically a blockchain or distributed ledger \u2014 as Decentralised Identifiers (DIDs) standardised by the W3C DID Core 1.0 specification, which defines a URI scheme resolving to a DID Document containing public keys and service endpoints. Credentials attesting to attributes of the DID subject are issued by trusted parties as W3C Verifiable Credentials, stored in a user-controlled digital wallet, and selectively disclosed to verifiers using zero-knowledge proofs or selective-disclosure mechanisms. The model operationalises Self-Sovereign Identity principles, giving subjects full autonomy over their identity data across systems and jurisdictions.\n\n## Identity\nIdentity is the complete, verifiable representation of a principal \u2014 person, organisation, device, or agent \u2014 within a digital system, constituted by a set of attributes, credentials, and cryptographically anchored claims that distinguish that principal from all others. Digital identity underpins authentication, authorisation, and accountability across networked systems, and increasingly extends to self-sovereign, decentralised forms in which control of the identity record rests with the subject rather than a centralised authority. In spatial computing and metaverse contexts, identity further encompasses persistent avatars, reputational history, and cross-platform portability anchored to decentralised identifiers (DIDs). The coherent management of identity is the foundation upon which access control, trust hierarchies, and privacy-preserving interactions are built.\n\n## URI\nA URI (Uniform Resource Identifier) is a compact sequence of characters that uniquely identifies an abstract or physical resource on a network or within a namespace. It generalises both locators, which describe how to access a resource, and names, which identify a resource independently of access, under a single syntactic framework of scheme, authority, path, query and fragment. URIs are foundational to the architecture of the World Wide Web and the Semantic Web, where they serve as globally unique identifiers for documents, data and entities.\n",
+    "titles": [
+      "Decentralised Identity",
+      "Identity",
+      "URI"
+    ],
+    "chars": 2453,
+    "n_classes": 3
+  },
+  "arc_sov06": {
+    "ctx": "## Decentralised Identity\nDecentralised Identity is a model for digital identity management in which individuals, organisations, and devices create, own, and control their own cryptographic identifiers and verifiable credentials without dependence on centralised identity providers or registries. Identifiers are anchored to a verifiable data registry \u2014 typically a blockchain or distributed ledger \u2014 as Decentralised Identifiers (DIDs) standardised by the W3C DID Core 1.0 specification, which defines a URI scheme resolving to a DID Document containing public keys and service endpoints. Credentials attesting to attributes of the DID subject are issued by trusted parties as W3C Verifiable Credentials, stored in a user-controlled digital wallet, and selectively disclosed to verifiers using zero-knowledge proofs or selective-disclosure mechanisms. The model operationalises Self-Sovereign Identity principles, giving subjects full autonomy over their identity data across systems and jurisdictions.\n\n## Identity\nIdentity is the complete, verifiable representation of a principal \u2014 person, organisation, device, or agent \u2014 within a digital system, constituted by a set of attributes, credentials, and cryptographically anchored claims that distinguish that principal from all others. Digital identity underpins authentication, authorisation, and accountability across networked systems, and increasingly extends to self-sovereign, decentralised forms in which control of the identity record rests with the subject rather than a centralised authority. In spatial computing and metaverse contexts, identity further encompasses persistent avatars, reputational history, and cross-platform portability anchored to decentralised identifiers (DIDs). The coherent management of identity is the foundation upon which access control, trust hierarchies, and privacy-preserving interactions are built.\n\n## URI\nA URI (Uniform Resource Identifier) is a compact sequence of characters that uniquely identifies an abstract or physical resource on a network or within a namespace. It generalises both locators, which describe how to access a resource, and names, which identify a resource independently of access, under a single syntactic framework of scheme, authority, path, query and fragment. URIs are foundational to the architecture of the World Wide Web and the Semantic Web, where they serve as globally unique identifiers for documents, data and entities.\n",
+    "titles": [
+      "Decentralised Identity",
+      "Identity",
+      "URI"
+    ],
+    "chars": 2453,
+    "n_classes": 3
+  },
+  "arc_sov07": {
+    "ctx": "## Decentralised Identity\nDecentralised Identity is a model for digital identity management in which individuals, organisations, and devices create, own, and control their own cryptographic identifiers and verifiable credentials without dependence on centralised identity providers or registries. Identifiers are anchored to a verifiable data registry \u2014 typically a blockchain or distributed ledger \u2014 as Decentralised Identifiers (DIDs) standardised by the W3C DID Core 1.0 specification, which defines a URI scheme resolving to a DID Document containing public keys and service endpoints. Credentials attesting to attributes of the DID subject are issued by trusted parties as W3C Verifiable Credentials, stored in a user-controlled digital wallet, and selectively disclosed to verifiers using zero-knowledge proofs or selective-disclosure mechanisms. The model operationalises Self-Sovereign Identity principles, giving subjects full autonomy over their identity data across systems and jurisdictions.\n\n## Identity\nIdentity is the complete, verifiable representation of a principal \u2014 person, organisation, device, or agent \u2014 within a digital system, constituted by a set of attributes, credentials, and cryptographically anchored claims that distinguish that principal from all others. Digital identity underpins authentication, authorisation, and accountability across networked systems, and increasingly extends to self-sovereign, decentralised forms in which control of the identity record rests with the subject rather than a centralised authority. In spatial computing and metaverse contexts, identity further encompasses persistent avatars, reputational history, and cross-platform portability anchored to decentralised identifiers (DIDs). The coherent management of identity is the foundation upon which access control, trust hierarchies, and privacy-preserving interactions are built.\n\n## URI\nA URI (Uniform Resource Identifier) is a compact sequence of characters that uniquely identifies an abstract or physical resource on a network or within a namespace. It generalises both locators, which describe how to access a resource, and names, which identify a resource independently of access, under a single syntactic framework of scheme, authority, path, query and fragment. URIs are foundational to the architecture of the World Wide Web and the Semantic Web, where they serve as globally unique identifiers for documents, data and entities.\n",
+    "titles": [
+      "Decentralised Identity",
+      "Identity",
+      "URI"
+    ],
+    "chars": 2453,
+    "n_classes": 3
+  },
+  "arc_sov08": {
+    "ctx": "## Nostr\nNostr (Notes and Other Stuff Transmitted by Relays) is an open, censorship-resistant social-messaging protocol in which user identity is a secp256k1 cryptographic key pair and all user activity consists of signed JSON events published to one or more relay servers over WebSocket connections. The protocol has no central authority: identity is purely the public key, relays are interchangeable infrastructure that store and forward events without requiring account registration, and clients subscribe using filter objects to receive matching events. Nostr Improvement Proposals (NIPs) extend the core event-kind system to cover short-form notes, long-form articles, encrypted direct messages, Lightning Network zap payments, community moderation, and decentralised identity verification. Its radical simplicity, cryptographic self-sovereignty, and tight integration with the Bitcoin and Lightning ecosystem have made Nostr the dominant open social layer for value-aligned decentralised communication.\n",
+    "titles": [
+      "Nostr"
+    ],
+    "chars": 1009,
+    "n_classes": 1
+  },
+  "arc_sov09": {
+    "ctx": "## Nostr\nNostr (Notes and Other Stuff Transmitted by Relays) is an open, censorship-resistant social-messaging protocol in which user identity is a secp256k1 cryptographic key pair and all user activity consists of signed JSON events published to one or more relay servers over WebSocket connections. The protocol has no central authority: identity is purely the public key, relays are interchangeable infrastructure that store and forward events without requiring account registration, and clients subscribe using filter objects to receive matching events. Nostr Improvement Proposals (NIPs) extend the core event-kind system to cover short-form notes, long-form articles, encrypted direct messages, Lightning Network zap payments, community moderation, and decentralised identity verification. Its radical simplicity, cryptographic self-sovereignty, and tight integration with the Bitcoin and Lightning ecosystem have made Nostr the dominant open social layer for value-aligned decentralised communication.\n",
+    "titles": [
+      "Nostr"
+    ],
+    "chars": 1009,
+    "n_classes": 1
+  },
+  "arc_sov10": {
+    "ctx": "## did:nostr\ndid:nostr is a W3C DID Core-conformant decentralised identifier method that represents a Nostr public key as a universally resolvable DID of the form did:nostr:{pubkey}, where {pubkey} is the 64-character hex secp256k1 key already used by the Nostr protocol. Because the identifier is the key, no registration, server, or fee is required: anyone with a Nostr keypair already has a DID. Resolution degrades gracefully across three layers \u2014 HTTP fetch of a .well-known/did/nostr/{pubkey}.json document, relay-enhanced resolution from Nostr kind 0 (metadata) and kind 10002 (relay list) events, and an offline fallback that derives a minimal valid DID document from the key alone. Keys are expressed in W3C Multikey/Multibase form (secp256k1 multicodec), letting Nostr identities authenticate to any DID-aware system, including Solid login, SSO, and verifiable-credential flows.\n\n## Nostr\nNostr (Notes and Other Stuff Transmitted by Relays) is an open, censorship-resistant social-messaging protocol in which user identity is a secp256k1 cryptographic key pair and all user activity consists of signed JSON events published to one or more relay servers over WebSocket connections. The protocol has no central authority: identity is purely the public key, relays are interchangeable infrastructure that store and forward events without requiring account registration, and clients subscribe using filter objects to receive matching events. Nostr Improvement Proposals (NIPs) extend the core event-kind system to cover short-form notes, long-form articles, encrypted direct messages, Lightning Network zap payments, community moderation, and decentralised identity verification. Its radical simplicity, cryptographic self-sovereignty, and tight integration with the Bitcoin and Lightning ecosystem have made Nostr the dominant open social layer for value-aligned decentralised communication.\n",
+    "titles": [
+      "did:nostr",
+      "Nostr"
+    ],
+    "chars": 1899,
+    "n_classes": 2
+  },
+  "arc_sov11": {
+    "ctx": "## Git Mark\nGit Mark is a Block Trails Profile that anchors a Git history to Bitcoin by using each commit hash as the tweak that advances a trail, so the sequence of commits becomes a single-use-seal chain whose ordering and uniqueness are enforced by Bitcoin's UTXO model. The Blocktrails verifier checks a git-mark trail against the chain, confirming that each marked commit was timestamped and is tamper-evident on Bitcoin \u2014 it proves the history's immutability and temporal anchoring, not the correctness of the code itself. This gives a Bitcoin-secured provenance log for source repositories without storing any repository data on-chain.\n\n## Commit\nThe atomic unit of change in a version control system: an immutable, uniquely identified snapshot of a project's tracked content together with metadata \u2014 author, timestamp, descriptive message, and references to one or more parent commits \u2014 so that the full set of commits forms a directed acyclic graph recording the project's history; in Git each commit is content-addressed by a cryptographic hash of its tree and parents, making history tamper-evident and enabling branching, merging, reverting, and precise attribution of every line of a codebase.\n",
+    "titles": [
+      "Git Mark",
+      "Commit"
+    ],
+    "chars": 1207,
+    "n_classes": 2
+  },
+  "arc_sov12": {
+    "ctx": "## Infrastructure\nThe Infrastructure domain encompasses the foundational computing, networking, storage, data-management, security, and software-engineering systems that underpin every other technology domain. It is the substrate on which artificial-intelligence, spatial-computing, blockchain, robotics, and distributed-collaboration applications operate, spanning cloud and compute platforms, communications networks, data and identity management, legal/regulatory frameworks, and software engineering practice.\n",
+    "titles": [
+      "Infrastructure"
+    ],
+    "chars": 514,
+    "n_classes": 1
+  },
+  "thin_prov01": {
+    "ctx": "## Merkle DAG\nA Merkle Directed Acyclic Graph (DAG) is a data structure combining Merkle tree hash-linking with a generalised directed acyclic graph topology, allowing nodes to have multiple parents and enabling content-addressed, tamper-evident storage of arbitrary graph-shaped data. Unlike a binary Merkle tree, each node's cryptographic hash is derived from all its children, forming a unique, immutable identifier for any subgraph.\n\n## Model\nIn artificial intelligence, a Model is a mathematical or computational structure learned from data that encodes a mapping from inputs to outputs (or latent representations). Models range from classical machine learning models (linear, tree-based) to deep neural networks, generative models, and large language models, and constitute the core artefact produced by training and consumed during inference.\n\n## Address\nA blockchain Address is a compact, human-transmissible identifier derived from a public key via cryptographic hashing (typically SHA-256 followed by RIPEMD-160 for Bitcoin, or Keccak-256 for Ethereum), which designates the recipient or controller of blockchain funds or smart-contract state. Addresses function as pseudonymous identifiers: they reveal nothing about the owner's real identity while allowing cryptographic proof of ownership through digital signature with the corresponding private key. They are encoded in formats such as Base58Check (Bitcoin legacy), Bech32 (Bitcoin native SegWit), or hexadecimal with EIP-55 checksum (Ethereum).\n",
+    "titles": [
+      "Merkle DAG",
+      "Model",
+      "Address"
+    ],
+    "chars": 1510,
+    "n_classes": 3
+  },
+  "thin_prov02": {
+    "ctx": "## Ansi\nANSI, the American National Standards Institute, is a private non-profit organisation that oversees the development of voluntary consensus standards for products, services, processes, and systems in the United States. It does not write most standards itself but accredits standards developers and approves their output as American National Standards, and it represents the United States in international bodies such as ISO and IEC. In computing it is associated with standards such as ANSI C, ANSI SQL, and the ASCII character encoding.\n",
+    "titles": [
+      "Ansi"
+    ],
+    "chars": 545,
+    "n_classes": 1
+  },
+  "thin_prov03": {
+    "ctx": "## Anomaly Detection\nAnomaly detection is a machine learning and statistical discipline concerned with identifying observations, sequences, or structural patterns that deviate significantly from a learned or assumed norm, signalling potential faults, threats, or novel phenomena. It operates across three principal modes: point anomaly detection (a single observation is outlying relative to the full dataset), contextual anomaly detection (an observation is anomalous given its local context, such as a transaction at an unusual time of day), and collective anomaly detection (a subsequence or group of observations is jointly anomalous relative to expected behaviour). The field draws on statistical modelling, machine learning, and signal processing to serve applications ranging from fraud detection and network intrusion detection to industrial fault monitoring, medical diagnostics, and log analysis.\n",
+    "titles": [
+      "Anomaly Detection"
+    ],
+    "chars": 907,
+    "n_classes": 1
+  },
+  "thin_prov04": {
+    "ctx": "## Commit\nThe atomic unit of change in a version control system: an immutable, uniquely identified snapshot of a project's tracked content together with metadata \u2014 author, timestamp, descriptive message, and references to one or more parent commits \u2014 so that the full set of commits forms a directed acyclic graph recording the project's history; in Git each commit is content-addressed by a cryptographic hash of its tree and parents, making history tamper-evident and enabling branching, merging, reverting, and precise attribution of every line of a codebase.\n\n## Trust\nTrust is a cognitive, relational, and institutional disposition in which an agent accepts vulnerability to the actions of another party based on a positive expectation that the trusted party will act competently, honestly, and benevolently toward the trusting party's interests. In sociotechnical and AI contexts, trust extends beyond interpersonal relationships to encompass institutional trust in organisations, systems trust in technological artefacts, and algorithmic trust in AI decision-making processes. Trust is simultaneously a psychological state, a social institution, and a design property of engineered systems; its calibration \u2014 whether systems are trusted appropriately, excessively, or insufficiently \u2014 carries profound implications for human welfare, democratic function, and the responsible deployment of AI. Across distributed and decentralised architectures, trust is increasingly operationalised via cryptographic attestation, verifiable credentials, and reputation mechanisms that replace reliance on a single central authority.\n",
+    "titles": [
+      "Commit",
+      "Trust"
+    ],
+    "chars": 1624,
+    "n_classes": 2
+  },
+  "thin_prov05": {
+    "ctx": "## Tamper Evidence\nTamper evidence is the property of a system, record, or physical artefact whereby any unauthorised alteration leaves detectable traces that can be subsequently verified. It relies on mechanisms such as cryptographic hashing, digital signatures, and immutable logs so that the integrity of an item can be assessed after the fact. Tamper evidence does not necessarily prevent modification, but it guarantees that modification cannot occur undetected.\n",
+    "titles": [
+      "Tamper Evidence"
+    ],
+    "chars": 468,
+    "n_classes": 1
+  },
+  "thin_prov06": {
+    "ctx": "## Bitcoin\nBitcoin is the first decentralised, permissionless, peer-to-peer electronic cash system, introduced by the pseudonymous Satoshi Nakamoto in a 2008 whitepaper and launched as open-source software in January 2009. It maintains a globally shared, tamper-evident ledger \u2014 the blockchain \u2014 through a proof-of-work consensus mechanism called Nakamoto Consensus, in which miners compete to extend the chain by finding nonces satisfying a difficulty-adjusted SHA-256 hash target, earning new bitcoin and transaction fees as reward. The monetary supply is strictly bounded by a 21 million coin cap enforced deterministically via a halving schedule that reduces the block subsidy approximately every four years, conferring programmatic scarcity and censorship-resistant value transfer without reliance on any trusted intermediary. Bitcoin's UTXO model, Script-based transaction authorisation, and secp256k1 elliptic-curve cryptography together form the foundational substrate upon which Lightning Network payment channels, Taproot smart contracting, and a growing ecosystem of Layer 2 protocols are built.\n\n## Coin\nA Coin is a native cryptographic asset issued and governed by a blockchain protocol itself, distinct from tokens created by smart contracts on top of an existing chain. Coins function as the primary medium of exchange for transaction fees, validator rewards, and network participation incentives within their respective distributed ledger ecosystems, and may also serve as stores of value, monetary reserves, or collateral in decentralised finance applications.\n\n## Server\nA computer system engineered to provide services \u2014 computation, storage, or content \u2014 to other machines over a network, typically built for sustained load, remote management, and high availability with error-correcting memory, redundant power supplies, and hot-swappable storage. Racked in their thousands inside data centres, servers are the physical substrate of cloud computing, and the term equally names the software process that answers client requests in the client-server model.\n",
+    "titles": [
+      "Bitcoin",
+      "Coin",
+      "Server"
+    ],
+    "chars": 2076,
+    "n_classes": 3
+  },
+  "thin_prov07": {
+    "ctx": "## Git Mark\nGit Mark is a Block Trails Profile that anchors a Git history to Bitcoin by using each commit hash as the tweak that advances a trail, so the sequence of commits becomes a single-use-seal chain whose ordering and uniqueness are enforced by Bitcoin's UTXO model. The Blocktrails verifier checks a git-mark trail against the chain, confirming that each marked commit was timestamped and is tamper-evident on Bitcoin \u2014 it proves the history's immutability and temporal anchoring, not the correctness of the code itself. This gives a Bitcoin-secured provenance log for source repositories without storing any repository data on-chain.\n\n## Blockchain Anchoring\nBlockchain Anchoring is a technique for binding external data or documents to a blockchain by embedding a cryptographic hash of that data in a blockchain transaction, thereby creating a tamper-evident, timestamped proof of existence and integrity that can be independently verified by any party with access to the document and the chain. The blockchain's immutability and distributed consensus guarantee that the anchoring transaction cannot be altered retroactively, providing a trust anchor without requiring the document itself to be stored on-chain. Applications span document notarisation, supply chain provenance, audit logs, and verifiable credential revocation.\n\n## Commit\nThe atomic unit of change in a version control system: an immutable, uniquely identified snapshot of a project's tracked content together with metadata \u2014 author, timestamp, descriptive message, and references to one or more parent commits \u2014 so that the full set of commits forms a directed acyclic graph recording the project's history; in Git each commit is content-addressed by a cryptographic hash of its tree and parents, making history tamper-evident and enabling branching, merging, reverting, and precise attribution of every line of a codebase.\n",
+    "titles": [
+      "Git Mark",
+      "Blockchain Anchoring",
+      "Commit"
+    ],
+    "chars": 1902,
+    "n_classes": 3
+  },
+  "thin_prov08": {
+    "ctx": "## API Integration\nAPI Integration is the discipline of connecting disparate software systems, services, and data sources through Application Programming Interfaces to achieve seamless interoperability and automated data exchange. It encompasses the design, implementation, orchestration, and maintenance of integration layers \u2014 including synchronous REST and GraphQL calls, asynchronous message queues, webhook-based push notifications, and event-driven streams \u2014 that allow applications to communicate via standardised contracts while abstracting the complexity of underlying system differences. Effective API integration reduces manual data transfer, accelerates business workflows, and forms the structural backbone of modern microservices, cloud-native, and composable enterprise architectures. Integration governance concerns \u2014 versioning, rate limiting, authentication, observability, and schema evolution \u2014 are integral to sustaining reliable integrations at scale.\n",
+    "titles": [
+      "API Integration"
+    ],
+    "chars": 974,
+    "n_classes": 1
+  },
+  "thin_prov09": {
+    "ctx": "## Domain\nA Domain is a coherent and bounded sphere of knowledge or subject area within formal ontology engineering, establishing the scope of conceptualisation\u2014the set of entities, relationships, and axioms characterising a particular area of discourse. Domains serve as fundamental organising principles enabling modular knowledge organisation and interoperability between specialised knowledge systems, realised through namespace declarations, import mechanisms, and modular ontology structures.\n",
+    "titles": [
+      "Domain"
+    ],
+    "chars": 499,
+    "n_classes": 1
+  },
+  "thin_prov10": {
+    "ctx": "## IMU\nAn Inertial Measurement Unit (IMU) is a self-contained electronic sensor module that integrates tri-axial accelerometers, gyroscopes, and optionally magnetometers to measure a rigid body's specific force, angular rate, and magnetic heading relative to an inertial reference frame without dependence on external infrastructure. MEMS-fabricated IMUs fuse their outputs through Kalman or complementary filter algorithms to yield real-time pose and orientation estimates at high sample rates, feeding inertial navigation, SLAM pipelines, and 6-DoF tracking systems. IMUs span performance grades from low-cost consumer MEMS units (bias instability >1\u00b0/hr) to navigation-grade fibre-optic and ring-laser gyro systems used in aerospace and submarine applications. They are integral to XR headsets, autonomous vehicles, UAVs, legged robots, wearables, and surgical instruments wherever low-latency, infrastructure-independent motion awareness is required.\n",
+    "titles": [
+      "IMU"
+    ],
+    "chars": 955,
+    "n_classes": 1
+  },
+  "thin_prov11": {
+    "ctx": "## based on\n\"Based on\" is a provenance and derivation relation used in robotics standards and quality management frameworks to indicate that a system, design, or specification is derived from or conforms to an authoritative reference standard such as ISO 9001 or functional-safety norms. Within the robotics domain it records the normative lineage of robot software architectures, safety certifications, and performance benchmarks relative to their governing standards.\n",
+    "titles": [
+      "based on"
+    ],
+    "chars": 470,
+    "n_classes": 1
+  },
+  "thin_rgb_01": {
+    "ctx": "## AluVM\nA purely functional, register-based virtual machine designed for deterministic execution of smart-contract validation logic within client-side validated Bitcoin protocol layers, notably the RGB Protocol. AluVM operates without mutable global state, using a RISC-like instruction set that guarantees bounded execution time and reproducible results across heterogeneous computing environments. Its architecture is specifically optimised for the constraints of client-side validation, where contract logic must execute identically across all validating parties without access to a shared blockchain state machine.\n",
+    "titles": [
+      "AluVM"
+    ],
+    "chars": 620,
+    "n_classes": 1
+  },
+  "thin_rgb_02": {
+    "ctx": "## Elliptic\nElliptic is a blockchain analytics and financial crime compliance company that provides software tools to trace, analyse, and risk-score cryptocurrency transactions across multiple blockchain networks. Its technology maps on-chain flows to real-world entities \u2014 exchanges, darknet markets, ransomware wallets, and sanctioned addresses \u2014 enabling financial institutions, crypto businesses, and law enforcement to detect and prevent money laundering, terrorist financing, and sanctions evasion. Elliptic's transaction monitoring and wallet screening solutions are used by regulated virtual-asset service providers globally to satisfy AML/CFT obligations under frameworks such as the FATF Travel Rule and MiCA.\n",
+    "titles": [
+      "Elliptic"
+    ],
+    "chars": 720,
+    "n_classes": 1
+  },
+  "thin_rgb_03": {
+    "ctx": "## Script\nBitcoin's stack-based, non-Turing-complete scripting language used to encode spending conditions on transaction outputs and to provide the corresponding unlocking data in transaction inputs. Script programs define locking and unlocking conditions\u2014such as pay-to-public-key-hash\u2014that a validator executes to authorise fund transfer, making transaction validation a programmable process without full smart-contract complexity.\n\n## Embedding\nAn embedding is a learned mapping from discrete or high-dimensional objects\u2014such as words, sentences, images, graphs, or code\u2014into a continuous, low-dimensional vector space, such that semantically or functionally similar inputs are mapped to geometrically proximate vectors. Embeddings are fundamental to modern machine learning, enabling downstream tasks including similarity search, classification, clustering, and retrieval through compact, transferable representations. The quality of an embedding space is typically measured by how well geometric proximity in the vector space reflects semantic or functional similarity in the original domain.\n\n## NIST\nThe National Institute of Standards and Technology (NIST) is a non-regulatory US federal agency within the Department of Commerce, responsible for advancing measurement science, standards development, and technology innovation to promote US industrial competitiveness and public safety. NIST produces widely adopted voluntary frameworks for cybersecurity, privacy, risk management, and artificial intelligence governance, including the NIST Cybersecurity Framework and the NIST AI Risk Management Framework. Its Special Publication (SP) 800-series documents serve as mandatory guidance for US federal agencies and are globally referenced by private industry, academic institutions, and regulators. NIST also operates the AI Safety Institute Consortium (AISIC), positioning it as a key convening body for multi-stakeholder AI governance and evaluation methodology development.\n",
+    "titles": [
+      "Script",
+      "Embedding",
+      "NIST"
+    ],
+    "chars": 1984,
+    "n_classes": 3
+  },
+  "thin_rgb_04": {
+    "ctx": "## Commit\nThe atomic unit of change in a version control system: an immutable, uniquely identified snapshot of a project's tracked content together with metadata \u2014 author, timestamp, descriptive message, and references to one or more parent commits \u2014 so that the full set of commits forms a directed acyclic graph recording the project's history; in Git each commit is content-addressed by a cryptographic hash of its tree and parents, making history tamper-evident and enabling branching, merging, reverting, and precise attribution of every line of a codebase.\n",
+    "titles": [
+      "Commit"
+    ],
+    "chars": 563,
+    "n_classes": 1
+  },
+  "thin_rgb_05": {
+    "ctx": "## Bitcoin\nBitcoin is the first decentralised, permissionless, peer-to-peer electronic cash system, introduced by the pseudonymous Satoshi Nakamoto in a 2008 whitepaper and launched as open-source software in January 2009. It maintains a globally shared, tamper-evident ledger \u2014 the blockchain \u2014 through a proof-of-work consensus mechanism called Nakamoto Consensus, in which miners compete to extend the chain by finding nonces satisfying a difficulty-adjusted SHA-256 hash target, earning new bitcoin and transaction fees as reward. The monetary supply is strictly bounded by a 21 million coin cap enforced deterministically via a halving schedule that reduces the block subsidy approximately every four years, conferring programmatic scarcity and censorship-resistant value transfer without reliance on any trusted intermediary. Bitcoin's UTXO model, Script-based transaction authorisation, and secp256k1 elliptic-curve cryptography together form the foundational substrate upon which Lightning Network payment channels, Taproot smart contracting, and a growing ecosystem of Layer 2 protocols are built.\n\n## Coin\nA Coin is a native cryptographic asset issued and governed by a blockchain protocol itself, distinct from tokens created by smart contracts on top of an existing chain. Coins function as the primary medium of exchange for transaction fees, validator rewards, and network participation incentives within their respective distributed ledger ecosystems, and may also serve as stores of value, monetary reserves, or collateral in decentralised finance applications.\n\n## Commit\nThe atomic unit of change in a version control system: an immutable, uniquely identified snapshot of a project's tracked content together with metadata \u2014 author, timestamp, descriptive message, and references to one or more parent commits \u2014 so that the full set of commits forms a directed acyclic graph recording the project's history; in Git each commit is content-addressed by a cryptographic hash of its tree and parents, making history tamper-evident and enabling branching, merging, reverting, and precise attribution of every line of a codebase.\n",
+    "titles": [
+      "Bitcoin",
+      "Coin",
+      "Commit"
+    ],
+    "chars": 2142,
+    "n_classes": 3
+  },
+  "thin_rgb_06": {
+    "ctx": "## Single Use Seals\nA single-use seal is a cryptographic primitive, proposed by Peter Todd in 2016, that is a uniquely identifiable object which can be closed over ('sealed to') a message exactly once, producing a publicly verifiable proof that the seal was closed over that specific message and no other. The canonical implementation uses a Bitcoin UTXO as the seal: because the consensus rules permit each UTXO to be spent only once, the transaction that spends it can commit to exactly one message, giving a tamper-evident, non-equivocable 'open once' guarantee. Single-use seals, combined with proof of publication, form the foundation of client-side validation and underpin Bitcoin smart-contract systems such as RGB and primitives such as Block Trails.\n",
+    "titles": [
+      "Single Use Seals"
+    ],
+    "chars": 759,
+    "n_classes": 1
+  },
+  "thin_rgb_07": {
+    "ctx": "## RGB Protocol\nRGB Protocol is a client-side validation smart-contract system built on Bitcoin and the Lightning Network that enables issuance, transfer, and programmable logic over tokenised assets (fungible and non-fungible) without placing contract state on the public blockchain. Contract state is stored in off-chain client-held directed acyclic graphs (DAGs), with only cryptographic commitments anchored to Bitcoin UTXOs via single-use seals, inheriting Bitcoin's security and censorship resistance while providing scalability, privacy, and programmability unavailable to purely on-chain designs. The AluVM virtual machine executes contract validation logic deterministically off-chain, and Lightning Network channels enable instant, low-fee RGB asset transfers. Developed by the LNP/BP Association from 2018 onward, RGB reached production stability in 2024 with standardised schemas RGB20 (fungible tokens) and RGB21 (non-fungible tokens).\n",
+    "titles": [
+      "RGB Protocol"
+    ],
+    "chars": 949,
+    "n_classes": 1
+  },
+  "thin_rgb_08": {
+    "ctx": "## MAS\nA Multi-Agent System (MAS) is a computational framework composed of multiple interacting autonomous agents that perceive their environment and act to achieve individual or collective goals. Each agent maintains local knowledge, reasoning capabilities, and the ability to communicate with peers, enabling emergent collective intelligence without centralised control. MAS architectures address problems that are too complex, distributed, or dynamic for monolithic solutions, drawing on distributed AI, game theory, and coordination theory. The paradigm spans reactive swarm systems, deliberative BDI agents, and modern LLM-orchestrated agentic pipelines.\n",
+    "titles": [
+      "MAS"
+    ],
+    "chars": 660,
+    "n_classes": 1
+  },
+  "thin_rgb_09": {
+    "ctx": "## Strict Encoding\nStrict encoding is a deterministic binary serialisation scheme used in the RGB protocol that guarantees a single canonical byte representation for any given data structure. By forbidding ambiguous orderings and optional layout choices, it ensures that independently computed commitments and hashes match exactly, which is essential for client-side validation. It pairs with strict types to give RGB its reproducible, consensus-free verification.\n",
+    "titles": [
+      "Strict Encoding"
+    ],
+    "chars": 465,
+    "n_classes": 1
+  },
+  "thin_rgb_10": {
+    "ctx": "## 51% Attack\nA 51% Attack is a consensus-layer attack on a Proof-of-Work blockchain in which a single entity or coalition controls more than half of the network's hash rate, enabling double-spending, transaction censorship, and chain reorganisation. The attack exploits the longest-chain rule: the attacker mines a private fork containing fraudulent transactions and, once it exceeds the honest chain in cumulative work, broadcasts it to override confirmed history.\n",
+    "titles": [
+      "51% Attack"
+    ],
+    "chars": 467,
+    "n_classes": 1
+  },
+  "thin_rgb_11": {
+    "ctx": "## Block Storage\nBlock Storage is an infrastructure storage paradigm that presents raw fixed-size blocks of data to a host operating system or hypervisor, which then manages formatting, file system placement, and I/O scheduling directly. Unlike object storage or file storage, block storage exposes a low-level disk abstraction enabling high-performance, low-latency random read/write operations suitable for databases, virtual machine boot disks, and transactional workloads. Cloud providers implement block storage as network-attached volumes (e.g., AWS EBS, GCP Persistent Disk) that can be dynamically provisioned and attached to compute instances.\n",
+    "titles": [
+      "Block Storage"
+    ],
+    "chars": 653,
+    "n_classes": 1
+  },
+  "thin_sove01": {
+    "ctx": "## did:nostr\ndid:nostr is a W3C DID Core-conformant decentralised identifier method that represents a Nostr public key as a universally resolvable DID of the form did:nostr:{pubkey}, where {pubkey} is the 64-character hex secp256k1 key already used by the Nostr protocol. Because the identifier is the key, no registration, server, or fee is required: anyone with a Nostr keypair already has a DID. Resolution degrades gracefully across three layers \u2014 HTTP fetch of a .well-known/did/nostr/{pubkey}.json document, relay-enhanced resolution from Nostr kind 0 (metadata) and kind 10002 (relay list) events, and an offline fallback that derives a minimal valid DID document from the key alone. Keys are expressed in W3C Multikey/Multibase form (secp256k1 multicodec), letting Nostr identities authenticate to any DID-aware system, including Solid login, SSO, and verifiable-credential flows.\n\n## DID Method\nA DID Method is a specification that defines how a particular type of Decentralised Identifier (DID) is created, resolved, updated, and deactivated, encoding the syntax rules and CRUD semantics for identifiers anchored to a specific verifiable data registry, ledger, or peer-to-peer network. Each method is identified by a unique method name embedded in the DID string (e.g. did:web, did:key, did:ion), and must provide a compliant DID Resolver that retrieves the corresponding DID Document containing public keys and service endpoints. DID Methods are standardised through the W3C DID Core specification and registered in the DIF DID Method Registry, enabling interoperable self-sovereign identity across heterogeneous systems. The diversity of methods reflects trade-offs between decentralisation guarantees, key management complexity, ledger dependency, and resolver performance.\n\n## Nostr\nNostr (Notes and Other Stuff Transmitted by Relays) is an open, censorship-resistant social-messaging protocol in which user identity is a secp256k1 cryptographic key pair and all user activity consists of signed JSON events published to one or more relay servers over WebSocket connections. The protocol has no central authority: identity is purely the public key, relays are interchangeable infrastructure that store and forward events without requiring account registration, and clients subscribe using filter objects to receive matching events. Nostr Improvement Proposals (NIPs) extend the core event-kind system to cover short-form notes, long-form articles, encrypted direct messages, Lightning Network zap payments, community moderation, and decentralised identity verification. Its radical simplicity, cryptographic self-sovereignty, and tight integration with the Bitcoin and Lightning ecosystem have made Nostr the dominant open social layer for value-aligned decentralised communication.\n",
+    "titles": [
+      "did:nostr",
+      "DID Method",
+      "Nostr"
+    ],
+    "chars": 2797,
+    "n_classes": 3
+  },
+  "thin_sove02": {
+    "ctx": "## Identifier\nA symbol, string, or token that unambiguously denotes an entity \u2014 a resource, person, organisation, device, dataset, or concept \u2014 within a defined scope, enabling that entity to be referenced, located, compared, and linked independently of its descriptive attributes. Identifiers are the foundational primitive of naming systems: their guarantees of uniqueness, persistence, and resolvability within a namespace determine what URIs, UUIDs, DIDs, and registry codes can be trusted to do.\n\n## DNS\nThe Domain Name System (DNS) is a hierarchical, distributed naming system and directory service that translates human-readable domain names into IP addresses and other resource records required for locating internet services. Operating as a global, federated database partitioned into zones, DNS uses a delegation tree rooted at thirteen authoritative root-server clusters and propagates queries recursively through top-level domain, second-level domain, and sub-domain name servers. It is defined in RFC 1034 and RFC 1035 and extended by DNSSEC (RFC 4033-4035) to provide cryptographic integrity verification of responses, mitigating cache poisoning, spoofing, and man-in-the-middle attacks against the resolution chain.\n",
+    "titles": [
+      "Identifier",
+      "DNS"
+    ],
+    "chars": 1231,
+    "n_classes": 2
+  },
+  "thin_sove03": {
+    "ctx": "## Nostr\nNostr (Notes and Other Stuff Transmitted by Relays) is an open, censorship-resistant social-messaging protocol in which user identity is a secp256k1 cryptographic key pair and all user activity consists of signed JSON events published to one or more relay servers over WebSocket connections. The protocol has no central authority: identity is purely the public key, relays are interchangeable infrastructure that store and forward events without requiring account registration, and clients subscribe using filter objects to receive matching events. Nostr Improvement Proposals (NIPs) extend the core event-kind system to cover short-form notes, long-form articles, encrypted direct messages, Lightning Network zap payments, community moderation, and decentralised identity verification. Its radical simplicity, cryptographic self-sovereignty, and tight integration with the Bitcoin and Lightning ecosystem have made Nostr the dominant open social layer for value-aligned decentralised communication.\n",
+    "titles": [
+      "Nostr"
+    ],
+    "chars": 1009,
+    "n_classes": 1
+  },
+  "thin_sove04": {
+    "ctx": "## TLV Encoding\nType-Length-Value (TLV) encoding is a compact, extensible binary serialisation scheme in which each data field is represented by a type identifier, a length descriptor, and the value payload. Its self-describing structure allows parsers to skip unknown record types while preserving forward and backward compatibility, which is why protocols such as Lightning and Taproot Assets use it to embed optional metadata in transaction records.\n",
+    "titles": [
+      "TLV Encoding"
+    ],
+    "chars": 453,
+    "n_classes": 1
+  },
+  "thin_sove05": {
+    "ctx": "## Authentication\nAuthentication is the security process of verifying that a claimed identity of a user, device, application, or service is genuine before granting access to protected resources. It is fundamentally distinct from authorisation, which determines what permissions an authenticated principal possesses. Authentication evidence is categorised into knowledge factors (passwords, PINs, security questions), possession factors (hardware security keys, TOTP devices, mobile authenticators), and inherence factors (biometrics such as fingerprint or facial recognition), with cryptographic proofs (digital signatures, TLS client certificates, FIDO2 passkeys) increasingly replacing shared-secret schemes. Modern secure systems combine multiple independent factors through multi-factor authentication to achieve strong resistance against credential theft, phishing, replay attacks, and session hijacking.\n",
+    "titles": [
+      "Authentication"
+    ],
+    "chars": 910,
+    "n_classes": 1
+  },
+  "thin_sove06": {
+    "ctx": "## Metadata\nMetadata is structured information that describes, contextualises, or categorises other data, enabling its discovery, management, interpretation, and interoperability. Metadata encompasses descriptive attributes (title, author, date), structural information (format, schema, relationships), administrative records (access rights, provenance, lifecycle), and technical parameters (resolution, encoding, checksum) attached to or associated with a primary data object.\n\n## Model\nIn artificial intelligence, a Model is a mathematical or computational structure learned from data that encodes a mapping from inputs to outputs (or latent representations). Models range from classical machine learning models (linear, tree-based) to deep neural networks, generative models, and large language models, and constitute the core artefact produced by training and consumed during inference.\n\n## Data\nData is the recorded representation of facts, observations or measurements in a form suitable for storage, processing and communication. It is the raw material from which information and knowledge are derived through interpretation and analysis, and may be structured, semi-structured or unstructured. Across computing and analytics, data is captured, modelled, stored, transformed and governed throughout a lifecycle that determines its usefulness and trustworthiness.\n",
+    "titles": [
+      "Metadata",
+      "Model",
+      "Data"
+    ],
+    "chars": 1370,
+    "n_classes": 3
+  },
+  "thin_sove07": {
+    "ctx": "## Solid-OIDC\nSolid-OIDC is the authentication specification for the Solid ecosystem, extending OpenID Connect with decentralised identity so a user authenticates with their own WebID and identity provider rather than a centralised platform. It issues DPoP-bound access tokens that resource servers (Solid Pods) verify, enabling a user to control which applications access their personal data store. It is the identity layer that makes Solid's separation of identity, data, and application possible.\n",
+    "titles": [
+      "Solid-OIDC"
+    ],
+    "chars": 500,
+    "n_classes": 1
+  },
+  "thin_sove08": {
+    "ctx": "## Access Control Policy\nAn Access Control Policy is a machine-readable specification of the rules that determine which agents may read, write, or append to a given resource. In decentralized web-data systems such as Solid, policies are expressed as RDF documents (e.g. WAC or ACP) attached to resources, granting or denying modes of access to identified WebID principals or groups. The policy is the declarative source of truth that an authorization engine evaluates on each request.\n\n## Web Access Control\nWeb Access Control (WAC) is a decentralised authorisation system for web resources that uses RDF-based access control lists to specify which agents may read, write, append, or control linked-data resources identified by URIs. It is a core mechanism in the Solid ecosystem, letting individuals govern access to their personal data pods using WebID-based identity. WAC decouples authorisation from any central server, aligning with self-sovereign data principles.\n\n## Access Control\nAccess control is a fundamental security mechanism that regulates which users, systems, or processes can view, use, or modify resources within a computing environment. It encompasses the policies, procedures, and technologies that govern the granting and restricting of access rights, ensuring that only authorised entities can perform specific actions on protected resources based on their identity, role, or attributes.\n",
+    "titles": [
+      "Access Control Policy",
+      "Web Access Control",
+      "Access Control"
+    ],
+    "chars": 1411,
+    "n_classes": 3
+  },
+  "thin_sove09": {
+    "ctx": "## WebID\nWebID is a decentralised identity mechanism in which a person or agent is identified by an HTTP(S) URI that dereferences to a machine-readable profile document describing them in RDF. Combined with authentication methods such as WebID-TLS or WebID-OIDC, it lets users prove control of their identifier without a central identity provider. WebID is a foundational building block of the Solid project and the broader linked-data web, enabling user-controlled identity, profiles, and access control across decentralised applications.\n\n## TLS\nTransport Layer Security (TLS) is an IETF-standardised cryptographic protocol that provides authenticated, confidential, and integrity-protected communication channels over reliable transports such as TCP and QUIC. TLS 1.3 (RFC 8446, 2018) achieves a one-round-trip handshake using ephemeral Diffie-Hellman key exchange with mandatory forward secrecy, encrypting the server certificate within the handshake to prevent passive fingerprinting. It is the security foundation of HTTPS, gRPC, MQTT, SMTP-over-TLS, LDAPS, and virtually every application-layer protocol requiring channel security, with mutual TLS (mTLS) extending the model to bidirectional client and server authentication.\n\n## Authentication\nAuthentication is the security process of verifying that a claimed identity of a user, device, application, or service is genuine before granting access to protected resources. It is fundamentally distinct from authorisation, which determines what permissions an authenticated principal possesses. Authentication evidence is categorised into knowledge factors (passwords, PINs, security questions), possession factors (hardware security keys, TOTP devices, mobile authenticators), and inherence factors (biometrics such as fingerprint or facial recognition), with cryptographic proofs (digital signatures, TLS client certificates, FIDO2 passkeys) increasingly replacing shared-secret schemes. Modern secure systems combine multiple independent factors through multi-factor authentication to achieve strong resistance against credential theft, phishing, replay attacks, and session hijacking.\n",
+    "titles": [
+      "WebID",
+      "TLS",
+      "Authentication"
+    ],
+    "chars": 2144,
+    "n_classes": 3
+  },
+  "thin_sove10": {
+    "ctx": "## A2A Protocol\nThe Agent-to-Agent (A2A) Protocol is an open communication specification, initially proposed by Google in April 2025 and transferred to the Linux Foundation in June 2025, that defines how autonomous AI agents discover one another, negotiate capabilities, delegate tasks, and exchange results across heterogeneous agent frameworks and cloud environments. It uses HTTP/HTTPS transport with JSON-RPC 2.0 structured messages and Server-Sent Events for streaming, an Agent Card system at a well-known URI for capability advertisement, and enterprise-grade authentication through OAuth 2.0, mTLS, and JWT, enabling cross-vendor agent interoperability without requiring shared infrastructure. A2A complements tool-access protocols such as the Model Context Protocol by standardising the agent-to-agent interaction layer, and reached v1.0 production readiness in 2026 with adoption by over 150 organisations including Microsoft, AWS, Salesforce, SAP, and ServiceNow.\n",
+    "titles": [
+      "A2A Protocol"
+    ],
+    "chars": 975,
+    "n_classes": 1
+  },
+  "thin_sove11": {
+    "ctx": "## Server\nA computer system engineered to provide services \u2014 computation, storage, or content \u2014 to other machines over a network, typically built for sustained load, remote management, and high availability with error-correcting memory, redundant power supplies, and hot-swappable storage. Racked in their thousands inside data centres, servers are the physical substrate of cloud computing, and the term equally names the software process that answers client requests in the client-server model.\n",
+    "titles": [
+      "Server"
+    ],
+    "chars": 497,
+    "n_classes": 1
+  }
+}

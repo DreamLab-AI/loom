@@ -1,0 +1,16 @@
+harness: 33/33 questions engaged the confidence gate
+  gemini-2.5-flash-lite: 15/33
+  gemini-2.5-flash-lite: 30/33
+wrote gemini-2.5-flash-lite bare+harness (33 each)
+  gpt-4.1-mini: 15/33
+  gpt-4.1-mini: 30/33
+wrote gpt-4.1-mini bare+harness (33 each)
+  claude-haiku-4.5: 15/33
+  claude-haiku-4.5: 30/33
+wrote claude-haiku-4.5 bare+harness (33 each)
+  mistral-small-24b: 15/33
+  mistral-small-24b: 30/33
+wrote mistral-small-24b bare+harness (33 each)
+  deepseek-chat: 15/33
+  deepseek-chat: 30/33
+wrote deepseek-chat bare+harness (33 each)

@@ -1,0 +1,217 @@
+[
+  {
+    "id": "q0009",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Automated reasoning is broadly a subfield of artificial intelligence and computer science concerned with logical inference, theorem proving and satisfiability checking. Its immediate parent is Reasoning — it is the formal, logic-and-proof-based form of reasoning (as opposed to statistical/learned reasoning). Broader ancestor concepts are Artificial Intelligence (and its AI technique / AI research-area groupings) and, above that, computer science and formal logic.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Automated_reasoning",
+      "https://aws.amazon.com/what-is/automated-reasoning/",
+      "https://www.techtarget.com/ai/definition/What-is-automated-reasoning-How-is-it-used-in-AI"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "'Automated reasoning is a subfield of AI' is well sourced. The intermediate parent node 'Reasoning' is a reasonable but ontology-specific grouping; the AGI/Frontier-AI ancestors in the corpus are idiosyncratic and not standard."
+  },
+  {
+    "id": "q0042",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "The parts of edge AI accelerators are the specialised inference chip types: NPU (Neural Processing Unit), TPU (Tensor Processing Unit), FPGA (Field-Programmable Gate Array) and GPU compute — together with custom ASICs. These execute ML inference on resource-constrained edge devices at higher throughput and energy efficiency than general-purpose CPUs.",
+    "cited_sources": [
+      "https://www.geniatech.com/edge-ai-accelerators-explained/",
+      "https://telnyx.com/resources/ai-inference-hardware"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "NPU/TPU/FPGA/GPU/ASIC are universally listed as the edge accelerator families; the corpus gold matches public sources exactly."
+  },
+  {
+    "id": "q0078",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Chainlink oracles enable smart contracts to consume trustworthy off-chain data and computation, which in turn enables Decentralized Finance (DeFi) via tamper-resistant price feeds, and cross-chain interoperability through Chainlink's CCIP (secure cross-chain messaging and token transfers).",
+    "cited_sources": [
+      "https://chain.link/education/blockchain-oracles",
+      "https://chain.link/use-cases/defi",
+      "https://en.wikipedia.org/wiki/Chainlink_(blockchain_oracle)"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Enable targets (DeFi, smart contracts, cross-chain interoperability) are directly documented by Chainlink and independent sources."
+  },
+  {
+    "id": "q0125",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Linked Data uses the Semantic Web stack: RDF as the core data model, serialised as JSON-LD and Turtle; SPARQL as the query language; OWL (with RDF Schema) for ontology/vocabulary modelling; and vocabularies such as Schema.org for typed markup. It rests on HTTP URIs that dereference to RDF descriptions.",
+    "cited_sources": [
+      "https://www.w3.org/TR/ld-bp/",
+      "https://www.w3.org/TR/ld-glossary/",
+      "https://en.wikipedia.org/wiki/Linked_data"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "All 'uses' targets are core W3C standards; well sourced. Schema.org is used with (rather than as) the core stack, per W3C — minor nuance."
+  },
+  {
+    "id": "q0154",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "CRDTs enable replicas to accept independent, concurrent updates and still converge to the same state without coordination — i.e. they enable state synchronisation and automatic conflict resolution (they make merges deterministic so ad hoc conflict resolution is unnecessary). Note: Operational Transformation is normally described as an alternative/contrasting approach to the same goal, not something CRDTs 'enable'.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type",
+      "https://crdt.tech/",
+      "https://people.eecs.berkeley.edu/~kubitron/courses/cs262a-F21/handouts/papers/Shapiro-CRDT.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.72,
+    "notes": "State synchronisation and conflict resolution are strongly supported. The corpus 'enables Operational Transformation' claim is not publicly supported — OT is an alternative technique (the corpus itself also lists OT under contrastsWith)."
+  },
+  {
+    "id": "q0190",
+    "stratum": "public",
+    "web_findability": 0.5,
+    "answer": "Decentralisation is the principle of distributing authority, control, computation or data across many independent actors rather than one centre. In public-administration/political terms it is treated as a governance concept/framework (devolution of political, administrative and fiscal authority — OECD/UNDP), which is the corpus's chosen immediate parent (Governance Framework); in computing it is an architectural principle for distributed systems. Broader ancestors: institutional/legal-regulatory frameworks and, in the technical domain, distributed-systems infrastructure.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Decentralization",
+      "https://www.oecd.org/en/topics/sub-issues/decentralisation.html",
+      "https://www.geeksforgeeks.org/system-design/decentralized-architecture-in-distributed-system/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "The 'Governance Framework' parent is publicly defensible in the public-administration sense, but decentralisation is dually classified (governance vs distributed-systems architectural principle). The specific ancestor chain (Legal and Regulatory → Infrastructure) is idiosyncratic."
+  },
+  {
+    "id": "q0224",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "The core parts of a cryptocurrency exchange are the order book (live list of buy/sell orders per pair), the wallet infrastructure — notably a hot wallet (online, for liquidity/withdrawals) alongside cold storage — and a matching engine that pairs orders by price-time priority. The corpus lists Order Book, Hot Wallet and Wallet.",
+    "cited_sources": [
+      "https://www.nadcab.com/blog/cryptocurrency-exchange-architecture",
+      "https://www.troniextechnologies.com/blog/order-matching-engine-in-crypto-exchange"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Order book and hot/cold wallets are standard components; the matching engine is arguably a more central part than 'Wallet' generically, but the corpus set is well supported."
+  },
+  {
+    "id": "q0264",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Digital Rights Management (DRM) is a form of content protection: technologies and protocols that control access to, distribution of, and usage rights for digital content (media, software, assets), commonly using encryption and copy/access controls. Its immediate parent is Content Protection; broader ancestors are access control / information security and, more generally, governance-and-safety technology.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Digital_rights_management"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "DRM as a content/copy-protection and access-control technology is well established. The corpus places it under 'Content Protection' (draft maturity); the 'Spatial Computing' ancestor is idiosyncratic."
+  },
+  {
+    "id": "q0292",
+    "stratum": "private",
+    "web_findability": 0.3,
+    "answer": "In the corpus taxonomy, the immediate parent of Energy Management is Power Management, with broader ancestors Embedded Systems, Computing and Cloud, and Infrastructure. Energy Management is the systematic monitoring, control and optimisation of energy generation, distribution and consumption (metering, auditing, demand-side management, load forecasting).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Energy_management",
+      "https://technav.ieee.org/topic/power-management/"
+    ],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The specific parent relation is not publicly verifiable and is arguably inverted: public sources treat energy management as the BROADER system/organisation-level discipline and power management as the narrower device/electronics-level subdomain. Authored the corpus's own hierarchy as the reference, flagging the discrepancy."
+  },
+  {
+    "id": "q0332",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Neural network text tokenisation turns raw text into discrete tokens/token IDs — the finite, numeric input representation that transformer models actually consume. It thereby enables Large Language Models and the Transformer architecture, and downstream tasks such as text generation, machine translation and text classification, while managing vocabulary size and out-of-vocabulary words via subword schemes.",
+    "cited_sources": [
+      "https://huggingface.co/blog/tokenizers",
+      "https://learn.microsoft.com/en-us/dotnet/ai/conceptual/understanding-tokens"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Tokenisation as the foundational input step for LLMs/transformers and NLP tasks is well documented; corpus 'enables' set matches."
+  },
+  {
+    "id": "q0353",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Digital cultural heritage — tangible and intangible legacy captured via 3D scanning, digital twins and immersive media — enables virtual tourism (remote VR/AR/360° exploration of sites and museums built on digitised heritage assets) and education (VR reconstructions, serious games and interactive learning environments for heritage teaching and cultural awareness).",
+    "cited_sources": [
+      "https://thesai.org/Downloads/Volume13No7/Paper_39-Virtual_Tourism_and_Digital_Heritage.pdf",
+      "https://www.un-sciences-decade.org/en/endorsed-activities/digitization-cultural-heritage-and-virtual-tourism-sustainable-development",
+      "https://www.mdpi.com/2071-1050/18/15/8006"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "The 'enables virtual tourism and education' relation is well supported in digital-heritage literature. The corpus parent ('Creative Industries') and its Economics/Complexity-Science ancestors are idiosyncratic, but the queried relation is public."
+  },
+  {
+    "id": "q0383",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "The inertia tensor (a 3x3 symmetric matrix relating angular velocity to angular momentum) belongs to rigid-body dynamics within classical mechanics. In the corpus's robotics framing its immediate parent is Robot Dynamics, with broader ancestors Actuation and Control and Robotics; more generally the parent field is rigid-body / rotational dynamics and classical mechanics.",
+    "cited_sources": [
+      "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/dd277ec654440f4c2b5b07d6c286c3fd_MIT16_07F09_Lec26.pdf",
+      "https://phys.libretexts.org/Bookshelves/Classical_Mechanics/Variational_Principles_in_Classical_Mechanics_(Cline)/13:_Rigid-body_Rotation/13.04:_Inertia_Tensor"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.72,
+    "notes": "Publicly the inertia tensor is a rigid-body-dynamics/classical-mechanics concept. The corpus's 'Robot Dynamics' parent is a robotics-domain specialisation of that; broad answer is verifiable, the exact node label is domain-specific."
+  },
+  {
+    "id": "q0417",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Digital onboarding — remote, self-service enrolment and identity capture through digital channels — depends on identity verification (document capture, biometric/liveness checks, database lookups) and on regulatory compliance (KYC/AML obligations). These are interdependent: verification confirms the person and compliance satisfies the legal due-diligence requirements.",
+    "cited_sources": [
+      "https://www.contentful.com/blog/what-is-structured-data/",
+      "https://en.wikipedia.org/wiki/Know_your_customer"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Dependence on identity verification and KYC/compliance is standard and well documented across identity/onboarding vendor and regulatory literature; corpus dependsOn set matches."
+  },
+  {
+    "id": "q0451",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Mesh data (a 3D surface as vertices, edges and polygonal faces) has as its parts a vertex buffer (stored array of vertex positions and attributes), an index buffer (integer indices telling the renderer which vertices form each face, avoiding duplication), and surface normals (vectors perpendicular to faces/vertices used for lighting and shading).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Polygon_mesh"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Vertex buffer, index buffer and surface normals are standard mesh components; the corpus set matches well-known computer-graphics structure."
+  },
+  {
+    "id": "q0498",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "Schema.org (the Google/Microsoft/Yahoo/Yandex structured-data vocabulary) enables search engines and other consumers to understand page semantics, powering knowledge graphs and rich results, and providing a machine-readable Semantic Web / linked-data markup standard (JSON-LD/RDF). It supports entity identification/disambiguation that feeds information extraction, though it is not itself a named-entity-recognition system.",
+    "cited_sources": [
+      "https://schema.org/",
+      "https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data",
+      "https://en.wikipedia.org/wiki/Schema.org"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Knowledge-graph and semantic-web/linked-data enablement is well sourced. The corpus 'enables Named Entity Recognition' is only weakly supported publicly (schema.org supports entity understanding, not NER as a capability it produces)."
+  }
+]

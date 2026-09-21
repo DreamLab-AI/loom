@@ -1,0 +1,5 @@
+oracle: 5455 prose pages; 57 questions; hops=0 max_chars=5000
+oracle: 57/57 questions got >200 chars of matched prose
+  gemini-2.5-flash-lite: 15/57
+  gemini-2.5-flash-lite: 30/57
+  gemini-2.5-flash-lite: 45/57

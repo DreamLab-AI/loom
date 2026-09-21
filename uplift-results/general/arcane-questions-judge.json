@@ -1,0 +1,314 @@
+[
+  {
+    "id": "arc_rgb01",
+    "domain": "arcane_documented",
+    "template": "easy",
+    "question_natural": "What is client-side validation in the context of Bitcoin smart contracts, and how does it differ from the way a normal blockchain validates state?",
+    "gold_titles": [
+      "Only the parties involved validate state transitions, off-chain, not the whole network",
+      "The blockchain stores only a cryptographic commitment, not the contract data",
+      "Contrast: normal blockchains have every node replicate/validate/store all state (global validation)",
+      "Benefits: privacy (data seen only by counterparties) and scalability (data off-chain)",
+      "Each participant keeps and verifies only their own relevant shard/history"
+    ]
+  },
+  {
+    "id": "arc_rgb02",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "What is a single-use seal as defined by Peter Todd, and what are the two core operations that characterise it?",
+    "gold_titles": [
+      "Cryptographic analogue of a physical tamper-evident seal; can be closed exactly once over one message",
+      "Infeasible to produce two valid closures of the same seal over different messages (uniqueness/anti-double-spend)",
+      "Two operations: Close (seal over message -> witness) and Verify (seal, witness, message -> bool)",
+      "Closing produces a publicly verifiable witness/proof of closure",
+      "Introduced by Peter Todd (2016 'Commitments and Single-Use Seals')"
+    ]
+  },
+  {
+    "id": "arc_rgb03",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "How can a Bitcoin UTXO act as a single-use seal? Map the seal definition, the seal closing, and the proof of publication onto concrete Bitcoin mechanics.",
+    "gold_titles": [
+      "A UTXO is globally unique and spendable only once",
+      "Seal definition = the specified UTXO/txout identified on-chain",
+      "Seal closing = spending that UTXO in a tx that commits to the message (e.g. via OP_RETURN or Taproot commitment)",
+      "Proof of publication = the confirmed spending transaction in Bitcoin's consensus/blockchain",
+      "Single-use property enforced by Bitcoin's double-spend prevention (cannot re-spend the UTXO)"
+    ]
+  },
+  {
+    "id": "arc_rgb04",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "What is 'proof of publication' in the single-use-seal / client-side-validation model, and why is a publication medium essential to it?",
+    "gold_titles": [
+      "Proof that a message/seal-closure was publicly published, not just privately committed",
+      "Requires a medium with global consensus properties (e.g. Bitcoin blockchain) that makes forgery/retroactive change hard",
+      "Lets third parties verify publication and that a seal was closed exactly once",
+      "Underpins client-side validation and single-use seals; prevents undetected equivocation/double-closure",
+      "Concept originates with Peter Todd; formalised in RGB/LNP-BP as the publication medium"
+    ]
+  },
+  {
+    "id": "arc_rgb05",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "In the RGB protocol, what is a 'consignment' and what does a recipient do with it when receiving an asset?",
+    "gold_titles": [
+      "Off-chain data bundle sent from sender to recipient to validate a transfer",
+      "Contains genesis, the DAG shard of state transitions up to the received output, and anchor/commitment proofs",
+      "Recipient validates locally (client-side): checks transitions against the schema",
+      "Recipient verifies each anchor commitment against Bitcoin and that each seal was closed exactly once (no conflicts)",
+      "No global RGB ledger; only the relevant history shard is needed"
+    ]
+  },
+  {
+    "id": "arc_rgb06",
+    "domain": "arcane_documented",
+    "template": "hard",
+    "question_natural": "RGB anchors commitments using two Deterministic Bitcoin Commitment schemes, Tapret and Opret. How does each work, and what determinism rule prevents an attacker from constructing an alternative commitment history in the same transaction?",
+    "gold_titles": [
+      "Tapret: commitment placed in a Taproot output's script tree as a dedicated tapret leaf; looks like a normal Taproot spend (private)",
+      "Opret: commitment placed in an OP_RETURN output payload; provably unspendable but visible",
+      "DBC requires a transaction to provably contain exactly one valid commitment per scheme",
+      "Determinism rule: first OP_RETURN output (Opret) / first Taproot output (Tapret) is the only valid location",
+      "This prevents constructing alternative/conflicting commitment histories in the same transaction, keeping the seal-bound message unique"
+    ]
+  },
+  {
+    "id": "arc_rgb07",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "What is AluVM, and what architectural choices make it suitable for deterministic, consensus-critical execution in RGB?",
+    "gold_titles": [
+      "AluVM = Algorithmic Logic Unit VM: purely functional, register-based RISC virtual machine for deterministic portable computing",
+      "Created by Maxim Orlovsky, maintained by LNP/BP Standards Association; execution engine for RGB contracts",
+      "Register-based with NO random/addressable memory access",
+      "Pure functional: no side effects/I/O/global mutable state; reduced orthogonal instruction set",
+      "No undefined behaviour by design -> deterministic, so all client-side validators reach identical results (required for consensus)"
+    ]
+  },
+  {
+    "id": "arc_rgb08",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "What is Contractum, and how does it relate to Strict Types and AluVM in the RGB stack?",
+    "gold_titles": [
+      "Contractum: functional/declarative DSL for writing RGB smart contracts (work in progress)",
+      "Designed/led by Maxim Orlovsky under the LNP/BP Standards Association",
+      "Uses Strict Types formalism for data types -> fixed, deterministic, platform-independent binary encoding",
+      "Compiles to RGB schema, interfaces/implementations, genesis, contract operations",
+      "Compiles to AluVM bytecode as the execution target (high-level language -> AluVM)"
+    ]
+  },
+  {
+    "id": "arc_rgb09",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "What is the Bifrost protocol in the LNP-BP/RGB ecosystem, and what problem does it solve that the standard Lightning BOLT stack does not?",
+    "gold_titles": [
+      "Bifrost = extensible Lightning protocol defined by LNPBP standards (LNPBP-50 P2P, LNPBP-51 channels)",
+      "Transport/channel layer enabling RGB (and other client-side-validated protocols) over Lightning",
+      "Reuses Noise_XK/framing from BOLT-8 (as LNPBP-15/18) but uses Strict-Types encoding instead of BOLT TLV",
+      "Solves what BOLT can't: native deterministic commitments, single-use seals, Taproot/MuSig, multi-peer channels",
+      "Bifrost channels carrying these protocols cannot be downgraded to legacy BOLT channels"
+    ]
+  },
+  {
+    "id": "arc_rgb10",
+    "domain": "arcane_thin",
+    "template": "easy",
+    "question_natural": "What is the LNP/BP Standards Association, and what are the LNPBP standards?",
+    "gold_titles": [
+      "Swiss non-profit association maintaining open standards and reference implementations for Bitcoin L2/L3 (RGB, Bifrost, etc.)",
+      "Manages the RGB consensus layer and governance",
+      "LNPBP standards = specs for Bitcoin-anchored primitives/protocols needing no Bitcoin fork, not covered by BOLTs",
+      "Examples: LNPBP-1/2/3 commitments, LNPBP-8 single-use seals, LNPBP-12 Tapret, RGB interfaces",
+      "Key people: Maxim Orlovsky (RGB/AluVM/Contractum lead) and Giacomo Zucco (early RGB)"
+    ]
+  },
+  {
+    "id": "arc_rgb11",
+    "domain": "arcane_documented",
+    "template": "hard",
+    "question_natural": "How does the Taproot Assets protocol (formerly Taro) issue and hold assets on Bitcoin, and what role does the Merkle-Sum Sparse Merkle Tree play? How does its approach compare to RGB?",
+    "gold_titles": [
+      "Taproot Assets (Lightning Labs) commits asset state into a Taproot output via a tweaked key; on-chain it looks like a normal P2TR spend",
+      "MS-SMT = sparse Merkle tree (inclusion + non-inclusion proofs) where leaves carry amounts and nodes carry sums",
+      "Root sum = total supply, enabling supply-conservation / non-inflation proofs; asset ID derived from genesis outpoint + metadata",
+      "Also uses client-side validation: receivers verify an off-chain proof chain from genesis",
+      "Vs RGB: standardised on Taproot + MS-SMT (bip-tap) and Lightning Labs LN, whereas RGB uses AluVM/Strict Types, single-use-seal Tapret/Opret anchoring and different data structures"
+    ]
+  },
+  {
+    "id": "arc_rgb12",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "Explain how ordinal theory numbers satoshis, how inscriptions embed data into a Bitcoin transaction, and why BRC-20 is described as an off-chain, indexer-based experiment rather than a formal protocol.",
+    "gold_titles": [
+      "Ordinal theory (Casey Rodarmor) numbers sats by mining order; genesis block sats run 0 to 4,999,999,999; transfers tracked FIFO; Bitcoin is unaware (off-chain indexer)",
+      "Inscription = data in the witness of a Taproot script-path spend inside an OP_FALSE OP_IF ... OP_ENDIF 'envelope'",
+      "Envelope holds 'ord' identifier, content-type/MIME tag and body; branch never executes (no effect on validity) but is stored on-chain; uses segwit witness discount",
+      "BRC-20 by Domo (March 2023): JSON inscriptions with deploy/mint/transfer ops (p, op, tick, max, lim, amt)",
+      "Off-chain/indexer-based: Bitcoin enforces no BRC-20 rules; balances computed by indexers replaying inscriptions; no BIP/consensus standard, indexers can diverge"
+    ]
+  },
+  {
+    "id": "arc_sov01",
+    "domain": "arcane_documented",
+    "template": "easy",
+    "question_natural": "What is a Solid Pod in Tim Berners-Lee's Solid project, and what problem is Solid trying to solve?",
+    "gold_titles": [
+      "A Pod is a user-controlled personal online data store accessed over HTTP(S)",
+      "Solid decouples/separates data from the applications that use it",
+      "It targets data lock-in, silos, and lack of ownership/portability",
+      "A Pod can be hosted anywhere and owned/controlled by its user",
+      "The Pod owner is identified by a WebID that governs access"
+    ]
+  },
+  {
+    "id": "arc_sov02",
+    "domain": "arcane_documented",
+    "template": "hard",
+    "question_natural": "The Solid Protocol builds its storage layer on existing W3C standards. Which HTTP interaction model does a Pod implement, and how do the two access-control mechanisms WAC and ACP differ?",
+    "gold_titles": [
+      "Pods implement the W3C Linked Data Platform (LDP) over HTTP with containers and standard verbs",
+      "WAC is ACL-based with per-resource ACL resources in RDF",
+      "WAC access modes are Read, Write, Append, Control, plus inheritable/default ACLs",
+      "ACP uses Access Control Resources with Policies and Matchers",
+      "ACP grants a mode only if a policy allows and none deny; it is more expressive/context-aware"
+    ]
+  },
+  {
+    "id": "arc_sov03",
+    "domain": "arcane_documented",
+    "template": "hard",
+    "question_natural": "How does Solid-OIDC extend plain OpenID Connect, and what role does DPoP play in letting a Solid client prove it is acting for a given WebID?",
+    "gold_titles": [
+      "Solid-OIDC is a profile/extension of OpenID Connect / OAuth 2.0 authorization code flow",
+      "It adds a 'webid' scope and a 'webid' claim in the ID Token equal to the user's WebID",
+      "Issuer discovery uses solid:oidcIssuer triples in the WebID profile, not a fixed provider",
+      "DPoP (RFC 9449) binds tokens to a client-held key via proof-of-possession JWTs",
+      "Each request sends a fresh DPoP proof so the Pod verifies the caller holds the bound key"
+    ]
+  },
+  {
+    "id": "arc_sov04",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "In Solid-OIDC, how does a client know which OpenID Provider is allowed to authenticate a particular WebID?",
+    "gold_titles": [
+      "The client dereferences the WebID URI to fetch its RDF profile document",
+      "It looks for solid:oidcIssuer (http://www.w3.org/ns/solid/terms#oidcIssuer) triples",
+      "The object of each triple names an authorised OpenID Provider for that WebID",
+      "The WebID owner controls this list, keeping issuer trust decentralised",
+      "A relying party accepts a token only if its issuer matches one listed in the profile"
+    ]
+  },
+  {
+    "id": "arc_sov05",
+    "domain": "arcane_documented",
+    "template": "easy",
+    "question_natural": "What is a WebID, and why is it more than just a URL?",
+    "gold_titles": [
+      "A WebID is an HTTP(S) URI identifying an agent (person, org, app, device)",
+      "Dereferencing it returns an RDF WebID Profile Document (often Turtle)",
+      "It typically uses a fragment (e.g. #me) so the URI denotes the agent node in the document",
+      "The profile holds identity/auth material such as public keys or trusted issuers",
+      "The owner controls their own identifier and profile, enabling decentralised identity"
+    ]
+  },
+  {
+    "id": "arc_sov06",
+    "domain": "arcane_documented",
+    "template": "hard",
+    "question_natural": "How does WebID-TLS authentication differ from WebID-OIDC, and why did the ecosystem largely move to the latter?",
+    "gold_titles": [
+      "Both yield a verified WebID URI the agent is proven to control",
+      "WebID-TLS uses mutual TLS with a client X.509 cert carrying the WebID in its Subject Alternative Name",
+      "WebID-TLS verifies the cert's public key against a key in the WebID RDF profile",
+      "WebID-OIDC works at the application layer via OpenID Connect ID Tokens",
+      "The move happened because client-certificate mTLS has poor browser/UX support while OIDC is widely deployed and lets holders pick their IdP"
+    ]
+  },
+  {
+    "id": "arc_sov07",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "What is the WebID Profile Document and what role does it play during authentication?",
+    "gold_titles": [
+      "It is the RDF (typically Turtle) document returned by dereferencing the WebID",
+      "It describes the agent and links the document to the WebID node (e.g. foaf:primaryTopic)",
+      "It holds authentication material: public key(s) and/or trusted issuer(s)",
+      "In WebID-TLS it supplies the key matched against the client certificate; in OIDC it supplies solid:oidcIssuer",
+      "It is owner-controlled, making it the authoritative source of truth for the identity"
+    ]
+  },
+  {
+    "id": "arc_sov08",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "According to NIP-01, what are the fields of a Nostr event and how is its integrity and authorship guaranteed?",
+    "gold_titles": [
+      "Event fields: id, pubkey, created_at, kind, tags, content, sig",
+      "pubkey is a 32-byte secp256k1 key; kind is an integer type (0 metadata, 1 text note)",
+      "id is the SHA-256 hash of the canonical serialisation [0,pubkey,created_at,kind,tags,content]",
+      "sig is a Schnorr signature over the id using secp256k1, verifiable against the pubkey",
+      "Any change alters the id/signature; NIP-01 also defines the WebSocket EVENT/REQ/CLOSE and EVENT/OK/EOSE/NOTICE messages"
+    ]
+  },
+  {
+    "id": "arc_sov09",
+    "domain": "arcane_documented",
+    "template": "medium",
+    "question_natural": "What do the NIP-19 identifiers npub and nsec encode, and why must they not be used inside NIP-01 events or filters?",
+    "gold_titles": [
+      "NIP-19 defines bech32 encodings for Nostr entities",
+      "npub encodes a public key; nsec encodes a private key; note encodes an event id",
+      "TLV forms (nprofile, nevent, naddr) add extra data like relay hints",
+      "They are for human display/copy-paste/QR only",
+      "They MUST NOT be used inside NIP-01 events or filters, which use canonical hex; clients convert on input"
+    ]
+  },
+  {
+    "id": "arc_sov10",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "How does the did:nostr DID method construct and resolve a DID, and how does it differ from ledger-based DID methods?",
+    "gold_titles": [
+      "A did:nostr DID maps directly to a Nostr secp256k1 public key: did:nostr:<pubkey>",
+      "No registry, ledger, or minting step is required",
+      "Resolution is offline-first/deterministic: a minimal DID Document is built from the key alone",
+      "The verificationMethod uses Multikey / publicKeyMultibase, per W3C DID Core and Controlled Identifiers",
+      "Nostr relays can optionally enrich the document (kind-0 metadata) but are not required; control = holding the private key, unlike ledger-based methods"
+    ]
+  },
+  {
+    "id": "arc_sov11",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "Why does Git's commit structure give a tamper-evident audit trail of documents, and what is the limitation that leads people to anchor commit hashes externally?",
+    "gold_titles": [
+      "Git is content-addressed: blobs, trees, and commits are named by cryptographic hashes",
+      "The commit graph is a Merkle DAG; a commit hashes its tree, parent(s), and metadata",
+      "Any content change or history rewrite changes hashes, making tampering detectable",
+      "Git commit timestamps are self-asserted local metadata and can be forged/back-dated",
+      "So commit or document hashes are anchored externally (e.g. a blockchain) for trusted proof-of-existence; 'Git-Mark' is a pattern name, not a Git feature"
+    ]
+  },
+  {
+    "id": "arc_sov12",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "How does OpenTimestamps use a blockchain to create a tamper-evident, trust-minimised timestamp for a document, and what exactly does the resulting proof demonstrate?",
+    "gold_titles": [
+      "Only the document's SHA-256 hash is submitted; the document never leaves the user",
+      "Calendar servers aggregate many hashes into a Merkle tree and anchor the Merkle root in a Bitcoin transaction (e.g. OP_RETURN)",
+      "The .ots proof holds the hash, the Merkle path, and the attestation to a specific block",
+      "Verification recomputes the hash, walks the Merkle path, and checks the block, proving existence-before-time and tamper-evidence",
+      "Trust-minimised: relies only on the document, proof file, and public block headers; one transaction timestamps many documents"
+    ]
+  }
+]

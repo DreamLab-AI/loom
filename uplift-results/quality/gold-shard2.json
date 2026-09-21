@@ -1,0 +1,207 @@
+[
+  {
+    "id": "q0010",
+    "stratum": "public",
+    "web_findability": 0.5,
+    "answer": "Autonomous behaviour — an agent selecting and executing goal-directed actions without continuous human instruction — is the enabling capacity behind autonomous agents, autonomous (unsupervised) task execution, and, when composed across many agents, multi-agent systems and swarm intelligence. These relationships are widely acknowledged in the AI/robotics literature: individual autonomy is the building block, and coordinating multiple autonomous agents yields emergent collective behaviour (swarm intelligence, multi-agent systems).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Autonomous_agent",
+      "https://en.wikipedia.org/wiki/Swarm_intelligence",
+      "https://en.wikipedia.org/wiki/Multi-agent_system"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Concept is public and the enable-links are conceptually sound, but the exact four-item 'enables' set is ontology-framed rather than a single citable claim; moderate findability."
+  },
+  {
+    "id": "q0043",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "Edge AI Accelerators (NPUs, TPUs, FPGAs, custom ASICs for on-device ML inference) sit most immediately under AI infrastructure / AI hardware. Broader ancestors are digital infrastructure, computing and cloud infrastructure, and (general) infrastructure. The concept itself is well documented publicly; the specific multi-level ancestor chain is the ontology's own arrangement.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/AI_accelerator",
+      "https://en.wikipedia.org/wiki/Edge_computing"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "The category label 'AI Infrastructure' and the exact ancestor ladder (Digital Infrastructure > Computing and Cloud > Infrastructure) are idiosyncratic to this ontology; the underlying hardware concept is fully public."
+  },
+  {
+    "id": "q0086",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Financial reporting requires compliance with recognised accounting/regulatory frameworks (regulatory compliance) and independent audit assurance. Standardised financial statements rest on accounting standards (e.g. IFRS, GAAP) and audit to provide a faithful, verifiable, comparable view of an organisation's position and performance.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Financial_statement",
+      "https://www.ifrs.org/",
+      "https://en.wikipedia.org/wiki/Audit"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Compliance/regulatory-compliance/audit as prerequisites for financial reporting is standard, publicly-documented accounting knowledge."
+  },
+  {
+    "id": "q0129",
+    "stratum": "public",
+    "web_findability": 0.7,
+    "answer": "Metadata uses data schemas, data/metadata standards, controlled vocabularies, and RDF. Descriptive, structural, administrative and technical metadata are expressed against schemas and standard vocabularies (e.g. Dublin Core), with controlled vocabularies constraining values and RDF providing a machine-readable model for describing resources.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Metadata",
+      "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
+      "https://www.w3.org/RDF/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Schema, standards, controlled vocabulary and RDF as tools metadata relies on are standard information-science / semantic-web knowledge."
+  },
+  {
+    "id": "q0166",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "Within this ontology the immediate parent of Knowledge Sharing is 'Content and Assets', with 'Spatial Computing' as the broader ancestor. Knowledge Sharing here denotes collaborative practices/platforms for exchanging information and expertise across immersive environments and distributed teams, and is filed under the spatial-computing content-and-assets taxonomy hub rather than a generic knowledge-management parent.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "Idiosyncratic placement: public sources would locate knowledge sharing under knowledge management / collaboration, not under a spatial-computing 'Content and Assets' hub. Classification is corpus-specific."
+  },
+  {
+    "id": "q0192",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "A distributed hash table requires a hash function to map keys into an identifier space, participating nodes that each own a fraction of the keyspace, and — in the usual designs — consistent hashing (or a close variant) to assign keys to nodes with minimal reshuffling as nodes join or leave. Nodes and a hash-based key-to-node mapping are essential; consistent hashing is the common, near-defining mechanism (though not strictly mandatory for every conceivable DHT).",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Distributed_hash_table",
+      "https://en.wikipedia.org/wiki/Consistent_hashing",
+      "https://docs.ipfs.tech/concepts/dht/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Well-documented distributed-systems fundamentals; verified via Perplexity against Wikipedia and university course material."
+  },
+  {
+    "id": "q0225",
+    "stratum": "public",
+    "web_findability": 0.6,
+    "answer": "A (centralised) cryptocurrency exchange requires custody of customer assets — safekeeping the funds/private keys it holds and settles — and a blockchain for the underlying assets and on-chain settlement. Note the caveat that custody and blockchain are not strict requirements for every exchange model: decentralised exchanges are non-custodial and can trade without an operator holding assets, and some order matching happens off-chain.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Cryptocurrency_exchange",
+      "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/crypto-asset-custody-basics-retail-investors-investor-bulletin-0"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Custody+blockchain hold for the prototypical centralised exchange; public sources add nuance that DEXs are non-custodial and trading can be off-chain, so 'requires' is model-dependent."
+  },
+  {
+    "id": "q0267",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "eIDAS's immediate parent is a regulatory framework — it is an EU Regulation (No 910/2014) establishing a framework for electronic identification and trust services for electronic transactions in the internal market. Broader ancestors: legal/regulatory framework and (digital) infrastructure/single-market law. It defines assurance levels, legal effect for e-signatures/seals/timestamps, and mutual recognition of notified national eID schemes.",
+    "cited_sources": [
+      "https://digital-strategy.ec.europa.eu/en/policies/eidas-regulation",
+      "https://en.wikipedia.org/wiki/EIDAS"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "eIDAS as an EU regulatory framework is authoritatively documented by the European Commission; verified."
+  },
+  {
+    "id": "q0294",
+    "stratum": "private",
+    "web_findability": 0.15,
+    "answer": "In this corpus a Knowledge Artefact Update Cycle uses Continuous Integration and Data Lineage. It is a structured, recurring process for reviewing, validating, correcting and re-publishing knowledge assets (ontology classes, documentation nodes, linked-data graphs, curated references); CI automates the validate-and-republish pipeline and data lineage tracks provenance/flow across the artefacts. The named class is a bespoke knowledge-engineering construct rather than a standard industry term.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.65,
+    "notes": "'Knowledge Artefact Update Cycle' is not an established public term (idiosyncratic/DreamLab-internal); the constituent tools (CI, data lineage) are public but the concept and its exact relations are corpus-authored."
+  },
+  {
+    "id": "q0339",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "The immediate parent of Principal Component Analysis is dimensionality reduction. Broader ancestors: unsupervised learning / AI technique, and machine learning / artificial intelligence (and, statistically, multivariate statistics). PCA is a linear, unsupervised dimensionality-reduction method that projects data onto the leading eigenvectors of the covariance matrix to retain maximal variance.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Principal_component_analysis",
+      "https://www.ibm.com/think/topics/principal-component-analysis"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "PCA as a dimensionality-reduction technique under unsupervised learning/ML is textbook; verified via Perplexity (IBM, Wikipedia)."
+  },
+  {
+    "id": "q0358",
+    "stratum": "private",
+    "web_findability": 0.35,
+    "answer": "Melvin Carvalho is publicly identifiable as a developer/advocate active in decentralised-web and identity standards (Solid, WebID, linked data / semantic web). However, the ontology's classification — placing the person as an immediate subclass of 'Decentralized Identity' (ancestors: Digital Identity, Identity, Security and Identity, Infrastructure) — is an idiosyncratic taxonomic modelling choice not derivable from public sources. As a reference: in the corpus his parent is Decentralized Identity, and he requires/enables Linked Data and decentralized identity.",
+    "cited_sources": [
+      "https://dev.to/melvincarvalho",
+      "https://en.wikipedia.org/wiki/WebID"
+    ],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.55,
+    "notes": "The individual is web-findable, but modelling a named person as a child class of 'Decentralized Identity' is a corpus-specific taxonomic decision, so the T-TAX answer is authored from the corpus."
+  },
+  {
+    "id": "q0387",
+    "stratum": "private",
+    "web_findability": 0.3,
+    "answer": "'rb 0012 wheeled mobile robot' is an internal corpus identifier for a wheeled mobile robot (WMR). Per the corpus it uses Odometry, SLAM, and 'rb 0075 range finder' (another internal-ID component). The general facts are public — WMRs rely on odometry for dead-reckoning, SLAM for map building, and a range finder/LiDAR sensor for perception — but the specific instance IDs (rb 0012, rb 0075) are private catalogue entries not findable on the public web.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Mobile_robot",
+      "https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping"
+    ],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.6,
+    "notes": "Underlying robotics (odometry, SLAM, range finder for WMRs) is public; the 'rb 00xx' identifiers are internal, so the exact answer including 'rb 0075 range finder' is corpus-sourced."
+  },
+  {
+    "id": "q0418",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Digital Onboarding's immediate parent is identity verification (identity proofing). Broader ancestors: identity management and security/identity infrastructure. Digital onboarding is the remote, self-service enrolment of a new customer whose identity is captured and verified through digital channels — document capture, biometric/liveness checks and database lookups — to satisfy KYC obligations, making it a form of remote identity proofing.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Know_your_customer",
+      "https://en.wikipedia.org/wiki/Identity_verification_service"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Digital onboarding as remote identity verification/proofing with KYC is well documented; verified via Perplexity."
+  },
+  {
+    "id": "q0456",
+    "stratum": "private",
+    "web_findability": 0.1,
+    "answer": "In this ontology 'Content and Assets' is a taxonomy hub whose immediate parent is 'Spatial Computing' (it has no further ancestors in the corpus). It unifies all content types and digital assets in the spatial-computing domain — 3D models, avatars, NFTs, textures, rendering pipelines and the digital-asset lifecycle. This is a bespoke top-level grouping category rather than a publicly standardised concept.",
+    "cited_sources": [],
+    "reference_source": "corpus",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "'Content and Assets' as a named child of 'Spatial Computing' is an ontology-internal organisational hub; not publicly findable as a defined term."
+  },
+  {
+    "id": "q0500",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Schema.org's immediate parent is a linked-data vocabulary (a structured-data / semantic-web vocabulary). Broader ancestors: data management / semantic-web standards and (web) infrastructure. Founded in 2011 by Google, Microsoft, Yahoo and Yandex, Schema.org defines a shared vocabulary of types and properties for marking up web content, published via RDFa, Microdata or JSON-LD and grounded in RDF.",
+    "cited_sources": [
+      "https://schema.org/docs/about.html",
+      "https://en.wikipedia.org/wiki/Schema.org"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Schema.org as a linked-data/structured-data vocabulary using RDF and JSON-LD is well documented; the exact ancestor chain (Data Management (Infrastructure) > Infrastructure) is the ontology's own arrangement."
+  }
+]

@@ -1,0 +1,372 @@
+[
+  {
+    "id": "in_01",
+    "category": "in_domain_general",
+    "topic": "smart-contracts",
+    "difficulty": "easy",
+    "question": "What is a smart contract in the context of blockchains, and how does it differ from a traditional paper contract?",
+    "reference_answer": "A smart contract is a computer program that formalises and automatically enforces the terms of an agreement, executing itself when predefined conditions are met without needing a trusted intermediary. On a blockchain such as Ethereum, the contract's code and state are replicated across the network and run deterministically (on the Ethereum Virtual Machine), making execution tamper-resistant and publicly verifiable. Unlike a paper contract, which relies on courts and human enforcement, a smart contract enforces itself through code. The concept was described by Nick Szabo in the 1990s, likening it to a vending machine that embeds contractual logic in a mechanism.",
+    "answer_key_points": [
+      "A program that automatically executes/enforces agreed terms when conditions are met, without an intermediary",
+      "Runs on a blockchain (e.g. Ethereum Virtual Machine); code and state are replicated across nodes",
+      "Provides tamper-resistance and verifiable, deterministic execution",
+      "Concept attributed to Nick Szabo (1990s); underpins dApps, DeFi and token standards like ERC-20/ERC-721"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Smart_contract",
+      "https://ethereum.org/en/developers/docs/smart-contracts/"
+    ]
+  },
+  {
+    "id": "in_02",
+    "category": "in_domain_general",
+    "topic": "ml-paradigms",
+    "difficulty": "easy",
+    "question": "What is the difference between supervised and unsupervised learning in machine learning?",
+    "reference_answer": "Supervised learning trains a model on labelled data, i.e. example input-output pairs, so that it learns a mapping from inputs to correct outputs and can generalise to unseen inputs; typical tasks are classification and regression. Unsupervised learning uses unlabelled data and seeks to discover hidden structure or patterns in the data itself, with typical tasks being clustering and dimensionality reduction. The core distinction is the presence or absence of target labels during training: supervised learning is guided by known answers, whereas unsupervised learning infers structure without them.",
+    "answer_key_points": [
+      "Supervised learning uses labelled data (input-output pairs)",
+      "Supervised tasks: classification and regression; goal is to generalise to unseen inputs",
+      "Unsupervised learning uses unlabelled data to find hidden structure",
+      "Unsupervised tasks: clustering, dimensionality reduction; core distinction is presence/absence of labels"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Supervised_learning",
+      "https://en.wikipedia.org/wiki/Unsupervised_learning"
+    ]
+  },
+  {
+    "id": "in_03",
+    "category": "in_domain_general",
+    "topic": "xr-tracking",
+    "difficulty": "easy",
+    "question": "In VR/XR, what does 'six degrees of freedom' (6DoF) mean, and how does it differ from 3DoF?",
+    "reference_answer": "Six degrees of freedom describes the six independent ways a rigid body can move in 3D space: three translations and three rotations. The translations are movement along three perpendicular axes (forward/back, up/down, left/right), and the rotations are yaw, pitch and roll. In XR, 3DoF tracking captures only rotational movement (yaw, pitch, roll), so the headset knows where you are looking but not where your head moves in space; 6DoF tracking adds positional tracking (x, y, z), letting you physically walk, lean and duck within the virtual scene.",
+    "answer_key_points": [
+      "6DoF = three translations plus three rotations of a rigid body in 3D",
+      "Translations along three perpendicular axes; rotations are yaw, pitch, roll",
+      "3DoF tracks only orientation/rotation (looking around)",
+      "6DoF adds positional tracking (x, y, z), enabling movement through space"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Six_degrees_of_freedom"
+    ]
+  },
+  {
+    "id": "in_04",
+    "category": "in_domain_general",
+    "topic": "semantic-web",
+    "difficulty": "easy",
+    "question": "What is an RDF triple, and how do RDF triples form a knowledge graph?",
+    "reference_answer": "An RDF (Resource Description Framework) triple is the atomic unit of data in the semantic web, structured as a three-part statement of subject, predicate, object, for example 'Bob (subject) knows (predicate) John (object)'. The subject is an IRI or blank node, the predicate is an IRI naming a property, and the object may be an IRI, blank node, or literal value. A set of such triples forms an RDF graph, naturally visualised as a directed graph where subjects and objects are nodes and predicates are labelled arcs, which is why RDF is a foundation for knowledge graphs.",
+    "answer_key_points": [
+      "An RDF triple is a subject-predicate-object statement",
+      "Subject is an IRI/blank node; predicate is an IRI (a property); object is an IRI, blank node, or literal",
+      "A set of triples forms an RDF graph",
+      "Nodes = subjects/objects, labelled arcs = predicates; basis for knowledge graphs"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/TR/rdf11-concepts/",
+      "https://en.wikipedia.org/wiki/Semantic_triple"
+    ]
+  },
+  {
+    "id": "in_05",
+    "category": "in_domain_general",
+    "topic": "public-key-crypto",
+    "difficulty": "easy",
+    "question": "How does public-key (asymmetric) cryptography work, and how is it used to create a digital signature?",
+    "reference_answer": "Public-key cryptography uses a mathematically related pair of keys: a public key that can be shared openly and a private key kept secret, with security relying on the fact that deriving the private key from the public one is computationally infeasible. For encryption, anyone can encrypt with the recipient's public key but only the private-key holder can decrypt. For a digital signature the roles reverse: the signer applies their private key to a message (usually to its hash) to produce a signature, and any verifier uses the corresponding public key to confirm the signature matches, proving authenticity and integrity. A signature scheme thus comprises key generation, signing and verification algorithms.",
+    "answer_key_points": [
+      "Uses a related key pair: public key shared, private key secret",
+      "Infeasible to derive private key from public key (one-way functions)",
+      "Encryption: encrypt with recipient's public key, decrypt with private key",
+      "Signature: sign with private key (over the message/hash), verify with public key",
+      "Provides authenticity and integrity; scheme = key generation, signing, verification"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Public-key_cryptography",
+      "https://en.wikipedia.org/wiki/Digital_signature"
+    ]
+  },
+  {
+    "id": "in_06",
+    "category": "in_domain_general",
+    "topic": "distributed-systems",
+    "difficulty": "medium",
+    "question": "What does the CAP theorem state, and what practical trade-off does it force on distributed data stores during a network partition?",
+    "reference_answer": "The CAP theorem (Brewer's theorem) states that a distributed data store can simultaneously provide at most two of three guarantees: Consistency (every read returns the most recent write or an error), Availability (every request to a non-failing node gets a response), and Partition tolerance (the system keeps working despite dropped or delayed messages between nodes). Because network partitions are unavoidable in real distributed systems, partition tolerance is effectively mandatory, so the practical choice during a partition is between consistency and availability: a system must either reject/limit requests to stay consistent (CP) or keep serving possibly stale data to stay available (AP). It was formalised and proven by Gilbert and Lynch in 2002.",
+    "answer_key_points": [
+      "At most two of Consistency, Availability, Partition tolerance simultaneously",
+      "Consistency = every read sees the latest write; Availability = every request gets a response; Partition tolerance = survives message loss between nodes",
+      "Partitions are unavoidable, so the real trade-off during a partition is consistency vs availability (CP vs AP)",
+      "Proposed by Eric Brewer; formally proven by Gilbert and Lynch (2002)"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/CAP_theorem",
+      "https://dl.acm.org/doi/10.1145/564585.564601"
+    ]
+  },
+  {
+    "id": "in_07",
+    "category": "in_domain_general",
+    "topic": "consensus",
+    "difficulty": "medium",
+    "question": "What problem does the Raft consensus algorithm solve, and what are its main mechanisms?",
+    "reference_answer": "Raft is a consensus algorithm for managing a replicated log, ensuring that a cluster of servers agrees on the same sequence of commands so they behave like a single reliable state machine even if some servers fail. It was designed to be more understandable than Paxos by decomposing consensus into relatively independent subproblems: leader election (the cluster elects one leader), log replication (the leader accepts client commands and replicates them to followers), and safety (guarantees ensuring committed entries are never lost or contradicted). Raft also defines a cluster-membership-change mechanism using overlapping majorities so the group can be reconfigured safely. It is equivalent to Paxos in fault tolerance and performance.",
+    "answer_key_points": [
+      "Solves consensus over a replicated log for state-machine replication across servers",
+      "Explicit design goal: more understandable than Paxos",
+      "Decomposes into leader election, log replication, and safety",
+      "A single elected leader accepts client commands and replicates to followers",
+      "Equivalent to Paxos in fault tolerance/performance; includes safe membership changes"
+    ],
+    "cited_sources": [
+      "https://raft.github.io/raft.pdf",
+      "https://raft.github.io/"
+    ]
+  },
+  {
+    "id": "in_08",
+    "category": "in_domain_general",
+    "topic": "blockchain-data-structures",
+    "difficulty": "medium",
+    "question": "What is a Merkle tree, and why do blockchains use them?",
+    "reference_answer": "A Merkle tree (hash tree) is a tree in which every leaf is labelled with the cryptographic hash of a data block and every internal node is labelled with the hash of its children's labels, so the single root hash acts as a compact cryptographic commitment to all the underlying data. This lets you verify that a particular piece of data belongs to the set by checking only a short 'Merkle proof' (a path of sibling hashes up to the root) rather than examining all the data. Blockchains use them because a block header need only store the Merkle root of its transactions, so light clients can verify that a given transaction is included in a block using a small proof instead of downloading the entire block, and any tampering with a transaction changes the root.",
+    "answer_key_points": [
+      "Leaves = hashes of data blocks; internal nodes = hashes of their children",
+      "The root hash is a compact commitment to all leaves",
+      "Membership can be verified with a short Merkle proof (path of hashes), not all the data",
+      "Blockchains store only the Merkle root in the block header; enables light-client verification (e.g. SPV)",
+      "Any change to underlying data changes the root, so it detects tampering"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Merkle_tree"
+    ]
+  },
+  {
+    "id": "in_09",
+    "category": "in_domain_general",
+    "topic": "blockchain-consensus",
+    "difficulty": "medium",
+    "question": "How do Proof of Work and Proof of Stake differ in how they achieve consensus and Sybil resistance?",
+    "reference_answer": "Both are Sybil-resistance mechanisms that decide who gets to propose the next block, but they tie influence to different scarce resources. In Proof of Work, miners compete to solve a computational puzzle and the first to find a valid solution earns the right to add the next block; influence is proportional to computing (hash) power, so an attacker would need a large fraction of the total hash rate, which is expensive and energy-intensive. In Proof of Stake, validators are selected to produce and attest to blocks with probability proportional to the stake (cryptocurrency) they lock up; influence is tied to economic stake rather than computation, so an attacker would need to control a large fraction of the total stake. PoS therefore consumes far less energy because it removes the mining race.",
+    "answer_key_points": [
+      "Both provide Sybil resistance by tying block-proposal influence to a scarce resource",
+      "PoW: miners solve computational puzzles; influence proportional to hash power",
+      "Attacking PoW needs a large share of total hash rate (costly, energy-intensive)",
+      "PoS: validators chosen proportional to staked coins; influence proportional to stake",
+      "Attacking PoS needs a large share of total stake; PoS uses far less energy"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Proof_of_work",
+      "https://en.wikipedia.org/wiki/Proof_of_stake"
+    ]
+  },
+  {
+    "id": "in_10",
+    "category": "in_domain_general",
+    "topic": "optimization",
+    "difficulty": "medium",
+    "question": "How does gradient descent work, and what role does the learning rate play?",
+    "reference_answer": "Gradient descent is a first-order iterative optimisation algorithm that finds a local minimum of a differentiable function by repeatedly stepping in the direction of the negative gradient (the direction of steepest decrease). The update rule is x_{t+1} = x_t - gamma * grad f(x_t), where gamma is the learning rate (step size) that controls how far to move along the negative gradient each iteration. If the learning rate is too large the algorithm can overshoot, oscillate or diverge; if it is too small convergence is very slow. In neural networks, backpropagation supplies the gradients of the loss with respect to the weights, and gradient descent (or a variant such as SGD or Adam) uses them to iteratively reduce the loss.",
+    "answer_key_points": [
+      "Iterative first-order method that steps in the direction of the negative gradient",
+      "Update rule x_{t+1} = x_t - learning_rate * gradient",
+      "Learning rate (step size) controls how far each step moves",
+      "Too large: overshoot/diverge/oscillate; too small: slow convergence",
+      "In neural nets, gradients come from backpropagation; used to minimise the loss"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Gradient_descent"
+    ]
+  },
+  {
+    "id": "in_11",
+    "category": "in_domain_general",
+    "topic": "ml-generalisation",
+    "difficulty": "medium",
+    "question": "What is overfitting in machine learning, and how does regularisation help combat it?",
+    "reference_answer": "Overfitting occurs when a model fits the training data too closely, capturing noise and idiosyncrasies rather than the underlying pattern, so it achieves low training error but generalises poorly (low training error, high test error, i.e. high variance). It typically happens when a model is more complex or has more parameters than the data justifies. Regularisation combats this by adding information or constraints, usually a penalty term to the loss function of the form min sum V(f(x_i), y_i) + lambda*R(f), that favours simpler models and reduces generalisation error. Common techniques include L1/L2 weight penalties (discouraging large weights), early stopping and dropout, with lambda controlling the strength of the penalty.",
+    "answer_key_points": [
+      "Overfitting = fitting noise in training data; low training error but poor generalisation",
+      "Symptom: high variance, low training error but high test error",
+      "Often caused by excessive model complexity/parameters relative to data",
+      "Regularisation adds a penalty/constraint (e.g. + lambda*R(f)) favouring simpler models",
+      "Examples: L1/L2 weight penalties, early stopping, dropout; lambda tunes strength"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Overfitting",
+      "https://en.wikipedia.org/wiki/Regularization_(machine_learning)"
+    ]
+  },
+  {
+    "id": "in_12",
+    "category": "in_domain_general",
+    "topic": "vector-representations",
+    "difficulty": "medium",
+    "question": "What are vector embeddings in machine learning, and why is cosine similarity commonly used to compare them?",
+    "reference_answer": "A vector embedding is a mapping of discrete objects (words, sentences, images, graph nodes, etc.) into dense numeric vectors in a continuous space, learned so that semantically or structurally similar objects have nearby vectors. Word embeddings such as word2vec and GloVe, for instance, place words that appear in similar contexts close together. Cosine similarity measures the similarity of two vectors as the cosine of the angle between them, cos_sim(u, v) = (u . v) / (||u|| ||v||), giving 1 for vectors pointing the same way and 0 for orthogonal ones. It is popular because it depends on the direction (orientation) of the vectors rather than their magnitude, which suits high-dimensional embeddings where relative orientation encodes meaning.",
+    "answer_key_points": [
+      "Embeddings map discrete objects to dense numeric vectors in a continuous space",
+      "Learned so similar items have nearby vectors (e.g. word2vec, GloVe)",
+      "Cosine similarity = dot product divided by the product of norms (cosine of the angle)",
+      "Ranges ~1 (very similar) to 0 (orthogonal)",
+      "Measures direction not magnitude, well-suited to high-dimensional embeddings"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Word_embedding",
+      "https://en.wikipedia.org/wiki/Cosine_similarity"
+    ]
+  },
+  {
+    "id": "in_13",
+    "category": "in_domain_general",
+    "topic": "llm-architectures",
+    "difficulty": "medium",
+    "question": "What is Retrieval-Augmented Generation (RAG), and what problem does it address for large language models?",
+    "reference_answer": "Retrieval-Augmented Generation, introduced by Lewis et al. in 2020, combines a pretrained sequence-to-sequence generator (parametric memory) with an external retrieval module over a document corpus (non-parametric memory). At inference time the system retrieves passages relevant to the query, for example from Wikipedia, and conditions the generator on them, so answers can draw on an updatable text index rather than only on knowledge frozen in the model's weights. This addresses limitations of purely parametric LLMs such as stale or missing knowledge and hallucination, and lets the knowledge source be updated without retraining. The paper defines two variants, RAG-Sequence (same retrieved documents for the whole output) and RAG-Token (different documents can be attended to per generated token).",
+    "answer_key_points": [
+      "Combines a pretrained generator (parametric memory) with a retriever over an external corpus (non-parametric memory)",
+      "Retrieves relevant documents at inference and conditions generation on them",
+      "Addresses stale/missing knowledge and hallucination; knowledge can be updated without retraining",
+      "Introduced by Lewis et al. (2020)",
+      "Two variants: RAG-Sequence and RAG-Token"
+    ],
+    "cited_sources": [
+      "https://arxiv.org/abs/2005.11401"
+    ]
+  },
+  {
+    "id": "in_14",
+    "category": "in_domain_general",
+    "topic": "xr-slam",
+    "difficulty": "medium",
+    "question": "What is SLAM (Simultaneous Localization and Mapping), and why is the problem considered a 'chicken-and-egg' one?",
+    "reference_answer": "SLAM is the process by which a robot or device builds or updates a map of an unknown environment while at the same time estimating its own position within that map, typically in real time from sensors such as cameras or LiDAR. It is a coupled 'chicken-and-egg' problem because accurate localisation needs a good map, yet building a consistent map needs to know where the sensor is; SLAM algorithms solve both jointly and approximately. Common approaches include particle-filter-based methods, extended Kalman filter (EKF) methods, and graph-based methods (GraphSLAM). SLAM underpins robot navigation and the spatial tracking that lets AR/VR devices place virtual content stably in the real world.",
+    "answer_key_points": [
+      "Builds/updates a map of an unknown environment while estimating the device's own pose within it",
+      "Coupled problem: localisation needs a map, mapping needs localisation, so both solved jointly",
+      "Runs approximately in real time from sensors (cameras, LiDAR)",
+      "Method families: particle filter, EKF, graph-based (GraphSLAM)",
+      "Used in robot navigation and AR/VR spatial tracking"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Simultaneous_localization_and_mapping"
+    ]
+  },
+  {
+    "id": "in_15",
+    "category": "in_domain_general",
+    "topic": "semantic-web-ontology",
+    "difficulty": "medium",
+    "question": "In the semantic web, what is an ontology expressed in OWL, and what kinds of things does it define?",
+    "reference_answer": "OWL (the Web Ontology Language) is a W3C standard ontology language for the semantic web, built on top of RDF and RDFS, with a formally defined meaning that supports automated reasoning. An OWL ontology is a formal description of a domain, itself represented as an RDF graph, that defines classes (categories of things), properties (relationships between things or between things and data values), and individuals (specific instances), along with logical axioms constraining them. Because the semantics are formal, reasoners can perform tasks such as checking consistency, classifying entities under classes, and inferring implicit facts that are not stated explicitly.",
+    "answer_key_points": [
+      "OWL is a W3C ontology language for the semantic web, built on RDF/RDFS",
+      "An ontology is a formal description of a domain (itself an RDF graph)",
+      "Defines classes, properties, and individuals (plus axioms)",
+      "Formally defined meaning enables automated reasoning",
+      "Reasoners can check consistency, classify, and infer implicit facts"
+    ],
+    "cited_sources": [
+      "https://www.w3.org/TR/owl2-primer/",
+      "https://en.wikipedia.org/wiki/Web_Ontology_Language"
+    ]
+  },
+  {
+    "id": "in_16",
+    "category": "in_domain_general",
+    "topic": "byzantine-fault-tolerance",
+    "difficulty": "hard",
+    "question": "What is the Byzantine Generals Problem, and what is the classic requirement for reaching agreement when up to f nodes can be Byzantine faulty?",
+    "reference_answer": "The Byzantine Generals Problem, formalised by Lamport, Shostak and Pease, is an allegory for how distributed processes can reach agreement (consensus) when some participants may be 'traitors' that behave arbitrarily or maliciously, sending conflicting information to different peers. Such arbitrary, possibly deceptive failures are called Byzantine faults, in contrast to simple crash faults. Their classic result is that in a synchronous system without cryptographic signatures, tolerating up to f Byzantine faulty processes requires at least 3f+1 total processes (so more than two-thirds must be honest); this bound is both necessary and sufficient. If authenticated messages (digital signatures) are used, the requirement can be relaxed, allowing agreement with fewer processes.",
+    "answer_key_points": [
+      "Consensus among distributed processes when some may behave arbitrarily/maliciously (traitors)",
+      "A Byzantine fault is arbitrary/deceptive behaviour, unlike a crash fault",
+      "Formalised by Lamport, Shostak and Pease",
+      "Without signatures, tolerating f faults needs at least 3f+1 total nodes (>2/3 honest); bound is tight",
+      "Digital signatures (authenticated messages) relax the requirement"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Byzantine_fault",
+      "https://www.microsoft.com/en-us/research/publication/byzantine-generals-problem/"
+    ]
+  },
+  {
+    "id": "in_17",
+    "category": "in_domain_general",
+    "topic": "zero-knowledge-proofs",
+    "difficulty": "hard",
+    "question": "What is a zero-knowledge proof, and what are its three defining properties?",
+    "reference_answer": "A zero-knowledge proof is an interactive protocol in which a prover convinces a verifier that a statement is true without revealing any information beyond the mere fact that it is true. It is defined by three properties. Completeness: if the statement is true and both parties behave honestly, the verifier will be convinced. Soundness: if the statement is false, no cheating prover can convince an honest verifier except with negligible probability. Zero-knowledge: if the statement is true, the verifier learns nothing beyond its truth, formalised by the existence of a simulator that can reproduce the verifier's view from the statement alone (without the secret). The concept was introduced by Goldwasser, Micali and Rackoff.",
+    "answer_key_points": [
+      "Prover convinces a verifier a statement is true without revealing anything beyond its truth",
+      "Completeness: true statement + honest parties => verifier is convinced",
+      "Soundness: false statement => no cheating prover convinces the verifier except with negligible probability",
+      "Zero-knowledge: verifier learns nothing beyond truth; formalised via a simulator reproducing the verifier's view",
+      "Introduced by Goldwasser, Micali and Rackoff"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Zero-knowledge_proof",
+      "https://doi.org/10.1137/0218012"
+    ]
+  },
+  {
+    "id": "in_18",
+    "category": "in_domain_general",
+    "topic": "transformers",
+    "difficulty": "hard",
+    "question": "How does the self-attention mechanism at the heart of the Transformer architecture work, and why did Transformers replace recurrent models for many sequence tasks?",
+    "reference_answer": "The Transformer, introduced in Vaswani et al.'s 2017 'Attention Is All You Need', relies entirely on attention and dispenses with recurrence and convolution. Its core operation is scaled dot-product attention: Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) V, where queries Q, keys K and values V are all derived from the same sequence in self-attention, and each token attends to every other token to build a context-aware representation that captures long-range dependencies. Multi-head attention runs several such attentions in parallel. Because self-attention processes all tokens simultaneously rather than step-by-step, Transformers parallelise well and train much faster than recurrent networks, while modelling long-range dependencies more directly; since attention is permutation-invariant, positional encodings are added so token order matters.",
+    "answer_key_points": [
+      "Transformer (Vaswani et al. 2017) uses attention only, no recurrence/convolution",
+      "Scaled dot-product attention: softmax(QK^T / sqrt(d_k))V with queries, keys, values",
+      "Self-attention: Q, K, V from the same sequence; each token attends to all others (long-range dependencies)",
+      "Multi-head attention runs several attentions in parallel; all tokens processed simultaneously => parallelism/faster training",
+      "Positional encodings added because self-attention is permutation-invariant"
+    ],
+    "cited_sources": [
+      "https://arxiv.org/abs/1706.03762",
+      "https://en.wikipedia.org/wiki/Transformer_(deep_learning)"
+    ]
+  },
+  {
+    "id": "in_19",
+    "category": "in_domain_general",
+    "topic": "neural-network-training",
+    "difficulty": "hard",
+    "question": "What does the backpropagation algorithm compute, and how does it do so efficiently?",
+    "reference_answer": "Backpropagation (backward propagation of errors) is the algorithm that computes the gradient of a neural network's loss function with respect to every weight in the network. It works by applying the chain rule of calculus layer by layer: after a forward pass produces an output and its error, the error signal is propagated backwards from the output layer through the hidden layers, reusing intermediate results so that all partial derivatives are obtained in roughly the cost of one backward pass rather than recomputing each independently. These gradients are then fed to gradient descent (or a variant) to update the weights and reduce the loss. Popularised by Rumelhart, Hinton and Williams (1986), it made it practical to train multilayer networks with hidden units to learn useful internal representations.",
+    "answer_key_points": [
+      "Computes the gradient of the loss with respect to every weight",
+      "Applies the chain rule layer by layer, propagating the error backwards from output to input layers",
+      "Reuses intermediate values so gradients are computed efficiently (one backward pass)",
+      "Gradients feed gradient descent to update weights and minimise loss",
+      "Popularised by Rumelhart, Hinton and Williams (1986); enabled training of multilayer nets with hidden units"
+    ],
+    "cited_sources": [
+      "https://www.nature.com/articles/323533a0",
+      "https://en.wikipedia.org/wiki/Backpropagation"
+    ]
+  },
+  {
+    "id": "in_20",
+    "category": "in_domain_general",
+    "topic": "vector-search",
+    "difficulty": "hard",
+    "question": "What is approximate nearest neighbour (ANN) search, and how does an HNSW (Hierarchical Navigable Small World) index make it fast?",
+    "reference_answer": "Nearest neighbour search finds the stored point closest to a query point under some distance metric; in high dimensions exact search becomes prohibitively expensive, so approximate nearest neighbour (ANN) search trades exactness for speed, returning a point that is within a bounded factor of the true nearest distance. HNSW is a graph-based ANN index that builds a multi-layer proximity graph: each vector is a node linked to nearby vectors, upper layers hold a sparse subset with long-range 'express' links, and the bottom layer is a dense graph over all vectors. A query starts at an entry point in the top layer and greedily hops toward the query, descending layer by layer to a local minimum, then runs a bounded beam search in the dense bottom layer to collect the nearest neighbours, giving logarithmic-scale navigation over huge datasets.",
+    "answer_key_points": [
+      "Nearest neighbour search finds the closest stored point to a query under a distance metric",
+      "ANN trades exactness for speed; result is within a bounded factor of the true nearest distance",
+      "HNSW is a graph-based, multi-layer proximity graph index",
+      "Upper layers are sparse with long-range links; bottom layer is a dense graph over all vectors",
+      "Query greedily descends from a top-layer entry point, then beam-searches the bottom layer; near-logarithmic navigation"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Nearest_neighbor_search",
+      "https://arxiv.org/abs/1603.09320"
+    ]
+  }
+]

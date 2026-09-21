@@ -1,0 +1,26 @@
+harness: 47/60 questions engaged the confidence gate
+  gemini-2.5-flash-lite: 15/60
+  gemini-2.5-flash-lite: 30/60
+  gemini-2.5-flash-lite: 45/60
+  gemini-2.5-flash-lite: 60/60
+wrote gemini-2.5-flash-lite bare+harness (60 each)
+  gpt-4.1-mini: 15/60
+  gpt-4.1-mini: 30/60
+  gpt-4.1-mini: 45/60
+  gpt-4.1-mini: 60/60
+wrote gpt-4.1-mini bare+harness (60 each)
+  claude-haiku-4.5: 15/60
+  claude-haiku-4.5: 30/60
+  claude-haiku-4.5: 45/60
+  claude-haiku-4.5: 60/60
+wrote claude-haiku-4.5 bare+harness (60 each)
+  mistral-small-24b: 15/60
+  mistral-small-24b: 30/60
+  mistral-small-24b: 45/60
+  mistral-small-24b: 60/60
+wrote mistral-small-24b bare+harness (60 each)
+  deepseek-chat: 15/60
+  deepseek-chat: 30/60
+  deepseek-chat: 45/60
+  deepseek-chat: 60/60
+wrote deepseek-chat bare+harness (60 each)

@@ -1,0 +1,227 @@
+[
+  {
+    "id": "q0003",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "The immediate parent of affective computing is human-computer interaction (HCI); Rosalind Picard framed the field explicitly as expanding HCI to include emotional communication. Broader ancestors are artificial intelligence (affective computing is standardly described as an interdisciplinary branch spanning computer science/AI) and, one level up, computer science. It also draws on psychology and cognitive science, but those are contributing disciplines rather than taxonomic ancestors.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Affective_computing",
+      "https://vismod.media.mit.edu/pub/tech-reports/TR-490/",
+      "https://www.computer.org/csdl/journal/ta/2010/01/tta2010010001/13rRUxYIMTq"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Public sources support both AI and HCI as parents; the ontology picks HCI as immediate parent with AI as ancestor, which is defensible. The ontology's intermediate 'AI Research Area' node is an internal grouping."
+  },
+  {
+    "id": "q0038",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "Dialogue systems (conversational AI) enable chatbots, virtual/voice assistants, question-answering systems, and customer-support automation. These are the standard downstream applications: task-oriented and open-domain conversational agents power assistants like Siri/Alexa, QA over knowledge bases, and automated support agents.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Dialogue_system",
+      "https://en.wikipedia.org/wiki/Virtual_assistant",
+      "https://en.wikipedia.org/wiki/Chatbot"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Matches ontology gold exactly; all four enabled concepts are widely documented applications of dialogue systems."
+  },
+  {
+    "id": "q0074",
+    "stratum": "public",
+    "web_findability": 0.95,
+    "answer": "The immediate parent of Across Protocol is cross-chain bridge (specifically an intents-based interoperability/bridging protocol). Broader ancestors are blockchain interoperability infrastructure and, at the top, blockchain/distributed-ledger technology. Across is a decentralised cross-chain bridge that moves tokens between Ethereum mainnet and L2s using optimistic verification (via UMA's optimistic oracle) and a relayer network.",
+    "cited_sources": [
+      "https://docs.across.to/introduction/security",
+      "https://across.to/blog/Across-V3-Introducing-the-First-Intents-Based-Interoperability-Protocol",
+      "https://eco.com/support/en/articles/14799839-across-protocol-solver-architecture-deep-dive"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Well documented; Across self-describes as a cross-chain bridge / intents-based interoperability protocol. Ontology's 'Network Component (Blockchain)' is an internal intermediate node."
+  },
+  {
+    "id": "q0123",
+    "stratum": "public",
+    "web_findability": 0.75,
+    "answer": "Event streaming requires: (1) a message broker / broker layer that receives and serves the event stream (e.g. Kafka brokers); (2) durable distributed storage, since events are persisted as an ordered, append-only log across partitioned, replicated storage for as long as needed; and (3) a serialisation format for encoding events (commonly Avro, Protobuf, or JSON, often via a schema registry). Kafka's own architecture documents all three: brokers as the storage/serving layer, durable partitioned logs, and client-side serialisation.",
+    "cited_sources": [
+      "https://kafka.apache.org/documentation/",
+      "https://www.confluent.io/blog/kafka-streams-tables-part-2-topics-partitions-and-storage-fundamentals/",
+      "https://www.gravitee.io/blog/what-is-kafka-architects-guide-to-event-streaming"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Message broker and durable/distributed storage are explicit in Kafka docs; serialisation format is documented as client-side (Avro/Protobuf/JSON + schema registry). The exact triple 'requires broker + distributed storage + serialisation format' is a reasonable synthesis rather than a single canonical source."
+  },
+  {
+    "id": "q0149",
+    "stratum": "public",
+    "web_findability": 0.65,
+    "answer": "A collaboration platform's core parts are real-time messaging/chat, video conferencing (WebRTC-based), collaborative document editing (shared workspaces with conflict resolution), and workflow automation. Mainstream platforms (Slack, Microsoft Teams, Google Workspace) bundle exactly these: persistent messaging channels, meetings/calls, co-authored documents, and automated workflows.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Collaborative_software",
+      "https://en.wikipedia.org/wiki/Collaborative_real-time_editor",
+      "https://en.wikipedia.org/wiki/WebRTC"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.7,
+    "notes": "The general decomposition is public and matches how mainstream collaboration suites are described. The ontology part labels 'tc 0002 collaborative document editing' and 'TC-0080-Team-Coordination' are internal identifiers for otherwise-public concepts; the concept itself is not private."
+  },
+  {
+    "id": "q0188",
+    "stratum": "public",
+    "web_findability": 0.82,
+    "answer": "Decentralisation enables decentralised finance (DeFi), decentralised/self-sovereign identity, censorship resistance, and permissionless innovation. By distributing authority across independent nodes and eliminating single points of control, it removes gatekeepers (permissionless participation), makes the system resistant to censorship or takedown, and provides the trust-minimised substrate on which DeFi and decentralised identity are built.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Decentralized_finance",
+      "https://en.wikipedia.org/wiki/Decentralized_identifier",
+      "https://en.wikipedia.org/wiki/Decentralization"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.78,
+    "notes": "Each enabled item is well documented; 'permissionless innovation' and 'censorship resistance' are standard framings of decentralisation's benefits. Ontology puts Decentralisation under 'Governance Framework', which is a defensible but internal placement."
+  },
+  {
+    "id": "q0222",
+    "stratum": "public",
+    "web_findability": 0.82,
+    "answer": "Banking enables fintech and open banking. As the regulated system of deposit-taking, credit and payment rails, banking provides the underlying accounts, data and infrastructure that fintech firms build on, and open banking (mandated data-sharing via APIs, e.g. the UK regime and Dodd-Frank Section 1033) explicitly opens bank account data to third parties, spurring fintech entry and innovation.",
+    "cited_sources": [
+      "https://www.bankofengland.co.uk/-/media/boe/files/working-paper/2024/customer-data-access-and-fintech-entry-early-evidence-from-open-banking.pdf",
+      "https://journals.shu.ac.uk/index.php/FinTAF/article/download/414/188",
+      "https://en.wikipedia.org/wiki/Open_banking"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "The enable relation is strongly supported (BoE working paper documents open banking enabling fintech entry). Note the ontology's ancestor chain for Banking ('Spatial Computing') is an idiosyncratic/likely-erroneous internal placement and is NOT publicly supportable; only the T-REL enable answer is asked here."
+  },
+  {
+    "id": "q0257",
+    "stratum": "public",
+    "web_findability": 0.72,
+    "answer": "The immediate parent of compliance is governance (compliance is a function within corporate/organisational governance, commonly grouped as GRC — governance, risk and compliance). Broader ancestors are risk management / the legal and regulatory domain, and organisational management more generally. Compliance is the practice of adhering to laws, regulations, standards and internal policies through controls, monitoring and documented evidence.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Regulatory_compliance",
+      "https://en.wikipedia.org/wiki/Governance,_risk_management,_and_compliance",
+      "https://en.wikipedia.org/wiki/Corporate_governance"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.75,
+    "notes": "Governance as parent and 'legal and regulatory' as ancestor are publicly defensible (GRC framing). The ontology's top ancestor 'Infrastructure' is an internal top-level grouping, not a public taxonomy claim."
+  },
+  {
+    "id": "q0290",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Energy management uses IoT sensor networks and smart metering for data collection, monitoring systems (SCADA/BMS) for real-time observation and control, predictive analytics / load forecasting for optimisation, building automation systems for facility control, and increasingly digital twins to simulate and optimise energy flows. These support metering, energy auditing, demand-side management and integration of renewables.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Energy_management_system",
+      "https://en.wikipedia.org/wiki/Building_automation",
+      "https://en.wikipedia.org/wiki/Digital_twin"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.76,
+    "notes": "All five 'uses' items are standard components of energy-management systems and are individually well documented; the specific consolidated list is a reasonable synthesis."
+  },
+  {
+    "id": "q0327",
+    "stratum": "public",
+    "web_findability": 0.8,
+    "answer": "Maximum likelihood estimation enables system identification (fitting dynamical-system/model parameters from data — ML estimators are consistent and efficient for system ID) and generative modelling (training generative models by maximising data likelihood; minimising negative log-likelihood is equivalent to minimising KL divergence to the data distribution, the core learning objective for many generative models). More broadly MLE underlies regression and much of statistical parameter estimation.",
+    "cited_sources": [
+      "https://deepgenerativemodels.github.io/assets/slides/cs236_lecture4.pdf",
+      "https://people.ee.ethz.ch/~rsmith/idfiles/SysID_lecture02_supplement.pdf",
+      "https://arxiv.org/html/2506.20628v1"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.8,
+    "notes": "Both enabled items are directly supported: Stanford CS236 frames generative-model learning as maximum likelihood; ETH/arXiv sources use MLE for system identification."
+  },
+  {
+    "id": "q0352",
+    "stratum": "public",
+    "web_findability": 0.55,
+    "answer": "The immediate parent of 3D asset creation is asset creation (the production of digital assets/content); it is the spatial/3D specialisation of general asset (content) creation. Broader ancestors are content creation and digital content production more generally. It covers modelling, sculpting, texturing, rigging and animation of 3D models for games, film, XR and digital twins.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/3D_modeling",
+      "https://en.wikipedia.org/wiki/Digital_asset",
+      "https://en.wikipedia.org/wiki/Content_creation"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.62,
+    "notes": "The concept is public but 'Asset Creation' / 'Content Creation' as formal named parent classes is idiosyncratic ontology framing rather than a standard published taxonomy; immediate-parent naming is the weakest-findable part here."
+  },
+  {
+    "id": "q0378",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "The immediate parent of hazard identification is risk assessment — hazard identification is universally described as the first stage of the risk-assessment process (find, list and characterise hazards, before rating/prioritising and controlling risk). Broader ancestors are risk management and safety engineering / occupational health and safety (and, in robotics, functional safety). CCOHS and standard HIRA guidance define it exactly this way.",
+    "cited_sources": [
+      "https://www.ccohs.ca/oshanswers/hsprograms/hazard/risk_assessment.html",
+      "https://www.hseblog.com/hazard-identification-risk-assessment/",
+      "https://www.smu.ca/webfiles/Chapter3-HazardIdentification.pdf"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.9,
+    "notes": "Very strong public support: hazard identification is canonically step 1 of risk assessment across OSH standards."
+  },
+  {
+    "id": "q0413",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "BLAKE3 uses hardware acceleration — specifically SIMD instructions (SSE2/SSE4.1/AVX2/AVX-512, ARM NEON, WASM SIMD) plus multi-core threading, exploited via its binary Merkle-tree structure for unbounded parallelism. It is built on cryptographic primitives: an ARX (add-rotate-XOR) compression function derived from the ChaCha stream cipher (inherited from BLAKE2), giving it its keyed-hash/MAC, KDF and XOF modes.",
+    "cited_sources": [
+      "https://github.com/BLAKE3-team/BLAKE3",
+      "https://cgi.cse.unsw.edu.au/~cs4601/refs/papers/blake3.pdf",
+      "https://www.ietf.org/archive/id/draft-aumasson-blake3-00.html"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "'Hardware acceleration' via SIMD/multi-core and the ChaCha-based ARX cryptographic primitive are both explicit in the BLAKE3 paper and IETF draft."
+  },
+  {
+    "id": "q0445",
+    "stratum": "public",
+    "web_findability": 0.9,
+    "answer": "A GPU driver depends on the operating system (it is OS system software that plugs into the kernel and exposes graphics/compute APIs to applications) and on the GPU hardware itself (it translates high-level rendering/compute commands into hardware-specific instructions and manages the GPU's memory, command queues and context switching). Without both the OS kernel interfaces and the physical GPU, the driver has nothing to mediate between.",
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Device_driver",
+      "https://en.wikipedia.org/wiki/Graphics_processing_unit",
+      "https://en.wikipedia.org/wiki/Graphics_card"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.85,
+    "notes": "Essentially definitional and trivially public; a GPU driver by definition depends on the OS and the GPU hardware."
+  },
+  {
+    "id": "q0495",
+    "stratum": "public",
+    "web_findability": 0.85,
+    "answer": "Metadata standards (e.g. Dublin Core, IPTC, XMP) enable data interoperability (shared, mappable vocabularies let systems exchange and understand descriptions across languages and disciplines), resource discoverability / knowledge discovery (structured descriptive metadata makes assets findable), and digital asset management (consistent, structured description underpins managing assets at scale). Dublin Core was created in 1995 explicitly to enable interoperability and information discovery on the web.",
+    "cited_sources": [
+      "https://www.dublincore.org/resources/metadata-basics/",
+      "https://msi.dublincore.org/standards/dublin-core-elements/",
+      "https://www.dublincore.org/specifications/dublin-core/interoperability-levels/"
+    ],
+    "reference_source": "web",
+    "abstained": false,
+    "confidence": 0.82,
+    "notes": "Interoperability and discoverability are explicitly the stated purpose of Dublin Core; digital asset management is a well-established downstream use of metadata standards."
+  }
+]

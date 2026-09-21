@@ -1,0 +1,222 @@
+[
+  {
+    "model": "gemini-2.5-flash-lite",
+    "n": 510,
+    "raw_recall": 0.22741745098039215,
+    "scaffold_recall": 0.8971245098039216,
+    "uplift": 0.6697070588235293,
+    "ci": [
+      0.6348058823529411,
+      0.7037596078431372
+    ],
+    "clustered_ci": [
+      0.6231530241935485,
+      0.7164109404990403
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0674,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 16,
+    "n_retried": 0,
+    "provider_model": "gemini-2.5-flash-lite"
+  },
+  {
+    "model": "gpt-4.1-mini",
+    "n": 510,
+    "raw_recall": 0.1616658823529412,
+    "scaffold_recall": 0.9048694117647059,
+    "uplift": 0.7432035294117647,
+    "ci": [
+      0.7125833333333333,
+      0.7740860784313726
+    ],
+    "clustered_ci": [
+      0.6973312114989734,
+      0.7870692592592593
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0596,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "openai/gpt-4.1-mini"
+  },
+  {
+    "model": "mistral-small-24b",
+    "n": 510,
+    "raw_recall": 0.2847049019607843,
+    "scaffold_recall": 0.9061441176470588,
+    "uplift": 0.6214392156862746,
+    "ci": [
+      0.5861778431372549,
+      0.6568317647058823
+    ],
+    "clustered_ci": [
+      0.5582511022044088,
+      0.6817790476190476
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0583,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "mistralai/mistral-small-24b-instruct-2501"
+  },
+  {
+    "model": "qwen-2.5-72b",
+    "n": 510,
+    "raw_recall": 0.30892137254901963,
+    "scaffold_recall": 0.9141833333333333,
+    "uplift": 0.6052619607843137,
+    "ci": [
+      0.5696088235294118,
+      0.6409160784313725
+    ],
+    "clustered_ci": [
+      0.5621276507276507,
+      0.649376404494382
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0503,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "qwen/qwen-2.5-72b-instruct"
+  },
+  {
+    "model": "llama-3.3-70b",
+    "n": 510,
+    "raw_recall": 0.2271886274509804,
+    "scaffold_recall": 0.9155884313725491,
+    "uplift": 0.6883998039215686,
+    "ci": [
+      0.6530729411764706,
+      0.7226150980392158
+    ],
+    "clustered_ci": [
+      0.6324248484848485,
+      0.738006560636183
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0489,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "meta-llama/llama-3.3-70b-instruct"
+  },
+  {
+    "model": "deepseek-chat",
+    "n": 510,
+    "raw_recall": 0.3465021568627451,
+    "scaffold_recall": 0.9244774509803921,
+    "uplift": 0.577975294117647,
+    "ci": [
+      0.5421909803921569,
+      0.6139235294117648
+    ],
+    "clustered_ci": [
+      0.5317205533596837,
+      0.6215912175648702
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.04,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "deepseek-chat"
+  },
+  {
+    "model": "glm-4.6",
+    "n": 510,
+    "raw_recall": 0.24310392156862745,
+    "scaffold_recall": 0.9281374509803921,
+    "uplift": 0.6850335294117647,
+    "ci": [
+      0.6496409803921568,
+      0.7204911764705881
+    ],
+    "clustered_ci": [
+      0.640660198019802,
+      0.7271237642585552
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0363,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 174,
+    "n_retried": 5,
+    "provider_model": "z-ai/glm-4.6"
+  },
+  {
+    "model": "claude-haiku-4.5",
+    "n": 510,
+    "raw_recall": 0.15127392156862746,
+    "scaffold_recall": 0.933823725490196,
+    "uplift": 0.7825498039215686,
+    "ci": [
+      0.7514717647058824,
+      0.811798431372549
+    ],
+    "clustered_ci": [
+      0.7406872549019607,
+      0.8269570019723866
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0307,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "anthropic/claude-haiku-4.5"
+  },
+  {
+    "model": "gemini-3.5-flash-lite",
+    "n": 510,
+    "raw_recall": 0.32264607843137255,
+    "scaffold_recall": 0.938039411764706,
+    "uplift": 0.6153933333333333,
+    "ci": [
+      0.5796090196078431,
+      0.65023
+    ],
+    "clustered_ci": [
+      0.5651795131845843,
+      0.6665696428571428
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0264,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "gemini-3.5-flash-lite"
+  },
+  {
+    "model": "gemini-3.7-flash-t0",
+    "n": 510,
+    "raw_recall": 0.3749021568627451,
+    "scaffold_recall": 0.9422550980392157,
+    "uplift": 0.5673529411764706,
+    "ci": [
+      0.5316996078431373,
+      0.6030390196078431
+    ],
+    "clustered_ci": [
+      0.5238675456389452,
+      0.6114779245283019
+    ],
+    "copy_ceiling": 0.9644771241830066,
+    "gain_over_copy": -0.0222,
+    "n_not_engaged": 0,
+    "n_errors": 0,
+    "n_truncated": 0,
+    "n_retried": 0,
+    "provider_model": "gemini-3.7-flash"
+  }
+]

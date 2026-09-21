@@ -1,0 +1,242 @@
+[
+  {
+    "id": "arc_rgb01",
+    "category": "arcane_in_corpus",
+    "topic": "Client-Side Validation",
+    "difficulty": "easy",
+    "question": "What is client-side validation in the context of Bitcoin smart contracts, and how does it differ from the way a normal blockchain validates state?",
+    "reference_answer": "Client-side validation is a paradigm in which only the parties directly involved in a contract or transfer validate its state transitions off-chain, rather than every node on the network re-executing and storing the contract. The blockchain (Bitcoin) is used only to publish a compact cryptographic commitment and to prevent double-spending; it never sees or interprets the actual contract data. This is the inverse of ordinary blockchain validation, where global consensus nodes replicate and validate all state. It gives strong privacy (only counterparties see the data) and scalability (contract data is kept off the chain), at the cost of each participant having to keep and validate their own relevant history.",
+    "answer_key_points": [
+      "Only the parties involved validate state transitions, off-chain, not the whole network",
+      "The blockchain stores only a cryptographic commitment, not the contract data",
+      "Contrast: normal blockchains have every node replicate/validate/store all state (global validation)",
+      "Benefits: privacy (data seen only by counterparties) and scalability (data off-chain)",
+      "Each participant keeps and verifies only their own relevant shard/history"
+    ],
+    "cited_sources": [
+      "https://docs.rgb.info/distributed-computing-concepts/client-side-validation",
+      "https://rgb.info/learn/client-side-validation/",
+      "https://bitcoinops.org/en/topics/client-side-validation/"
+    ]
+  },
+  {
+    "id": "arc_rgb02",
+    "category": "arcane_in_corpus",
+    "topic": "Single-Use Seals",
+    "difficulty": "medium",
+    "question": "What is a single-use seal as defined by Peter Todd, and what are the two core operations that characterise it?",
+    "reference_answer": "A single-use seal is a cryptographic primitive analogous to a physical tamper-evident seal: it is a uniquely defined commitment point that can be 'closed' exactly once over a single message, producing publicly verifiable evidence of that closure. A secure single-use seal makes it computationally infeasible to produce two apparently valid proofs that the same seal was closed over two different messages. It is characterised by two operations: closing the seal over a message (which produces a witness/proof of closure) and verifying that a given seal was closed over a claimed message using that witness. Peter Todd introduced the concept in his 2016 'Commitments and Single-Use Seals' writeup.",
+    "answer_key_points": [
+      "Cryptographic analogue of a physical tamper-evident seal; can be closed exactly once over one message",
+      "Infeasible to produce two valid closures of the same seal over different messages (uniqueness/anti-double-spend)",
+      "Two operations: Close (seal over message -> witness) and Verify (seal, witness, message -> bool)",
+      "Closing produces a publicly verifiable witness/proof of closure",
+      "Introduced by Peter Todd (2016 'Commitments and Single-Use Seals')"
+    ],
+    "cited_sources": [
+      "https://petertodd.org/2016/commitments-and-single-use-seals",
+      "https://docs.rgb.info/distributed-computing-concepts/single-use-seals",
+      "https://github.com/RGB-Tools/client_side_validation/blob/static/single_use_seals/README.md"
+    ]
+  },
+  {
+    "id": "arc_rgb03",
+    "category": "arcane_in_corpus",
+    "topic": "Single-Use Seals",
+    "difficulty": "medium",
+    "question": "How can a Bitcoin UTXO act as a single-use seal? Map the seal definition, the seal closing, and the proof of publication onto concrete Bitcoin mechanics.",
+    "reference_answer": "A specific Bitcoin transaction output (UTXO/txout) is globally unique and can be spent only once, which is exactly the 'closed once and only once' property a single-use seal needs. The seal definition is the chosen UTXO identified on-chain. The seal is closed by spending that UTXO in a transaction that also commits to the message (for example via an OP_RETURN or Taproot commitment carrying the message hash). The proof of publication is the fact that this spending transaction is confirmed in Bitcoin's consensus medium, so anyone can verify it. Bitcoin's double-spend prevention guarantees the UTXO cannot be spent again, so the seal cannot be validly closed over a second, different message.",
+    "answer_key_points": [
+      "A UTXO is globally unique and spendable only once",
+      "Seal definition = the specified UTXO/txout identified on-chain",
+      "Seal closing = spending that UTXO in a tx that commits to the message (e.g. via OP_RETURN or Taproot commitment)",
+      "Proof of publication = the confirmed spending transaction in Bitcoin's consensus/blockchain",
+      "Single-use property enforced by Bitcoin's double-spend prevention (cannot re-spend the UTXO)"
+    ],
+    "cited_sources": [
+      "https://petertodd.org/2016/commitments-and-single-use-seals",
+      "https://petertodd.org/2017/scalable-single-use-seal-asset-transfer",
+      "https://docs.rgb.info/distributed-computing-concepts/single-use-seals"
+    ]
+  },
+  {
+    "id": "arc_rgb04",
+    "category": "arcane_in_corpus",
+    "topic": "Proof of Publication",
+    "difficulty": "medium",
+    "question": "What is 'proof of publication' in the single-use-seal / client-side-validation model, and why is a publication medium essential to it?",
+    "reference_answer": "Proof of publication is the requirement that a message (or seal closure) is not merely committed to privately but is demonstrably published on a medium with global consensus properties, so that third parties can later verify it was made public. In the RGB/LNP-BP framing this is the 'proof-of-publication medium' — typically a blockchain such as Bitcoin — which makes it hard to forge, hide, or retroactively alter the fact that something was published. It is essential because single-use seals and client-side validation depend on the closure of a seal being publicly and immutably visible: without a trustworthy publication medium there would be no way to prove a seal was closed exactly once over a particular message, and equivocation could not be detected.",
+    "answer_key_points": [
+      "Proof that a message/seal-closure was publicly published, not just privately committed",
+      "Requires a medium with global consensus properties (e.g. Bitcoin blockchain) that makes forgery/retroactive change hard",
+      "Lets third parties verify publication and that a seal was closed exactly once",
+      "Underpins client-side validation and single-use seals; prevents undetected equivocation/double-closure",
+      "Concept originates with Peter Todd; formalised in RGB/LNP-BP as the publication medium"
+    ],
+    "cited_sources": [
+      "https://petertodd.org/2016/commitments-and-single-use-seals",
+      "https://docs.rgb.info/distributed-computing-concepts/single-use-seals",
+      "https://rgb.info/learn/client-side-validation/"
+    ]
+  },
+  {
+    "id": "arc_rgb05",
+    "category": "arcane_in_corpus",
+    "topic": "RGB Protocol",
+    "difficulty": "medium",
+    "question": "In the RGB protocol, what is a 'consignment' and what does a recipient do with it when receiving an asset?",
+    "reference_answer": "A consignment is the off-chain data bundle that a sender transfers to a recipient so the recipient can validate the assets they are receiving. It contains the contract genesis, the relevant slice (DAG shard) of state transitions from genesis to the output being received, and the anchoring data (Bitcoin transaction ids and commitment proofs) needed to check the single-use seals. On receipt, the recipient validates the consignment client-side: it verifies every state transition against the contract schema, checks each anchor commitment against the Bitcoin blockchain, and confirms that each seal (UTXO) was closed exactly once with no conflicting transitions. There is no global RGB ledger, so the recipient only ever needs its own relevant history shard.",
+    "answer_key_points": [
+      "Off-chain data bundle sent from sender to recipient to validate a transfer",
+      "Contains genesis, the DAG shard of state transitions up to the received output, and anchor/commitment proofs",
+      "Recipient validates locally (client-side): checks transitions against the schema",
+      "Recipient verifies each anchor commitment against Bitcoin and that each seal was closed exactly once (no conflicts)",
+      "No global RGB ledger; only the relevant history shard is needed"
+    ],
+    "cited_sources": [
+      "https://rgb.info/learn/how-rgb-protocol-on-bitcoin-works/",
+      "https://docs.rgb.info/distributed-computing-concepts/client-side-validation",
+      "https://www.nervos.org/knowledge-base/ultimate_guide_to_rgb_rgbpp_and_client_side_validation"
+    ]
+  },
+  {
+    "id": "arc_rgb06",
+    "category": "arcane_in_corpus",
+    "topic": "RGB Protocol",
+    "difficulty": "hard",
+    "question": "RGB anchors commitments using two Deterministic Bitcoin Commitment schemes, Tapret and Opret. How does each work, and what determinism rule prevents an attacker from constructing an alternative commitment history in the same transaction?",
+    "reference_answer": "Tapret embeds the RGB commitment inside a Taproot output's script tree as a dedicated (unspendable) tapret script leaf, so the transaction looks like an ordinary Taproot spend and the commitment is hidden from casual observers. Opret instead places the commitment (e.g. a 32-byte hash) in the payload of an OP_RETURN output, which is provably unspendable and easily detectable but has a more visible footprint. The Deterministic Bitcoin Commitment (DBC) requirement is that a witness transaction must provably contain exactly one valid commitment per scheme: the only valid Opret commitment is in the FIRST OP_RETURN output, and the only valid Tapret commitment is in the FIRST Taproot output. This deterministic 'first-output' rule means an attacker cannot hide a second, conflicting RGB message elsewhere in the same transaction, so the message bound to a seal closure is unique.",
+    "answer_key_points": [
+      "Tapret: commitment placed in a Taproot output's script tree as a dedicated tapret leaf; looks like a normal Taproot spend (private)",
+      "Opret: commitment placed in an OP_RETURN output payload; provably unspendable but visible",
+      "DBC requires a transaction to provably contain exactly one valid commitment per scheme",
+      "Determinism rule: first OP_RETURN output (Opret) / first Taproot output (Tapret) is the only valid location",
+      "This prevents constructing alternative/conflicting commitment histories in the same transaction, keeping the seal-bound message unique"
+    ],
+    "cited_sources": [
+      "https://docs.rgb.info/commitment-layer/deterministic-bitcoin-commitments-dbc",
+      "https://docs.rgb.info/commitment-layer/commitment-schemes",
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0012"
+    ]
+  },
+  {
+    "id": "arc_rgb07",
+    "category": "arcane_in_corpus",
+    "topic": "AluVM",
+    "difficulty": "hard",
+    "question": "What is AluVM, and what architectural choices make it suitable for deterministic, consensus-critical execution in RGB?",
+    "reference_answer": "AluVM (Algorithmic Logic Unit Virtual Machine) is a purely functional, register-based RISC virtual machine designed for deterministic, portable computation, created by Maxim Orlovsky and maintained by the LNP/BP Standards Association. It is the execution engine for RGB contract logic. Its key design choices are: it is register-based with no random (addressable) memory access; it has a reduced, orthogonal RISC-style instruction set; it is pure functional (no implicit side effects, I/O, or global mutable state); and instructions have fully defined semantics so there is no architecture-dependent undefined behaviour. Because RGB relies on client-side validation and cryptographic commitments, any non-determinism would break consensus — eliminating random memory access and undefined behaviour guarantees every validator computes identical results and makes the VM easier to reason about formally.",
+    "answer_key_points": [
+      "AluVM = Algorithmic Logic Unit VM: purely functional, register-based RISC virtual machine for deterministic portable computing",
+      "Created by Maxim Orlovsky, maintained by LNP/BP Standards Association; execution engine for RGB contracts",
+      "Register-based with NO random/addressable memory access",
+      "Pure functional: no side effects/I/O/global mutable state; reduced orthogonal instruction set",
+      "No undefined behaviour by design -> deterministic, so all client-side validators reach identical results (required for consensus)"
+    ],
+    "cited_sources": [
+      "https://docs.aluvm.org/",
+      "https://www.lnp-bp.org/products",
+      "https://rgb.tech/program/contractum/"
+    ]
+  },
+  {
+    "id": "arc_rgb08",
+    "category": "arcane_in_corpus",
+    "topic": "Contractum language",
+    "difficulty": "medium",
+    "question": "What is Contractum, and how does it relate to Strict Types and AluVM in the RGB stack?",
+    "reference_answer": "Contractum is a functional, declarative domain-specific language (still under development) for writing RGB smart contracts, with its design and compiler led by Maxim Orlovsky under the LNP/BP Standards Association. It uses the Strict Types formalism to define its data types, giving every type a fixed, deterministic, platform-independent binary encoding that can be validated at consensus level. A Contractum program compiles down into the RGB artefacts needed to run a contract — schema, interfaces and interface implementations, genesis and contract operations — together with AluVM bytecode, which is the executable logic that RGB validators run. So Contractum is the high-level authoring layer, Strict Types is its deterministic type/encoding system, and AluVM is the deterministic execution target.",
+    "answer_key_points": [
+      "Contractum: functional/declarative DSL for writing RGB smart contracts (work in progress)",
+      "Designed/led by Maxim Orlovsky under the LNP/BP Standards Association",
+      "Uses Strict Types formalism for data types -> fixed, deterministic, platform-independent binary encoding",
+      "Compiles to RGB schema, interfaces/implementations, genesis, contract operations",
+      "Compiles to AluVM bytecode as the execution target (high-level language -> AluVM)"
+    ],
+    "cited_sources": [
+      "https://rgb.tech/program/contractum/",
+      "https://www.contractum.org/",
+      "https://docs.aluvm.org/"
+    ]
+  },
+  {
+    "id": "arc_rgb09",
+    "category": "arcane_in_corpus",
+    "topic": "Bifrost Protocol",
+    "difficulty": "hard",
+    "question": "What is the Bifrost protocol in the LNP-BP/RGB ecosystem, and what problem does it solve that the standard Lightning BOLT stack does not?",
+    "reference_answer": "Bifrost is an extensible Lightning-network protocol defined by a group of LNPBP standards (notably LNPBP-50 for the P2P layer and LNPBP-51 for channels) that serves as the transport and channel layer for RGB and other client-side-validated protocols over Lightning. It reuses the Noise_XK handshake and framing ideas from BOLT-8 (re-standardised as LNPBP-15/LNPBP-18) but replaces BOLT's message formats with Strict-Types-encoded messages and richer channel semantics. It exists because standard BOLT Lightning does not natively support the deterministic commitments, single-use seals, Taproot/MuSig-based channels, or multi-peer channel structures that RGB needs; Bifrost provides those, so RGB assets can be carried over Lightning-style channels. Bifrost channels that carry such protocols cannot be downgraded back to legacy BOLT channels.",
+    "answer_key_points": [
+      "Bifrost = extensible Lightning protocol defined by LNPBP standards (LNPBP-50 P2P, LNPBP-51 channels)",
+      "Transport/channel layer enabling RGB (and other client-side-validated protocols) over Lightning",
+      "Reuses Noise_XK/framing from BOLT-8 (as LNPBP-15/18) but uses Strict-Types encoding instead of BOLT TLV",
+      "Solves what BOLT can't: native deterministic commitments, single-use seals, Taproot/MuSig, multi-peer channels",
+      "Bifrost channels carrying these protocols cannot be downgraded to legacy BOLT channels"
+    ],
+    "cited_sources": [
+      "https://standards.lnp-bp.org/lightning-network-protocol/lnpbp-0050",
+      "https://standards.lnp-bp.org/lightning-network-protocol/lnpbp-0051",
+      "https://standards.lnp-bp.org/lightning-network-protocol/lnpbp-0053"
+    ]
+  },
+  {
+    "id": "arc_rgb10",
+    "category": "arcane_in_corpus",
+    "topic": "LNP-BP Standards Association",
+    "difficulty": "easy",
+    "question": "What is the LNP/BP Standards Association, and what are the LNPBP standards?",
+    "reference_answer": "The LNP/BP Standards Association is a Swiss non-profit association that supervises and maintains open standards and reference implementations for Bitcoin Layer 2 and Layer 3 protocols, including RGB, Bifrost, and related technologies, and manages the RGB consensus layer and its governance. The LNPBP standards ('Lightning Network Protocol / Bitcoin Protocol' standards) are a family of formal specifications for primitives and protocols that anchor to Bitcoin via deterministic commitments without requiring any Bitcoin soft/hard fork and are not already covered by the Lightning BOLTs. Examples include LNPBP-1/2/3 (public-key, script and deterministic transaction-output commitments), LNPBP-8 (single-use seals), LNPBP-12 (Tapret), and the RGB interface standards. Key figures include Maxim Orlovsky (technical lead of RGB/AluVM/Contractum) and Giacomo Zucco, who was involved in the early conception of RGB.",
+    "answer_key_points": [
+      "Swiss non-profit association maintaining open standards and reference implementations for Bitcoin L2/L3 (RGB, Bifrost, etc.)",
+      "Manages the RGB consensus layer and governance",
+      "LNPBP standards = specs for Bitcoin-anchored primitives/protocols needing no Bitcoin fork, not covered by BOLTs",
+      "Examples: LNPBP-1/2/3 commitments, LNPBP-8 single-use seals, LNPBP-12 Tapret, RGB interfaces",
+      "Key people: Maxim Orlovsky (RGB/AluVM/Contractum lead) and Giacomo Zucco (early RGB)"
+    ],
+    "cited_sources": [
+      "https://www.lnp-bp.org/",
+      "https://rgb.tech/governance/",
+      "https://standards.lnp-bp.org/commitment-schemes/lnpbp-0008"
+    ]
+  },
+  {
+    "id": "arc_rgb11",
+    "category": "arcane_in_corpus",
+    "topic": "Taproot asset issuance",
+    "difficulty": "hard",
+    "question": "How does the Taproot Assets protocol (formerly Taro) issue and hold assets on Bitcoin, and what role does the Merkle-Sum Sparse Merkle Tree play? How does its approach compare to RGB?",
+    "reference_answer": "Taproot Assets, a Lightning Labs protocol, issues assets by committing asset state into a Taproot output: the output's internal key is tweaked to commit to the root of a Merkle-Sum Sparse Merkle Tree (MS-SMT) describing the asset, so on-chain the UTXO looks like an ordinary P2TR output. An MS-SMT is a sparse Merkle tree (a 256-level authenticated key-value map supporting inclusion and non-inclusion proofs) in which every leaf carries a numeric amount and every internal node carries the sum of its children, so the root sum equals total supply and transfers can be checked for supply conservation. Asset IDs are derived deterministically from the genesis outpoint plus metadata. Like RGB it uses client-side validation, with receivers verifying an off-chain proof chain from genesis. It differs from RGB in that it is standardised around Taproot commitments and the specific MS-SMT data structure (draft bip-tap BIPs) and is tightly integrated with Lightning Labs' Lightning stack, whereas RGB uses its own AluVM/Strict-Types VM, single-use-seal anchoring (Tapret/Opret), and different Merkle data structures.",
+    "answer_key_points": [
+      "Taproot Assets (Lightning Labs) commits asset state into a Taproot output via a tweaked key; on-chain it looks like a normal P2TR spend",
+      "MS-SMT = sparse Merkle tree (inclusion + non-inclusion proofs) where leaves carry amounts and nodes carry sums",
+      "Root sum = total supply, enabling supply-conservation / non-inflation proofs; asset ID derived from genesis outpoint + metadata",
+      "Also uses client-side validation: receivers verify an off-chain proof chain from genesis",
+      "Vs RGB: standardised on Taproot + MS-SMT (bip-tap) and Lightning Labs LN, whereas RGB uses AluVM/Strict Types, single-use-seal Tapret/Opret anchoring and different data structures"
+    ],
+    "cited_sources": [
+      "https://docs.lightning.engineering/the-lightning-network/taproot-assets/taproot-assets-protocol",
+      "https://github.com/Roasbeef/bips/blob/bip-tap/bip-tap-ms-smt.mediawiki",
+      "https://docs.lightning.engineering/the-lightning-network/taproot-assets"
+    ]
+  },
+  {
+    "id": "arc_rgb12",
+    "category": "arcane_in_corpus",
+    "topic": "Bitcoin Ordinals/Inscriptions/BRC-20",
+    "difficulty": "medium",
+    "question": "Explain how ordinal theory numbers satoshis, how inscriptions embed data into a Bitcoin transaction, and why BRC-20 is described as an off-chain, indexer-based experiment rather than a formal protocol.",
+    "reference_answer": "Ordinal theory (Casey Rodarmor) assigns every satoshi a serial number in the order it is mined in coinbase transactions — the first sat of the genesis block is 0 and the last is 4,999,999,999 — and tracks sats as they move using a first-in-first-out rule mapping input sats to output sats; Bitcoin itself is unaware of these numbers, which are computed off-chain by an indexer. An inscription attaches arbitrary data to a sat by placing it in the witness of a Taproot script-path spend, inside an 'envelope': an unexecuted OP_FALSE OP_IF ... OP_ENDIF branch containing data pushes (the 'ord' identifier, a content-type/MIME tag, and the body), which never executes and so does not affect script validity but is recorded on-chain (benefiting from the segwit witness discount). BRC-20 (introduced by the pseudonymous Domo in March 2023) is a convention that inscribes JSON with deploy/mint/transfer operations (fields like p, op, tick, max, lim, amt); it is described as an off-chain, indexer-based experiment because Bitcoin enforces none of its rules — balances exist only because off-chain indexers replay the inscriptions by an agreed convention, so there is no consensus-level standard and indexers can diverge.",
+    "answer_key_points": [
+      "Ordinal theory (Casey Rodarmor) numbers sats by mining order; genesis block sats run 0 to 4,999,999,999; transfers tracked FIFO; Bitcoin is unaware (off-chain indexer)",
+      "Inscription = data in the witness of a Taproot script-path spend inside an OP_FALSE OP_IF ... OP_ENDIF 'envelope'",
+      "Envelope holds 'ord' identifier, content-type/MIME tag and body; branch never executes (no effect on validity) but is stored on-chain; uses segwit witness discount",
+      "BRC-20 by Domo (March 2023): JSON inscriptions with deploy/mint/transfer ops (p, op, tick, max, lim, amt)",
+      "Off-chain/indexer-based: Bitcoin enforces no BRC-20 rules; balances computed by indexers replaying inscriptions; no BIP/consensus standard, indexers can diverge"
+    ],
+    "cited_sources": [
+      "https://docs.ordinals.com/overview.html",
+      "https://docs.ordinals.com/inscriptions.html",
+      "https://domo-2.gitbook.io/brc-20-experiment"
+    ]
+  }
+]

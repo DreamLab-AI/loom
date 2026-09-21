@@ -1,0 +1,448 @@
+[
+  {
+    "id": "thin_prov01",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "Explain in what precise sense a Git repository is a Merkle DAG rather than merely a hash chain. Which four object types participate, how does an edge get its 'address', and why is the resulting graph necessarily acyclic?",
+    "gold_titles": [
+      "Four object types: blob, tree, commit, tag",
+      "Object ID = cryptographic hash of the object's serialised content (content addressing)",
+      "Edges are hashes of target objects (Merkle links), so links are authenticated",
+      "DAG, not a chain: commits fan out to trees which fan out to blobs/sub-trees",
+      "Acyclic because content determines the hash \u2014 you cannot embed a hash of an object that embeds you"
+    ]
+  },
+  {
+    "id": "thin_prov02",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Git supports a SHA-256 object format. In a repository created for the transition, what do the config extensions objectFormat and compatObjectFormat do, what auxiliary data structure must a SHA-256 repository store alongside its packfile, and what is the current state of interoperability with SHA-1 repositories?",
+    "gold_titles": [
+      "objectFormat = the storage hash (sha256 => 64-hex object IDs); default is sha1",
+      "compatObjectFormat = a compatibility hash, must differ from objectFormat, for format-1 interop testing",
+      "SHA-256 repos store a bidirectional SHA-256<->SHA-1 name mapping beside the packfile",
+      "Objects can be named by 40-hex SHA-1 or 64-hex SHA-256 IDs",
+      "No interoperability today; SHA-256 support is experimental; old Git cannot read SHA-256 repos",
+      "Planned default switch to SHA-256 later; SHA-1 format not being deprecated"
+    ]
+  },
+  {
+    "id": "thin_prov03",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Given that SHA-1 has been practically broken (SHAttered, 2017), why can Git still use SHA-1-named objects relatively safely today? Name the specific mechanism modern Git builds employ and describe what it actually detects.",
+    "gold_titles": [
+      "Git uses hardened SHA-1 = sha1dc (collision-detecting SHA-1), not plain SHA-1, by default",
+      "sha1dc detects the disturbance-vector/message-block signatures of known SHA-1 collision attacks",
+      "It aborts instead of returning a digest when an attack pattern is seen, rejecting crafted colliding objects",
+      "Mitigates SHAttered-style identical-prefix collisions cheaply",
+      "It is a stop-gap; does not restore general collision resistance \u2014 hence the parallel SHA-256 transition"
+    ]
+  },
+  {
+    "id": "thin_prov04",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "A colleague argues that GPG- or SSH-signed Git commits (git commit -S) already prove exactly when a commit was made and therefore give a complete provenance trail. Identify the precise guarantee a signed commit provides, the field that makes the 'when' claim untrustworthy, and why an external timestamp is still needed.",
+    "gold_titles": [
+      "Signed commit = key binds to the hashed commit object (tree, parents, identities, message) via the gpgsig header",
+      "Provides authenticity/integrity, verifiable with git verify-commit / git log --show-signature",
+      "The author/committer date fields are client-set and attacker-controllable \u2014 not attested by the signature",
+      "Signatures give no trusted time; back-/forward-dating is trivial",
+      "A trusted 'existed before T' needs an external anchor (OpenTimestamps/blockchain or a transparency log)"
+    ]
+  },
+  {
+    "id": "thin_prov05",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "git notes let you attach metadata to an existing commit without changing that commit's hash. Explain how notes are stored, why attaching a note leaves the annotated commit's object ID unchanged, and what this implies for using notes to carry provenance data such as a reference to an external timestamp proof.",
+    "gold_titles": [
+      "A note is a blob stored in a separate notes ref (default refs/notes/commits), keyed by target object name",
+      "The commit object is not modified, so its object ID stays the same \u2014 hence notes can annotate immutable/signed commits",
+      "Notes are mutable after the fact (add/edit/remove) precisely because they are external to the commit",
+      "A signature over the commit does NOT cover its notes; the notes ref has its own hash chain",
+      "Good for carrying provenance pointers (e.g. an .ots proof ID) but the notes ref must be protected/signed separately"
+    ]
+  },
+  {
+    "id": "thin_prov06",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "OpenTimestamps claims it can timestamp an unlimited number of documents with a single Bitcoin transaction. Explain the aggregation mechanism, the role of calendar servers and their trust model, and describe precisely how the commitment reaches Bitcoin \u2014 in particular whether OpenTimestamps uses OP_RETURN or relies only on the block's transaction Merkle root.",
+    "gold_titles": [
+      "Clients send only a document hash; requests in a ~1-second interval are aggregated into one Merkle tree",
+      "The tree tip is a single 32-byte digest; each client's proof is the sibling-hash path from its hash to the tip",
+      "One Bitcoin transaction thus anchors an unlimited number of documents",
+      "Calendars must anchor tips and keep proofs available, but need not be trusted \u2014 proofs verify against the blockchain",
+      "Deployed calendars embed the tip directly in an OP_RETURN output (per Peter Todd)",
+      "The block header's transaction merkleroot is the ultimate commitment; the alternative non-OP_RETURN scheme is not in the standard protocol"
+    ]
+  },
+  {
+    "id": "thin_prov07",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Describe the git-mark tool's model for making a Git repository's history tamper-evident against a public ledger. What is the role of the 'genesis' transaction, what does invoking the mark do, and how does this differ in guarantee from Git's internal hash chain plus signed commits?",
+    "gold_titles": [
+      "git-mark (`git mark`, via npm) anchors commit hashes to a supporting blockchain (Bitmark)",
+      "`git mark --genesis txid:output` binds the repo to a genesis unspent transaction, starting a mark chain",
+      "Each `git mark` creates a new tx committing to the current HEAD commit hash + metadata; block confirmation anchors it",
+      "Git's hash chain + signed commits give only internal integrity/authenticity, tamper-evident relative to another copy",
+      "A force-push can rewrite history undetectably without an external reference; the blockchain anchor removes that gap",
+      "Result: proof of existence/state against a global consensus ledger, not just within Git"
+    ]
+  },
+  {
+    "id": "thin_prov08",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "OpenTimestamps ships a Git integration that timestamps PGP-signed commits. Describe the wrapper mechanism it uses to hook into git commit -S, the git config setting that activates it, and explain the specific provenance problem this solves that an ordinary signed commit does not.",
+    "gold_titles": [
+      "Integration wraps the GPG program Git calls: ots-git-gpg-wrapper (ots-git-gpg-wrapper.sh)",
+      "Activated via `git config gpg.program <wrapper>` (typically --global)",
+      "On `git commit -S` the wrapper both produces the GPG signature and creates an OTS proof anchoring to Bitcoin via calendars",
+      "A plain signed commit proves only 'key signed content', with no trustworthy time",
+      "Anchoring proves the signature existed before a given block time \u2014 crucial once a key is revoked/expired/compromised",
+      "Lets verifiers still trust signatures that pre-date a key's compromise"
+    ]
+  },
+  {
+    "id": "thin_prov09",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "In RFC 6962 (Certificate Transparency), the Merkle Tree Hash prepends a single byte before hashing at each node: 0x00 for leaves and 0x01 for interior nodes. Give the exact leaf and interior-node hash definitions, and explain the security property this domain separation provides.",
+    "gold_titles": [
+      "Leaf: MTH({d[0]}) = SHA-256(0x00 || d[0])",
+      "Interior (n>1, k = largest power of two < n): MTH = SHA-256(0x01 || MTH(D[0:k]) || MTH(D[k:n]))",
+      "0x00 vs 0x01 = domain separation making leaf and interior hash inputs disjoint",
+      "No leaf hash can collide with an interior-node hash",
+      "Prevents second-preimage / tree-reshaping attacks where a leaf value mimics a child-hash concatenation",
+      "Needed because such structural ambiguity would exist even with a collision-resistant SHA-256"
+    ]
+  },
+  {
+    "id": "thin_prov10",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Distinguish a Merkle audit path (inclusion proof) from a Merkle consistency proof in an RFC 6962 transparency log: what does each one prove, what inputs does each need, what does a Signed Tree Head contain, and what is the Maximum Merge Delay?",
+    "gold_titles": [
+      "Inclusion/audit proof: sibling hashes from a leaf to the root; proves one leaf is in the tree of a given STH",
+      "Consistency proof: node hashes proving tree of size m is a prefix of tree of size n (m<=n) \u2014 append-only, nothing deleted/altered",
+      "Inclusion needs leaf hash + audit path + STH root; consistency needs two STH roots/sizes + consistency path",
+      "STH contains: tree size, root (tree-head) hash, timestamp, log signature (and log ID metadata)",
+      "MMD = log-declared max time to incorporate an accepted cert into the tree and cover it with an STH",
+      "Client verifies inclusion against an STH dated after SCT timestamp + MMD; failing MMD = misbehaviour"
+    ]
+  },
+  {
+    "id": "thin_prov11",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Google Trillian is a general-purpose verifiable-log backend. What is a Trillian 'personality' and what three kinds of responsibility does it own that the Trillian core deliberately does not? Separately, what is a 'tile' in tile-based transparency logs and what problem does tiling address?",
+    "gold_titles": [
+      "Trillian core = generic storage-backed append-only Merkle tree with inclusion/consistency proofs, no app semantics",
+      "A personality = the application layer for a specific log type on top of the core",
+      "Personality owns: (1) admission criteria (what may be logged)",
+      "(2) canonicalisation (equivalent submissions -> canonical form for de-duplication)",
+      "(3) external interface/API, ACLs, rate-limiting/DoS; maps to core ops like QueueLeaf/GetInclusionProof",
+      "A tile = a fixed-size subtree/group of Merkle hashes stored and served as one unit; tiling cuts storage/recompute/proof-serving overhead and eases mirroring"
+    ]
+  },
+  {
+    "id": "thin_rgb_01",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "AluVM is the RISC virtual machine that runs RGB contract validation scripts. Describe its register file and explain the concrete mechanisms by which it guarantees deterministic, exception-free execution with no undefined behaviour. In particular, what happens to a destination register on an impossible operation, what is the role of the st0 register, and how is control flow made total (no invalid jumps or instructions)?",
+    "gold_titles": [
+      "A-registers: 8 blocks of 32 registers, widths 8/16/32/64/128/256/512/1024 bits",
+      "S-registers: one block of 256 registers, up to 64 KiB each; R-registers reserved for cryptography",
+      "Every register can hold an undefined/None state; impossible ops set destination to undefined instead of trapping",
+      "st0 is the boolean status register; flagged operations set st0=false on overflow/NaN/failure",
+      "Code is zero-padded to 2^16 bytes; the zero opcode means 'set st0=false and stop' -> no invalid instructions/jumps",
+      "Cycles and jumps are counted with a 2^16 limit for bounded-time execution"
+    ]
+  },
+  {
+    "id": "thin_rgb_02",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "LNPBP-1 defines the base cryptographic-commitment primitive used throughout RGB. Give the exact tweaked-key formula, and explain three specific design choices: why the message is authenticated with HMAC-SHA256 rather than a plain hash, what the HMAC key is, and why the standard deliberately uses no nonce.",
+    "gold_titles": [
+      "T = Po + G * HMAC-SHA256(SHA256(\"LNPBP1\") || SHA256(tag) || msg, S*)",
+      "Commits to the SUM of all unique keys in the output, not just one key",
+      "S* is the 64-byte uncompressed sum key (x||y, 0x04 prefix stripped) and serves as the HMAC key",
+      "HMAC-SHA256 chosen to prevent length-extension attacks on arbitrary-length messages",
+      "Double SHA256 tagged prefix prevents cross-protocol collision/replay",
+      "No nonce: the public-key sum already provides sufficient entropy"
+    ]
+  },
+  {
+    "id": "thin_rgb_03",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "LNPBP-2 embeds an LNPBP-1 commitment deterministically into a Bitcoin output's scriptPubkey. Why does it commit to the sum of ALL public keys in the script, how does it deterministically decide which key carries the commitment across arbitrary script types, and what happens for a Taproot (P2TR) output? What extra data must be kept off-chain for verification?",
+    "gold_titles": [
+      "Exactly one key is tweaked, but it commits to the SUM of all original keys in the output -> deterministic singularity",
+      "Keys extracted deterministically via Miniscript parsing of the script",
+      "Procedure fails on an unresolvable pk_h to prevent multiple-commitment attacks",
+      "For P2TR the internal/intermediate key is tweaked, not the output key (else BIP-341 commitment breaks)",
+      "Verification requires an off-chain extra-transaction proof (ETP): original keys + script/taptweak reconstruction data"
+    ]
+  },
+  {
+    "id": "thin_rgb_04",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "LNPBP-4 lets a single Bitcoin commitment carry messages from multiple independent protocols while proving uniqueness in zero knowledge. Describe how a message is placed into the commitment buffer, how empty slots are filled, and how the scheme proves both that a given protocol's commitment is present and that no second commitment under the same protocol exists.",
+    "gold_titles": [
+      "Buffer of N 32-byte slots, N >> M, capped at ~2 MB (16-bit slot count)",
+      "Each protocol has a unique 256-bit id; commitment placed at slot n = id mod N",
+      "Same-protocol-id collision on the same slot is what guarantees per-protocol uniqueness",
+      "Empty slots filled with BIP-340 tagged hash (tag 'LNPBP4:entropy') of entropy_seed||j",
+      "Final buffer committed via LNPBP-1/2 with tag 'LNPBP4'",
+      "Partial reveal proves presence; full reveal (with entropy_seed) proves absence of other commitments"
+    ]
+  },
+  {
+    "id": "thin_rgb_05",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "RGB anchors its MPC commitment into a Bitcoin transaction using one of two deterministic-bitcoin-commitment (DBC) schemes: Opret and Tapret. Contrast their exact on-chain form and byte sizes, and explain what the 1-byte nonce in a Tapret commitment is for.",
+    "gold_titles": [
+      "Opret: 32-byte commitment in first OP_RETURN output; script = OP_RETURN OP_PUSHBYTES_32 <commit>, 34 bytes, on-chain visible",
+      "Tapret: commitment hidden in Taproot script tree for smaller footprint/better privacy",
+      "Tapret leaf is exactly 64 bytes: 29-byte fixed prefix + OP_RETURN + 33-byte push (32-byte MPC commitment + 1-byte nonce)",
+      "Tapret leaf inserted as unspendable script, shifting existing scripts down a level",
+      "Lexicographic branch ordering means left-placement needs a larger uniqueness proof",
+      "The 1-byte nonce is 'mined' so the leaf hash sorts to the right side, minimising the proof"
+    ]
+  },
+  {
+    "id": "thin_rgb_06",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "Single-use-seals are the anti-double-spend primitive underpinning RGB. State the abstract operations a single-use-seal implementation must provide, give the precise security property a secure implementation must satisfy, and explain how Bitcoin is used to realise a trust-minimised seal.",
+    "gold_titles": [
+      "Core ops: Close(l,m)->w and Verify(l,w,m)->bool; plus Gen(p)->l and authenticated Close(l,m,s)->w",
+      "A seal can be closed over a message exactly once",
+      "Security: infeasible to make Verify true for two distinct messages on the same seal",
+      "Multiple witnesses for the same seal/message pair are acceptable (non-ideal)",
+      "Trivial impl = trusted notary with disposable keys; trust-minimised = proof-of-publication ledger (Bitcoin)",
+      "On Bitcoin, closing a seal = spending the defined UTXO with an on-chain commitment"
+    ]
+  },
+  {
+    "id": "thin_rgb_07",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "In RGB, data is moved between parties as 'consignments'. Distinguish a contract consignment from a transfer (terminal) consignment, explain why the two differ so much in size, and describe the role of the receiver's blinded UTXO and the 'stash' in a transfer.",
+    "gold_titles": [
+      "Contract consignment = Genesis + Schema, only a few KiB",
+      "Transfer/terminal consignment = final state transition + full validated history since Genesis (hence much larger)",
+      "History is needed so the receiver can verify against Bitcoin anchors client-side",
+      "Invoice encodes a seal definition, typically the receiver's UTXO in blinded form",
+      "Stash = each party's store of client-side-validated data",
+      "Sender embeds Opret/Tapret DBC in a PSBT (plus blank transitions); receiver 'rgb accept' validates before broadcast"
+    ]
+  },
+  {
+    "id": "thin_rgb_08",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "RGB separates a contract 'Schema' from a contract 'Interface'. Explain what each is, how an RGB Schema differs fundamentally from an Ethereum on-chain contract, and how RGB interfaces (e.g. RGB20, RGB21, RGB25) relate to the concrete schemas an issuer uses.",
+    "gold_titles": [
+      "Schema = declarative template (like a class): owned/global state, assignments, transitions, metadata, embedded AluVM validation scripts",
+      "Issuer instantiates a schema in Genesis (ticker, precision, issued supply, allocations); compiled to .rgb/.rgba",
+      "Unlike Ethereum, the RGB contract is declarative and validated client-side; only a commitment goes on Bitcoin",
+      "Interfaces (v0.10+) are ABI/ERC-like APIs but bundled with the contract, needing no separate standardisation/distribution",
+      "Multiple interfaces can be added to an immutable contract over time",
+      "RGB20 = fungible (NIA), RGB21 = unique/NFT (UDA), RGB25 = collectible fungible (CFA)"
+    ]
+  },
+  {
+    "id": "thin_rgb_09",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "RGB's consensus data is represented with 'Strict Types' rather than a conventional serialization. What distinguishes strict types from algebraic data types in languages like Haskell, what is the 64 KiB rule, and why does RGB compile its whole consensus layer into strict types?",
+    "gold_titles": [
+      "Formal, deterministic notation for ADTs targeting real platforms, not abstract theory",
+      "Every collection has explicit min/max bounds baked into the type -> compile-time resource prediction, no runtime exceptions",
+      "Determinism: differing byte sequences always mean semantically distinct data",
+      "64 KiB rule: no atomic encoded piece may exceed 64 KiB, enabling embedded/limited-memory use",
+      "Enables formal verification of (de)serialization and memory-layout equivalence",
+      "RGB compiles its whole consensus layer to strict types for binary-compatibility proofs across releases; by Orlovsky/UBIDECO"
+    ]
+  },
+  {
+    "id": "thin_rgb_10",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Bifrost (LNPBP-50, with LNPBP-51 and LNPBP-53) is proposed as a replacement/extension networking layer for Lightning, in part to carry RGB data. Why did the LNP/BP designers introduce a new protocol instead of extending the BOLTs, what encoding change is central to it, and what do LNPBP-51 and LNPBP-53 add on top of the LNPBP-50 core?",
+    "gold_titles": [
+      "Extending BOLTs is hard: features span multiple standards, no isolation of experimental code, payment-only design",
+      "BigInt encoding in BOLTs is unsuitable for client-side-validated data -> Bifrost uses strict encoding for all fields",
+      "LNPBP-50 = generalized core: TCP, dedicated default port 9913, Noise_XK (LNPBP-15) + framing (LNPBP-18), bifrost:// URLs, local-features flag",
+      "LNPBP-51 = channel-management protocol",
+      "LNPBP-53 = multi-peer payment channels for Bifrost",
+      "LNPBP-35 (related) carries RGB data propagation over Lightning"
+    ]
+  },
+  {
+    "id": "thin_rgb_11",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Carbonado is the archival storage format associated with RGB wallet stash persistence (notably in BitMask). It is described as 'apocalypse-resistant data storage for the truly paranoid'. What combination of cryptographic and coding techniques does it layer into a single flat-file container, and what problem is each layer solving?",
+    "gold_titles": [
+      "Single flat-file archival container for long-term consensus-critical data (e.g. RGB stash), used by BitMask",
+      "Authenticated encryption (v2: AES-256-CTR + HMAC-SHA512 encrypt-then-MAC) for confidentiality + integrity",
+      "Bao (BLAKE3-based) verified streaming with per-4 KiB-slice verifiability",
+      "Reed-Solomon forward error correction (deterministic 4/8) against bit-rot / partial loss",
+      "Optional Zstandard compression; optional post-quantum SLH-DSA (FIPS-205) signature sidecars",
+      "Purpose: private, verifiable, recoverable data because losing client-side history loses the RGB asset"
+    ]
+  },
+  {
+    "id": "thin_sove01",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "In the did:nostr DID method, what exactly is the method-specific identifier, and what does a resolver produce in the minimal (offline) resolution tier? Specifically, name the verification method type and the two verification relationships that must reference it, and describe how the publicKeyMultibase value is built from the Nostr key.",
+    "gold_titles": [
+      "Method-specific id = 64-char lowercase hex x-only secp256k1 pubkey; npub is display-only",
+      "Minimal document is derived offline from the key alone, with type \"DIDNostr\"",
+      "Verification method type is \"Multikey\"; authentication and assertionMethod both reference #key1",
+      "publicKeyMultibase = 'f' (base16 multibase) + e701 (secp256k1 multicodec) + parity byte + hex key",
+      "Three-tier resolution: minimal (offline) -> HTTP .well-known/did/nostr/<pubkey>.json -> enhanced relay query (kind 0/3/10002); no dedicated DID-document event kind"
+    ]
+  },
+  {
+    "id": "thin_sove02",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "How does NIP-05 map a name@domain identifier to a Nostr public key? Give the exact HTTP request a client makes, the structure of the JSON returned, the meaning of the special '_' name, and the core security rule about what a client must actually follow.",
+    "gold_titles": [
+      "Request: GET https://<domain>/.well-known/nostr.json?name=<local-part>",
+      "JSON has required 'names' (name -> lowercase hex pubkey) and optional 'relays' (pubkey -> [relay URLs])",
+      "'_' is the root identifier, displayed as the bare domain name",
+      "Security rule: clients follow the pubkey, never the NIP-05 address as primary identity",
+      "No redirects allowed; CORS header Access-Control-Allow-Origin: * recommended"
+    ]
+  },
+  {
+    "id": "thin_sove03",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "What is the NIP-07 window.nostr capability, and what problem does it solve for Nostr web apps? Name the two mandatory methods and their signatures, describe what signEvent receives and returns, and list the optional encryption namespaces.",
+    "gold_titles": [
+      "window.nostr is injected by an extension/signer so the private key never reaches the web page",
+      "getPublicKey(): returns hex pubkey",
+      "signEvent(event) takes {created_at, kind, tags, content} and returns it with id, pubkey, sig added",
+      "Optional nip04 (deprecated) and nip44 encrypt/decrypt namespaces",
+      "getRelays() optional; extension injected at document_end"
+    ]
+  },
+  {
+    "id": "thin_sove04",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "NIP-19 defines both bare bech32 entities (npub, nsec, note) and TLV-carrying ones (nprofile, nevent, naddr). Which bech32 variant does it use, and what are the four TLV type numbers and their meanings? Explain concretely how an nprofile differs from an npub and what data an naddr must carry.",
+    "gold_titles": [
+      "Uses bech32, explicitly NOT bech32m",
+      "Bare npub/nsec/note are hex re-encoded; nprofile/nevent/naddr carry TLV",
+      "TLV type 0 = special (pubkey / event id / identifier string depending on prefix)",
+      "TLV type 1 = relay (ASCII URL, repeatable); type 2 = author (32-byte pubkey); type 3 = kind (32-bit big-endian)",
+      "nprofile = pubkey + relay hints (vs bare npub); naddr must carry identifier + author + kind"
+    ]
+  },
+  {
+    "id": "thin_sove05",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "Describe the NIP-42 challenge-response authentication flow between a Nostr client and a relay. What event kind is used, which two tags must it contain, what does the relay validate, and how does a relay signal that a request needs authentication?",
+    "gold_titles": [
+      "Relay sends [\"AUTH\", challenge]; client returns [\"AUTH\", signed event]",
+      "Event is ephemeral kind 22242, never broadcast",
+      "Required tags: [\"relay\", url] and [\"challenge\", string]",
+      "Relay checks kind=22242, created_at within ~10 min, challenge match, relay URL match",
+      "'auth-required: ' prefix signals need to authenticate; 'restricted: ' for insufficient permission"
+    ]
+  },
+  {
+    "id": "thin_sove06",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "What is a NIP-65 relay list, and how does it enable the 'outbox' (gossip) model? Give the event kind, the tag used to list relays, the meaning of the read/write markers including an unmarked entry, and the rule for where a client should look to fetch a given user's posts versus their mentions.",
+    "gold_titles": [
+      "kind 10002, replaceable, uses 'r' tags with relay URLs",
+      "Markers 'read' and 'write'; omitted marker means both",
+      "Fetch a user's posts from their WRITE relays; send mentions/replies to their READ relays",
+      "Underpins the outbox/gossip model (spread load onto authors' own relays)",
+      "Keep list small (~2-4 per category); propagate widely / to indexers"
+    ]
+  },
+  {
+    "id": "thin_sove07",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "In Solid-OIDC, how is a user's WebID conveyed and how does a resource server avoid trusting a rogue OpenID Provider that issues tokens for arbitrary WebIDs? Also explain the two Solid-OIDC features that remove the need for pre-registered clients and for bearer tokens, and how a DPoP proof (RFC 9449) is bound to the access token.",
+    "gold_titles": [
+      "ID Token carries webid claim, plus azp and aud including azp and 'solid'",
+      "WebID Provider Confirmation checks solid:oidcIssuer triple (http://www.w3.org/ns/solid/terms#oidcIssuer) so issuer matches WebID-authorised OP",
+      "Client ID is a dereferenceable Client ID Document (JSON-LD), removing static registration",
+      "DPoP proof JWT (RFC 9449): header typ=dpop+jwt/alg/jwk, claims jti/htm/htu/iat (+ath with a token)",
+      "Access token cnf.jkt = base64url SHA-256 JWK thumbprint binds the token to the client's DPoP key, preventing bearer-style replay"
+    ]
+  },
+  {
+    "id": "thin_sove08",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Contrast Solid's two authorization systems, WAC and ACP. For WAC, name the authorization modes, the difference between acl:accessTo and acl:default, and how public access is granted. For ACP, name the core resource and objects (ACR, policy, matcher) and the boolean combinators, and state the key conceptual capability ACP adds that WAC lacks.",
+    "gold_titles": [
+      "WAC modes: acl:Read, acl:Write, acl:Append, acl:Control (Control = over the ACL itself)",
+      "acl:accessTo = this resource; acl:default = on a container, inherited by contained resources lacking their own ACL",
+      "Public via acl:agentClass foaf:Agent; acl:AuthenticatedAgent = any logged-in agent; ACL found via Link rel=acl",
+      "ACP: ACR -> acp:AccessControl -> acp:Policy (acp:allow/acp:deny) gated by acp:Matcher via acp:allOf/anyOf/noneOf",
+      "ACP adds attribute/context conditions on acp:client, acp:issuer and acp:vc, not just agent identity"
+    ]
+  },
+  {
+    "id": "thin_sove09",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "Explain how WebID-TLS authenticates an agent using a client certificate and the WebID profile document, naming the certificate field that carries the WebID and the RDF ontology terms a verifier matches the certificate key against. Then give the main reasons the Solid community moved from WebID-TLS to WebID-OIDC / Solid-OIDC.",
+    "gold_titles": [
+      "WebID-TLS: WebID is carried in the certificate's SubjectAlternativeName (URI)",
+      "Verifier dereferences WebID profile and matches key via cert:key -> cert:RSAPublicKey with cert:modulus (hexBinary) and cert:exponent (integer)",
+      "TLS handshake proves private-key possession; key match binds cert to WebID",
+      "Moved away due to poor browser client-cert UX: confusing dialogs, no logout, multi-identity/shared-machine problems, weak mobile/browser support",
+      "Solid-OIDC keeps WebID but uses OAuth2/OIDC token flow plus WebID Provider Confirmation"
+    ]
+  },
+  {
+    "id": "thin_sove10",
+    "domain": "arcane_thin",
+    "template": "medium",
+    "question_natural": "In the Solid Notifications Protocol, how does a client subscribe to changes on a resource, and what are the two standard channel types? Give their exact type identifiers and namespace, the property used to name the resource of interest, and the response property that differs between the WebSocket and Webhook channels.",
+    "gold_titles": [
+      "Subscribe via authenticated POST of JSON-LD (context .../solid/notification/v1) to the subscription resource",
+      "Channel types in namespace http://www.w3.org/ns/solid/notifications#",
+      "WebSocketChannel2023 and WebhookChannel2023",
+      "notify:topic names the target resource; WebSocket response gives notify:receiveFrom; Webhook request supplies notify:sendTo",
+      "Notifications are Activity Streams 2.0 JSON-LD"
+    ]
+  },
+  {
+    "id": "thin_sove11",
+    "domain": "arcane_thin",
+    "template": "hard",
+    "question_natural": "How does OpenTimestamps let thousands of documents be timestamped by a single Bitcoin transaction, and what does a .ots proof actually contain? Describe the role of calendar servers, the two-step stamp-then-upgrade workflow, the kinds of operations and attestations inside a proof, and how verification recomputes the path to Bitcoin.",
+    "gold_titles": [
+      "Calendar servers aggregate many document hashes into a Merkle tree and commit only the root to Bitcoin via OP_RETURN (one tx anchors thousands)",
+      "Two steps: stamp yields an incomplete .ots with PendingAttestation(calendar URL); upgrade adds BitcoinBlockHeaderAttestation",
+      ".ots is an ordered path of operations: append/prepend <hex> and hash ops (sha256, ripemd160)",
+      "Verification replays ops from the document hash up to the Bitcoin block Merkle root / header",
+      "Completed proof is self-contained: needs only file + .ots + trusted Bitcoin block headers"
+    ]
+  }
+]

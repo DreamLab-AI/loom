@@ -1,0 +1,233 @@
+[
+  {
+    "id": "q0033",
+    "domain": "ai",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Affective Computing and Automated Reasoning both fall under?",
+    "gold_titles": [
+      "AI Research Area",
+      "Artificial Intelligence"
+    ],
+    "orig_prompt": "What broader concept do Affective Computing and Automated Reasoning both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0001",
+    "domain": "ai",
+    "template": "T-REL",
+    "question_natural": "What does Affective Computing enable?",
+    "gold_titles": [
+      "Emotion Aware Interaction",
+      "Emotional Analytics Engine",
+      "Cognitive Feedback Interface",
+      "Mental Health Monitoring",
+      "Human Robot Interaction"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Affective Computing enable?"
+  },
+  {
+    "id": "q0069",
+    "domain": "artificial-intelligence",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Encoder Decoder Architecture and Model Width both fall under?",
+    "gold_titles": [
+      "Artificial Intelligence"
+    ],
+    "orig_prompt": "What broader concept do Encoder Decoder Architecture and Model Width both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0036",
+    "domain": "artificial-intelligence",
+    "template": "T-REL",
+    "question_natural": "What does AI Application use?",
+    "gold_titles": [
+      "Machine Learning Discipline",
+      "Deep Learning"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does AI Application use?"
+  },
+  {
+    "id": "q0107",
+    "domain": "blockchain",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Across Protocol and Transaction both fall under?",
+    "gold_titles": [
+      "Network Component (Blockchain)",
+      "Blockchain"
+    ],
+    "orig_prompt": "What broader concept do Across Protocol and Transaction both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0072",
+    "domain": "blockchain",
+    "template": "T-REL",
+    "question_natural": "What does Across Protocol depend on?",
+    "gold_titles": [
+      "Ethereum Smart Contract Platform",
+      "Layer 2 Solutions"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Across Protocol depend on?"
+  },
+  {
+    "id": "q0145",
+    "domain": "data",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Data Analytics and Linked Data both fall under?",
+    "gold_titles": [
+      "Infrastructure"
+    ],
+    "orig_prompt": "What broader concept do Data Analytics and Linked Data both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0110",
+    "domain": "data",
+    "template": "T-REL",
+    "question_natural": "What does Climate Modelling enable?",
+    "gold_titles": [
+      "Carbon Footprint Measurement",
+      "SustainabilityReporting",
+      "Carbon Neutrality Planning",
+      "Climate Risk Assessment"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Climate Modelling enable?"
+  },
+  {
+    "id": "q0180",
+    "domain": "distributed-collaboration",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Instant Messaging and Organisational Theory both fall under?",
+    "gold_titles": [
+      "Distributed Collaboration"
+    ],
+    "orig_prompt": "What broader concept do Instant Messaging and Organisational Theory both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0148",
+    "domain": "distributed-collaboration",
+    "template": "T-REL",
+    "question_natural": "What does Collaboration Platform enable?",
+    "gold_titles": [
+      "Augmented Reality Collaboration",
+      "Digital Twin Collaboration",
+      "Remote Work",
+      "TC-0080-Team-Coordination"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Collaboration Platform enable?"
+  },
+  {
+    "id": "q0215",
+    "domain": "distributed-systems",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Decentralisation and Two-Phase Commit both fall under?",
+    "gold_titles": [
+      "Infrastructure"
+    ],
+    "orig_prompt": "What broader concept do Decentralisation and Two-Phase Commit both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0183",
+    "domain": "distributed-systems",
+    "template": "T-REL",
+    "question_natural": "What does Byzantine Generals Problem depend on?",
+    "gold_titles": [
+      "Fault Tolerance",
+      "Distributed System"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Byzantine Generals Problem depend on?"
+  },
+  {
+    "id": "q0252",
+    "domain": "finance",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Asset Management and Cryptocurrency Exchange both fall under?",
+    "gold_titles": [
+      "Economic Systems",
+      "Platform and Environment",
+      "Spatial Computing"
+    ],
+    "orig_prompt": "What broader concept do Asset Management and Cryptocurrency Exchange both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0218",
+    "domain": "finance",
+    "template": "T-REL",
+    "question_natural": "What are the parts of Asset Management?",
+    "gold_titles": [
+      "Portfolio Management",
+      "Risk Management",
+      "Custody",
+      "performance"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what are the parts of Asset Management?"
+  },
+  {
+    "id": "q0281",
+    "domain": "governance",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Data Residency and eIDAS both fall under?",
+    "gold_titles": [
+      "Infrastructure"
+    ],
+    "orig_prompt": "What broader concept do Data Residency and eIDAS both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0255",
+    "domain": "governance",
+    "template": "T-REL",
+    "question_natural": "What does Compliance require?",
+    "gold_titles": [
+      "Audit",
+      "Risk Assessment",
+      "Audit Trail",
+      "Policy"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Compliance require?"
+  },
+  {
+    "id": "q0317",
+    "domain": "infrastructure",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Chaos Engineering and Phase Transition both fall under?",
+    "gold_titles": [
+      "Software Engineering (Infrastructure)",
+      "Infrastructure"
+    ],
+    "orig_prompt": "What broader concept do Chaos Engineering and Phase Transition both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0284",
+    "domain": "infrastructure",
+    "template": "T-REL",
+    "question_natural": "What does Chaos Engineering depend on?",
+    "gold_titles": [
+      "Observability",
+      "Monitoring"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Chaos Engineering depend on?"
+  },
+  {
+    "id": "q0348",
+    "domain": "machine-learning",
+    "template": "T-COMMON",
+    "question_natural": "What broader concept do Calculus and Distributed Inference both fall under?",
+    "gold_titles": [
+      "AI Research Area",
+      "AI Technique",
+      "Artificial Intelligence"
+    ],
+    "orig_prompt": "What broader concept do Calculus and Distributed Inference both fall under in the DreamLab knowledge graph?"
+  },
+  {
+    "id": "q0320",
+    "domain": "machine-learning",
+    "template": "T-REL",
+    "question_natural": "What does Calculus enable?",
+    "gold_titles": [
+      "Optimisation",
+      "Backpropagation",
+      "Automatic Differentiation",
+      "Stochastic Gradient Descent",
+      "Convex Optimisation"
+    ],
+    "orig_prompt": "According to the DreamLab knowledge graph, what does Calculus enable?"
+  }
+]

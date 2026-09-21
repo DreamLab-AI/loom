@@ -1,0 +1,383 @@
+[
+  {
+    "id": "adj01",
+    "category": "adjacent",
+    "topic": "rollups-payments",
+    "difficulty": "hard",
+    "question": "For a consumer payments application that needs fast, trustless settlement, would you build on an optimistic rollup or a zk-rollup? Explain the key differences in withdrawal/finality, security assumptions, and EVM compatibility that drive the decision.",
+    "reference_answer": "For payments where fast withdrawal and settlement matter most, a zk-rollup is generally the stronger fit. Optimistic rollups assume batches are valid unless a fraud proof is submitted during a challenge window (typically 7 days), so native L1 withdrawals take about a week unless a liquidity provider fronts a fast exit; their security relies on at least one honest, live watcher during that window. zk-rollups attach a validity proof (SNARK/STARK) to every batch that Ethereum verifies before accepting it, giving near-instant, cryptographically-guaranteed finality with withdrawals clearing in minutes to under an hour and no reliance on external challengers. The main trade-off is EVM compatibility: optimistic rollups (Arbitrum, OP Stack) offer near-full EVM equivalence and easier contract portability, whereas zkEVMs have historically had more partial compatibility, though this matters less for simple payment transfers than for rich DeFi composability.",
+    "answer_key_points": [
+      "Optimistic rollups use fraud proofs with a ~7-day challenge window; zk-rollups use validity proofs verified on-chain per batch",
+      "zk-rollups give near-instant finality/withdrawals (minutes to <1 hour) vs ~7 days for optimistic L1 withdrawals (mitigated by fast-exit liquidity providers)",
+      "Optimistic security relies on at least one honest, live watcher (1-of-N); zk security is cryptographic and needs no challenge window",
+      "Optimistic rollups have fuller EVM equivalence; zkEVMs historically more partial, but EVM parity matters less for simple payments",
+      "For fast trustless settlement, zk-rollups are favoured; for maximal EVM/DeFi composability, optimistic rollups"
+    ],
+    "cited_sources": [
+      "https://ethereum.org/en/developers/docs/scaling/",
+      "https://chainscorelabs.com/comparisons/layer-2-optimistic-vs-zk-rollups/security-models/fraud-proofs-vs-validity-proofs-security",
+      "https://arxiv.org/pdf/2502.10321"
+    ]
+  },
+  {
+    "id": "adj02",
+    "category": "adjacent",
+    "topic": "consistency-models",
+    "difficulty": "medium",
+    "question": "When would you deliberately choose eventual consistency over strong consistency in a distributed system? Frame your answer around the CAP theorem and give examples where each is appropriate.",
+    "reference_answer": "Choose eventual consistency when the business can tolerate temporarily stale or divergent data in exchange for higher availability and lower latency, and choose strong consistency when any divergence would cause incorrect behaviour or financial/legal harm. The CAP theorem says that during a network partition a system must sacrifice either consistency or availability; AP systems keep serving (accepting stale reads) while CP systems refuse operations to avoid divergence, and PACELC adds that even without a partition you trade latency against consistency. Eventual consistency suits shopping-cart updates, DNS propagation, and social-media like counts, where brief anomalies are minor and easily reconciled. Strong consistency is required for bank ledgers, transfers, unique-username enforcement, and inventory reservations, where correctness must hold at every instant even at the cost of availability or latency. In practice consistency is chosen per-operation, so a system may use eventual consistency for a cart but strong consistency at checkout.",
+    "answer_key_points": [
+      "CAP: under a partition you must choose consistency or availability; partition tolerance is non-negotiable in real distributed systems",
+      "Eventual consistency (AP) favours availability/latency and tolerates temporary staleness; strong consistency (CP) favours correctness",
+      "PACELC extends CAP: even without a partition you trade latency vs consistency",
+      "Eventual-consistency examples: shopping carts, DNS, social likes/counts",
+      "Strong-consistency examples: banking/ledgers, transfers, unique constraints, inventory",
+      "Consistency is best chosen per-operation, not system-wide (e.g. cart eventual, checkout strong)"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/CAP_theorem",
+      "https://en.wikipedia.org/wiki/PACELC_design_principle",
+      "https://www.cs.umd.edu/~abadi/papers/abadi-pacelc.pdf"
+    ]
+  },
+  {
+    "id": "adj03",
+    "category": "adjacent",
+    "topic": "rag-vs-finetuning",
+    "difficulty": "medium",
+    "question": "A team wants to build an LLM assistant over a large, frequently-changing internal knowledge base. Should they lean on retrieval-augmented generation (RAG) or fine-tuning, and what are the main trade-offs?",
+    "reference_answer": "For a large, frequently-changing knowledge base, RAG is usually the better primary choice because new documents can be indexed and used immediately without retraining, and answers can be grounded in and cite source text, which lowers hallucination risk. Fine-tuning is better for adapting behaviour, tone, format, and domain-specific response patterns rather than injecting fresh facts; it needs a sizeable high-quality dataset and has a higher upfront training cost, though per-query cost can be lower at scale. A useful rule of thumb is 'RAG for knowledge, fine-tuning for behaviour.' The two are not mutually exclusive: a common hybrid fine-tunes the model for style, terminology, or tool-use and adds RAG for live, auditable retrieval, which suits regulated or enterprise settings. Given the emphasis on freshness and citations here, RAG (optionally with light fine-tuning) is the stronger fit.",
+    "answer_key_points": [
+      "RAG handles knowledge freshness: add documents without retraining; fine-tuning bakes in stable knowledge and needs retraining to update",
+      "RAG lowers hallucination risk by grounding answers in retrieved sources and enabling citations",
+      "Fine-tuning is best for behaviour/style/format/domain adaptation, and needs a sizeable quality dataset",
+      "Cost profile: RAG low upfront but recurring retrieval/storage cost; fine-tuning high upfront, lower per-query at scale",
+      "They can be combined (fine-tune for behaviour + RAG for fresh facts), common in enterprise/regulated use"
+    ],
+    "cited_sources": [
+      "https://learn.microsoft.com/en-us/azure/developer/ai/augment-llm-rag-fine-tuning",
+      "https://docs.aws.amazon.com/prescriptive-guidance/latest/retrieval-augmented-generation-options/rag-vs-fine-tuning.html",
+      "https://www.databricks.com/blog/rag-vs-fine-tuning"
+    ]
+  },
+  {
+    "id": "adj04",
+    "category": "adjacent",
+    "topic": "udp-vs-tcp",
+    "difficulty": "easy",
+    "question": "Why do real-time video and voice applications typically send media over UDP instead of TCP?",
+    "reference_answer": "Real-time media favours UDP because TCP's guarantee of reliable, in-order delivery causes head-of-line blocking: if one packet is lost, TCP holds back all later packets until it is retransmitted, adding latency that is unacceptable for live audio or video. In real-time media a late packet is usually worse than a lost one, so waiting for retransmission and congestion-control backoff degrades the experience. UDP has no ordering or automatic retransmission, so later packets can be played immediately and the application controls the trade-off itself. Applications compensate for loss at the application layer using jitter buffers, packet-loss concealment, error-resilient codecs, and optionally forward error correction or selective retransmission.",
+    "answer_key_points": [
+      "TCP's in-order reliable delivery causes head-of-line blocking that stalls later packets on a single loss",
+      "For live media a late packet is worse than a lost one, so retransmission latency and congestion backoff hurt quality",
+      "UDP has no ordering/retransmission, so packets play immediately and the app controls the reliability trade-off",
+      "Apps handle loss with jitter buffers, packet-loss concealment, resilient codecs, and optional FEC"
+    ],
+    "cited_sources": [
+      "https://developer.mozilla.org/en-US/docs/Glossary/Head_of_line_blocking",
+      "https://blog.cloudflare.com/the-road-to-quic/"
+    ]
+  },
+  {
+    "id": "adj05",
+    "category": "adjacent",
+    "topic": "rate-limiting",
+    "difficulty": "medium",
+    "question": "Compare the token bucket and leaky bucket rate-limiting algorithms. How does each handle a sudden burst of requests, and when would you pick one over the other?",
+    "reference_answer": "Both cap throughput but shape traffic differently, especially for bursts. A token bucket refills tokens at a fixed rate up to a bucket capacity B; each request consumes a token, and because idle periods let tokens accumulate, a client can burst up to B requests at once before being throttled to the refill rate, so it enforces an average rate while allowing controlled bursts. A leaky bucket instead queues incoming requests and processes (leaks) them at a constant rate, smoothing output and flattening bursts, with excess requests dropped or delayed once the queue is full. Choose a token bucket when you want to permit occasional bursts as long as the long-term average stays within limits, which suits user-facing APIs; choose a leaky bucket when you need a steady, predictable output rate and want to protect a downstream system from spikes.",
+    "answer_key_points": [
+      "Token bucket refills tokens at rate r up to capacity B; each request spends a token",
+      "Token bucket allows bursts up to B (accumulated during idle time) then throttles to the refill rate",
+      "Leaky bucket queues requests and leaks them at a constant rate, smoothing/flattening bursts and dropping overflow",
+      "Token bucket enforces average rate with controlled bursts; leaky bucket enforces a steady constant output rate",
+      "Pick token bucket for burst-tolerant APIs; leaky bucket for smooth output and protecting downstream systems"
+    ],
+    "cited_sources": [
+      "https://en.wikipedia.org/wiki/Token_bucket",
+      "https://en.wikipedia.org/wiki/Leaky_bucket"
+    ]
+  },
+  {
+    "id": "adj06",
+    "category": "adjacent",
+    "topic": "idempotency-keys",
+    "difficulty": "easy",
+    "question": "Why do payment APIs like Stripe support idempotency keys, and what failure scenario do they protect against?",
+    "reference_answer": "Idempotency keys let a client safely retry a request without risk of performing the operation twice, which is critical for payments where a duplicate could double-charge a customer. The core problem is that when a request such as 'charge this card' times out or the response is lost, the client cannot tell whether the charge succeeded, and a naive retry might create a second charge. With an idempotency key, the client attaches a unique key to a logical operation and reuses it on every retry; the server records the result of the first request for that key and returns the same stored result for any repeat, performing the side effect only once. This gives effectively exactly-once semantics for that operation across an unreliable network, turning unsafe retries into safe ones.",
+    "answer_key_points": [
+      "A lost response or timeout leaves the client unsure whether a charge succeeded, so a blind retry risks a duplicate charge",
+      "Client attaches a unique idempotency key to a logical operation and reuses it on retries",
+      "Server stores the first result per key and returns it for repeats, executing the side effect only once",
+      "Provides effectively exactly-once semantics and makes automatic retries safe over unreliable networks"
+    ],
+    "cited_sources": [
+      "https://docs.stripe.com/api/idempotent_requests",
+      "https://stripe.com/blog/idempotency"
+    ]
+  },
+  {
+    "id": "adj07",
+    "category": "adjacent",
+    "topic": "microservices-vs-monolith",
+    "difficulty": "medium",
+    "question": "A startup with a small engineering team is debating microservices versus a monolith for a new product. What guidance would you give, and what are the main trade-offs?",
+    "reference_answer": "For a small team and an evolving product, defaulting to a well-structured monolith (or modular monolith) is usually the right call, decomposing into microservices only once concrete constraints appear. Microservices primarily solve organisational and scaling problems: they make sense when multiple autonomous teams need to deploy independently, when components have genuinely different scaling profiles, or when you need fault isolation and technology diversity. The trade-offs are significant: microservices add operational complexity (service discovery, distributed tracing, observability), turn fast in-process calls into millisecond network hops, and make cross-service ACID transactions hard, pushing you toward eventual consistency and sagas. A monolith keeps deployment, testing, transactions, and debugging simple and offers higher initial development speed, which is exactly what an early-stage small team benefits from. Martin Fowler frames this as a 'microservice premium' worth paying only when the system is too complex to manage as a monolith.",
+    "answer_key_points": [
+      "Default to a monolith/modular monolith for small teams; adopt microservices when named constraints appear",
+      "Microservices suit multiple independent teams, divergent scaling needs, fault isolation, and tech diversity",
+      "Microservices add operational complexity (discovery, tracing, observability) and network latency vs in-process calls",
+      "Cross-service transactions are hard: microservices push toward eventual consistency and sagas",
+      "Monoliths give simpler ops/testing, easy ACID transactions, and faster early development ('microservice premium')"
+    ],
+    "cited_sources": [
+      "https://martinfowler.com/bliki/MonolithFirst.html",
+      "https://martinfowler.com/articles/microservice-trade-offs.html"
+    ]
+  },
+  {
+    "id": "adj08",
+    "category": "adjacent",
+    "topic": "sql-vs-nosql",
+    "difficulty": "easy",
+    "question": "When would you choose a NoSQL database over a traditional relational (SQL) database for an application?",
+    "reference_answer": "Choose NoSQL when you have simple, well-understood access patterns at very large scale, a flexible or rapidly-changing data model, and can tolerate weaker consistency in exchange for horizontal scalability. NoSQL stores (key-value, document, wide-column, graph) are built to run across clusters and often follow BASE semantics (basically available, soft state, eventually consistent), which suits high-throughput key lookups, document reads, session/cache data, and write-heavy time-series or log data. Relational databases remain the better default when data is highly interrelated with many joins, you need ad-hoc queries and reporting, or you require multi-row/multi-table ACID transactions such as payments and inventory. A common recommendation is that if you cannot name a specific access pattern that relational struggles with, start with a relational database like PostgreSQL, and many systems adopt a hybrid split.",
+    "answer_key_points": [
+      "NoSQL fits massive scale, simple/known access patterns, and flexible or fast-changing schemas",
+      "NoSQL is built for horizontal scaling across clusters and often uses BASE (eventual consistency)",
+      "Relational fits highly-related data with joins, ad-hoc queries/reporting, and multi-entity ACID transactions",
+      "Default to relational (e.g. PostgreSQL) if no clear pattern demands NoSQL; hybrid architectures are common"
+    ],
+    "cited_sources": [
+      "https://martinfowler.com/articles/nosqlKeyPoints.html",
+      "https://aws.amazon.com/smart-business/resources-for-smb/sql-vs-nosql/"
+    ]
+  },
+  {
+    "id": "adj09",
+    "category": "adjacent",
+    "topic": "grpc-vs-rest",
+    "difficulty": "medium",
+    "question": "You are designing APIs for a system with both a public browser-facing surface and heavy internal service-to-service traffic. Where would you use gRPC and where REST/JSON, and why?",
+    "reference_answer": "Use REST/JSON over HTTP at the public, browser-facing edge and gRPC for internal service-to-service communication, which is a common hybrid. gRPC runs over HTTP/2 with binary Protocol Buffers and strongly-typed .proto contracts, giving smaller payloads, lower latency, code-generated clients, and native streaming (unary, server, client, bidirectional), which is ideal for high-volume internal traffic where you control both ends. Its weakness is that browsers cannot speak gRPC natively; you need gRPC-Web plus a proxy (e.g. Envoy), and even then bidirectional streaming is limited. REST/JSON is fully supported by browsers, curl, and standard tooling, is human-readable and easy to debug, and is the default for public APIs, simple CRUD, and wide client diversity, at the cost of larger payloads and only workaround streaming (SSE/WebSockets). Matching each protocol to its strength gives performance and strong typing internally while keeping the public surface broadly compatible.",
+    "answer_key_points": [
+      "gRPC uses HTTP/2 + Protobuf binary + typed .proto contracts: smaller payloads, lower latency, generated clients",
+      "gRPC has native streaming (unary/server/client/bidirectional), strong for internal high-volume traffic",
+      "Browsers can't use gRPC natively; needs gRPC-Web + proxy, and bidirectional streaming is limited",
+      "REST/JSON is browser-native, human-readable, easy to debug, best for public APIs and simple CRUD",
+      "Common hybrid: REST at the public edge, gRPC between internal services"
+    ],
+    "cited_sources": [
+      "https://aws.amazon.com/compare/the-difference-between-grpc-and-rest/",
+      "https://blog.logrocket.com/grpc-vs-rest/"
+    ]
+  },
+  {
+    "id": "adj10",
+    "category": "adjacent",
+    "topic": "deployment-strategies",
+    "difficulty": "medium",
+    "question": "Contrast blue-green and canary deployment strategies. How does each reduce release risk, and when would you prefer one over the other?",
+    "reference_answer": "Both reduce release risk but by different mechanisms. Blue-green runs two production-capable environments (current 'blue' and new 'green'), deploys and tests on the idle one, then switches all traffic at once; rollback is near-instant because you just route traffic back to the still-running previous version, at the cost of maintaining duplicate infrastructure. Canary deploys the new version alongside the baseline in one environment and routes a small, growing percentage of live traffic to it while monitoring metrics, limiting the blast radius and giving early warning before full rollout, which is usually cheaper on infrastructure but more procedurally complex to roll back. Prefer blue-green when you need zero downtime and the simplest, fastest rollback and can afford two full environments; prefer canary when you want fine-grained, metric-gated exposure to small user cohorts and have strong observability. The two can even be combined by routing a small traffic fraction to a green environment first.",
+    "answer_key_points": [
+      "Blue-green: two full environments, test on idle one, switch all traffic at once; near-instant rollback by re-routing",
+      "Blue-green costs more (duplicate production infrastructure)",
+      "Canary: run new version alongside baseline, route a small growing % of live traffic, monitor metrics to limit blast radius",
+      "Canary is cheaper on infra but rollback is more incremental/procedural and needs strong observability",
+      "Choose blue-green for zero downtime + fastest rollback; canary for fine-grained metric-gated exposure"
+    ],
+    "cited_sources": [
+      "https://www.ibm.com/think/topics/blue-green-deployment",
+      "https://docs.cloud.google.com/deploy/docs/deployment-strategies/canary"
+    ]
+  },
+  {
+    "id": "adj11",
+    "category": "adjacent",
+    "topic": "scaling",
+    "difficulty": "easy",
+    "question": "What is the difference between horizontal and vertical scaling, and what are the main trade-offs between them?",
+    "reference_answer": "Vertical scaling (scale-up) adds capacity by upgrading a single machine with more CPU, RAM, or faster storage, while horizontal scaling (scale-out) adds capacity by adding more machines and distributing load across them. Vertical scaling is simpler and often cheaper at small scale and works well for stateful monoliths because there is no inter-node coordination, but it keeps a single point of failure and hits a hard physical/cost ceiling as top-tier instances become disproportionately expensive. Horizontal scaling has no single-machine ceiling and improves fault tolerance and elasticity because losing one node degrades rather than downs the system, but it generally requires stateless or well-partitioned designs and adds complexity in load balancing, data sharding/replication, and operations. In short, vertical scaling trades resilience and headroom for simplicity, while horizontal scaling trades architectural complexity for scalability and availability.",
+    "answer_key_points": [
+      "Vertical = bigger single machine (more CPU/RAM); horizontal = more machines with load distributed",
+      "Vertical is simpler and cheaper at small scale, suits stateful monoliths, but keeps a single point of failure",
+      "Vertical hits a hard physical/cost ceiling; horizontal has no single-machine ceiling",
+      "Horizontal improves fault tolerance and elasticity but needs stateless/partitioned design",
+      "Horizontal adds complexity: load balancing, sharding/replication, operations"
+    ],
+    "cited_sources": [
+      "https://www.cockroachlabs.com/blog/vertical-scaling-vs-horizontal-scaling/",
+      "https://wa.aws.amazon.com/wellarchitected/2020-07-02T19-33-23/wat.concept.horizontal-scaling.en.html"
+    ]
+  },
+  {
+    "id": "adj12",
+    "category": "adjacent",
+    "topic": "encryption-tls",
+    "difficulty": "medium",
+    "question": "Symmetric and asymmetric encryption have very different speed and key-management properties. Why does TLS use both rather than just one?",
+    "reference_answer": "TLS is a hybrid cryptosystem that uses each family of algorithms for what it does best. Symmetric encryption (e.g. AES) uses one shared key and is extremely fast, but it has a key-distribution problem: both parties must already share the secret, and sending it over an untrusted network exposes it. Asymmetric encryption (e.g. RSA/ECDHE) uses a public/private key pair so the public key can be shared openly, which solves key distribution and enables authentication via certificates and signatures, but it is orders of magnitude slower and impractical for bulk data. So TLS uses asymmetric cryptography during the handshake to authenticate the server and securely establish a shared session key, then switches to fast symmetric encryption for all the bulk application data. This combines asymmetric's safe key setup and identity guarantees with symmetric's high throughput, which is why neither alone would suffice.",
+    "answer_key_points": [
+      "Symmetric encryption is fast but has a key-distribution problem (both sides must pre-share the secret)",
+      "Asymmetric encryption lets the public key be shared openly, solving key distribution and enabling authentication/signatures",
+      "Asymmetric is orders of magnitude slower, impractical for bulk data",
+      "TLS handshake uses asymmetric to authenticate the server and establish a shared session key",
+      "TLS record phase uses fast symmetric encryption for bulk data — a hybrid combining safe setup with speed"
+    ],
+    "cited_sources": [
+      "https://www.internetsociety.org/deploy360/tls/basics/",
+      "https://www.keyfactor.com/blog/what-is-tls-handshake-how-does-it-work/"
+    ]
+  },
+  {
+    "id": "adj13",
+    "category": "adjacent",
+    "topic": "consistent-hashing",
+    "difficulty": "hard",
+    "question": "A distributed cache currently maps keys to nodes with hash(key) % N. Why does this design cause problems when nodes are added or removed, and how do consistent hashing and virtual nodes address it?",
+    "reference_answer": "With hash(key) % N the mapping depends on N, so changing the node count changes the modulo result for almost every key, remapping nearly all keys and causing massive data movement and cache invalidation. Consistent hashing fixes this by mapping both keys and nodes onto a fixed circular hash space and assigning each key to the first node clockwise from it; when a node joins or leaves, only the keys in the adjacent arc move, so roughly K/N keys are remapped instead of nearly all K. A naive ring can still be imbalanced because a single point per node may cover an uneven arc, creating hotspots. Virtual nodes solve this by giving each physical node many positions on the ring, which smooths key distribution toward an even share, lets higher-capacity nodes hold more virtual nodes, and spreads a failed node's load across many neighbours rather than dumping it on a single successor.",
+    "answer_key_points": [
+      "hash(key) % N depends on N, so changing node count remaps almost all keys (catastrophic reshuffle/cache invalidation)",
+      "Consistent hashing maps keys and nodes onto a fixed ring; a key goes to the first node clockwise",
+      "On membership change only the adjacent arc moves: ~K/N keys remap instead of ~all K",
+      "A single point per node causes uneven arcs and hotspots",
+      "Virtual nodes give each physical node many ring positions, balancing load, allowing capacity weighting, and spreading failed-node load across neighbours"
+    ],
+    "cited_sources": [
+      "https://highscalability.com/consistent-hashing-algorithm/",
+      "https://www.cs.ucr.edu/~krish/CS253/Lecture11-CS253-2020.pdf"
+    ]
+  },
+  {
+    "id": "adj14",
+    "category": "adjacent",
+    "topic": "bloom-filter",
+    "difficulty": "medium",
+    "question": "What is a Bloom filter, what accuracy guarantee does it provide, and how do databases like Cassandra or RocksDB use it to speed up reads?",
+    "reference_answer": "A Bloom filter is a space-efficient probabilistic data structure for set-membership testing, built from a bit array and k independent hash functions; inserting an element sets k bits, and a query checks those bits. Its key guarantee is asymmetric: if any checked bit is 0 the element is definitely not in the set (no false negatives), but if all bits are 1 the element is only probably present, so false positives are possible. You tune the trade-off between memory (bit-array size) and false-positive rate for a given number of elements. LSM-tree databases such as Cassandra, RocksDB, LevelDB, and Bigtable keep a small in-memory Bloom filter per on-disk SSTable; on a key lookup they first consult the filter, and if it reports 'definitely not present' they skip that SSTable's disk read entirely. Because there are no false negatives this skipping is always safe, so the filter eliminates most disk I/O for keys that are absent, at the cost of occasional false positives that trigger a needless read.",
+    "answer_key_points": [
+      "Probabilistic set-membership structure: bit array + k hash functions; insert sets k bits, query checks them",
+      "No false negatives (a '0' bit means definitely absent) but false positives possible",
+      "Space vs false-positive-rate trade-off is tunable for a given element count",
+      "LSM-tree DBs (Cassandra, RocksDB, LevelDB, Bigtable) keep a Bloom filter per SSTable",
+      "A 'definitely not present' result lets the DB skip the disk read safely, cutting I/O for absent keys"
+    ],
+    "cited_sources": [
+      "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=903775",
+      "http://www.cs.umd.edu/class/spring2023/cmsc420-0201/Lects/lect20-bloom.pdf"
+    ]
+  },
+  {
+    "id": "adj15",
+    "category": "adjacent",
+    "topic": "async-messaging",
+    "difficulty": "medium",
+    "question": "When should services communicate through a message queue rather than synchronous request-response calls? Explain the benefits and what delivery guarantee you would typically rely on.",
+    "reference_answer": "Use a message queue when you want to decouple producers from consumers, absorb traffic spikes, and let work happen asynchronously, rather than requiring an immediate end-to-end result. Queues provide temporal decoupling (the producer can keep publishing while the consumer is down) and spatial decoupling (services only know the queue, not each other), plus load-leveling and backpressure so a burst of requests is buffered and drained at the consumer's pace instead of overwhelming it. This suits work that can be done later, such as sending emails, generating thumbnails, or processing analytics, where the caller gets a fast 'accepted' response. You typically rely on at-least-once delivery (messages are never lost but may be duplicated) paired with idempotent consumers to safely handle duplicates, often with dead-letter queues for repeated failures. Stick with synchronous request-response when the caller genuinely needs the result immediately, such as login or payment authorisation.",
+    "answer_key_points": [
+      "Queues give temporal and spatial decoupling of producers and consumers",
+      "They provide load-leveling/backpressure: buffer bursts and drain at the consumer's rate",
+      "Best for work that can be done later (emails, thumbnails, analytics) with a fast 'accepted' response",
+      "Typically rely on at-least-once delivery plus idempotent consumers (and dead-letter queues)",
+      "Keep synchronous request-response when the caller needs the result immediately (login, payment auth)"
+    ],
+    "cited_sources": [
+      "https://www.application-architect.com/posts/message-queues-producer-consumer-patterns/",
+      "https://layrs.me/course/hld/08-asynchronous-processing/message-queues"
+    ]
+  },
+  {
+    "id": "adj16",
+    "category": "adjacent",
+    "topic": "serverless-vs-containers",
+    "difficulty": "medium",
+    "question": "For a new backend service, when would you choose serverless functions (e.g. AWS Lambda) over container- or VM-based deployment, and what are the trade-offs?",
+    "reference_answer": "Choose serverless/FaaS when the workload is event-driven, short-lived, stateless, and often idle, and you want pay-per-use billing with minimal operations; choose containers or VMs for long-running, stateful, latency-sensitive, or high-throughput services where you need more control and predictability. Lambda bills per request and per GB-second and scales to zero, so it is cheaper for spiky or low-average-concurrency traffic, but it carries cold-start latency (from ~100 ms to seconds), a hard 15-minute execution limit, and inherent statelessness that forces any state into external stores. Containers run continuously with no per-request cold start and no execution-time limit, making them better for persistent connections, streaming, background workers, strict low-latency SLAs, and steady high-utilisation workloads where their per-request cost is lower and more predictable. The rule of thumb is that serverless wins when a service is mostly idle and bursty, while containers win when it is mostly busy or needs long-running/stateful behaviour.",
+    "answer_key_points": [
+      "Serverless suits event-driven, short-lived, stateless, often-idle workloads with pay-per-use and scale-to-zero",
+      "Lambda has cold-start latency (~100ms to seconds) and a 15-minute max execution time",
+      "Serverless is stateless: state must be externalised to databases/caches/queues",
+      "Containers/VMs: no cold start, no execution limit, better for long-running, stateful, persistent-connection, low-latency work",
+      "Rule of thumb: serverless wins when mostly idle/bursty; containers win when mostly busy/high-utilisation (cheaper, predictable at scale)"
+    ],
+    "cited_sources": [
+      "https://aws.amazon.com/lambda/faqs/",
+      "https://kodekloud.com/blog/serverless-vs-containers-in-modern-architectures-and-when-to-choose-each/"
+    ]
+  },
+  {
+    "id": "adj17",
+    "category": "adjacent",
+    "topic": "vector-search",
+    "difficulty": "hard",
+    "question": "For semantic similarity search over millions of text embeddings, why would you use a vector index such as HNSW rather than storing the vectors in a relational database and scanning them? Explain the recall-versus-latency trade-off involved.",
+    "reference_answer": "Semantic search asks 'which stored vectors are most similar to this query vector', which relational B-tree/hash indexes cannot accelerate; without a specialised index you must brute-force compute the distance to every stored vector, an O(n) scan that becomes too slow at millions of high-dimensional vectors. A vector index like HNSW (Hierarchical Navigable Small World) builds a multi-layer proximity graph whose sparse upper layers act as express lanes to navigate quickly to a query's neighbourhood, delivering approximate nearest-neighbour (ANN) results in roughly a millisecond at ~1M vectors, often a 100x+ speedup over brute force. The catch is that ANN is approximate: it trades perfect accuracy for speed, tuned by parameters such as ef_search, where a larger candidate list raises recall but also latency (e.g. recall climbing from ~0.88 to ~0.99 as ef_search grows, with latency roughly doubling at each step). For most RAG and semantic-search workloads recall around 0.95 is enough, so HNSW's near-exact results at low latency are the right trade-off; a relational brute-force scan is acceptable only for small datasets, offline/batch use, or when exact nearest neighbours are required.",
+    "answer_key_points": [
+      "Relational B-tree/hash indexes can't accelerate nearest-neighbour search on high-dimensional vectors",
+      "Brute force is O(n): comparing the query to every vector is too slow at millions of high-dim vectors",
+      "HNSW builds a multi-layer proximity graph for approximate nearest-neighbour (ANN) search, ~1ms at ~1M vectors (100x+ speedup)",
+      "ANN trades exactness for speed; ef_search tunes recall vs latency (higher ef_search = higher recall but higher latency)",
+      "~0.95 recall usually suffices for RAG/search; brute-force relational scan only fits small data, offline, or exact-NN needs"
+    ],
+    "cited_sources": [
+      "https://zilliz.com/ai-faq/what-are-the-key-configuration-parameters-for-an-hnsw-index-such-as-m-and-efconstructionefsearch-and-how-does-each-influence-the-tradeoff-between-index-size-build-time-query-speed-and-recall",
+      "https://www.techtarget.com/searchdatamanagement/tip/Vector-vs-graph-vs-relational-database-Which-to-choose"
+    ]
+  },
+  {
+    "id": "adj18",
+    "category": "adjacent",
+    "topic": "oauth-vs-api-keys",
+    "difficulty": "medium",
+    "question": "When should an API use OAuth 2.0 / OpenID Connect versus static API keys for authorising access, and what are the security trade-offs?",
+    "reference_answer": "Use OAuth 2.0 / OpenID Connect when access is user- or client-specific and needs scopes, delegation, short-lived tokens, and robust revocation; use static API keys for simple, low-sensitivity, app-level authentication such as internal server-to-server calls or basic metering. An API key is a static, long-lived bearer secret that identifies the calling application, not a user, typically grants coarse access, does not expire by default, and remains valid until manually rotated, so a leaked key gives broad indefinite access and is hard to scope. OAuth issues short-lived access tokens that carry scopes and expiry, represent delegated access on behalf of a user or client (with OIDC adding verified identity), and can be revoked centrally per user, client, or grant, so a compromised token has a limited blast radius. OAuth is the stronger choice for APIs handling user data, third-party delegation, or compliance needs, at the cost of more implementation complexity; a common pattern uses an API key to identify/meter the app plus an OAuth token for any call touching user-specific data.",
+    "answer_key_points": [
+      "API keys are static, long-lived bearer secrets identifying an app, not a user; broad access, no default expiry, manual revocation",
+      "A leaked API key grants broad, indefinite access and is hard to scope tightly",
+      "OAuth/OIDC issue short-lived tokens with scopes and expiry, representing delegated access; OIDC adds verified identity",
+      "OAuth supports central, fine-grained revocation (per user/client/grant), limiting a compromised token's blast radius",
+      "Use OAuth for user data/delegation/compliance (more complex); API keys for simple low-sensitivity server-to-server; combining both is common"
+    ],
+    "cited_sources": [
+      "https://blog.axway.com/learning-center/digital-security/keys-oauth/api-keys-oauth",
+      "https://nordicapis.com/10-security-issues-with-api-keys/"
+    ]
+  },
+  {
+    "id": "adj19",
+    "category": "adjacent",
+    "topic": "batch-vs-stream",
+    "difficulty": "easy",
+    "question": "When is batch processing the right choice for a data pipeline, and when should you use stream processing instead? Give an example of each.",
+    "reference_answer": "Use batch processing when you operate on bounded datasets and can tolerate higher latency (minutes to hours) in exchange for high throughput and operational simplicity, and use stream processing when you must react to unbounded, continuous event data in milliseconds to seconds. Batch jobs run on a schedule over a finite input, are cheaper and simpler to reason about, and are easy to re-run, which suits nightly ETL loads into a data warehouse, billing/invoicing, and reporting or model training. Stream processing keeps an always-on pipeline that handles each event as it arrives, at the cost of more operational complexity (state management, exactly-once semantics, always-on infrastructure), which suits real-time fraud detection, live dashboards, alerting, and real-time personalisation. In short, choose batch for periodic, high-volume, latency-tolerant work like nightly ETL, and streaming for low-latency, event-driven reactions like fraud detection.",
+    "answer_key_points": [
+      "Batch operates on bounded data with high latency (minutes-hours) but high throughput and simplicity",
+      "Stream operates on unbounded, continuous events with low latency (ms-seconds)",
+      "Batch is cheaper, simpler to reason about, and easy to re-run; example: nightly ETL, billing, reporting",
+      "Stream needs always-on infra and handles state/exactly-once; example: fraud detection, live dashboards, alerting",
+      "Choose batch for periodic latency-tolerant work; streaming for real-time event-driven reactions"
+    ],
+    "cited_sources": [
+      "https://moderndataengineering.dev/docs/foundations/batch-vs-streaming",
+      "https://www.jusdb.com/blog/streaming-vs-batch-processing-database-patterns"
+    ]
+  },
+  {
+    "id": "adj20",
+    "category": "adjacent",
+    "topic": "knowledge-graph-vs-relational",
+    "difficulty": "hard",
+    "question": "When would you model data as a knowledge graph with an ontology (RDF/OWL or a property graph) instead of a relational database, and what does an OWL ontology add that a relational schema cannot?",
+    "reference_answer": "Model data as a knowledge graph when connectedness itself is central: highly-connected, heterogeneous entities with many evolving relationship types, and queries that are multi-hop traversals or pattern matches rather than tabular aggregations. Graph engines store relationships as first-class edges (often with index-free adjacency), so deep or variable-length traversals — shortest paths, 'within N hops', ring/community detection — run far faster and are far easier to express than the equivalent chains of SQL joins, which degrade in performance and readability beyond a few hops. RDF/OWL specifically adds a formal semantic layer with reasoning: an OWL reasoner can infer subclass membership, apply transitive properties and property chains, and check ontological consistency automatically, and it provides standards-based interoperability via global URIs and shared ontologies. A relational database has no native notion of subclass, transitivity, or ontology axioms — such logic must live in application code or external rule engines. Relational stays the better choice for stable tabular schemas, set-based aggregations, transactional CRUD with strong ACID guarantees, and shallow 1-2-join relationships, so many systems use a hybrid: relational as the source of record with a knowledge-graph semantic layer on top.",
+    "answer_key_points": [
+      "Graphs fit highly-connected, heterogeneous, evolving data where relationships/traversals are central",
+      "Graph engines store relationships as first-class edges (index-free adjacency), making multi-hop traversal fast vs deep SQL joins that degrade beyond ~3-4 hops",
+      "RDF/OWL adds formal reasoning: subclass inference, transitivity, property chains, consistency checking",
+      "RDF/OWL gives standards-based interoperability (URIs, shared ontologies); relational has no native subclass/transitivity/axioms",
+      "Relational is better for stable tabular schemas, aggregations, ACID CRUD, shallow joins; hybrid (relational source-of-record + graph semantic layer) is common"
+    ],
+    "cited_sources": [
+      "https://learn.microsoft.com/en-us/fabric/graph/graph-relational-databases",
+      "https://neo4j.com/blog/knowledge-graph/rdf-vs-property-graphs-knowledge-graphs/"
+    ]
+  }
+]
