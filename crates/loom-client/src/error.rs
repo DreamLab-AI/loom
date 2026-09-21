@@ -59,8 +59,10 @@ pub enum Error {
     /// a flag on the response.
     ///
     /// Send [`crate::LoomOptions::declining_verbatim`] to force the delegate path.
-    #[error("{base} served scaffold retrieval without model generation \
-             (façade in verbatim mode, or the model backend is down)")]
+    #[error(
+        "{base} served scaffold retrieval without model generation \
+             (façade in verbatim mode, or the model backend is down)"
+    )]
     ScaffoldOnly {
         /// The base URL that was being called.
         base: String,
@@ -74,8 +76,10 @@ pub enum Error {
     /// not cover — a codebase, an arbitrary document — that grounding is
     /// actively wrong: a packet about `pnpm verify` came back reasoning about
     /// the blockchain sense of "Node" (2026-09-09).
-    #[error("{base} did not pass the request through (served_mode={served_mode}); \
-             it needs the ADR-139 build")]
+    #[error(
+        "{base} did not pass the request through (served_mode={served_mode}); \
+             it needs the ADR-139 build"
+    )]
     PassthroughRefused {
         /// The base URL that was being called.
         base: String,
@@ -163,7 +167,11 @@ mod tests {
 
     #[test]
     fn five_hundreds_are_transient_and_four_hundreds_are_not() {
-        let t = |status| Error::Http { base: String::new(), status, body: String::new() };
+        let t = |status| Error::Http {
+            base: String::new(),
+            status,
+            body: String::new(),
+        };
         assert!(t(500).is_transient());
         assert!(t(524).is_transient());
         assert!(!t(404).is_transient());
@@ -172,8 +180,14 @@ mod tests {
 
     #[test]
     fn semantic_refusals_are_not_retried() {
-        assert!(!Error::ScaffoldOnly { base: String::new() }.is_transient());
-        assert!(!Error::PassthroughRefused { base: String::new(), served_mode: "grounded".into() }
-            .is_transient());
+        assert!(!Error::ScaffoldOnly {
+            base: String::new()
+        }
+        .is_transient());
+        assert!(!Error::PassthroughRefused {
+            base: String::new(),
+            served_mode: "grounded".into()
+        }
+        .is_transient());
     }
 }

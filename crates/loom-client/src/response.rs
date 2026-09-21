@@ -91,7 +91,10 @@ impl ChatOutcome {
     /// Whether the façade grounded this answer in the ontology.
     #[must_use]
     pub fn was_grounded(&self) -> bool {
-        matches!(self.served_mode, ServedMode::Grounded | ServedMode::Verbatim)
+        matches!(
+            self.served_mode,
+            ServedMode::Grounded | ServedMode::Verbatim
+        )
     }
 }
 
@@ -113,8 +116,15 @@ pub(crate) fn grounding_status(body: &Value) -> Option<String> {
 }
 
 pub(crate) fn usage(body: &Value) -> Usage {
-    let get = |k: &str| body.get("usage").and_then(|u| u.get(k)).and_then(Value::as_u64);
-    Usage { prompt_tokens: get("prompt_tokens"), completion_tokens: get("completion_tokens") }
+    let get = |k: &str| {
+        body.get("usage")
+            .and_then(|u| u.get(k))
+            .and_then(Value::as_u64)
+    };
+    Usage {
+        prompt_tokens: get("prompt_tokens"),
+        completion_tokens: get("completion_tokens"),
+    }
 }
 
 #[cfg(test)]
@@ -125,7 +135,10 @@ mod tests {
     #[test]
     fn absent_telemetry_reads_as_unreported_not_as_a_failure() {
         // A plain llama.cpp server sends no `loom` block; that is not an error.
-        assert_eq!(served_mode(&json!({ "choices": [] })), ServedMode::Unreported);
+        assert_eq!(
+            served_mode(&json!({ "choices": [] })),
+            ServedMode::Unreported
+        );
     }
 
     #[test]
@@ -135,7 +148,10 @@ mod tests {
             ("verbatim", ServedMode::Verbatim),
             ("passthrough", ServedMode::Passthrough),
         ] {
-            assert_eq!(served_mode(&json!({ "loom": { "served_mode": raw } })), want);
+            assert_eq!(
+                served_mode(&json!({ "loom": { "served_mode": raw } })),
+                want
+            );
         }
     }
 

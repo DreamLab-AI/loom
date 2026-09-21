@@ -16,19 +16,28 @@ impl Message {
     /// A `system` message.
     #[must_use]
     pub fn system(content: impl Into<String>) -> Self {
-        Self { role: "system".into(), content: content.into() }
+        Self {
+            role: "system".into(),
+            content: content.into(),
+        }
     }
 
     /// A `user` message.
     #[must_use]
     pub fn user(content: impl Into<String>) -> Self {
-        Self { role: "user".into(), content: content.into() }
+        Self {
+            role: "user".into(),
+            content: content.into(),
+        }
     }
 
     /// An `assistant` message.
     #[must_use]
     pub fn assistant(content: impl Into<String>) -> Self {
-        Self { role: "assistant".into(), content: content.into() }
+        Self {
+            role: "assistant".into(),
+            content: content.into(),
+        }
     }
 }
 
@@ -67,7 +76,10 @@ impl LoomOptions {
     /// title is answered from retrieval with no model call at all.
     #[must_use]
     pub fn declining_verbatim() -> Self {
-        Self { verbatim: Some(false), scaffold: None }
+        Self {
+            verbatim: Some(false),
+            scaffold: None,
+        }
     }
 
     /// Decline grounding entirely: the façade becomes a plain proxy (ADR-139).
@@ -77,7 +89,10 @@ impl LoomOptions {
     /// verbatim short-circuit live.
     #[must_use]
     pub fn passthrough() -> Self {
-        Self { verbatim: Some(false), scaffold: Some(false) }
+        Self {
+            verbatim: Some(false),
+            scaffold: Some(false),
+        }
     }
 
     /// True when this asked the façade to pass the request through unchanged.
@@ -244,7 +259,10 @@ mod tests {
     #[test]
     fn declining_verbatim_keeps_the_scaffold() {
         let o = LoomOptions::declining_verbatim();
-        assert_eq!(serde_json::to_value(o).unwrap(), json!({ "verbatim": false }));
+        assert_eq!(
+            serde_json::to_value(o).unwrap(),
+            json!({ "verbatim": false })
+        );
         assert!(!o.wants_passthrough());
     }
 

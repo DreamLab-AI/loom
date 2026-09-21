@@ -135,7 +135,10 @@ mod tests {
         // Present-but-null counts as present: no second key appears.
         let mut m = obj(&json!({ "max_completion_tokens": null }));
         apply_token_floor(&mut m, 1536);
-        assert!(!m.contains_key("max_tokens"), "inserted alongside an explicit key");
+        assert!(
+            !m.contains_key("max_tokens"),
+            "inserted alongside an explicit key"
+        );
     }
 
     #[test]

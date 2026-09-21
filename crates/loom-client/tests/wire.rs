@@ -46,7 +46,9 @@ async fn a_sub_floor_budget_is_raised_on_the_wire() {
 
     client(&server).chat(ask().max_tokens(400)).await.unwrap();
 
-    let sent: Value = server.received_requests().await.unwrap()[0].body_json().unwrap();
+    let sent: Value = server.received_requests().await.unwrap()[0]
+        .body_json()
+        .unwrap();
     assert_eq!(
         sent["max_tokens"], 1536,
         "a 400-token ask reaches a reasoning model as empty content"
@@ -63,7 +65,9 @@ async fn a_generous_budget_is_left_alone() {
 
     client(&server).chat(ask().max_tokens(12288)).await.unwrap();
 
-    let sent: Value = server.received_requests().await.unwrap()[0].body_json().unwrap();
+    let sent: Value = server.received_requests().await.unwrap()[0]
+        .body_json()
+        .unwrap();
     assert_eq!(sent["max_tokens"], 12288);
 }
 
@@ -87,9 +91,17 @@ async fn truncation_retries_on_a_doubled_budget() {
     assert_eq!(out.content, "complete");
     assert_eq!(out.attempts, 2);
     let sent = server.received_requests().await.unwrap();
-    let budget = |r: &Request| r.body_json::<Value>().unwrap()["max_tokens"].as_u64().unwrap();
+    let budget = |r: &Request| {
+        r.body_json::<Value>().unwrap()["max_tokens"]
+            .as_u64()
+            .unwrap()
+    };
     assert_eq!(budget(&sent[0]), 2000);
-    assert_eq!(budget(&sent[1]), 4000, "the retry must raise the budget, not repeat it");
+    assert_eq!(
+        budget(&sent[1]),
+        4000,
+        "the retry must raise the budget, not repeat it"
+    );
 }
 
 #[tokio::test]
@@ -100,10 +112,15 @@ async fn a_permanently_truncated_answer_is_never_returned() {
         .mount(&server)
         .await;
 
-    let err = client(&server).chat(ask().max_tokens(2000)).await.unwrap_err();
+    let err = client(&server)
+        .chat(ask().max_tokens(2000))
+        .await
+        .unwrap_err();
 
     match err {
-        Error::Truncated { attempts, budget, .. } => {
+        Error::Truncated {
+            attempts, budget, ..
+        } => {
             assert_eq!(attempts, 3);
             assert_eq!(budget, 16000, "2000 doubled once per attempt");
         }
@@ -177,13 +194,21 @@ async fn the_two_switches_go_on_the_wire_separately() {
         .await;
 
     let c = client(&server);
-    c.chat(ask().options(LoomOptions::declining_verbatim())).await.unwrap();
-    c.chat(ask().options(LoomOptions::passthrough())).await.unwrap();
+    c.chat(ask().options(LoomOptions::declining_verbatim()))
+        .await
+        .unwrap();
+    c.chat(ask().options(LoomOptions::passthrough()))
+        .await
+        .unwrap();
     c.chat(ask()).await.unwrap();
 
     let sent = server.received_requests().await.unwrap();
     let opts = |i: usize| sent[i].body_json::<Value>().unwrap()["loom_options"].clone();
-    assert_eq!(opts(0), json!({ "verbatim": false }), "grounding must survive");
+    assert_eq!(
+        opts(0),
+        json!({ "verbatim": false }),
+        "grounding must survive"
+    );
     assert_eq!(opts(1), json!({ "verbatim": false, "scaffold": false }));
     assert_eq!(opts(2), Value::Null, "no switch set means no field sent");
 }
@@ -219,7 +244,10 @@ async fn a_four_hundred_fails_immediately_without_retrying() {
 
     let err = client(&server).chat(ask()).await.unwrap_err();
 
-    assert!(matches!(err, Error::Http { status: 422, .. }), "got {err:?}");
+    assert!(
+        matches!(err, Error::Http { status: 422, .. }),
+        "got {err:?}"
+    );
     assert_eq!(
         server.received_requests().await.unwrap().len(),
         1,
@@ -332,7 +360,11 @@ async fn resolve_base_is_none_when_nothing_answers() {
         .await;
 
     let candidates = vec![format!("{}/v1", dead.uri())];
-    assert!(loom_client::resolve_base(&candidates, Duration::from_secs(2)).await.is_none());
+    assert!(
+        loom_client::resolve_base(&candidates, Duration::from_secs(2))
+            .await
+            .is_none()
+    );
 }
 
 #[tokio::test]

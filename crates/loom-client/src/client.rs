@@ -243,12 +243,15 @@ impl LoomClient {
             .timeout(self.timeout)
             .send()
             .await
-            .map_err(|source| Error::Transport { base: self.base.clone(), source })?;
+            .map_err(|source| Error::Transport {
+                base: self.base.clone(),
+                source,
+            })?;
         let status = resp.status().as_u16();
-        let text = resp
-            .text()
-            .await
-            .map_err(|source| Error::Transport { base: self.base.clone(), source })?;
+        let text = resp.text().await.map_err(|source| Error::Transport {
+            base: self.base.clone(),
+            source,
+        })?;
         if !(200..300).contains(&status) {
             return Err(Error::Http {
                 base: self.base.clone(),
@@ -286,7 +289,10 @@ impl LoomClient {
     /// model; [`Error::PassthroughRefused`] when passthrough was asked for and
     /// the façade grounded the request anyway.
     pub async fn chat(&self, request: ChatRequest) -> Result<ChatOutcome> {
-        let mut budget = request.requested_max_tokens().unwrap_or(0).max(self.min_max_tokens);
+        let mut budget = request
+            .requested_max_tokens()
+            .unwrap_or(0)
+            .max(self.min_max_tokens);
         let mut last_transient: Option<Error> = None;
 
         for attempt in 1..=self.max_attempts {
@@ -313,12 +319,7 @@ impl LoomClient {
     }
 
     /// One attempt, with no retry logic of its own.
-    async fn attempt(
-        &self,
-        request: &ChatRequest,
-        budget: u64,
-        attempt: u32,
-    ) -> Result<Attempt> {
+    async fn attempt(&self, request: &ChatRequest, budget: u64, attempt: u32) -> Result<Attempt> {
         let mut body = request.body();
         if let Some(map) = body.as_object_mut() {
             if budget > 0 {
@@ -334,13 +335,16 @@ impl LoomClient {
             .json(&body)
             .send()
             .await
-            .map_err(|source| Error::Transport { base: self.base.clone(), source })?;
+            .map_err(|source| Error::Transport {
+                base: self.base.clone(),
+                source,
+            })?;
 
         let status = resp.status().as_u16();
-        let text = resp
-            .text()
-            .await
-            .map_err(|source| Error::Transport { base: self.base.clone(), source })?;
+        let text = resp.text().await.map_err(|source| Error::Transport {
+            base: self.base.clone(),
+            source,
+        })?;
 
         if !(200..300).contains(&status) {
             return Err(Error::Http {
@@ -366,7 +370,9 @@ impl LoomClient {
         let choice = parsed
             .get("choices")
             .and_then(|c| c.get(0))
-            .ok_or_else(|| Error::Empty { base: self.base.clone() })?;
+            .ok_or_else(|| Error::Empty {
+                base: self.base.clone(),
+            })?;
         let finish_reason = choice
             .get("finish_reason")
             .and_then(Value::as_str)
@@ -380,10 +386,14 @@ impl LoomClient {
         let content = message
             .and_then(|m| m.get("content"))
             .and_then(Value::as_str)
-            .ok_or_else(|| Error::Empty { base: self.base.clone() })?;
+            .ok_or_else(|| Error::Empty {
+                base: self.base.clone(),
+            })?;
 
         if content.contains(NO_GENERATION_MARKER) {
-            return Err(Error::ScaffoldOnly { base: self.base.clone() });
+            return Err(Error::ScaffoldOnly {
+                base: self.base.clone(),
+            });
         }
 
         let mode = served_mode(&parsed);
@@ -405,7 +415,10 @@ impl LoomClient {
                 .and_then(|m| m.get("reasoning_content"))
                 .and_then(Value::as_str)
                 .map(ToOwned::to_owned),
-            model: parsed.get("model").and_then(Value::as_str).map(ToOwned::to_owned),
+            model: parsed
+                .get("model")
+                .and_then(Value::as_str)
+                .map(ToOwned::to_owned),
             served_mode: mode,
             grounding_status: grounding_status(&parsed),
             usage: usage(&parsed),
@@ -456,13 +469,22 @@ mod tests {
 
     #[test]
     fn base_loses_a_trailing_slash() {
-        assert_eq!(LoomClient::new("http://loom:8080/v1/").base(), "http://loom:8080/v1");
+        assert_eq!(
+            LoomClient::new("http://loom:8080/v1/").base(),
+            "http://loom:8080/v1"
+        );
     }
 
     #[test]
     fn root_strips_only_a_v1_suffix() {
-        assert_eq!(LoomClient::new("http://loom:8080/v1").root(), "http://loom:8080");
-        assert_eq!(LoomClient::new("http://loom:8080").root(), "http://loom:8080");
+        assert_eq!(
+            LoomClient::new("http://loom:8080/v1").root(),
+            "http://loom:8080"
+        );
+        assert_eq!(
+            LoomClient::new("http://loom:8080").root(),
+            "http://loom:8080"
+        );
         // Not a suffix: a host that merely contains "/v1" keeps it.
         assert_eq!(LoomClient::new("http://h/v1/x").root(), "http://h/v1/x");
     }

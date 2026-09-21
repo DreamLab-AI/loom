@@ -44,10 +44,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         clang libclang-dev cmake pkg-config ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# The image already ships 1.88 as default; the repo's rust-toolchain.toml pins
-# `channel = "stable"`, which would make rustup fetch *latest* stable at build
-# time (a non-deterministic network step). We build with the image's pinned
-# 1.88 instead, so the toolchain file is removed after copy (below).
+# The repo's rust-toolchain.toml pins an exact channel for the rustup-driven CI
+# and developer path; honouring it here would make rustup fetch a second
+# toolchain over the network at build time. We build with the builder image's
+# own baked toolchain instead, so the file is removed after copy (below).
 WORKDIR /build
 
 # ---- dependency layer (manifest-first caching) ------------------------------

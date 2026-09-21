@@ -17,6 +17,18 @@ dockerfile := "deploy/Dockerfile"
 default:
     @just --list
 
+# --- §14 gate 0 — rustfmt, the same check CI runs ----------------------------
+# CI's Format step and this recipe are the same command. It is in `just ci`
+# because a gate that only exists in CI is a gate developers cannot run: the
+# loom-client crate landed unformatted on 2026-09-13 and every run after it was
+# red, while `just ci` (build/test/clippy/deny) stayed green locally.
+fmt:
+    cargo fmt --check
+
+# Apply the formatting the gate demands.
+fmt-fix:
+    cargo fmt
+
 # --- §14 gate 1 — compiles on BOTH feature planes ---------------------------
 # all-features proves pg-write/attest/semantic-fallback still build; no-default
 # proves the SERVING binary compiles without them (the boundary rule, §10).
@@ -40,9 +52,9 @@ deny:
 bench:
     cargo bench --workspace
 
-# --- §14 gates 1-4 chained — what "green" means before a commit --------------
-ci: build test clippy deny
-    @echo "CI GREEN — build(both planes) + test + clippy + deny"
+# --- §14 gates 0-4 chained — what "green" means before a commit --------------
+ci: fmt build test clippy deny
+    @echo "CI GREEN — fmt + build(both planes) + test + clippy + deny"
 
 # --- §13 deploy: build the image from the parent context ---------------------
 # Context = {{context}} (parent of the repo) so `../ruvector` resolves; BuildKit

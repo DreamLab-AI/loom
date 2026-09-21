@@ -1,5 +1,15 @@
 [toolchain]
-# Pinned stable for the Nix/CI path. NOTE: the container's plain cargo (1.97.0,
-# no rustup) ignores this file — it is honoured only where rustup drives the build.
-channel = "stable"
+# THE toolchain pin for this repo, and the single source of truth for CI:
+# .github/workflows/rust-contracts.yml reads `channel` out of this file rather
+# than repeating a literal, so the gate and the developer cannot drift apart.
+#
+# Pinned to an exact version, not "stable": rustfmt's output changes between
+# stable releases, so a floating channel means `cargo fmt` locally and
+# `cargo fmt --check` in CI can legitimately disagree and the gate rots.
+#
+# NOTE: a toolchain file is honoured only where rustup drives the build. The
+# container's plain cargo (no rustup) ignores it, and deploy/Dockerfile deletes
+# it so the builder image keeps its own baked toolchain. MSRV stays 1.89
+# (workspace.package.rust-version).
+channel = "1.98.0"
 components = ["rustfmt", "clippy"]

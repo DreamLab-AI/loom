@@ -13,23 +13,44 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: loom
+      # Every version this job needs lives in the repo, never as a literal here:
+      # the toolchain in rust-toolchain.toml, the consumer-dependency revision in
+      # scripts/check-ruvector-source.sh. Duplicating either is how a gate rots
+      # into checking one thing while the developer builds another.
+      - name: Read the in-repo pins
+        id: pins
+        working-directory: loom
+        run: |
+          set -euo pipefail
+          toolchain="$(sed -n 's/^channel = "\(.*\)"$/\1/p' rust-toolchain.toml)"
+          ruvector="$(sed -n 's/^expected="\(.*\)"$/\1/p' scripts/check-ruvector-source.sh)"
+          [ -n "$toolchain" ] || { echo 'no channel pin in rust-toolchain.toml' >&2; exit 1; }
+          [ -n "$ruvector" ] || { echo 'no expected= pin in scripts/check-ruvector-source.sh' >&2; exit 1; }
+          echo "toolchain=$toolchain" >> "$GITHUB_OUTPUT"
+          echo "ruvector=$ruvector" >> "$GITHUB_OUTPUT"
+          echo "toolchain $toolchain / ruvector $ruvector"
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           repository: jjohare/ruvector
-          ref: 677b2475409c50cb964be8a3b848da2952390535
+          ref: ${{ steps.pins.outputs.ruvector }}
           path: ruvector
-      - name: Select Rust 1.98.0
-        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt
+      - name: Select the pinned Rust toolchain
+        run: rustup toolchain install '${{ steps.pins.outputs.toolchain }}' --profile minimal --component rustfmt
       - name: Verify selected dependency source
         working-directory: loom
         run: bash scripts/check-ruvector-source.sh
       - name: Format
         working-directory: loom
         # Workspace members only: --all also formats the pinned upstream path dependencies.
-        run: cargo +1.98.0 fmt --check
+        # `just fmt` runs this exact check; run it before pushing.
+        run: |
+          cargo +'${{ steps.pins.outputs.toolchain }}' fmt --check || {
+            echo "::error::rustfmt ${{ steps.pins.outputs.toolchain }} rejects the tree. Run 'just fmt-fix' (rustup will pick up rust-toolchain.toml) and commit the result." >&2
+            exit 1
+          }
       - name: Hermetic Rust contracts
         working-directory: loom
-        run: cargo +1.98.0 test --workspace --locked
+        run: cargo +'${{ steps.pins.outputs.toolchain }}' test --workspace --locked
       - name: Published-generation reload guard
         working-directory: loom
         run: python3 tests/test_reload_published_generation.py
