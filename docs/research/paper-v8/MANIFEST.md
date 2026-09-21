@@ -165,11 +165,11 @@ the same shown context.
 
 Per-model `b-only` recall and the contrast Δ = both − b-only, twelve models, six arms.
 
-- **Status: NOT RELEASED.** The two-edge chain corpus, the six-arm per-model rows and
-  the mining script are not under version control. The 6,514 qualifying chains, the 150
-  sampled questions and the per-arm recalls rest on our reporting.
-- **Disclosed** in §Introduction (gap v), in §Two-Edge Composition itself, and in the
-  §Limitations "Release completeness" bullet.
+- **Status: reported-but-not-released.** The two-edge chain corpus, the six-arm per-model
+  rows and the mining script are not under version control. The 6,514 qualifying chains, the
+  150 sampled questions and the per-arm recalls rest on our reporting; nothing is on disk.
+- **Disclosed** in the §Introduction release statement, in §Two-Edge Composition itself, in
+  the figure's own caption, and in the §Limitations "Release completeness" list.
 
 ---
 
@@ -206,7 +206,7 @@ measurement**; it is kept only because it documents the report schema.
 |---|---|---|
 | §Semantic re-score (thirty model×threshold combinations) | `uplift-results/semantic-rescore/rescore.py`, `RESCORE.md` | **script only.** `rescore_results.json`, `embed_cache.json` and the imported `embed_lib.py` are all absent. The table is re-derivable only by re-running the Xinference embedding endpoint. |
 | §Grounding suppresses parametric recall (92/760 vs 3/760) | `tools/paper/parametric_suppression.py` | **script only.** The script prints JSON to stdout and writes no file. Run as `PYTHONPATH=tools/paper python3 tools/paper/parametric_suppression.py`; its inputs are the released sweep rows, so the numbers are recomputable, but no saved output is pinned. |
-| §Vocabulary mismatch (0.96 → 0.34) | — | **not released.** The paraphrase stress-set and its per-arm ceilings are not in the repository. Disclosed in §Introduction (gap vi), in the section itself, and in the "Release completeness" limitation. |
+| §Vocabulary mismatch (0.96 → 0.34) | — | **reported-but-not-released.** The paraphrase stress-set and its per-arm ceilings are not in the repository; nothing is on disk. Disclosed in the §Introduction release statement, in the section itself, and in the "Release completeness" list. |
 | §Judge-family robustness (`claude-opus-4-6` re-judge) | `uplift-results/paper-v2/judged-claude-opus46.json` (360 elements) + six shard files | released, via `judge_v2.py --judge cli-claude --judge-model claude-opus-4-6 --shard k/6` |
 | §Out-of-domain: the gate holds | `uplift-results/general/` — `judged-cloud.json`, `analysis-cloud.md`, and the `general-q-{adjacent,in_domain_general,off_domain}.json` splits | released |
 | §Judged page quality (§Production case study) | `uplift-results/arcane/judged-gpt-cloud.json`, `arcane-prose/`, `thin-prose/judged-gpt-cloud.json` and their `analysis-*.md` | released |
@@ -221,10 +221,10 @@ release statement enumerate the same list.
 | # | Absent | Disclosed in |
 |---|---|---|
 | i | **Control rerun (ITT) rows** — the 5-arm common-retry-policy cohort, its judge outputs and its generating script | abstract, §Introduction, §Negative controls, §Limitations |
-| ii | **Routing per-item rows**, two of three engines | §Introduction, §Companion work, and `uplift-results/routing/README.md` |
+| ii | **Routing per-item rows** for the cloud judge (`jev-1.13.0`) and the 421M shared-head encoder, two of three engines; their scripts called the backends live and never wrote per-item output | §Introduction, §Companion work, §Limitations, and `uplift-results/routing/README.md` |
 | iii | **Semantic re-score** results and embedding cache | §Introduction, §Semantic re-score, §Limitations |
 | iv | **Sweep generating harness** (`bench/bench_ontology_uplift.py`, deleted) | §Introduction |
-| v | **Two-edge composition corpus**, mining script and six-arm rows — the whole of `fig:composition` and its section | §Introduction, §Two-Edge Composition, §Limitations |
+| v | **Two-edge composition corpus**, mining script and six-arm rows — the whole of `fig:composition` and its section | §Introduction, §Two-Edge Composition, **the figure caption**, §Limitations |
 | vi | **Paraphrase stress-set** and its per-arm ceilings | §Introduction, §Vocabulary mismatch, §Limitations |
 
 Items **v** and **vi** sit behind results the conclusion presents as standing on their own,
