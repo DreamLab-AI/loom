@@ -1,0 +1,28 @@
+{
+  "backend": "openrouter",
+  "judge_model": "openai/gpt-4.1",
+  "judge_family": "openai/gpt",
+  "judge_is_model_not_human": true,
+  "backend_probes": {
+    "openai": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-*********************************************************************************************",
+    "openrouter": "live probe ok"
+  },
+  "temperature": 0,
+  "rubric_sha256_16": "2895842241850808",
+  "n_units": 423,
+  "n_verdicts": 423,
+  "n_failures": 0,
+  "failures": [],
+  "n_repair_reasks": 2,
+  "repair_policy": "A reply whose field 1 is not one of the six rubric labels, or which is not valid JSON, gets exactly one re-ask with an appended formatting correction (the rubric and the item are unchanged); malformed JSON whose fields are nonetheless unambiguous is salvaged by mechanical field extraction. Both paths are cached under their own key and flagged (`repair_pass`, `parse_repair`) on the verdict.",
+  "cache_hits": 425,
+  "prompt_tokens": 0,
+  "completion_tokens": 0,
+  "cost_estimate_usd": 0.0,
+  "total_judge_calls": 425,
+  "total_prompt_tokens": 396229,
+  "total_completion_tokens": 17139,
+  "cost_estimate_usd_total": 0.9296,
+  "cost_basis": "gpt-4.1 list price $2.00/M input, $8.00/M output. `cost_estimate_usd` covers the uncached calls of the last run only; `cost_estimate_usd_total` sums every call ever written to judge-cache.jsonl, which is what the audit actually cost to produce.",
+  "when": "2026-09-21T14:44:18.656585+00:00"
+}

@@ -1,0 +1,663 @@
+unit_id,model,question_id,template,gold_type,question,gold_item,relation_asked,gold_edge,full_gold_set,model_answer,human_asserted,human_required_or_alternative,human_confidence,human_quote,human_notes
+gemini-3.7-flash-t0|q0136|0,gemini-3.7-flash,q0136,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Open Data? Also name up to three broader ancestor concepts.",Data Management,subClassOf (immediate parent concept),Open Data --subClassOf--> Data Management,Data Management,"Based on the DreamLab knowledge graph:
+
+* **Immediate Parent Concept (`is-a`):** Data Management
+* **Broader Ancestor Concepts:** 
+  1. Data Management (Infrastructure)
+  2. Infrastructure",,,,,
+mistral-small-24b|q0102|1,mistral-small-24b,q0102,T-REL,all,"According to the DreamLab knowledge graph, what does Wallet enable?",Blockchain Application,enables (enables),Wallet --enables--> Blockchain Application,DeFi | Blockchain Application,"According to the provided ontology context, a Wallet enables the following:
+
+1. **DeFi (Decentralised Finance)**: This is the ecosystem of open, permissionless financial protocols and applications deployed as Smart Contracts on public blockchains, primarily Ethereum, that replicate and extend traditional financial services.
+
+2. **Blockchain Application**: This refers to a decentralized application (dApp) that runs on a blockchain or peer-to-peer network rather than centralized servers, combining smart contract backend logic with frontend interfaces to provide enhanced security and other benefits.",,,,,
+gpt-4.1-mini|q0326|0,gpt-4.1-mini,q0326,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Mathematical Foundations? Also name up to three broader ancestor concepts.",Mathematical Science,subClassOf (immediate parent concept),Mathematical Foundations --subClassOf--> Mathematical Science,Mathematical Science,"In the DreamLab knowledge graph, the immediate parent concept of Mathematical Foundations is **Mathematical Science**.
+
+Up to three broader ancestor concepts are:
+1. Artificial Intelligence Core
+2. Artificial Intelligence
+3. Machine Learning Discipline",,,,,
+qwen-2.5-72b|q0367|1,qwen-2.5-72b,q0367,T-REL,all,"According to the DreamLab knowledge graph, what does TELE-050-neural-rendering-telepresence require?",Novel View Synthesis,requires (requires),TELE-050-neural-rendering-telepresence --requires--> Novel View Synthesis,Neural Rendering | Novel View Synthesis,"Based on the provided ontology context, the concept ""TELE-050-neural-rendering-telepresence"" is not explicitly defined. However, we can infer the requirements by combining the relevant aspects of Neural Rendering and Telepresence.
+
+### Neural Rendering Requirements:
+- **Graphics Processing Unit (GPU)**: For accelerating the rendering process.
+- **Implicit Neural Representation**: For encoding scene geometry and appearance.
+- **Deep Learning and Convolutional Neural Networks (CNNs)**: For training and inference.
+- **Gradient Descent and Ray Marching**: For optimization and rendering techniques.
+- **Neural Radiance Fields (NeRF)**: For scene representation and novel view synthesis.
+
+### Telepresence Requirements:
+- **Low-Latency Networking**: For real-time communication.
+- **Real-Time Communication**: For seamless interaction.
+- **Display Technology**: For high-quality visual output.
+- **Spatial Audio**: For immersive auditory experiences.
+- **Haptic Feedback**: For tactile sensations.
+- **5G Network and Edge Computing**: For supporting high-bandwidth, low-latency applications.
+- **WebRTC**: For real-time communication protocols.
+- **Virtual Reality (VR) and Augmented Reality (AR)**: For immersive experiences.
+- **Teleoperation**: For remote control and manipulation.
+
+### Combined Requirements for Neural Rendering in Telepresence:
+- **Graphics Processing Unit (GPU)**: To handle the computational demands of neural rendering.
+- **Implicit Neural Representation**: To efficiently represent and render 3D scenes.
+- **Deep Learning and Convolutional Neural Networks (CNNs)**: To train and deploy neural models.
+- **Gradient Descent and Ray Marching**: To optimize and render scenes.
+- **Neural Radiance Fields (NeRF)**: To synthesize novel views and enhance scene representation.
+- **Low-Latency Networking**: To ensure real-time interaction.
+- **Real-Time Communication**: To maintain seamless user experiences.
+- **Display Technology**: To provide high-quality visual output.
+- **Spatial Audio**: To create immersive auditory environments.
+- **Haptic Feedback**: To enhance tactile interactions.
+- **5G Network and Edge Computing**: To support high-bandwidth, low-latency applications.
+- **WebRTC**: To facilitate real-time communication.
+- **Virtual Reality (VR) and Augmented Reality (AR)**: To enable immersive telepresence experiences.
+- **Teleoperation**: To allow for remote control and manipulation.
+
+These combined requirements ensure that neural rendering can be effectively integrated into telepresence systems, providing high-quality, real-time, and immersive experiences.",,,,,
+mistral-small-24b|q0159|0,mistral-small-24b,q0159,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Connectionist Temporal Classification? Also name up to three broader ancestor concepts.",Speech Recognition,subClassOf (immediate parent concept),Connectionist Temporal Classification --subClassOf--> Speech Recognition,Speech Recognition,"The immediate parent concept of Connectionist Temporal Classification (CTC) is **Speech Recognition**.
+
+Three broader ancestor concepts are:
+
+1. **Natural Language Processing**
+2. **AI Research Area**
+3. **Artificial Intelligence**",,,,,
+glm-4.6|q0431|3,glm-4.6,q0431,T-REL,all,"According to the DreamLab knowledge graph, what does Revocation Registry enable?",Trust Management,enables (enables),Revocation Registry --enables--> Trust Management,Decentralized Identity | Credential Issuance | Access Control | Trust Management,"
+According to the provided ontology context, a Revocation Registry enables:
+
+*   Decentralized Identity
+*   Credential Issuance
+*   Access Control",,,,,
+gemini-2.5-flash-lite|q0184|0,gemini-2.5-flash-lite,q0184,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Byzantine Generals Problem? Also name up to three broader ancestor concepts.",Fault Tolerance,subClassOf (immediate parent concept),Byzantine Generals Problem --subClassOf--> Fault Tolerance,Fault Tolerance,"The immediate parent concept of Byzantine Generals Problem is **Fault Tolerance**.
+
+Three broader ancestor concepts are:
+
+1.  **Computing and Cloud**
+2.  **Software Engineering (Infrastructure)**
+3.  **Infrastructure**",,,,,
+gemini-3.5-flash-lite|q0493|2,gemini-3.5-flash-lite,q0493,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Interoperability Standards?",Standards Conformance Testing,hasPart (has part),Interoperability Standards --hasPart--> Standards Conformance Testing,Data Format Standard | API Specification | Standards Conformance Testing,"According to the provided ontology context, the parts of **Interoperability Standards** (`hasPart`) are:
+
+* **Data Format Standard**
+* **API Specification**
+* **Standards Conformance Testing**",,,,,
+llama-3.3-70b|q0172|1,llama-3.3-70b,q0172,T-REL,all,"According to the DreamLab knowledge graph, what does STUN and TURN enable?",Signaling Server,enables (enables),STUN and TURN --enables--> Signaling Server,WebRTC | Signaling Server,"According to the provided ontology context, STUN and TURN enable WebRTC and Signaling Server.",,,,,
+qwen-2.5-72b|q0321|1,qwen-2.5-72b,q0321,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Calculus? Also name up to three broader ancestor concepts.",Mathematical Science,subClassOf (immediate parent concept),Calculus --subClassOf--> Mathematical Science,Machine Learning | Mathematical Science,"In the DreamLab knowledge graph, the immediate parent concept of Calculus is **Machine Learning Discipline**. The broader ancestor concepts of Calculus include:
+
+1. **Machine Learning Technique**
+2. **AI Research Area**
+3. **Artificial Intelligence Core**
+
+These concepts form the hierarchical structure leading up to Calculus in the knowledge graph.",,,,,
+gemini-3.5-flash-lite|q0219|3,gemini-3.5-flash-lite,q0219,T-REL,all,"According to the DreamLab knowledge graph, what does Asset Management use?",Smart Contracts,uses (uses),Asset Management --uses--> Smart Contracts,Custody | Risk Management | Tokenization | Smart Contracts,"According to the provided ontology context for Asset Management, it **uses**:
+
+* **Custody**
+* **Risk Management**
+* **Tokenization**",,,,,
+gpt-4.1-mini|q0263|3,gpt-4.1-mini,q0263,T-REL,all,"According to the DreamLab knowledge graph, what does Digital Rights Management require?",Digital Watermarking,requires (requires),Digital Rights Management --requires--> Digital Watermarking,Encryption | Smart Contracts | Public Key Infrastructure | Digital Watermarking,"According to the DreamLab knowledge graph, Digital Rights Management requires Encryption, Smart Contracts, and Public Key Infrastructure.",,,,,
+gpt-4.1-mini|q0219|3,gpt-4.1-mini,q0219,T-REL,all,"According to the DreamLab knowledge graph, what does Asset Management use?",Smart Contracts,uses (uses),Asset Management --uses--> Smart Contracts,Custody | Risk Management | Tokenization | Smart Contracts,"According to the DreamLab knowledge graph, Asset Management uses Custody and Risk Management.",,,,,
+gpt-4.1-mini|q0489|3,gpt-4.1-mini,q0489,T-REL,all,"According to the DreamLab knowledge graph, what does IETF enable?",API Standard,enables (enables),IETF --enables--> API Standard,Interoperability | Network Protocol | Communication Protocol | API Standard,"According to the DreamLab knowledge graph, the IETF enables Interoperability, Network Protocol, and Communication Protocol.",,,,,
+deepseek-chat|q0030|3,deepseek-chat,q0030,T-REL,all,"According to the DreamLab knowledge graph, what does Signal Processing use?",Compressed Sensing,uses (uses),Signal Processing --uses--> Compressed Sensing,Fast Fourier Transform | Wavelet Transform | Kalman Filter | Compressed Sensing,"According to the DreamLab knowledge graph, Signal Processing **uses** the following:
+
+- **Fast Fourier Transform**
+- **Wavelet Transform**
+- **Kalman Filter**",,,,,
+gemini-2.5-flash-lite|q0044|2,gemini-2.5-flash-lite,q0044,T-REL,all,"According to the DreamLab knowledge graph, what does Edge AI Security depend on?",Model Compression for Edge,dependsOn (depends on),Edge AI Security --dependsOn--> Model Compression for Edge,Edge Computing | Internet of Things | Model Compression for Edge,"According to the DreamLab knowledge graph, Edge AI Security depends on:
+
+*   Edge Computing
+*   Internet of Things
+*   Model Compression for Edge",,,,,
+qwen-2.5-72b|q0210|2,qwen-2.5-72b,q0210,T-REL,all,"According to the DreamLab knowledge graph, what does State Machine Replication require?",Total Order Broadcast,requires (requires),State Machine Replication --requires--> Total Order Broadcast,Consensus Mechanism | Fault Tolerance | Total Order Broadcast | Deterministic Execution,"According to the DreamLab knowledge graph, State Machine Replication (SMR) requires the following components:
+
+- **Consensus Mechanism**: A method for ensuring that all replicas agree on the same sequence of commands.
+- **Fault Tolerance**: The ability to continue operating correctly in the presence of some faulty components.
+- **Total Order Broadcast**: A mechanism to ensure that all replicas receive and process commands in the same order.
+
+These components are essential for SMR to function correctly and ensure that all correct replicas converge to the same state after executing every command.",,,,,
+gemini-2.5-flash-lite|q0188|3,gemini-2.5-flash-lite,q0188,T-REL,all,"According to the DreamLab knowledge graph, what does Decentralisation enable?",Permissionless Innovation,enables (enables),Decentralisation --enables--> Permissionless Innovation,Decentralised Finance | Decentralised Identity | Censorship Resistance | Permissionless Innovation,"Decentralisation enables:
+
+*   Decentralised Finance
+*   Decentralised Identity
+*   Censorship Resistance",,,,,
+claude-haiku-4.5|q0387|0,claude-haiku-4.5,q0387,T-REL,all,"According to the DreamLab knowledge graph, what does rb 0012 wheeled mobile robot use?",Odometry,uses (uses),rb 0012 wheeled mobile robot --uses--> Odometry,Odometry | SLAM | rb 0075 range finder,"I don't have access to the DreamLab knowledge graph or any specific information about an ""rb 0012 wheeled mobile robot"" in my training data or the ontology context provided.
+
+To answer your question about what rb 0012 uses, I would need:
+
+1. **Direct access to the DreamLab knowledge graph** - You would need to query it directly or provide me with the specific data about rb 0012
+2. **More context** - Information about what DreamLab is and where this robot is documented
+
+However, based on the general ontology context provided, I can tell you that **wheeled mobile robots typically use**:
+- **SLAM** (Simultaneous Localisation and Mapping)
+- **Sensor Fusion**
+- **Robot Operating System (ROS)**
+
+And more broadly, mobile robots use:
+- **LiDAR**
+- **Inertial Measurement Units (IMU)**
+- **Computer Vision**
+
+If you have access to the DreamLab knowledge graph, you could query it directly for rb 0012's specific components and systems. Alternatively, if you can share the relevant data about rb 0012, I'd be happy to help interpret it.",,,,,
+deepseek-chat|q0089|2,deepseek-chat,q0089,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of ISO 22739?",Cryptographic Key,hasPart (has part),ISO 22739 --hasPart--> Cryptographic Key,Smart Contract | Distributed Ledger | Cryptographic Key | Digital Identity,"Based on the DreamLab knowledge graph provided, the parts of ISO 22739 are:
+
+- **Smart Contract**
+- **Distributed Ledger**
+
+These are listed under the `hasPart` relation for ISO 22739 in the ontology context.",,,,,
+deepseek-chat|q0281|0,deepseek-chat,q0281,T-COMMON,any,What broader concept do Data Residency and eIDAS both fall under in the DreamLab knowledge graph?,Infrastructure,common ancestor (shared broader concept),Data Residency --ancestorOf^-1--> Infrastructure <--ancestorOf^-1-- eIDAS,Infrastructure,"Based on the DreamLab knowledge graph, both **Data Residency** and **eIDAS** fall under the broader concept of **Data Governance**.
+
+- **Data Residency** is explicitly listed as a subclass of **Data Governance** (is-a: Data Governance).
+- **eIDAS** is classified as a **Regulatory Framework**, and its ancestors include **Legal Framework** and **Legal and Regulatory**. While it is not directly listed as a subclass of Data Governance, its role as a regulatory framework for electronic identification and trust services places it within the governance domain, and the graph shows it supports GDPR and relates to data protection regulations.",,,,,
+gpt-4.1-mini|q0243|0,gpt-4.1-mini,q0243,T-REL,all,"According to the DreamLab knowledge graph, what does Sustainable Finance use?",ESG,uses (uses),Sustainable Finance --uses--> ESG,ESG | EU Taxonomy | TCFD | IFRS S1,"According to the DreamLab knowledge graph, Sustainable Finance uses ESG, EU Taxonomy, and TCFD.",,,,,
+llama-3.3-70b|q0360|3,llama-3.3-70b,q0360,T-REL,all,"According to the DreamLab knowledge graph, what does Metaverse Ontology enable?",Semantic Web Linked Data Standard,enables (enables),Metaverse Ontology --enables--> Semantic Web Linked Data Standard,Metaverse | Knowledge Graphing | Cross-Platform Interoperability | Semantic Web Linked Data Standard,"According to the provided ontology context, the Metaverse Ontology enables:
+
+1. Metaverse
+2. Knowledge Graphing
+3. Cross-Platform Interoperability
+
+It also supports:
+
+1. Decentralized Identity
+2. Digital Ownership
+3. Agentic AI",,,,,
+gpt-4.1-mini|q0097|2,gpt-4.1-mini,q0097,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Transaction? Also name up to three broader ancestor concepts.",Distributed Data Structure,subClassOf (immediate parent concept),Transaction --subClassOf--> Distributed Data Structure,Protocol and Consensus | Blockchain Entity | Distributed Data Structure,"In the DreamLab knowledge graph, the immediate parent concept of Transaction is **Blockchain Entity**.
+
+Up to three broader ancestor concepts of Transaction are:
+1. Network Component (Blockchain)
+2. Blockchain
+3. (No further broader ancestors explicitly listed beyond Blockchain in the provided context)",,,,,
+deepseek-chat|q0164|3,deepseek-chat,q0164,T-REL,all,"According to the DreamLab knowledge graph, what does Knowledge Sharing use?",Semantic Search,uses (uses),Knowledge Sharing --uses--> Semantic Search,Collaborative Technology | Virtual Environment | Natural Language Processing | Semantic Search,"Based on the DreamLab knowledge graph, Knowledge Sharing **uses** the following:
+
+- **Collaborative Technology**
+- **Virtual Environment**
+- **Natural Language Processing**",,,,,
+glm-4.6|q0092|1,glm-4.6,q0092,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Spot Trading?",Limit Order,hasPart (has part),Spot Trading --hasPart--> Limit Order,Order Book | Limit Order,"According to the DreamLab knowledge graph, the parts of Spot Trading are:
+
+*   **Order Book**: An order book is a real-time, continuously updated electronic ledger that aggregates all outstanding limit buy orders (bids) and limit sell orders (asks) for a tradeable asset, organised by price level and, within each…
+*   **Limit Order**: A limit order is an instruction to buy or sell an asset at a specified price or better, remaining unfilled until the market reaches that price rather than executing immediately at the prevailing market price.",,,,,
+gemini-3.7-flash-t0|q0427|0,gemini-3.7-flash,q0427,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Privacy-Preserving Computation?",Homomorphic Encryption,hasPart (has part),Privacy-Preserving Computation --hasPart--> Homomorphic Encryption,Homomorphic Encryption | Secure Multi-Party Computation | Differential Privacy | Trusted Execution Environment,"According to the DreamLab knowledge graph, the parts (`hasPart`) of **Privacy-Preserving Computation** are:
+
+* **Homomorphic Encryption**
+* **Secure Multi-Party Computation**
+* **Differential Privacy**",,,,,
+mistral-small-24b|q0360|3,mistral-small-24b,q0360,T-REL,all,"According to the DreamLab knowledge graph, what does Metaverse Ontology enable?",Semantic Web Linked Data Standard,enables (enables),Metaverse Ontology --enables--> Semantic Web Linked Data Standard,Metaverse | Knowledge Graphing | Cross-Platform Interoperability | Semantic Web Linked Data Standard,"According to the provided ontology context, the Metaverse Ontology enables the following:
+
+- Metaverse
+- Knowledge Graphing
+- Cross-Platform Interoperability",,,,,
+gemini-3.5-flash-lite|q0064|0,gemini-3.5-flash-lite,q0064,T-REL,all,"According to the DreamLab knowledge graph, what does Token Embedding depend on?",Backpropagation,dependsOn (depends on),Token Embedding --dependsOn--> Backpropagation,Backpropagation | Gradient Descent,"According to the ontology context, **Token Embedding** depends on:
+
+* **Backpropagation**
+* **Gradient Descent**",,,,,
+gpt-4.1-mini|q0129|2,gpt-4.1-mini,q0129,T-REL,all,"According to the DreamLab knowledge graph, what does Metadata use?",Controlled Vocabulary,uses (uses),Metadata --uses--> Controlled Vocabulary,Data Schema | Data Standards | Controlled Vocabulary | RDF,"According to the DreamLab knowledge graph, Metadata uses Data Schema and Data Standards.",,,,,
+qwen-2.5-72b|q0010|2,qwen-2.5-72b,q0010,T-REL,all,"According to the DreamLab knowledge graph, what does Autonomous Behavior enable?",Swarm Intelligence,enables (enables),Autonomous Behavior --enables--> Swarm Intelligence,Autonomous Agent | Autonomous Task Execution | Swarm Intelligence | Multi-Agent Systems,"According to the DreamLab knowledge graph, Autonomous Behavior enables the following:
+
+- **Autonomous Agent**: An entity that can operate independently to achieve its goals.
+- **Autonomous Task Execution**: The capability to perform tasks without continuous human intervention.
+- **Swarm Intelligence**: The collective behavior of decentralized, self-organized systems, often seen in groups of robots or agents working together.",,,,,
+gpt-4.1-mini|q0072|1,gpt-4.1-mini,q0072,T-REL,all,"According to the DreamLab knowledge graph, what does Across Protocol depend on?",Layer 2 Solutions,dependsOn (depends on),Across Protocol --dependsOn--> Layer 2 Solutions,Ethereum Smart Contract Platform | Layer 2 Solutions,"According to the DreamLab knowledge graph, Across Protocol depends on the Ethereum Smart Contract Platform and Layer 2 Solutions.",,,,,
+claude-haiku-4.5|q0287|1,claude-haiku-4.5,q0287,T-REL,all,"According to the DreamLab knowledge graph, what does Content Identifier use?",IPLD,uses (uses),Content Identifier --uses--> IPLD,Multihash | IPLD | Merkle DAG | Multicodec | Multibase,"According to the ontology context provided, a **Content Identifier (CID) uses**:
+
+1. **Multihash** - A compact, version-aware multihash structure
+2. **IPLD** - InterPlanetary Linked Data
+3. **Merkle DAG** - Merkle Directed Acyclic Graph
+
+These components work together to enable CIDs to self-describe and cryptographically derive labels that uniquely identify and verify content through its hash, encoding the hash function used, the hash digest, and a multicodec descriptor for the serialised data format.",,,,,
+claude-haiku-4.5|q0001|4,claude-haiku-4.5,q0001,T-REL,all,"According to the DreamLab knowledge graph, what does Affective Computing enable?",Human Robot Interaction,enables (enables),Affective Computing --enables--> Human Robot Interaction,Emotion Aware Interaction | Emotional Analytics Engine | Cognitive Feedback Interface | Mental Health Monitoring | Human Robot Interaction,"According to the ontology context provided from the knowledge graph, **Affective Computing enables:**
+
+1. **Emotion Aware Interaction** - Systems that can adapt their behavior based on detected emotional states
+2. **Emotional Analytics Engine** - Capabilities to analyze and process emotional data
+3. **Cognitive Feedback Interface** - Interfaces that can provide feedback informed by cognitive and emotional understanding
+
+Additionally, the related concept of **Affective Computing System** enables:
+
+1. **Adaptive Interfaces** - User interfaces that adjust based on emotional states
+2. **Adaptive Learning** - Learning systems that respond to user affect
+3. **Emotion Aware Interaction** (also listed here)
+
+These capabilities reflect the core goal of affective computing: to make human-computer interaction more natural, intuitive, and context-sensitive by treating emotion as a fundamental computational variable that systems can recognize, interpret, and respond to.",,,,,
+gpt-4.1-mini|q0340|2,gpt-4.1-mini,q0340,T-REL,all,"According to the DreamLab knowledge graph, what does Reinforcement Learning enable?",AI Game Agent,enables (enables),Reinforcement Learning --enables--> AI Game Agent,Autonomous Navigation | Autonomous Robot | AI Game Agent | Recommendation System,"According to the DreamLab knowledge graph, Reinforcement Learning enables Autonomous Navigation, Autonomous Robot, and AI Game Agent.",,,,,
+gemini-3.5-flash-lite|q0149|3,gemini-3.5-flash-lite,q0149,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Collaboration Platform?",Workflow Automation,hasPart (has part),Collaboration Platform --hasPart--> Workflow Automation,Real Time Messaging | Video Conferencing | tc 0002 collaborative document editing | Workflow Automation,"According to the ontology context provided, the parts (`hasPart`) of a **Collaboration Platform** are:
+
+* Real Time Messaging
+* Video Conferencing
+* Collaborative document editing (`tc 0002 collaborative document editing`)",,,,,
+gemini-3.5-flash-lite|q0255|2,gemini-3.5-flash-lite,q0255,T-REL,all,"According to the DreamLab knowledge graph, what does Compliance require?",Audit Trail,requires (requires),Compliance --requires--> Audit Trail,Audit | Risk Assessment | Audit Trail | Policy,"Based on the provided ontology context, **Compliance** requires:
+
+* **Audit**
+* **Risk Assessment**
+* **Audit Trail**",,,,,
+llama-3.3-70b|q0210|3,llama-3.3-70b,q0210,T-REL,all,"According to the DreamLab knowledge graph, what does State Machine Replication require?",Deterministic Execution,requires (requires),State Machine Replication --requires--> Deterministic Execution,Consensus Mechanism | Fault Tolerance | Total Order Broadcast | Deterministic Execution,"According to the provided ontology context from the DreamLab knowledge graph, State Machine Replication (SMR) requires:
+
+1. Consensus Mechanism
+2. Fault Tolerance
+3. Total Order Broadcast",,,,,
+gemini-3.5-flash-lite|q0355|0,gemini-3.5-flash-lite,q0355,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Hardware Security? Also name up to three broader ancestor concepts.",Computer Hardware,subClassOf (immediate parent concept),Hardware Security --subClassOf--> Computer Hardware,Computer Hardware,"Based on the provided ontology context:
+
+* **Immediate parent concept:** **Computer Hardware** (indicated by the `is-a` relation).
+* **Broader ancestor concepts:** **AI Infrastructure**, **Digital Infrastructure**, and **Computing and Cloud** (listed under ancestors).",,,,,
+gemini-2.5-flash-lite|q0502|0,gemini-2.5-flash-lite,q0502,T-REL,all,"According to the DreamLab knowledge graph, what does Technical Committee require?",Standards Organization,requires (requires),Technical Committee --requires--> Standards Organization,Standards Organization | Interoperability,The DreamLab knowledge graph indicates that a Technical Committee requires a **Standards Organization** and **Interoperability**.,,,,,
+claude-haiku-4.5|q0047|4,claude-haiku-4.5,q0047,T-REL,all,"According to the DreamLab knowledge graph, what does Encoder Decoder Architecture enable?",Speech Recognition,enables (enables),Encoder Decoder Architecture --enables--> Speech Recognition,Natural Language Processing | Machine Translation | Text Summarisation | Image Captioning | Speech Recognition,"According to the DreamLab knowledge graph, **Encoder Decoder Architecture enables:**
+
+1. **Natural Language Processing**
+2. **Machine Translation**
+3. **Text Summarisation**
+
+These capabilities reflect the architecture's core strength in handling sequence-to-sequence tasks, where an input sequence is compressed into a latent representation by the encoder and then expanded into an output sequence by the decoder.",,,,,
+gemini-2.5-flash-lite|q0047|3,gemini-2.5-flash-lite,q0047,T-REL,all,"According to the DreamLab knowledge graph, what does Encoder Decoder Architecture enable?",Image Captioning,enables (enables),Encoder Decoder Architecture --enables--> Image Captioning,Natural Language Processing | Machine Translation | Text Summarisation | Image Captioning | Speech Recognition,"The Encoder Decoder Architecture enables:
+
+*   Natural Language Processing
+*   Machine Translation
+*   Text Summarisation",,,,,
+deepseek-chat|q0004|0,deepseek-chat,q0004,T-REL,all,"According to the DreamLab knowledge graph, what does Artificial Intelligence Core enable?",Artificial General Intelligence,enables (enables),Artificial Intelligence Core --enables--> Artificial General Intelligence,Artificial General Intelligence | Agentic AI | Foundation Model | Multimodal AI,"Based on the DreamLab knowledge graph, **Artificial Intelligence Core** enables the following:
+
+- **Artificial General Intelligence**
+- **Agentic AI**
+- **Foundation Model**",,,,,
+mistral-small-24b|q0089|3,mistral-small-24b,q0089,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of ISO 22739?",Digital Identity,hasPart (has part),ISO 22739 --hasPart--> Digital Identity,Smart Contract | Distributed Ledger | Cryptographic Key | Digital Identity,"According to the provided ontology context, the parts of ISO 22739 are:
+
+- Smart Contract
+- Distributed Ledger
+- Cryptographic Key",,,,,
+gemini-2.5-flash-lite|q0017|4,gemini-2.5-flash-lite,q0017,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Customer Experience Management?",Service Design,hasPart (has part),Customer Experience Management --hasPart--> Service Design,Omnichannel | Sentiment Analysis | Predictive Personalization | Customer Service Automation | Service Design,"According to the DreamLab knowledge graph, the parts of Customer Experience Management (CEM or CXM) are:
+
+*   **Omnichannel**
+*   **Sentiment Analysis**
+*   **Predictive Personalization**",,,,,
+gemini-2.5-flash-lite|q0110|1,gemini-2.5-flash-lite,q0110,T-REL,all,"According to the DreamLab knowledge graph, what does Climate Modelling enable?",SustainabilityReporting,enables (enables),Climate Modelling --enables--> SustainabilityReporting,Carbon Footprint Measurement | SustainabilityReporting | Carbon Neutrality Planning | Climate Risk Assessment,"According to the DreamLab knowledge graph, Climate Modelling enables:
+
+*   Carbon Footprint Measurement
+*   Sustainability Reporting
+*   Carbon Neutrality Planning",,,,,
+deepseek-chat|q0048|4,deepseek-chat,q0048,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Encoder Decoder Architecture?",Feed Forward Network,hasPart (has part),Encoder Decoder Architecture --hasPart--> Feed Forward Network,Self Attention | Cross Attention | Token Embedding | Positional Encoding | Feed Forward Network,"Based on the DreamLab knowledge graph, the parts of the Encoder Decoder Architecture are:
+
+- **Self Attention**
+- **Cross Attention**
+- **Token Embedding**",,,,,
+glm-4.6|q0455|0,glm-4.6,q0455,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Ownership and Freedom Distributed? Also name up to three broader ancestor concepts.",Governance and Safety,subClassOf (immediate parent concept),Ownership and Freedom Distributed --subClassOf--> Governance and Safety,Governance and Safety | Metaverse governance and safeguarding,"Based on the provided ontology context for the DreamLab knowledge graph:
+
+*   **Immediate Parent Concepts:** The immediate parent concepts of ""Ownership and Freedom Distributed"" are **Governance and Safety** and **Metaverse governance and safeguarding**.
+*   **Broader Ancestor Concept:** A broader ancestor concept is **Spatial Computing**.",,,,,
+deepseek-chat|q0503|0,deepseek-chat,q0503,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Technical Committee? Also name up to three broader ancestor concepts.",Standards Organization,subClassOf (immediate parent concept),Technical Committee --subClassOf--> Standards Organization,Standards Organization,"Based on the ontology context provided, the immediate parent concept of **Technical Committee** is **Standards Organization**.
+
+Up to three broader ancestor concepts are:
+1. **AI Governance and Ethics**
+2. **Artificial Intelligence**",,,,,
+llama-3.3-70b|q0442|1,llama-3.3-70b,q0442,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of ETSI_Domain_Virtual_Society?",Avatar,hasPart (has part),ETSI_Domain_Virtual_Society --hasPart--> Avatar,Virtual World | Avatar | Digital Identity,"According to the provided ontology context, the parts of ETSI_Domain_Virtual_Society are:
+
+1. Virtual World
+2. Avatar
+3. Digital Identity",,,,,
+gemini-2.5-flash-lite|q0366|0,gemini-2.5-flash-lite,q0366,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Swarm Control? Also name up to three broader ancestor concepts.",Robotics,subClassOf (immediate parent concept),Swarm Control --subClassOf--> Robotics,Robotics | Actuation and Control,"The immediate parent concept of Swarm Control is **Robotics, Actuation and Control**.
+
+Three broader ancestor concepts are:
+*   Robotics
+*   Actuation
+*   Control",,,,,
+mistral-small-24b|q0453|1,mistral-small-24b,q0453,T-REL,all,"According to the DreamLab knowledge graph, what does Ownership and Freedom Distributed enable?",Data Sovereignty,enables (enables),Ownership and Freedom Distributed --enables--> Data Sovereignty,Self Sovereign Identity | Data Sovereignty | Decentralized Governance,"According to the provided ontology context, ""Ownership and Freedom Distributed"" enables the following:
+
+- Self Sovereign Identity
+- Data Sovereignty
+- Decentralized Governance",,,,,
+llama-3.3-70b|q0160|1,llama-3.3-70b,q0160,T-REL,all,"According to the DreamLab knowledge graph, what does GitHub use?",REST API,uses (uses),GitHub --uses--> REST API,OAuth | REST API | GraphQL | Webhook,"According to the provided ontology context, GitHub uses:
+
+1. OAuth
+2. REST API
+3. GraphQL
+4. Git
+5. Internet Infrastructure",,,,,
+glm-4.6|q0460|1,glm-4.6,q0460,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Storage Hardware?",Storage Layer,hasPart (has part),Storage Hardware --hasPart--> Storage Layer,Data Storage Layer | Storage Layer,"
+According to the provided ontology context, the parts of Storage Hardware are:
+
+*   **Data Storage Layer**
+*   **Storage Layer**
+
+The ontology provides the following definitions for these components:
+
+*   **Data Storage Layer:** A software layer managing persistent storage, retrieval, and lifecycle of digital assets, metadata, world state, user data, and transactional records in metaverse systems.
+*   **Storage Layer:** Hardware and software infrastructure responsible for persistent retention, retrieval, and management of data and digital assets across distributed systems.",,,,,
+claude-haiku-4.5|q0060|0,claude-haiku-4.5,q0060,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Scalable Oversight? Also name up to three broader ancestor concepts.",AI Alignment,subClassOf (immediate parent concept),Scalable Oversight --subClassOf--> AI Alignment,AI Alignment,"# Scalable Oversight - Concept Hierarchy
+
+Based on the ontology context provided:
+
+## Immediate Parent Concept
+**AI Alignment**
+
+## Broader Ancestor Concepts
+1. **AI Safety**
+2. **AI Governance and Ethics**
+3. **Artificial Intelligence**
+
+These form the hierarchical chain: Scalable Oversight → AI Alignment → AI Safety/AI Governance and Ethics → Artificial Intelligence",,,,,
+claude-haiku-4.5|q0382|1,claude-haiku-4.5,q0382,T-REL,all,"According to the DreamLab knowledge graph, what does Inertia Tensor use?",Velocity,uses (uses),Inertia Tensor --uses--> Velocity,Torque | Velocity,"According to the ontology context provided from the knowledge graph, the **Inertia Tensor uses: Torque and Velocity**.
+
+These are the key quantities that the inertia tensor relates together in rigid-body dynamics—it characterizes how a body's mass distribution affects the relationship between angular velocity and angular momentum, with torque being the rotational force involved in this dynamic relationship.",,,,,
+gemini-3.5-flash-lite|q0144|0,gemini-3.5-flash-lite,q0144,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Wikidata? Also name up to three broader ancestor concepts.",Knowledge Graph,subClassOf (immediate parent concept),Wikidata --subClassOf--> Knowledge Graph,Knowledge Graph,"Based on the provided ontology context, **Wikidata** has the following hierarchical relationships:
+
+* **Immediate parent concept (is-a):** Knowledge Graph
+* **Broader ancestor concepts:** Content and Assets, Spatial Computing",,,,,
+llama-3.3-70b|q0162|0,llama-3.3-70b,q0162,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of GitHub? Also name up to three broader ancestor concepts.",Version Control,subClassOf (immediate parent concept),GitHub --subClassOf--> Version Control,Version Control,"According to the provided ontology context, the immediate parent concept of GitHub is ""Version Control"".
+
+As for the broader ancestor concepts, up to three are:
+1. Software Engineering
+2. Systems Engineering
+3. Infrastructure",,,,,
+glm-4.6|q0206|0,glm-4.6,q0206,T-REL,all,"According to the DreamLab knowledge graph, what does Real Time Collaboration depend on?",Low Latency,dependsOn (depends on),Real Time Collaboration --dependsOn--> Low Latency,Low Latency | Real-Time Communication,"According to the provided ontology context, Real Time Collaboration depends on **Low Latency** and **Real-Time Communication**.",,,,,
+claude-haiku-4.5|q0424|2,claude-haiku-4.5,q0424,T-REL,all,"According to the DreamLab knowledge graph, what does ISO 27001 enable?",Privacy By Design,enables (enables),ISO 27001 --enables--> Privacy By Design,Data Security | Compliance Audit Trail | Privacy By Design | Third-Party Risk Management,"According to the ontology context provided from the knowledge graph, ISO 27001 **enables**:
+
+1. **Data Security**
+2. **Compliance Audit Trail**
+3. **Privacy By Design**
+
+These capabilities reflect ISO 27001's role as an Information Security Management System (ISMS) standard that helps organizations establish systematic approaches to protecting information assets, maintaining compliance records, and embedding security considerations into system design from the outset.",,,,,
+glm-4.6|q0122|3,glm-4.6,q0122,T-REL,all,"According to the DreamLab knowledge graph, what does Event Streaming enable?",Stream Processing,enables (enables),Event Streaming --enables--> Stream Processing,Real-Time Analytics | Event Driven Architecture | Change Data Capture | Stream Processing,"According to the DreamLab knowledge graph, Event Streaming enables:
+
+*   Real-Time Analytics
+*   Event Driven Architecture
+*   Change Data Capture",,,,,
+mistral-small-24b|q0442|2,mistral-small-24b,q0442,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of ETSI_Domain_Virtual_Society?",Digital Identity,hasPart (has part),ETSI_Domain_Virtual_Society --hasPart--> Digital Identity,Virtual World | Avatar | Digital Identity,"According to the provided ontology context, the parts of ETSI_Domain_Virtual_Society are:
+
+- Virtual World
+- Avatar
+- Digital Identity
+
+These components are integral to the technical foundations and interoperability requirements of virtual society infrastructures, including metaverse ecosystems and Extended Reality (XR) environments.",,,,,
+gemini-3.5-flash-lite|q0369|3,gemini-3.5-flash-lite,q0369,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Virtual Economy?",Play-to-Earn (P2E),hasPart (has part),Virtual Economy --hasPart--> Play-to-Earn (P2E),Virtual Currency | Non-Fungible Token | Digital Marketplace | Play-to-Earn (P2E),"According to the provided ontology context, the parts of a Virtual Economy (`hasPart`) are:
+
+* **Virtual Currency**
+* **Non-Fungible Token**
+* **Digital Marketplace**",,,,,
+glm-4.6|q0182|0,glm-4.6,q0182,T-COMMON,any,What broader concept do Teleoperation Systems and Video Async both fall under in the DreamLab knowledge graph?,Distributed Collaboration,common ancestor (shared broader concept),Teleoperation Systems --ancestorOf^-1--> Distributed Collaboration <--ancestorOf^-1-- Video Async,Distributed Collaboration,"Based on the provided ontology context, both Teleoperation Systems and Video Async fall under the broader concept of **Distributed Collaboration**.
+
+Here's the evidence from the context:
+
+*   **Teleoperation Systems** is categorized as `distributed-collaboration` and lists `Distributed Collaboration` as an ancestor.
+*   **Video Async** is also categorized as `distributed-collaboration` and lists `Distributed Collaboration` as an ancestor.
+
+The ontology defines Distributed Collaboration as ""the set of technologies, protocols, and organisational practices that enable geographically or temporally dispersed individuals and teams to work together on shared tasks..."" which applies to both remote robot operation and asynchronous video communication.",,,,,
+qwen-2.5-72b|q0246|2,qwen-2.5-72b,q0246,T-REL,all,"According to the DreamLab knowledge graph, what does Trade Finance Automation use?",Blockchain,uses (uses),Trade Finance Automation --uses--> Blockchain,Smart Contract | Enterprise Smart Contracts | Blockchain | Supply Chain Traceability,"According to the DreamLab knowledge graph, Trade Finance Automation uses the following technologies and concepts:
+
+- **Smart Contract**
+- **Enterprise Smart Contracts**
+- **Blockchain**
+
+These technologies are applied to streamline and accelerate the complex financial instruments and workflows that facilitate international commerce.",,,,,
+claude-haiku-4.5|q0099|0,claude-haiku-4.5,q0099,T-REL,all,"According to the DreamLab knowledge graph, what does Transaction Finality depend on?",Proof Of Work,dependsOn (depends on),Transaction Finality --dependsOn--> Proof Of Work,Proof Of Work | Proof of Stake | Network Partition Tolerance,"According to the ontology context provided from the knowledge graph, **Transaction Finality depends on:**
+
+1. **Consensus Mechanism** - The underlying protocol that achieves agreement across the network
+2. **Block-confirmation** - The process of confirming blocks in the blockchain
+3. **Byzantine Fault Tolerance** - The ability of the system to function correctly even when some nodes are faulty or malicious
+
+These dependencies are critical because transaction finality—the point at which a blockchain transaction becomes irreversible—requires a robust consensus mechanism, proper block confirmation procedures, and Byzantine fault tolerance to ensure that finalized transactions cannot be altered or removed by any future state of the network.",,,,,
+deepseek-chat|q0024|4,deepseek-chat,q0024,T-REL,all,"According to the DreamLab knowledge graph, what does Mapping use?",Point Cloud,uses (uses),Mapping --uses--> Point Cloud,SLAM | Localisation | Lidar | Depth Camera | Point Cloud,"Based on the DreamLab knowledge graph, **Mapping** uses the following:
+
+- **Sensor Fusion**
+- **Feature Extraction**
+
+Additionally, the graph lists **SLAM**, **Localisation**, and **Lidar** as related technologies it ""uses"" in its broader relations.",,,,,
+claude-haiku-4.5|q0471|0,claude-haiku-4.5,q0471,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Virtual Wedding? Also name up to three broader ancestor concepts.",Platform and Environment,subClassOf (immediate parent concept),Virtual Wedding --subClassOf--> Platform and Environment,Platform and Environment,"# Virtual Wedding - Concept Hierarchy
+
+Based on the ontology context provided:
+
+## Immediate Parent Concept
+**Platform and Environment**
+
+## Broader Ancestor Concepts
+1. **Spatial Computing** (the primary ancestor)
+
+Note: The ontology context indicates that Virtual Wedding ""is-a: Platform and Environment; ancestors: Spatial Computing,"" which means there are only two levels in the documented hierarchy - the immediate parent and one ancestor concept. The structure doesn't show additional intermediate ancestors beyond these two.",,,,,
+claude-haiku-4.5|q0149|3,claude-haiku-4.5,q0149,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Collaboration Platform?",Workflow Automation,hasPart (has part),Collaboration Platform --hasPart--> Workflow Automation,Real Time Messaging | Video Conferencing | tc 0002 collaborative document editing | Workflow Automation,"According to the ontology context provided, the **Collaboration Platform** has the following parts (hasPart):
+
+1. **Real Time Messaging** - The exchange of messages between participants with sub-second latency, enabling instantaneous and conversational communication.
+
+2. **Video Conferencing** - Real-time audio-visual communication technology enabling multiple geographically distributed participants to see and hear each other simultaneously through internet-connected devices.
+
+3. **Collaborative Document Editing** (referenced as ""tc 0002 collaborative document editing"")
+
+These three components work together to create an integrated software environment that unifies communication channels, shared workspaces, workflow automation, and content management tooling for coordinated work among distributed teams.",,,,,
+deepseek-chat|q0104|2,deepseek-chat,q0104,T-REL,all,"According to the DreamLab knowledge graph, what does Web3 Infrastructure enable?",Smart Contract,enables (enables),Web3 Infrastructure --enables--> Smart Contract,Decentralised Identity | Decentralised Application | Smart Contract | Tokenization,"Based on the DreamLab knowledge graph, **Web3 Infrastructure** enables:
+- **Decentralised Identity**
+- **Decentralised Application**
+- **Smart Contract**",,,,,
+gemini-2.5-flash-lite|q0417|0,gemini-2.5-flash-lite,q0417,T-REL,all,"According to the DreamLab knowledge graph, what does Digital Onboarding depend on?",Identity Verification,dependsOn (depends on),Digital Onboarding --dependsOn--> Identity Verification,Identity Verification | Compliance,Digital Onboarding depends on Identity Verification and Compliance.,,,,,
+glm-4.6|q0206|1,glm-4.6,q0206,T-REL,all,"According to the DreamLab knowledge graph, what does Real Time Collaboration depend on?",Real-Time Communication,dependsOn (depends on),Real Time Collaboration --dependsOn--> Real-Time Communication,Low Latency | Real-Time Communication,"According to the provided ontology context, Real Time Collaboration depends on **Low Latency** and **Real-Time Communication**.",,,,,
+deepseek-chat|q0428|1,deepseek-chat,q0428,T-REL,all,"According to the DreamLab knowledge graph, what does Privacy-Preserving Computation depend on?",Public Key Infrastructure,dependsOn (depends on),Privacy-Preserving Computation --dependsOn--> Public Key Infrastructure,Zero-Knowledge Proof | Public Key Infrastructure,"According to the DreamLab knowledge graph, Privacy-Preserving Computation **dependsOn**:
+- **Zero-Knowledge Proof**
+- **Public Key Infrastructure**",,,,,
+gemini-3.5-flash-lite|q0105|1,gemini-3.5-flash-lite,q0105,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Web3 Infrastructure?",Decentralised Storage,hasPart (has part),Web3 Infrastructure --hasPart--> Decentralised Storage,Blockchain Node | Decentralised Storage | Cross-Chain Bridge | Blockchain Oracle,"Based on the provided knowledge graph context, the parts of **Web3 Infrastructure** are:
+
+* **Blockchain Node**
+* **Decentralised Storage**
+* **Cross-Chain Bridge**",,,,,
+mistral-small-24b|q0041|3,mistral-small-24b,q0041,T-REL,all,"According to the DreamLab knowledge graph, what does Edge AI Accelerators enable?",Edge AI System,enables (enables),Edge AI Accelerators --enables--> Edge AI System,Edge Computing | Federated Learning | Autonomous Vehicle | Edge AI System,"According to the DreamLab knowledge graph, Edge AI Accelerators enable the following:
+
+- Edge Computing
+- Federated Learning
+- Autonomous Vehicle",,,,,
+gemini-3.7-flash-t0|q0480|1,gemini-3.7-flash,q0480,T-REL,all,"According to the DreamLab knowledge graph, what does Accessibility Standard enable?",Universal Design,enables (enables),Accessibility Standard --enables--> Universal Design,Equitable Access | Universal Design | Inclusive Xr Experience | Digital Inclusion,"According to the DreamLab knowledge graph, **Accessibility Standard** enables:
+
+* **Equitable Access**
+* **Universal Design**
+* **Inclusive Xr Experience**",,,,,
+gemini-2.5-flash-lite|q0281|0,gemini-2.5-flash-lite,q0281,T-COMMON,any,What broader concept do Data Residency and eIDAS both fall under in the DreamLab knowledge graph?,Infrastructure,common ancestor (shared broader concept),Data Residency --ancestorOf^-1--> Infrastructure <--ancestorOf^-1-- eIDAS,Infrastructure,Both Data Residency and eIDAS fall under the broader concept of **governance**.,,,,,
+gemini-3.5-flash-lite|q0134|0,gemini-3.5-flash-lite,q0134,T-REL,all,"According to the DreamLab knowledge graph, what does Open Data use?",Linked Data,uses (uses),Open Data --uses--> Linked Data,Linked Data | SPARQL | RDF,"According to the knowledge graph provided, **Open Data** uses:
+
+* **Linked Data**
+* **SPARQL**
+* **RDF**",,,,,
+claude-haiku-4.5|q0254|0,claude-haiku-4.5,q0254,T-COMMON,any,What broader concept do Banking and Trade Finance Automation both fall under in the DreamLab knowledge graph?,Economic Systems,common ancestor (shared broader concept),Banking --ancestorOf^-1--> Economic Systems <--ancestorOf^-1-- Trade Finance Automation,Economic Systems | Platform and Environment | Spatial Computing,"# Banking and Trade Finance Automation
+
+Based on the ontology context provided, both **Banking** and **Trade Finance Automation** fall under the broader concept of:
+
+## **Financial Services**
+
+According to the knowledge graph:
+
+- **Trade Finance Automation** is-a: Trade Finance → is-a: **Financial Services**
+- **Trade Finance** is-a: **Financial Services**
+
+So while Trade Finance Automation is more specifically a type of Trade Finance (which itself is a type of Financial Services), both concepts ultimately trace back to **Financial Services** as their common parent category in the DreamLab knowledge graph hierarchy.
+
+This makes sense conceptually, as both Banking and Trade Finance Automation are specialized domains within the broader financial services ecosystem, dealing with different aspects of managing money, credit, and financial instruments in commerce.",,,,,
+gpt-4.1-mini|q0467|3,gpt-4.1-mini,q0467,T-REL,all,"According to the DreamLab knowledge graph, what does Virtual Reality use?",Eye Tracking,uses (uses),Virtual Reality --uses--> Eye Tracking,Game Engine | 3D Model | OpenXR | Eye Tracking,"According to the DreamLab knowledge graph, Virtual Reality uses Game Engine, 3D Model, and OpenXR.",,,,,
+mistral-small-24b|q0348|1,mistral-small-24b,q0348,T-COMMON,any,What broader concept do Calculus and Distributed Inference both fall under in the DreamLab knowledge graph?,AI Technique,common ancestor (shared broader concept),Calculus --ancestorOf^-1--> AI Technique <--ancestorOf^-1-- Distributed Inference,AI Research Area | AI Technique | Artificial Intelligence,"In the provided ontology context, both Calculus and Distributed Inference fall under the broader concept of **Artificial Intelligence (AI)**.
+
+- **Calculus** is related to **Machine Learning**, which is a subfield of AI.
+- **Distributed Inference** is directly related to **Artificial Intelligence** and its subfields such as **Model Serving** and **AI Infrastructure**.
+
+Therefore, the broader concept that encompasses both is **Artificial Intelligence**.",,,,,
+qwen-2.5-72b|q0001|4,qwen-2.5-72b,q0001,T-REL,all,"According to the DreamLab knowledge graph, what does Affective Computing enable?",Human Robot Interaction,enables (enables),Affective Computing --enables--> Human Robot Interaction,Emotion Aware Interaction | Emotional Analytics Engine | Cognitive Feedback Interface | Mental Health Monitoring | Human Robot Interaction,"According to the DreamLab knowledge graph, Affective Computing enables the following:
+
+- **Emotion Aware Interaction**: Systems that can adapt their behavior based on the detected emotional state of the user.
+- **Emotional Analytics Engine**: Tools that analyze and provide insights into emotional data.
+- **Cognitive Feedback Interface**: Interfaces that provide feedback to users based on their cognitive and emotional states.
+
+These capabilities are made possible by the integration of emotion recognition, multimodal fusion, and machine learning techniques, which allow affective computing systems to recognize, interpret, and respond to human emotions effectively.",,,,,
+glm-4.6|q0200|3,glm-4.6,q0200,T-REL,all,"According to the DreamLab knowledge graph, what does Load Balancer enable?",Horizontal Scalability,enables (enables),Load Balancer --enables--> Horizontal Scalability,Scalability | High Availability | Fault Tolerance | Horizontal Scalability,"
+
+According to the provided knowledge graph, a Load Balancer enables:
+
+*   **Scalability**
+*   **High Availability**
+*   **Fault Tolerance**",,,,,
+gemini-3.7-flash-t0|q0005|2,gemini-3.7-flash,q0005,T-REL,all,"According to the DreamLab knowledge graph, what does Artificial Intelligence Core require?",GPU Compute,requires (requires),Artificial Intelligence Core --requires--> GPU Compute,Probability Theory | Optimisation | GPU Compute,"According to the DreamLab knowledge graph, **Artificial Intelligence Core** requires:
+
+* **Probability Theory**
+* **Optimisation**
+* **statistical-learning**",,,,,
+llama-3.3-70b|q0504|0,llama-3.3-70b,q0504,T-REL,all,"According to the DreamLab knowledge graph, what does Vendor Neutrality enable?",Interoperability,enables (enables),Vendor Neutrality --enables--> Interoperability,Interoperability | Open Source,"According to the provided ontology context, Vendor Neutrality enables Interoperability and Open Source.",,,,,
+gemini-2.5-flash-lite|q0395|1,gemini-2.5-flash-lite,q0395,T-REL,all,"According to the DreamLab knowledge graph, what does Robot Dynamics require?",Rigid Body Dynamics,requires (requires),Robot Dynamics --requires--> Rigid Body Dynamics,Kinematics | Rigid Body Dynamics | Inertia Tensor | Differential Equations,"Robot Dynamics requires:
+* Kinematics
+* Rigid Body Dynamics
+* Inertia Tensor",,,,,
+claude-haiku-4.5|q0499|1,claude-haiku-4.5,q0499,T-REL,all,"According to the DreamLab knowledge graph, what does Schema.org use?",RDF,uses (uses),Schema.org --uses--> RDF,JSON-LD | RDF | Controlled Vocabulary,"According to the ontology context provided, **Schema.org uses**:
+
+1. **JSON-LD** - A JSON-based format for encoding linked data
+2. **RDF** - Resource Description Framework for representing structured data
+3. **Controlled Vocabulary** - Standardized sets of terms for consistent data description
+
+These technologies enable Schema.org to define and markup structured data on web pages in a machine-readable format that search engines and other consumers can understand.",,,,,
+deepseek-chat|q0288|0,deepseek-chat,q0288,T-REL,all,"According to the DreamLab knowledge graph, what does Content Identifier enable?",Deduplication,enables (enables),Content Identifier --enables--> Deduplication,Deduplication | Tamper Detection | Verifiable Data Registry,"Based on the DreamLab knowledge graph, a **Content Identifier (CID)** enables the following:
+
+- **Deduplication**
+- **Tamper Detection**
+- **Verifiable Data Registry**",,,,,
+claude-haiku-4.5|q0058|2,claude-haiku-4.5,q0058,T-REL,all,"According to the DreamLab knowledge graph, what does Scalable Oversight use?",Red Teaming,uses (uses),Scalable Oversight --uses--> Red Teaming,Human Feedback | Reinforcement Learning from Human Feedback | Red Teaming,"According to the ontology context provided, **Scalable Oversight uses:**
+
+1. **Human Feedback**
+2. **Reinforcement Learning from Human Feedback**
+3. **Red Teaming**
+
+These are the techniques and approaches listed in the ""uses"" relations for Scalable Oversight in the knowledge graph.",,,,,
+llama-3.3-70b|q0216|1,llama-3.3-70b,q0216,T-COMMON,any,What broader concept do Distributed Hash Table and State Machine Replication both fall under in the DreamLab knowledge graph?,Infrastructure,common ancestor (shared broader concept),Distributed Hash Table --ancestorOf^-1--> Infrastructure <--ancestorOf^-1-- State Machine Replication,Computing and Cloud | Infrastructure,"According to the provided ontology context, both Distributed Hash Table (DHT) and State Machine Replication (SMR) fall under the broader concept of ""Distributed System"" or more specifically, ""Distributed Computing"" and ""Computing and Cloud"" (as ancestors). 
+
+However, the most direct common ancestor is ""Distributed System"" for DHT and ""Distributed Computing"" for SMR, which can both be generalized to ""Computing and Cloud"".",,,,,
+gemini-2.5-flash-lite|q0025|0,gemini-2.5-flash-lite,q0025,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Mapping?",Semantic Mapping,hasPart (has part),Mapping --hasPart--> Semantic Mapping,Semantic Mapping | Topological Map,"According to the DreamLab knowledge graph, the parts of Mapping are:
+
+*   Semantic Mapping
+*   metric-map
+*   Topological Map",,,,,
+gemini-3.7-flash-t0|q0246|3,gemini-3.7-flash,q0246,T-REL,all,"According to the DreamLab knowledge graph, what does Trade Finance Automation use?",Supply Chain Traceability,uses (uses),Trade Finance Automation --uses--> Supply Chain Traceability,Smart Contract | Enterprise Smart Contracts | Blockchain | Supply Chain Traceability,"According to the knowledge graph, **Trade Finance Automation** uses:
+
+* **Smart Contract**
+* **Enterprise Smart Contracts**
+* **Blockchain**",,,,,
+gemini-2.5-flash-lite|q0282|1,gemini-2.5-flash-lite,q0282,T-COMMON,any,What broader concept do NIST AI RMF and Supply Chain Risk Management both fall under in the DreamLab knowledge graph?,Artificial Intelligence,common ancestor (shared broader concept),NIST AI RMF --ancestorOf^-1--> Artificial Intelligence <--ancestorOf^-1-- Supply Chain Risk Management,AI Governance and Ethics | Artificial Intelligence,Both NIST AI RMF and Supply Chain Risk Management fall under the broader concept of **Risk Management Framework** in the DreamLab knowledge graph.,,,,,
+glm-4.6|q0066|4,glm-4.6,q0066,T-REL,all,"According to the DreamLab knowledge graph, what does Visual Odometry enable?",Robot Localisation,enables (enables),Visual Odometry --enables--> Robot Localisation,Autonomous Navigation | Pose Estimation | 3D Reconstruction | Augmented Reality | Robot Localisation,"
+According to the provided ontology context, Visual Odometry enables:
+
+*   Autonomous Navigation
+*   Pose Estimation
+*   3D Reconstruction",,,,,
+gemini-3.7-flash-t0|q0104|0,gemini-3.7-flash,q0104,T-REL,all,"According to the DreamLab knowledge graph, what does Web3 Infrastructure enable?",Decentralised Identity,enables (enables),Web3 Infrastructure --enables--> Decentralised Identity,Decentralised Identity | Decentralised Application | Smart Contract | Tokenization,"According to the DreamLab knowledge graph, **Web3 Infrastructure** enables:
+
+* **Decentralised Identity**
+* **Decentralised Application**
+* **Smart Contract**",,,,,
+claude-haiku-4.5|q0349|2,claude-haiku-4.5,q0349,T-COMMON,any,What broader concept do Calculus and Score Matching both fall under in the DreamLab knowledge graph?,Artificial Intelligence Core,common ancestor (shared broader concept),Calculus --ancestorOf^-1--> Artificial Intelligence Core <--ancestorOf^-1-- Score Matching,AI Research Area | Artificial Intelligence | Artificial Intelligence Core,"# Common Broader Concept
+
+Based on the ontology context provided, both **Calculus** and **Score Matching** fall under the broader concept of **Machine Learning Discipline** (and more broadly, **AI Technique** and **Artificial Intelligence**).
+
+## Specific Relationships:
+
+- **Calculus** is classified as: `is-a: Machine Learning, Mathematical Science`
+- **Score Matching** is classified as: `is-a: Machine Learning Discipline, AI Technique`
+
+Both trace back through the hierarchy to:
+- **AI Research Area**
+- **Artificial Intelligence**
+- **Artificial Intelligence Core**
+
+## Why This Connection Matters:
+
+While Calculus is a foundational mathematical science and Score Matching is a specific machine learning technique, they're connected through their role in **machine learning**. In fact, Calculus directly enables Score Matching's functionality—calculus provides the mathematical machinery (derivatives, gradients) that Score Matching uses to match the gradient of log-density in probability models.",,,,,
+gemini-3.7-flash-t0|q0243|3,gemini-3.7-flash,q0243,T-REL,all,"According to the DreamLab knowledge graph, what does Sustainable Finance use?",IFRS S1,uses (uses),Sustainable Finance --uses--> IFRS S1,ESG | EU Taxonomy | TCFD | IFRS S1,"According to the knowledge graph, **Sustainable Finance** uses:
+
+* **ESG** (Environmental, Social, and Governance)
+* **EU Taxonomy**
+* **TCFD** (Task Force on Climate-related Financial Disclosures)",,,,,
+gemini-3.7-flash-t0|q0154|0,gemini-3.7-flash,q0154,T-REL,all,"According to the DreamLab knowledge graph, what does Conflict Free Replicated Data Type enable?",Operational Transformation,enables (enables),Conflict Free Replicated Data Type --enables--> Operational Transformation,Operational Transformation | State Synchronisation | Conflict Resolution,"According to the DreamLab knowledge graph, a **Conflict Free Replicated Data Type** enables:
+
+* **Operational Transformation**
+* **State Synchronisation**
+* **Conflict Resolution**",,,,,
+claude-haiku-4.5|q0055|3,claude-haiku-4.5,q0055,T-REL,all,"According to the DreamLab knowledge graph, what does Retrieval-Augmented Generation require?",Nearest Neighbor Search,requires (requires),Retrieval-Augmented Generation --requires--> Nearest Neighbor Search,Vector Database | Embedding Model | Chunking | Nearest Neighbor Search,"According to the DreamLab knowledge graph ontology context provided, **Retrieval-Augmented Generation (RAG) requires:**
+
+1. **Vector Database** - A specialized data storage and retrieval system optimized for indexing and querying high-dimensional dense vectors (embeddings) using approximate nearest-neighbor (ANN) search algorithms
+
+2. **Embedding Model** - A neural network trained to project discrete or high-dimensional inputs (such as tokens, sentences, images, audio segments, or knowledge-graph nodes) into dense, fixed-dimensional vectors
+
+3. **Chunking** - The process of segmenting source documents into smaller, semantically coherent passages before they are embedded and indexed for retrieval-augmented generation
+
+These three components are essential infrastructure for RAG systems to function, as they enable the retrieval of relevant external knowledge that augments large language model generation at inference time.",,,,,
+mistral-small-24b|q0073|1,mistral-small-24b,q0073,T-REL,all,"According to the DreamLab knowledge graph, what does Across Protocol enable?",Cross-Chain Interoperability,enables (enables),Across Protocol --enables--> Cross-Chain Interoperability,Cross Chain Asset Transfer | Cross-Chain Interoperability,"According to the provided ontology context, Across Protocol enables the following:
+
+1. **Cross Chain Asset Transfer**: This is the process of moving digital assets, such as cryptocurrencies, fungible tokens, or non-fungible tokens, from one blockchain network to a distinct, independent blockchain network.
+
+2. **Cross-Chain Interoperability**: This refers to the technical capacity for distinct blockchain networks to communicate, transfer assets, and share arbitrary state without relying on a centralized intermediary.",,,,,
+glm-4.6|q0399|1,glm-4.6,q0399,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Search and Rescue Robotics? Also name up to three broader ancestor concepts.",Robot Type,subClassOf (immediate parent concept),Search and Rescue Robotics --subClassOf--> Robot Type,Robotics | Robot Type,"
+
+Based on the provided ontology context:
+
+*   The immediate parent concept of Search and Rescue Robotics is **Robotics**.
+*   The provided context does not list any broader ancestor concepts for Search and Rescue Robotics beyond its immediate parent.",,,,,
+gpt-4.1-mini|q0440|1,gpt-4.1-mini,q0440,T-COMMON,any,What broader concept do Revocation Registry and WebAuthn both fall under in the DreamLab knowledge graph?,Identity and Access Management,common ancestor (shared broader concept),Revocation Registry --ancestorOf^-1--> Identity and Access Management <--ancestorOf^-1-- WebAuthn,Authentication | Identity and Access Management | Security and Identity,"In the DreamLab knowledge graph, both Revocation Registry and WebAuthn fall under the broader concept of **Authentication**. This is evident because:
+
+- Revocation Registry is categorized under Credential Verification, which is a descendant of Authentication.
+- WebAuthn is directly categorized as an Authentication Mechanism, which is also a descendant of Authentication.
+
+Thus, **Authentication** is the common broader concept encompassing both Revocation Registry and WebAuthn.",,,,,
+glm-4.6|q0309|1,glm-4.6,q0309,T-REL,all,"According to the DreamLab knowledge graph, what does Resilience enable?",High Availability,enables (enables),Resilience --enables--> High Availability,Business Continuity | High Availability | Graceful Degradation,"According to the provided ontology context, **Resilience** enables the following:
+
+*   **Business Continuity**
+*   **High Availability**
+*   **Graceful Degradation**",,,,,
+qwen-2.5-72b|q0510|0,qwen-2.5-72b,q0510,T-COMMON,any,What broader concept do Accessibility Standard and Interoperability Standards both fall under in the DreamLab knowledge graph?,Spatial Computing,common ancestor (shared broader concept),Accessibility Standard --ancestorOf^-1--> Spatial Computing <--ancestorOf^-1-- Interoperability Standards,Spatial Computing,"In the DreamLab knowledge graph, both Accessibility Standards and Interoperability Standards fall under the broader concept of **Standards and Interoperability**. This category encompasses various standards and specifications that support the creation, operation, and interoperability of metaverse technologies.",,,,,
+gemini-3.5-flash-lite|q0209|3,gemini-3.5-flash-lite,q0209,T-REL,all,"According to the DreamLab knowledge graph, what does State Machine Replication enable?",Distributed Ledger,enables (enables),State Machine Replication --enables--> Distributed Ledger,High Availability | Strong Consistency | Linearizability | Distributed Ledger,"According to the ontology context, State Machine Replication enables:
+
+* High Availability
+* Strong Consistency
+* Linearizability",,,,,
+llama-3.3-70b|q0041|2,llama-3.3-70b,q0041,T-REL,all,"According to the DreamLab knowledge graph, what does Edge AI Accelerators enable?",Autonomous Vehicle,enables (enables),Edge AI Accelerators --enables--> Autonomous Vehicle,Edge Computing | Federated Learning | Autonomous Vehicle | Edge AI System,"According to the provided ontology context, Edge AI Accelerators enable:
+
+1. Edge Computing
+2. Federated Learning
+3. Autonomous Vehicle
+
+Additionally, it also supports Autonomous Robot and Digital Twin.",,,,,
+qwen-2.5-72b|q0427|3,qwen-2.5-72b,q0427,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Privacy-Preserving Computation?",Trusted Execution Environment,hasPart (has part),Privacy-Preserving Computation --hasPart--> Trusted Execution Environment,Homomorphic Encryption | Secure Multi-Party Computation | Differential Privacy | Trusted Execution Environment,"According to the DreamLab knowledge graph, Privacy-Preserving Computation has the following parts:
+
+- **Homomorphic Encryption**: A cryptographic paradigm that allows arithmetic and logical operations to be performed directly on ciphertext, yielding an encrypted result that matches the result of the same operations performed on the plaintext.
+- **Secure Multi-Party Computation (MPC)**: A cryptographic protocol that enables multiple parties to jointly compute functions over their combined private inputs without revealing individual inputs to other participants.
+- **Differential Privacy**: A system for publicly sharing information about a dataset by describing the patterns of groups within the dataset while withholding information about individuals in the dataset.
+
+These components are key techniques within Privacy-Preserving Computation that enable data processing and analysis while maintaining the privacy of the underlying data.",,,,,
+qwen-2.5-72b|q0073|0,qwen-2.5-72b,q0073,T-REL,all,"According to the DreamLab knowledge graph, what does Across Protocol enable?",Cross Chain Asset Transfer,enables (enables),Across Protocol --enables--> Cross Chain Asset Transfer,Cross Chain Asset Transfer | Cross-Chain Interoperability,"According to the DreamLab knowledge graph, Across Protocol enables **Cross Chain Asset Transfer** and **Cross-Chain Interoperability**. Specifically, it facilitates the fast and capital-efficient transfer of ERC-20 tokens between Ethereum mainnet and Layer 2 networks such as Optimism, Arbitrum, and Polygon.",,,,,
+gpt-4.1-mini|q0027|2,gpt-4.1-mini,q0027,T-REL,all,"According to the DreamLab knowledge graph, what does RAG Pipeline use?",Chunking,uses (uses),RAG Pipeline --uses--> Chunking,Embedding Search | Vector Store | Chunking,"According to the DreamLab knowledge graph, a RAG Pipeline uses Embedding Search, Vector Store, and Chunking.",,,,,
+llama-3.3-70b|q0017|4,llama-3.3-70b,q0017,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of Customer Experience Management?",Service Design,hasPart (has part),Customer Experience Management --hasPart--> Service Design,Omnichannel | Sentiment Analysis | Predictive Personalization | Customer Service Automation | Service Design,"According to the provided ontology context, the parts of Customer Experience Management (CEM) are:
+
+1. Omnichannel
+2. Sentiment Analysis
+3. Predictive Personalization
+
+These are listed as ""hasPart"" relations of Customer Experience Management in the knowledge graph.",,,,,
+qwen-2.5-72b|q0119|4,qwen-2.5-72b,q0119,T-REL,all,"According to the DreamLab knowledge graph, what does Data Integration enable?",Real-Time Analytics,enables (enables),Data Integration --enables--> Real-Time Analytics,Data Interoperability | Semantic Interoperability | Data Warehouse | Lakehouse Architecture | Real-Time Analytics,"According to the DreamLab knowledge graph, Data Integration enables:
+
+- **Data Interoperability**: The ability of different systems to exchange and use data seamlessly.
+- **Semantic Interoperability**: The ability to interpret and understand the meaning of data across different systems and contexts.
+- **Data Warehouse**: A centralized repository that stores integrated data from multiple sources, often used for reporting and data analysis.
+
+These capabilities are crucial for ensuring that data from various sources can be effectively combined, understood, and utilized in a consistent and meaningful way.",,,,,
+gemini-3.7-flash-t0|q0453|2,gemini-3.7-flash,q0453,T-REL,all,"According to the DreamLab knowledge graph, what does Ownership and Freedom Distributed enable?",Decentralized Governance,enables (enables),Ownership and Freedom Distributed --enables--> Decentralized Governance,Self Sovereign Identity | Data Sovereignty | Decentralized Governance,"According to the knowledge graph, **Ownership and Freedom Distributed** enables:
+
+* **Self Sovereign Identity**
+* **Data Sovereignty**
+* **Decentralized Governance**",,,,,
+gemini-2.5-flash-lite|q0422|3,gemini-2.5-flash-lite,q0422,T-REL,all,"According to the DreamLab knowledge graph, what does Hardware Security Module enable?",Certificate Authority,enables (enables),Hardware Security Module --enables--> Certificate Authority,Public Key Infrastructure | Key Management | Code Signing | Certificate Authority | Secure Boot,"According to the DreamLab knowledge graph, a Hardware Security Module (HSM) enables:
+
+*   **Public Key Infrastructure (PKI)**
+*   **Key Management**
+*   **Code Signing**",,,,,
+deepseek-chat|q0227|1,deepseek-chat,q0227,T-REL,all,"According to the DreamLab knowledge graph, what does Delivery-Versus-Payment enable?",Custody Infrastructure,enables (enables),Delivery-Versus-Payment --enables--> Custody Infrastructure,Digital Asset Trading | Custody Infrastructure,"Based on the DreamLab knowledge graph, Delivery-Versus-Payment (DvP) enables **Digital Asset Trading** and **Custody Infrastructure**.",,,,,
+qwen-2.5-72b|q0046|0,qwen-2.5-72b,q0046,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of Edge AI Security? Also name up to three broader ancestor concepts.",AI Governance and Ethics,subClassOf (immediate parent concept),Edge AI Security --subClassOf--> AI Governance and Ethics,AI Governance and Ethics,"In the DreamLab knowledge graph, the immediate parent concept of Edge AI Security is **AI Governance and Ethics**. The broader ancestor concepts include:
+
+1. **Artificial Intelligence**
+2. **Cybersecurity**
+3. **Information Security**",,,,,
+gpt-4.1-mini|q0058|0,gpt-4.1-mini,q0058,T-REL,all,"According to the DreamLab knowledge graph, what does Scalable Oversight use?",Human Feedback,uses (uses),Scalable Oversight --uses--> Human Feedback,Human Feedback | Reinforcement Learning from Human Feedback | Red Teaming,"According to the DreamLab knowledge graph, Scalable Oversight uses Human Feedback, Reinforcement Learning from Human Feedback, and Red Teaming.",,,,,
+gemini-3.7-flash-t0|q0283|0,gemini-3.7-flash,q0283,T-COMMON,any,What broader concept do Stakeholder Participation and Supply Chain Risk Management both fall under in the DreamLab knowledge graph?,AI Governance and Ethics,common ancestor (shared broader concept),Stakeholder Participation --ancestorOf^-1--> AI Governance and Ethics <--ancestorOf^-1-- Supply Chain Risk Management,AI Governance and Ethics | Artificial Intelligence,"Based on the knowledge graph, both **Stakeholder Participation** and **Supply Chain Risk Management** fall under the broader concepts of:
+
+1. **AI Governance and Ethics** (common direct/higher-level ancestor)
+2. **Artificial Intelligence** (root ancestor)",,,,,
+gemini-3.7-flash-t0|q0089|3,gemini-3.7-flash,q0089,T-REL,all,"According to the DreamLab knowledge graph, what are the parts of ISO 22739?",Digital Identity,hasPart (has part),ISO 22739 --hasPart--> Digital Identity,Smart Contract | Distributed Ledger | Cryptographic Key | Digital Identity,"According to the knowledge graph, the parts (`hasPart`) of **ISO 22739** are:
+
+* **Smart Contract**
+* **Distributed Ledger**
+* **Cryptographic Key**",,,,,
+deepseek-chat|q0507|0,deepseek-chat,q0507,T-TAX,all,"In the DreamLab knowledge graph, what is the immediate parent concept of YAML? Also name up to three broader ancestor concepts.",Data Serialization,subClassOf (immediate parent concept),YAML --subClassOf--> Data Serialization,Data Serialization,"Based on the ontology context provided, the immediate parent concept of YAML is **Data Serialization**.
+
+Its broader ancestor concepts (up to three) are:
+- **Data Format**
+- **Data Management** (or **Data Management (Infrastructure)**)
+- **Infrastructure**",,,,,
+mistral-small-24b|q0430|1,mistral-small-24b,q0430,T-REL,all,"According to the DreamLab knowledge graph, what does Revocation Registry use?",Selective Disclosure,uses (uses),Revocation Registry --uses--> Selective Disclosure,Cryptographic Proof | Selective Disclosure | Cryptographic Accumulator | Bitstring Status List | Smart Contract,"According to the provided ontology context, a Revocation Registry uses the following:
+
+- Cryptographic Proof
+- Selective Disclosure
+- Cryptographic Accumulator",,,,,

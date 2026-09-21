@@ -1,0 +1,189 @@
+{
+  "n_units_total": 11360,
+  "pooled_by_category": {
+    "n11": 9865,
+    "n10": 735,
+    "n01": 3,
+    "n00": 757
+  },
+  "by_category_template_gold_type": {
+    "n11": {
+      "T-COMMON|any": 514,
+      "T-REL|all": 7394,
+      "T-TAX|all": 1957
+    },
+    "n10": {
+      "T-COMMON|any": 166,
+      "T-REL|all": 506,
+      "T-TAX|all": 63
+    },
+    "n01": {
+      "T-REL|all": 3
+    },
+    "n00": {
+      "T-REL|all": 757
+    }
+  },
+  "by_category_model": {
+    "n11": {
+      "claude-haiku-4.5": 1003,
+      "deepseek-chat": 987,
+      "gemini-2.5-flash-lite": 954,
+      "gemini-3.5-flash-lite": 1004,
+      "gemini-3.7-flash-t0": 1012,
+      "glm-4.6": 1002,
+      "gpt-4.1-mini": 962,
+      "llama-3.3-70b": 990,
+      "mistral-small-24b": 972,
+      "qwen-2.5-72b": 979
+    },
+    "n10": {
+      "claude-haiku-4.5": 57,
+      "deepseek-chat": 73,
+      "gemini-2.5-flash-lite": 106,
+      "gemini-3.5-flash-lite": 56,
+      "gemini-3.7-flash-t0": 48,
+      "glm-4.6": 58,
+      "gpt-4.1-mini": 98,
+      "llama-3.3-70b": 70,
+      "mistral-small-24b": 88,
+      "qwen-2.5-72b": 81
+    },
+    "n01": {
+      "claude-haiku-4.5": 1,
+      "mistral-small-24b": 1,
+      "qwen-2.5-72b": 1
+    },
+    "n00": {
+      "claude-haiku-4.5": 75,
+      "deepseek-chat": 76,
+      "gemini-2.5-flash-lite": 76,
+      "gemini-3.5-flash-lite": 76,
+      "gemini-3.7-flash-t0": 76,
+      "glm-4.6": 76,
+      "gpt-4.1-mini": 76,
+      "llama-3.3-70b": 76,
+      "mistral-small-24b": 75,
+      "qwen-2.5-72b": 75
+    }
+  },
+  "population_note": "Exposure is model-independent (regenerated from the frozen question set and app/data/scaffold-index.json), so all ten models share the same 1060 exposed and 76 unexposed gold items; the 760 n00 units are 76 distinct items repeated across ten models and are therefore not independent.",
+  "decomposition_gate": {
+    "checked": true,
+    "expected": {
+      "n11": 9865,
+      "n10": 735,
+      "n01": 3,
+      "n00": 757
+    },
+    "regenerated": {
+      "n11": 9865,
+      "n10": 735,
+      "n01": 3,
+      "n00": 757
+    },
+    "match": true
+  },
+  "mechanism_census": {
+    "note": "Deterministic, judge-free flags over all 11,360 frame units, by matcher category. These identify structural failure modes of the matcher exhaustively; the judged sample estimates how often each one actually changes the verdict.",
+    "counts": {
+      "n11": {
+        "gold_substring_of_subject": 208,
+        "matched_by_word_bag_only": 28,
+        "gold_unspaced_camel": 58,
+        "gold_single_token": 1862
+      },
+      "n10": {
+        "gold_substring_of_subject": 2,
+        "matched_by_word_bag_only": 0,
+        "gold_unspaced_camel": 12,
+        "gold_single_token": 128
+      },
+      "n01": {
+        "gold_substring_of_subject": 0,
+        "matched_by_word_bag_only": 3,
+        "gold_unspaced_camel": 0,
+        "gold_single_token": 0
+      },
+      "n00": {
+        "gold_substring_of_subject": 0,
+        "matched_by_word_bag_only": 0,
+        "gold_unspaced_camel": 0,
+        "gold_single_token": 80
+      }
+    },
+    "denominators": {
+      "n11": 9865,
+      "n10": 735,
+      "n01": 3,
+      "n00": 757
+    },
+    "unspaced_camel_gold_titles": [
+      "DeFi",
+      "EdDSA",
+      "GraphQL",
+      "MultiAccessEdgeComputing",
+      "OpenXR",
+      "SustainabilityReporting",
+      "WebRTC"
+    ]
+  },
+  "deterministic_compliant_omissions": {
+    "note": "The paper's existing sensitivity analysis: an n10 item on an `any`-type question whose answer nonetheless satisfies the question via a different accepted alternative, so the any-collapse scorer already counts the question as fully correct. Counted here over the whole frame, to be compared with the judge's sampled `n10_compliant_omission_rate`.",
+    "n10_total": 735,
+    "n10_from_any_questions": 166,
+    "compliant_omissions": 52
+  },
+  "quotas": {
+    "n11": 240,
+    "n10": 120,
+    "n00": 60,
+    "n01": 3
+  },
+  "sample_size": 423,
+  "sampled_by_category": {
+    "n00": 60,
+    "n01": 3,
+    "n10": 120,
+    "n11": 240
+  },
+  "sampled_by_category_template_gold_type": {
+    "n11": {
+      "T-COMMON|any": 12,
+      "T-REL|all": 180,
+      "T-TAX|all": 48
+    },
+    "n10": {
+      "T-COMMON|any": 27,
+      "T-REL|all": 83,
+      "T-TAX|all": 10
+    },
+    "n01": {
+      "T-REL|all": 3
+    },
+    "n00": {
+      "T-REL|all": 60
+    }
+  },
+  "sampled_by_model": {
+    "claude-haiku-4.5": 41,
+    "deepseek-chat": 42,
+    "gemini-2.5-flash-lite": 47,
+    "gemini-3.5-flash-lite": 39,
+    "gemini-3.7-flash-t0": 38,
+    "glm-4.6": 41,
+    "gpt-4.1-mini": 45,
+    "llama-3.3-70b": 41,
+    "mistral-small-24b": 45,
+    "qwen-2.5-72b": 44
+  },
+  "human_sample_size": 120,
+  "human_by_category": {
+    "n00": 17,
+    "n01": 1,
+    "n10": 34,
+    "n11": 68
+  },
+  "seed": 42,
+  "rubric_sha256_16": "2895842241850808"
+}

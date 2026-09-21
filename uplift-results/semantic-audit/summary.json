@@ -1,0 +1,1732 @@
+{
+  "what_this_is": "A focused, stratified audit of when the paper's lexical title matcher agrees with semantic answer correctness, and how it fails. THE ADJUDICATOR IS A LARGE LANGUAGE MODEL, NOT A HUMAN. No human has annotated any unit in this release; human-audit-sample.csv is prepared for that pass and is blind to both the matcher category and the model judge's verdict.",
+  "generated": "2026-09-21T14:44:18.823443+00:00",
+  "judge": {
+    "backend": "openrouter",
+    "judge_model": "openai/gpt-4.1",
+    "judge_family": "openai/gpt",
+    "judge_is_model_not_human": true,
+    "temperature": 0,
+    "rubric_sha256_16": "2895842241850808",
+    "n_units": 423,
+    "n_verdicts": 423,
+    "n_failures": 0,
+    "n_repair_reasks": 2,
+    "repair_policy": "A reply whose field 1 is not one of the six rubric labels, or which is not valid JSON, gets exactly one re-ask with an appended formatting correction (the rubric and the item are unchanged); malformed JSON whose fields are nonetheless unambiguous is salvaged by mechanical field extraction. Both paths are cached under their own key and flagged (`repair_pass`, `parse_repair`) on the verdict.",
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "cost_estimate_usd": 0.0,
+    "total_judge_calls": 425,
+    "total_prompt_tokens": 396229,
+    "total_completion_tokens": 17139,
+    "cost_estimate_usd_total": 0.9296,
+    "cost_basis": "gpt-4.1 list price $2.00/M input, $8.00/M output. `cost_estimate_usd` covers the uncached calls of the last run only; `cost_estimate_usd_total` sums every call ever written to judge-cache.jsonl, which is what the audit actually cost to produce.",
+    "when": "2026-09-21T14:44:18.656585+00:00"
+  },
+  "judge_family_caveat": "The judge is GPT-4.1, cross-family to the local Qwen model the Loom serves and to eight of the ten sweep models. It is the SAME family as gpt-4.1-mini, one of the ten, so that model's per-model row carries a self-preference risk the others do not; the per-model breakdown is reported so a reader can check it.",
+  "rubric": "You are auditing whether a model's free-text answer actually ASSERTS a specific fact from a knowledge graph, or merely mentions a name.\n\nYou are given: a QUESTION about the DreamLab knowledge graph; the GOLD EDGE, which is the single graph fact being audited (subject, relation, target); the GOLD ITEM, which is that edge's target; the FULL GOLD SET for the question and whether the question requires ALL of them or ANY ONE of them; and the model's ANSWER.\n\nDecide what the ANSWER asserts about the GOLD ITEM, with respect to the relation the QUESTION asks for. Judge the answer's claims only; do not reward or punish style, length, hedging or extra correct material.\n\nField 1 - \"asserted\", exactly one of:\n  \"correct_relation\" - the answer states that the GOLD ITEM stands in the relation the question asks for, with the correct direction and no negation. Paraphrase, synonym and inflection count: \"relies on X\", \"X is a prerequisite\" and \"depends on X\" are the same assertion. A bare list offered as the answer to the question counts as asserting the relation for every item in it.\n  \"name_only\" - the GOLD ITEM's name (or an unambiguous paraphrase of it) appears in the answer, but the answer does not assert that it stands in the asked-for relation: e.g. it appears in a caveat, a restatement of the question, an aside, a different relation's list, an example of something else, or a list the answer explicitly declines to endorse.\n  \"wrong_relation\" - the answer places the GOLD ITEM in a DIFFERENT relation to the subject than the one asked for (e.g. the question asks what the subject enables and the answer says the subject depends on it, or calls it a sibling/synonym/part).\n  \"reversed\" - the answer asserts the asked-for relation but with subject and target swapped (e.g. asked \"what does A enable?\", the answer says the GOLD ITEM enables A).\n  \"negated\" - the answer explicitly denies the relation (e.g. \"A does not depend on the GOLD ITEM\", \"the GOLD ITEM is not among them\").\n  \"absent\" - the GOLD ITEM is not referred to at all, under any name.\n\nChoose the first label that fits in this order of precedence: negated, reversed, wrong_relation, correct_relation, name_only, absent.\n\nField 2 - \"required_or_alternative\", exactly one of:\n  \"required\" - a complete answer to the QUESTION must include the GOLD ITEM (the question requires ALL of the gold set, or the gold set has only this member).\n  \"alternative\" - the question accepts ANY ONE of several gold items, and the ANSWER satisfies the question by supplying a DIFFERENT member of the gold set instead. Use this only when the answer really does supply an accepted alternative.\n  \"n/a\" - the question accepts any one of several gold items, but the answer supplies none of them (so nothing was substituted).\n\nField 3 - \"confidence\", a number between 0 and 1: how sure you are of field 1.\n\nField 4 - \"quote\": the shortest verbatim span of the ANSWER your field-1 label rests on, copied exactly. Use the empty string \"\" if and only if field 1 is \"absent\".\n\nRespond with ONLY a JSON object and nothing else:\n{\"asserted\": \"...\", \"required_or_alternative\": \"...\", \"confidence\": 0.0, \"quote\": \"...\"}\n",
+  "seed": 42,
+  "sampling_frame": {
+    "n_units_total": 11360,
+    "pooled_by_category": {
+      "n11": 9865,
+      "n10": 735,
+      "n01": 3,
+      "n00": 757
+    },
+    "by_category_template_gold_type": {
+      "n11": {
+        "T-COMMON|any": 514,
+        "T-REL|all": 7394,
+        "T-TAX|all": 1957
+      },
+      "n10": {
+        "T-COMMON|any": 166,
+        "T-REL|all": 506,
+        "T-TAX|all": 63
+      },
+      "n01": {
+        "T-REL|all": 3
+      },
+      "n00": {
+        "T-REL|all": 757
+      }
+    },
+    "by_category_model": {
+      "n11": {
+        "claude-haiku-4.5": 1003,
+        "deepseek-chat": 987,
+        "gemini-2.5-flash-lite": 954,
+        "gemini-3.5-flash-lite": 1004,
+        "gemini-3.7-flash-t0": 1012,
+        "glm-4.6": 1002,
+        "gpt-4.1-mini": 962,
+        "llama-3.3-70b": 990,
+        "mistral-small-24b": 972,
+        "qwen-2.5-72b": 979
+      },
+      "n10": {
+        "claude-haiku-4.5": 57,
+        "deepseek-chat": 73,
+        "gemini-2.5-flash-lite": 106,
+        "gemini-3.5-flash-lite": 56,
+        "gemini-3.7-flash-t0": 48,
+        "glm-4.6": 58,
+        "gpt-4.1-mini": 98,
+        "llama-3.3-70b": 70,
+        "mistral-small-24b": 88,
+        "qwen-2.5-72b": 81
+      },
+      "n01": {
+        "claude-haiku-4.5": 1,
+        "mistral-small-24b": 1,
+        "qwen-2.5-72b": 1
+      },
+      "n00": {
+        "claude-haiku-4.5": 75,
+        "deepseek-chat": 76,
+        "gemini-2.5-flash-lite": 76,
+        "gemini-3.5-flash-lite": 76,
+        "gemini-3.7-flash-t0": 76,
+        "glm-4.6": 76,
+        "gpt-4.1-mini": 76,
+        "llama-3.3-70b": 76,
+        "mistral-small-24b": 75,
+        "qwen-2.5-72b": 75
+      }
+    },
+    "population_note": "Exposure is model-independent (regenerated from the frozen question set and app/data/scaffold-index.json), so all ten models share the same 1060 exposed and 76 unexposed gold items; the 760 n00 units are 76 distinct items repeated across ten models and are therefore not independent.",
+    "decomposition_gate": {
+      "checked": true,
+      "expected": {
+        "n11": 9865,
+        "n10": 735,
+        "n01": 3,
+        "n00": 757
+      },
+      "regenerated": {
+        "n11": 9865,
+        "n10": 735,
+        "n01": 3,
+        "n00": 757
+      },
+      "match": true
+    },
+    "mechanism_census": {
+      "note": "Deterministic, judge-free flags over all 11,360 frame units, by matcher category. These identify structural failure modes of the matcher exhaustively; the judged sample estimates how often each one actually changes the verdict.",
+      "counts": {
+        "n11": {
+          "gold_substring_of_subject": 208,
+          "matched_by_word_bag_only": 28,
+          "gold_unspaced_camel": 58,
+          "gold_single_token": 1862
+        },
+        "n10": {
+          "gold_substring_of_subject": 2,
+          "matched_by_word_bag_only": 0,
+          "gold_unspaced_camel": 12,
+          "gold_single_token": 128
+        },
+        "n01": {
+          "gold_substring_of_subject": 0,
+          "matched_by_word_bag_only": 3,
+          "gold_unspaced_camel": 0,
+          "gold_single_token": 0
+        },
+        "n00": {
+          "gold_substring_of_subject": 0,
+          "matched_by_word_bag_only": 0,
+          "gold_unspaced_camel": 0,
+          "gold_single_token": 80
+        }
+      },
+      "denominators": {
+        "n11": 9865,
+        "n10": 735,
+        "n01": 3,
+        "n00": 757
+      },
+      "unspaced_camel_gold_titles": [
+        "DeFi",
+        "EdDSA",
+        "GraphQL",
+        "MultiAccessEdgeComputing",
+        "OpenXR",
+        "SustainabilityReporting",
+        "WebRTC"
+      ]
+    },
+    "deterministic_compliant_omissions": {
+      "note": "The paper's existing sensitivity analysis: an n10 item on an `any`-type question whose answer nonetheless satisfies the question via a different accepted alternative, so the any-collapse scorer already counts the question as fully correct. Counted here over the whole frame, to be compared with the judge's sampled `n10_compliant_omission_rate`.",
+      "n10_total": 735,
+      "n10_from_any_questions": 166,
+      "compliant_omissions": 52
+    },
+    "quotas": {
+      "n11": 240,
+      "n10": 120,
+      "n00": 60,
+      "n01": 3
+    },
+    "sample_size": 423,
+    "sampled_by_category": {
+      "n00": 60,
+      "n01": 3,
+      "n10": 120,
+      "n11": 240
+    },
+    "sampled_by_category_template_gold_type": {
+      "n11": {
+        "T-COMMON|any": 12,
+        "T-REL|all": 180,
+        "T-TAX|all": 48
+      },
+      "n10": {
+        "T-COMMON|any": 27,
+        "T-REL|all": 83,
+        "T-TAX|all": 10
+      },
+      "n01": {
+        "T-REL|all": 3
+      },
+      "n00": {
+        "T-REL|all": 60
+      }
+    },
+    "sampled_by_model": {
+      "claude-haiku-4.5": 41,
+      "deepseek-chat": 42,
+      "gemini-2.5-flash-lite": 47,
+      "gemini-3.5-flash-lite": 39,
+      "gemini-3.7-flash-t0": 38,
+      "glm-4.6": 41,
+      "gpt-4.1-mini": 45,
+      "llama-3.3-70b": 41,
+      "mistral-small-24b": 45,
+      "qwen-2.5-72b": 44
+    },
+    "human_sample_size": 120,
+    "human_by_category": {
+      "n00": 17,
+      "n01": 1,
+      "n10": 34,
+      "n11": 68
+    },
+    "seed": 42,
+    "rubric_sha256_16": "2895842241850808"
+  },
+  "confusion_matcher_category_vs_judge_verdict": {
+    "n11": {
+      "absent": 2,
+      "correct_relation": 233,
+      "name_only": 4,
+      "wrong_relation": 1
+    },
+    "n10": {
+      "absent": 86,
+      "correct_relation": 3,
+      "name_only": 24,
+      "negated": 5,
+      "wrong_relation": 2
+    },
+    "n01": {
+      "absent": 2,
+      "name_only": 1
+    },
+    "n00": {
+      "absent": 52,
+      "name_only": 6,
+      "negated": 2
+    }
+  },
+  "required_or_alternative_by_category": {
+    "n11": {
+      "alternative": 4,
+      "required": 236
+    },
+    "n10": {
+      "alternative": 5,
+      "n/a": 22,
+      "required": 93
+    },
+    "n01": {
+      "required": 3
+    },
+    "n00": {
+      "required": 60
+    }
+  },
+  "headline_rates": {
+    "matcher_credit_precision_correct_relation": {
+      "k": 233,
+      "n": 240,
+      "p": 0.9708,
+      "ci95": [
+        0.941,
+        0.9858
+      ]
+    },
+    "matcher_credit_name_only": {
+      "k": 4,
+      "n": 240,
+      "p": 0.0167,
+      "ci95": [
+        0.0065,
+        0.0421
+      ]
+    },
+    "matcher_credit_relationally_wrong": {
+      "k": 1,
+      "n": 240,
+      "p": 0.0042,
+      "ci95": [
+        0.0007,
+        0.0232
+      ]
+    },
+    "matcher_credit_absent_judge_disagrees": {
+      "k": 2,
+      "n": 240,
+      "p": 0.0083,
+      "ci95": [
+        0.0023,
+        0.0299
+      ]
+    },
+    "n10_compliant_omission_rate": {
+      "k": 5,
+      "n": 120,
+      "p": 0.0417,
+      "ci95": [
+        0.0179,
+        0.0938
+      ]
+    },
+    "n10_judge_finds_item_asserted_anyway": {
+      "k": 3,
+      "n": 120,
+      "p": 0.025,
+      "ci95": [
+        0.0085,
+        0.0709
+      ]
+    },
+    "n10_matcher_false_negative_name_present": {
+      "k": 27,
+      "n": 120,
+      "p": 0.225,
+      "ci95": [
+        0.1595,
+        0.3076
+      ]
+    },
+    "n10_negated": {
+      "k": 5,
+      "n": 120,
+      "p": 0.0417,
+      "ci95": [
+        0.0179,
+        0.0938
+      ]
+    },
+    "n10_true_omission_rate": {
+      "k": 85,
+      "n": 120,
+      "p": 0.7083,
+      "ci95": [
+        0.6216,
+        0.7822
+      ]
+    },
+    "n00_absent_as_expected": {
+      "k": 52,
+      "n": 60,
+      "p": 0.8667,
+      "ci95": [
+        0.7583,
+        0.9309
+      ]
+    },
+    "n00_matcher_false_negative": {
+      "k": 0,
+      "n": 60,
+      "p": 0.0,
+      "ci95": [
+        0.0,
+        0.0602
+      ]
+    },
+    "n00_name_present_matcher_missed": {
+      "k": 8,
+      "n": 60,
+      "p": 0.1333,
+      "ci95": [
+        0.0691,
+        0.2417
+      ]
+    },
+    "n01_verdicts": {
+      "absent": 2,
+      "name_only": 1
+    }
+  },
+  "headline_rates_conservative": {
+    "matcher_credit_precision_correct_relation": {
+      "k": 233,
+      "n": 240,
+      "p": 0.9708,
+      "ci95": [
+        0.941,
+        0.9858
+      ]
+    },
+    "matcher_credit_name_only": {
+      "k": 4,
+      "n": 240,
+      "p": 0.0167,
+      "ci95": [
+        0.0065,
+        0.0421
+      ]
+    },
+    "matcher_credit_relationally_wrong": {
+      "k": 1,
+      "n": 240,
+      "p": 0.0042,
+      "ci95": [
+        0.0007,
+        0.0232
+      ]
+    },
+    "matcher_credit_absent_judge_disagrees": {
+      "k": 2,
+      "n": 240,
+      "p": 0.0083,
+      "ci95": [
+        0.0023,
+        0.0299
+      ]
+    },
+    "n10_compliant_omission_rate": {
+      "k": 2,
+      "n": 120,
+      "p": 0.0167,
+      "ci95": [
+        0.0046,
+        0.0587
+      ]
+    },
+    "n10_judge_finds_item_asserted_anyway": {
+      "k": 3,
+      "n": 120,
+      "p": 0.025,
+      "ci95": [
+        0.0085,
+        0.0709
+      ]
+    },
+    "n10_matcher_false_negative_name_present": {
+      "k": 13,
+      "n": 120,
+      "p": 0.1083,
+      "ci95": [
+        0.0644,
+        0.1766
+      ]
+    },
+    "n10_negated": {
+      "k": 5,
+      "n": 120,
+      "p": 0.0417,
+      "ci95": [
+        0.0179,
+        0.0938
+      ]
+    },
+    "n10_true_omission_rate": {
+      "k": 99,
+      "n": 120,
+      "p": 0.825,
+      "ci95": [
+        0.7472,
+        0.8826
+      ]
+    },
+    "n00_absent_as_expected": {
+      "k": 56,
+      "n": 60,
+      "p": 0.9333,
+      "ci95": [
+        0.8407,
+        0.9738
+      ]
+    },
+    "n00_matcher_false_negative": {
+      "k": 0,
+      "n": 60,
+      "p": 0.0,
+      "ci95": [
+        0.0,
+        0.0602
+      ]
+    },
+    "n00_name_present_matcher_missed": {
+      "k": 4,
+      "n": 60,
+      "p": 0.0667,
+      "ci95": [
+        0.0262,
+        0.1593
+      ]
+    },
+    "n01_verdicts": {
+      "absent": 2,
+      "name_only": 1
+    }
+  },
+  "corrected_estimate": {
+    "reading": "as judged",
+    "definition": "Matcher credit rate (context utilisation) is n11/(n11+n10) = 9865/10600 = 0.9307. The model judge's corrected relational-correctness rate reweights each matcher stratum by the judged probability that the answer actually asserts the gold edge: (n11 * P(correct_relation | n11) + n10 * P(correct_relation | n10)) / (n11 + n10). Both strata are sampled, so this is an estimate; the interval propagates the two Wilson intervals through the same weights. The adjudicator is a model, not a human.",
+    "matcher_credit_rate_context_utilisation": 0.9307,
+    "judged_correct_relation_given_credited": 0.9708,
+    "judged_correct_relation_given_omitted": 0.025,
+    "corrected_relational_correctness_of_exposed_items": 0.9052,
+    "corrected_ci95_propagated": [
+      0.8763,
+      0.9224
+    ],
+    "overstatement_pp": 2.54
+  },
+  "corrected_estimate_conservative": {
+    "reading": "conservative: non-`absent` verdicts with an unverifiable cited span demoted",
+    "definition": "Matcher credit rate (context utilisation) is n11/(n11+n10) = 9865/10600 = 0.9307. The model judge's corrected relational-correctness rate reweights each matcher stratum by the judged probability that the answer actually asserts the gold edge: (n11 * P(correct_relation | n11) + n10 * P(correct_relation | n10)) / (n11 + n10). Both strata are sampled, so this is an estimate; the interval propagates the two Wilson intervals through the same weights. The adjudicator is a model, not a human.",
+    "matcher_credit_rate_context_utilisation": 0.9307,
+    "judged_correct_relation_given_credited": 0.9708,
+    "judged_correct_relation_given_omitted": 0.025,
+    "corrected_relational_correctness_of_exposed_items": 0.9052,
+    "corrected_ci95_propagated": [
+      0.8763,
+      0.9224
+    ],
+    "overstatement_pp": 2.54
+  },
+  "judge_reliability": {
+    "definition": "Every non-`absent` verdict must cite a verbatim span of the answer. This check normalises both (lowercase, strip punctuation, collapse whitespace \u2014 the matcher's own `normalise`) and asks whether the cited span, or every fragment of an elided span, actually occurs in the answer. A failure means one of two things. In a CREDITED stratum (n11/n01) the matcher has already established that the title occurs, and inspection shows these are abridged list reconstructions \u2014 the judge quotes a list but drops the gloss between entries; the verdict stands and only the citation is loose (`abridged_citation`). In an UNCREDITED stratum (n10/n00) the matcher says the title does not occur, so the quote is the whole of the judge's evidence for the contrary claim; if that span is not in the answer the claim is unsupported (`unsupported_citation`) and the conservative reading demotes it to `absent`.",
+    "n_verdicts_with_quote_required": 281,
+    "quote_verified": {
+      "k": 252,
+      "n": 281,
+      "p": 0.8968,
+      "ci95": [
+        0.8557,
+        0.9272
+      ]
+    },
+    "n_unverifiable": 29,
+    "n_unsupported_demoted": 18,
+    "n_abridged_kept": 11,
+    "unverifiable_by_category": {
+      "n00": 4,
+      "n10": 14,
+      "n11": 11
+    },
+    "unverifiable_by_kind": {
+      "abridged_citation": 11,
+      "unsupported_citation": 18
+    },
+    "unverifiable": [
+      {
+        "unit_id": "claude-haiku-4.5|q0387|0",
+        "category": "n00",
+        "asserted": "name_only",
+        "quote": "Odometry",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gemini-2.5-flash-lite|q0165|2",
+        "category": "n00",
+        "asserted": "name_only",
+        "quote": "Innovation",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gemini-3.7-flash-t0|q0431|3",
+        "category": "n00",
+        "asserted": "negated",
+        "quote": "Trust Management\" is omitted from the list explicitly presented as what Revocation Registry enables",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0436|3",
+        "category": "n00",
+        "asserted": "name_only",
+        "quote": "Phishing Resistant Authentication",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "deepseek-chat|q0252|1",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Platform and Environment",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gemini-2.5-flash-lite|q0321|1",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Mathematical Science",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gemini-2.5-flash-lite|q0508|1",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Infrastructure",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gemini-3.5-flash-lite|q0348|1",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "AI Technique",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gpt-4.1-mini|q0097|2",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Distributed Data Structure",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gpt-4.1-mini|q0129|2",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Controlled Vocabulary",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gpt-4.1-mini|q0254|2",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "gpt-4.1-mini|q0509|0",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Legal and Regulatory",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "llama-3.3-70b|q0216|1",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "\"Infrastructure\"",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "mistral-small-24b|q0097|2",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "\"Distributed Data Structure\"",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "mistral-small-24b|q0253|1",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Platform and Environment",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "mistral-small-24b|q0348|1",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "AI Technique",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "mistral-small-24b|q0509|0",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0215|0",
+        "category": "n10",
+        "asserted": "name_only",
+        "quote": "Infrastructure",
+        "kind": "unsupported_citation"
+      },
+      {
+        "unit_id": "claude-haiku-4.5|q0345|1",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "TensorFlow Lite enables:\n\n1. Edge Inference\n2. On-Device Learning\n3. Real-Time Inference",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "glm-4.6|q0092|1",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "the parts of Spot Trading are:\n\n*   **Order Book**\n*   **Limit Order**",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "glm-4.6|q0132|1",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Olap has the following parts:\n\n*   **Data Warehouse**\n*   **Data Analytics**",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "mistral-small-24b|q0073|1",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Across Protocol enables the following:\n\n1. **Cross Chain Asset Transfer**\n\n2. **Cross-Chain Interoperability**",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "mistral-small-24b|q0102|1",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Wallet enables the following:\n\n1. **DeFi (Decentralised Finance)**\n\n2. **Blockchain Application**",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "mistral-small-24b|q0192|2",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Distributed Hash Table (DHT) requires the following:\n\n1. **Hash Function**\n2. **Consistent Hashing**\n3. **Node**",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0038|2",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Dialogue Systems enable the following:\n\n- **Virtual Assistant**: Creation of intelligent assistants that can perform tasks and provide information based on user requests.",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0098|2",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Transaction Finality enables the following:\n\n- **Cross-Chain Bridge**: Facilitates the secure transfer of assets and data between different blockchain networks.",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0104|2",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Web3 Infrastructure enables the following:\n\n- **Smart Contract**",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0200|2",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "a Load Balancer enables the following:\n\n- **Fault Tolerance**",
+        "kind": "abridged_citation"
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0395|1",
+        "category": "n11",
+        "asserted": "correct_relation",
+        "quote": "Robot Dynamics requires the following:\n\n- **Rigid Body Dynamics**",
+        "kind": "abridged_citation"
+      }
+    ]
+  },
+  "mechanism_vs_verdict": {
+    "gold_substring_of_subject": {
+      "n_in_sample": 7,
+      "verdicts": {
+        "absent": 1,
+        "correct_relation": 4,
+        "name_only": 2
+      },
+      "n11_correct_relation_rate": {
+        "k": 4,
+        "n": 7,
+        "p": 0.5714,
+        "ci95": [
+          0.2505,
+          0.8418
+        ]
+      }
+    },
+    "matched_by_word_bag_only": {
+      "n_in_sample": 3,
+      "verdicts": {
+        "absent": 2,
+        "name_only": 1
+      },
+      "n11_correct_relation_rate": null
+    },
+    "gold_unspaced_camel": {
+      "n_in_sample": 7,
+      "verdicts": {
+        "correct_relation": 7
+      },
+      "n11_correct_relation_rate": {
+        "k": 4,
+        "n": 4,
+        "p": 1.0,
+        "ci95": [
+          0.5101,
+          1.0
+        ]
+      }
+    },
+    "gold_single_token": {
+      "n_in_sample": 76,
+      "verdicts": {
+        "absent": 19,
+        "correct_relation": 45,
+        "name_only": 9,
+        "negated": 3
+      },
+      "n11_correct_relation_rate": {
+        "k": 42,
+        "n": 44,
+        "p": 0.9545,
+        "ci95": [
+          0.8487,
+          0.9874
+        ]
+      }
+    }
+  },
+  "per_template": {
+    "T-COMMON": {
+      "n": 39,
+      "n11": {
+        "n": 12,
+        "verdicts": {
+          "correct_relation": 12
+        },
+        "correct_relation_rate": {
+          "k": 12,
+          "n": 12,
+          "p": 1.0,
+          "ci95": [
+            0.7575,
+            1.0
+          ]
+        }
+      },
+      "n10": {
+        "n": 27,
+        "verdicts": {
+          "absent": 7,
+          "name_only": 20
+        },
+        "acceptable_alternative_rate": {
+          "k": 5,
+          "n": 27,
+          "p": 0.1852,
+          "ci95": [
+            0.0818,
+            0.367
+          ]
+        }
+      }
+    },
+    "T-REL": {
+      "n": 326,
+      "n11": {
+        "n": 180,
+        "verdicts": {
+          "absent": 2,
+          "correct_relation": 176,
+          "name_only": 2
+        },
+        "correct_relation_rate": {
+          "k": 176,
+          "n": 180,
+          "p": 0.9778,
+          "ci95": [
+            0.9443,
+            0.9913
+          ]
+        }
+      },
+      "n10": {
+        "n": 83,
+        "verdicts": {
+          "absent": 76,
+          "correct_relation": 3,
+          "name_only": 1,
+          "negated": 3
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 83,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.0442
+          ]
+        }
+      },
+      "n00": {
+        "n": 60,
+        "verdicts": {
+          "absent": 52,
+          "name_only": 6,
+          "negated": 2
+        }
+      },
+      "n01": {
+        "n": 3,
+        "verdicts": {
+          "absent": 2,
+          "name_only": 1
+        }
+      }
+    },
+    "T-TAX": {
+      "n": 58,
+      "n11": {
+        "n": 48,
+        "verdicts": {
+          "correct_relation": 45,
+          "name_only": 2,
+          "wrong_relation": 1
+        },
+        "correct_relation_rate": {
+          "k": 45,
+          "n": 48,
+          "p": 0.9375,
+          "ci95": [
+            0.8316,
+            0.9785
+          ]
+        }
+      },
+      "n10": {
+        "n": 10,
+        "verdicts": {
+          "absent": 3,
+          "name_only": 3,
+          "negated": 2,
+          "wrong_relation": 2
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 10,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.2775
+          ]
+        }
+      }
+    }
+  },
+  "per_gold_type": {
+    "all": {
+      "n": 384,
+      "n11": {
+        "n": 228,
+        "verdicts": {
+          "absent": 2,
+          "correct_relation": 221,
+          "name_only": 4,
+          "wrong_relation": 1
+        },
+        "correct_relation_rate": {
+          "k": 221,
+          "n": 228,
+          "p": 0.9693,
+          "ci95": [
+            0.938,
+            0.9851
+          ]
+        }
+      },
+      "n10": {
+        "n": 93,
+        "verdicts": {
+          "absent": 79,
+          "correct_relation": 3,
+          "name_only": 4,
+          "negated": 5,
+          "wrong_relation": 2
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 93,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.0397
+          ]
+        }
+      },
+      "n00": {
+        "n": 60,
+        "verdicts": {
+          "absent": 52,
+          "name_only": 6,
+          "negated": 2
+        }
+      },
+      "n01": {
+        "n": 3,
+        "verdicts": {
+          "absent": 2,
+          "name_only": 1
+        }
+      }
+    },
+    "any": {
+      "n": 39,
+      "n11": {
+        "n": 12,
+        "verdicts": {
+          "correct_relation": 12
+        },
+        "correct_relation_rate": {
+          "k": 12,
+          "n": 12,
+          "p": 1.0,
+          "ci95": [
+            0.7575,
+            1.0
+          ]
+        }
+      },
+      "n10": {
+        "n": 27,
+        "verdicts": {
+          "absent": 7,
+          "name_only": 20
+        },
+        "acceptable_alternative_rate": {
+          "k": 5,
+          "n": 27,
+          "p": 0.1852,
+          "ci95": [
+            0.0818,
+            0.367
+          ]
+        }
+      }
+    }
+  },
+  "per_model": {
+    "claude-haiku-4.5": {
+      "n": 41,
+      "n11": {
+        "n": 24,
+        "verdicts": {
+          "absent": 1,
+          "correct_relation": 22,
+          "name_only": 1
+        },
+        "correct_relation_rate": {
+          "k": 22,
+          "n": 24,
+          "p": 0.9167,
+          "ci95": [
+            0.7415,
+            0.9768
+          ]
+        }
+      },
+      "n10": {
+        "n": 10,
+        "verdicts": {
+          "absent": 9,
+          "correct_relation": 1
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 10,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.2775
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 4,
+          "name_only": 2
+        }
+      },
+      "n01": {
+        "n": 1,
+        "verdicts": {
+          "absent": 1
+        }
+      }
+    },
+    "deepseek-chat": {
+      "n": 42,
+      "n11": {
+        "n": 24,
+        "verdicts": {
+          "correct_relation": 23,
+          "wrong_relation": 1
+        },
+        "correct_relation_rate": {
+          "k": 23,
+          "n": 24,
+          "p": 0.9583,
+          "ci95": [
+            0.7976,
+            0.9926
+          ]
+        }
+      },
+      "n10": {
+        "n": 12,
+        "verdicts": {
+          "absent": 11,
+          "name_only": 1
+        },
+        "acceptable_alternative_rate": {
+          "k": 1,
+          "n": 12,
+          "p": 0.0833,
+          "ci95": [
+            0.0149,
+            0.3539
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 5,
+          "name_only": 1
+        }
+      }
+    },
+    "gemini-2.5-flash-lite": {
+      "n": 47,
+      "n11": {
+        "n": 24,
+        "verdicts": {
+          "absent": 1,
+          "correct_relation": 23
+        },
+        "correct_relation_rate": {
+          "k": 23,
+          "n": 24,
+          "p": 0.9583,
+          "ci95": [
+            0.7976,
+            0.9926
+          ]
+        }
+      },
+      "n10": {
+        "n": 17,
+        "verdicts": {
+          "absent": 9,
+          "correct_relation": 1,
+          "name_only": 6,
+          "negated": 1
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 17,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.1843
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 5,
+          "name_only": 1
+        }
+      }
+    },
+    "gemini-3.5-flash-lite": {
+      "n": 39,
+      "n11": {
+        "n": 24,
+        "verdicts": {
+          "correct_relation": 24
+        },
+        "correct_relation_rate": {
+          "k": 24,
+          "n": 24,
+          "p": 1.0,
+          "ci95": [
+            0.862,
+            1.0
+          ]
+        }
+      },
+      "n10": {
+        "n": 9,
+        "verdicts": {
+          "absent": 7,
+          "name_only": 1,
+          "negated": 1
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 9,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.2991
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 5,
+          "negated": 1
+        }
+      }
+    },
+    "gemini-3.7-flash": {
+      "n": 38,
+      "n11": {
+        "n": 25,
+        "verdicts": {
+          "correct_relation": 25
+        },
+        "correct_relation_rate": {
+          "k": 25,
+          "n": 25,
+          "p": 1.0,
+          "ci95": [
+            0.8668,
+            1.0
+          ]
+        }
+      },
+      "n10": {
+        "n": 7,
+        "verdicts": {
+          "absent": 7
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 7,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.3543
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 5,
+          "negated": 1
+        }
+      }
+    },
+    "glm-4.6": {
+      "n": 41,
+      "n11": {
+        "n": 25,
+        "verdicts": {
+          "correct_relation": 25
+        },
+        "correct_relation_rate": {
+          "k": 25,
+          "n": 25,
+          "p": 1.0,
+          "ci95": [
+            0.8668,
+            1.0
+          ]
+        }
+      },
+      "n10": {
+        "n": 10,
+        "verdicts": {
+          "absent": 9,
+          "negated": 1
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 10,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.2775
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 6
+        }
+      }
+    },
+    "gpt-4.1-mini": {
+      "n": 45,
+      "n11": {
+        "n": 23,
+        "verdicts": {
+          "correct_relation": 23
+        },
+        "correct_relation_rate": {
+          "k": 23,
+          "n": 23,
+          "p": 1.0,
+          "ci95": [
+            0.8569,
+            1.0
+          ]
+        }
+      },
+      "n10": {
+        "n": 16,
+        "verdicts": {
+          "absent": 9,
+          "name_only": 6,
+          "wrong_relation": 1
+        },
+        "acceptable_alternative_rate": {
+          "k": 2,
+          "n": 16,
+          "p": 0.125,
+          "ci95": [
+            0.035,
+            0.3602
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 5,
+          "name_only": 1
+        }
+      }
+    },
+    "llama-3.3-70b": {
+      "n": 41,
+      "n11": {
+        "n": 24,
+        "verdicts": {
+          "correct_relation": 24
+        },
+        "correct_relation_rate": {
+          "k": 24,
+          "n": 24,
+          "p": 1.0,
+          "ci95": [
+            0.862,
+            1.0
+          ]
+        }
+      },
+      "n10": {
+        "n": 11,
+        "verdicts": {
+          "absent": 7,
+          "name_only": 2,
+          "negated": 2
+        },
+        "acceptable_alternative_rate": {
+          "k": 1,
+          "n": 11,
+          "p": 0.0909,
+          "ci95": [
+            0.0162,
+            0.3774
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 6
+        }
+      }
+    },
+    "mistral-small-24b": {
+      "n": 45,
+      "n11": {
+        "n": 24,
+        "verdicts": {
+          "correct_relation": 22,
+          "name_only": 2
+        },
+        "correct_relation_rate": {
+          "k": 22,
+          "n": 24,
+          "p": 0.9167,
+          "ci95": [
+            0.7415,
+            0.9768
+          ]
+        }
+      },
+      "n10": {
+        "n": 14,
+        "verdicts": {
+          "absent": 9,
+          "correct_relation": 1,
+          "name_only": 4
+        },
+        "acceptable_alternative_rate": {
+          "k": 1,
+          "n": 14,
+          "p": 0.0714,
+          "ci95": [
+            0.0127,
+            0.3147
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 6
+        }
+      },
+      "n01": {
+        "n": 1,
+        "verdicts": {
+          "absent": 1
+        }
+      }
+    },
+    "qwen-2.5-72b": {
+      "n": 44,
+      "n11": {
+        "n": 23,
+        "verdicts": {
+          "correct_relation": 22,
+          "name_only": 1
+        },
+        "correct_relation_rate": {
+          "k": 22,
+          "n": 23,
+          "p": 0.9565,
+          "ci95": [
+            0.7901,
+            0.9923
+          ]
+        }
+      },
+      "n10": {
+        "n": 14,
+        "verdicts": {
+          "absent": 9,
+          "name_only": 4,
+          "wrong_relation": 1
+        },
+        "acceptable_alternative_rate": {
+          "k": 0,
+          "n": 14,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.2153
+          ]
+        }
+      },
+      "n00": {
+        "n": 6,
+        "verdicts": {
+          "absent": 5,
+          "name_only": 1
+        }
+      },
+      "n01": {
+        "n": 1,
+        "verdicts": {
+          "name_only": 1
+        }
+      }
+    }
+  },
+  "notable_disagreements": [
+    {
+      "unit_id": "claude-haiku-4.5|q0016|4",
+      "category": "n11",
+      "model": "claude-haiku-4.5",
+      "question_id": "q0016",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Customer Experience Management enable?",
+      "gold_edge": "Customer Experience Management --enables--> Customer Experience",
+      "gold_item": "Customer Experience",
+      "asserted": "absent",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "",
+      "answer_excerpt": "According to the ontology context provided from the knowledge graph, Customer Experience Management (CEM/CXM) **enables**:\n\n1. **Customer Retention** - keeping customers engaged and loyal\n2. **Customer Lifetime Value** - maximizing the long-term value derived from customer relationships\n3. **Hyper personalisation** - delivering highly tailored experiences to individual customers\n\nThese capabilities represent the key business outcomes that CEM systems are designed to achieve through systematic design, orchestration, measurement, and continuous improvement of customer interactions across the ful"
+    },
+    {
+      "unit_id": "claude-haiku-4.5|q0110|1",
+      "category": "n10",
+      "model": "claude-haiku-4.5",
+      "question_id": "q0110",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Climate Modelling enable?",
+      "gold_edge": "Climate Modelling --enables--> SustainabilityReporting",
+      "gold_item": "SustainabilityReporting",
+      "asserted": "correct_relation",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Climate Modelling enables the following:\n\n1. **Carbon Footprint Measurement** ...\n2. **Sustainability Reporting**",
+      "answer_excerpt": "According to the ontology context provided, Climate Modelling enables the following:\n\n1. **Carbon Footprint Measurement** - Systematic quantitative methodology for calculating greenhouse gas emissions\n2. **Sustainability Reporting** - Reporting on sustainability metrics and outcomes\n3. **Carbon Neutrality Planning** - Planning and strategies to achieve carbon neutrality\n\nThese capabilities reflect how climate modelling supports organizations and systems in understanding, measuring, and planning for environmental sustainability and emissions reduction."
+    },
+    {
+      "unit_id": "claude-haiku-4.5|q0244|2",
+      "category": "n00",
+      "model": "claude-haiku-4.5",
+      "question_id": "q0244",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Sustainable Finance enable?",
+      "gold_edge": "Sustainable Finance --enables--> Voluntary Carbon Market",
+      "gold_item": "Voluntary Carbon Market",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "These three capabilities represent how sustainable finance mechanisms channel capital toward environmentally and socially beneficial activities.",
+      "answer_excerpt": "According to the ontology context provided, Sustainable Finance **enables**:\n\n1. **Green Bond Market** - The market for bonds specifically designed to finance environmental projects\n2. **Impact Investing** - Investment strategies focused on generating measurable social and environmental impact alongside financial returns\n3. **Sustainability-linked Loans** - Loans with terms tied to the borrower's achievement of sustainability targets\n\nThese three capabilities represent how sustainable finance mechanisms channel capital toward environmentally and socially beneficial activities."
+    },
+    {
+      "unit_id": "claude-haiku-4.5|q0387|0",
+      "category": "n00",
+      "model": "claude-haiku-4.5",
+      "question_id": "q0387",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does rb 0012 wheeled mobile robot use?",
+      "gold_edge": "rb 0012 wheeled mobile robot --uses--> Odometry",
+      "gold_item": "Odometry",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Odometry",
+      "answer_excerpt": "I don't have access to the DreamLab knowledge graph or any specific information about an \"rb 0012 wheeled mobile robot\" in my training data or the ontology context provided.\n\nTo answer your question about what rb 0012 uses, I would need:\n\n1. **Direct access to the DreamLab knowledge graph** - You would need to query it directly or provide me with the specific data about rb 0012\n2. **More context** - Information about what DreamLab is and where this robot is documented\n\nHowever, based on the general ontology context provided, I can tell you that **wheeled mobile robots typically use**:\n- **SLAM"
+    },
+    {
+      "unit_id": "deepseek-chat|q0024|4",
+      "category": "n00",
+      "model": "deepseek-chat",
+      "question_id": "q0024",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Mapping use?",
+      "gold_edge": "Mapping --uses--> Point Cloud",
+      "gold_item": "Point Cloud",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "the graph lists **SLAM**, **Localisation**, and **Lidar** as related technologies it \"uses\" in its broader relations.",
+      "answer_excerpt": "Based on the DreamLab knowledge graph, **Mapping** uses the following:\n\n- **Sensor Fusion**\n- **Feature Extraction**\n\nAdditionally, the graph lists **SLAM**, **Localisation**, and **Lidar** as related technologies it \"uses\" in its broader relations."
+    },
+    {
+      "unit_id": "deepseek-chat|q0088|1",
+      "category": "n11",
+      "model": "deepseek-chat",
+      "question_id": "q0088",
+      "template": "T-TAX",
+      "question": "In the DreamLab knowledge graph, what is the immediate parent concept of Financial Reporting? Also name up to three broader ancestor concepts.",
+      "gold_edge": "Financial Reporting --subClassOf--> Governance and Regulation",
+      "gold_item": "Governance and Regulation",
+      "asserted": "wrong_relation",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Governance and Regulation (ancestor, as Financial Reporting is part of Blockchain, which is part of Governance and Regulation)",
+      "answer_excerpt": "Based on the ontology context provided, the immediate parent concept of **Financial Reporting** is **Blockchain**.\n\nThe broader ancestor concepts (up to three) are:\n1. **Blockchain** (immediate parent)\n2. **Governance and Regulation** (ancestor, as Financial Reporting is part of Blockchain, which is part of Governance and Regulation)\n3. **Blockchain** itself is the only ancestor explicitly listed in the context, so the other two broader ancestors are not specified in the provided ontology."
+    },
+    {
+      "unit_id": "gemini-2.5-flash-lite|q0110|1",
+      "category": "n10",
+      "model": "gemini-2.5-flash-lite",
+      "question_id": "q0110",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Climate Modelling enable?",
+      "gold_edge": "Climate Modelling --enables--> SustainabilityReporting",
+      "gold_item": "SustainabilityReporting",
+      "asserted": "correct_relation",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Sustainability Reporting",
+      "answer_excerpt": "According to the DreamLab knowledge graph, Climate Modelling enables:\n\n*   Carbon Footprint Measurement\n*   Sustainability Reporting\n*   Carbon Neutrality Planning"
+    },
+    {
+      "unit_id": "gemini-2.5-flash-lite|q0125|3",
+      "category": "n11",
+      "model": "gemini-2.5-flash-lite",
+      "question_id": "q0125",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Linked Data use?",
+      "gold_edge": "Linked Data --uses--> OWL",
+      "gold_item": "OWL",
+      "asserted": "absent",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "",
+      "answer_excerpt": "According to the DreamLab knowledge graph, Linked Data uses:\n\n*   **RDF**\n*   **HTTP**\n*   **URI**"
+    },
+    {
+      "unit_id": "gemini-2.5-flash-lite|q0165|2",
+      "category": "n00",
+      "model": "gemini-2.5-flash-lite",
+      "question_id": "q0165",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Knowledge Sharing enable?",
+      "gold_edge": "Knowledge Sharing --enables--> Innovation",
+      "gold_item": "Innovation",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Innovation",
+      "answer_excerpt": "According to the DreamLab knowledge graph, Knowledge Sharing enables:\n\n*   **Distributed Team Collaboration**\n*   **Organisational Learning**\n*   **Community-of-practice**"
+    },
+    {
+      "unit_id": "gemini-3.5-flash-lite|q0369|3",
+      "category": "n00",
+      "model": "gemini-3.5-flash-lite",
+      "question_id": "q0369",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what are the parts of Virtual Economy?",
+      "gold_edge": "Virtual Economy --hasPart--> Play-to-Earn (P2E)",
+      "gold_item": "Play-to-Earn (P2E)",
+      "asserted": "negated",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "the parts of a Virtual Economy (`hasPart`) are:\n\n* **Virtual Currency**\n* **Non-Fungible Token**\n* **Digital Marketplace**",
+      "answer_excerpt": "According to the provided ontology context, the parts of a Virtual Economy (`hasPart`) are:\n\n* **Virtual Currency**\n* **Non-Fungible Token**\n* **Digital Marketplace**"
+    },
+    {
+      "unit_id": "gemini-3.7-flash-t0|q0431|3",
+      "category": "n00",
+      "model": "gemini-3.7-flash",
+      "question_id": "q0431",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Revocation Registry enable?",
+      "gold_edge": "Revocation Registry --enables--> Trust Management",
+      "gold_item": "Trust Management",
+      "asserted": "negated",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Trust Management\" is omitted from the list explicitly presented as what Revocation Registry enables",
+      "answer_excerpt": "According to the knowledge graph, a **Revocation Registry** enables:\n\n* **Decentralized Identity**\n* **Credential Issuance**\n* **Access Control**"
+    },
+    {
+      "unit_id": "gpt-4.1-mini|q0140|2",
+      "category": "n00",
+      "model": "gpt-4.1-mini",
+      "question_id": "q0140",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Usability Testing enable?",
+      "gold_edge": "Usability Testing --enables--> Evidence-Based Design",
+      "gold_item": "Evidence-Based Design",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "iterative-design",
+      "answer_excerpt": "According to the DreamLab knowledge graph, Usability Testing enables Product Design, User Interface, and iterative-design."
+    },
+    {
+      "unit_id": "mistral-small-24b|q0110|1",
+      "category": "n10",
+      "model": "mistral-small-24b",
+      "question_id": "q0110",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does Climate Modelling enable?",
+      "gold_edge": "Climate Modelling --enables--> SustainabilityReporting",
+      "gold_item": "SustainabilityReporting",
+      "asserted": "correct_relation",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Climate Modelling enables the following:\n\n1. **Carbon Footprint Measurement** ...\n\n2. **Sustainability Reporting**",
+      "answer_excerpt": "According to the provided ontology context, Climate Modelling enables the following:\n\n1. **Carbon Footprint Measurement**: Systematic quantitative methodology for calculating the total greenhouse gas (GHG) emissions attributable to an organization, product, service, or activity across its full operational and value-chain scope, expressed in terms of carbon dioxide equivalent (CO2e).\n\n2. **Sustainability Reporting**: The practice of measuring, disclosing, and being accountable to internal and external stakeholders for organizational performance towards the goal of sustainable development.\n\n3. *"
+    },
+    {
+      "unit_id": "mistral-small-24b|q0368|0",
+      "category": "n11",
+      "model": "mistral-small-24b",
+      "question_id": "q0368",
+      "template": "T-TAX",
+      "question": "In the DreamLab knowledge graph, what is the immediate parent concept of TELE-050-neural-rendering-telepresence? Also name up to three broader ancestor concepts.",
+      "gold_edge": "TELE-050-neural-rendering-telepresence --subClassOf--> Telepresence",
+      "gold_item": "Telepresence",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "the immediate parent concept could be \"Spatial Computing.\"\n\nThree broader ancestor concepts could be:\n1. **Spatial Computing**\n2. **Display and Rendering** (since Neural Rendering is a subclass of Computer Graphics, which is related to Display and Rendering)\n3. **Distributed Collaboration** (since Telepresence is a subclass of Distributed Collaboration)",
+      "answer_excerpt": "The immediate parent concept of TELE-050-neural-rendering-telepresence is not explicitly defined in the provided ontology context. However, based on the relationships and definitions given, we can infer that \"Neural Rendering\" and \"Telepresence\" are both related to \"Spatial Computing.\" Therefore, the immediate parent concept could be \"Spatial Computing.\"\n\nThree broader ancestor concepts could be:\n1. **Spatial Computing**\n2. **Display and Rendering** (since Neural Rendering is a subclass of Computer Graphics, which is related to Display and Rendering)\n3. **Distributed Collaboration** (since Tel"
+    },
+    {
+      "unit_id": "mistral-small-24b|q0389|1",
+      "category": "n11",
+      "model": "mistral-small-24b",
+      "question_id": "q0389",
+      "template": "T-TAX",
+      "question": "In the DreamLab knowledge graph, what is the immediate parent concept of rb 0012 wheeled mobile robot? Also name up to three broader ancestor concepts.",
+      "gold_edge": "rb 0012 wheeled mobile robot --subClassOf--> Mobile Robot",
+      "gold_item": "Mobile Robot",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "\"Wheeled Mobile Robot.\"",
+      "answer_excerpt": "The immediate parent concept of \"rb 0012 wheeled mobile robot\" in the DreamLab knowledge graph is \"Wheeled Mobile Robot.\"\n\nThree broader ancestor concepts are:\n1. Robot Type\n2. Robotics\n3. Robot"
+    },
+    {
+      "unit_id": "qwen-2.5-72b|q0436|3",
+      "category": "n00",
+      "model": "qwen-2.5-72b",
+      "question_id": "q0436",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does WebAuthn enable?",
+      "gold_edge": "WebAuthn --enables--> Phishing Resistant Authentication",
+      "gold_item": "Phishing Resistant Authentication",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 1.0,
+      "quote": "Phishing Resistant Authentication",
+      "answer_excerpt": "According to the DreamLab knowledge graph, WebAuthn enables the following:\n\n- **Passwordless Authentication**: Users can be authenticated without the need to enter or remember a password.\n- **Privacy-Preserving Authentication**: The authentication process is designed to protect user privacy by minimizing the exposure of personal information.\n- **Multi-Factor Authentication (MFA)**: WebAuthn supports multi-factor authentication, enhancing security by requiring more than one method of verification.\n\nThese capabilities are achieved through the use of public-key cryptography and the integration wi"
+    },
+    {
+      "unit_id": "claude-haiku-4.5|q0149|3",
+      "category": "n11",
+      "model": "claude-haiku-4.5",
+      "question_id": "q0149",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what are the parts of Collaboration Platform?",
+      "gold_edge": "Collaboration Platform --hasPart--> Workflow Automation",
+      "gold_item": "Workflow Automation",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 0.95,
+      "quote": "workflow automation",
+      "answer_excerpt": "According to the ontology context provided, the **Collaboration Platform** has the following parts (hasPart):\n\n1. **Real Time Messaging** - The exchange of messages between participants with sub-second latency, enabling instantaneous and conversational communication.\n\n2. **Video Conferencing** - Real-time audio-visual communication technology enabling multiple geographically distributed participants to see and hear each other simultaneously through internet-connected devices.\n\n3. **Collaborative Document Editing** (referenced as \"tc 0002 collaborative document editing\")\n\nThese three components"
+    },
+    {
+      "unit_id": "qwen-2.5-72b|q0367|1",
+      "category": "n11",
+      "model": "qwen-2.5-72b",
+      "question_id": "q0367",
+      "template": "T-REL",
+      "question": "According to the DreamLab knowledge graph, what does TELE-050-neural-rendering-telepresence require?",
+      "gold_edge": "TELE-050-neural-rendering-telepresence --requires--> Novel View Synthesis",
+      "gold_item": "Novel View Synthesis",
+      "asserted": "name_only",
+      "required_or_alternative": "required",
+      "confidence": 0.95,
+      "quote": "Neural Radiance Fields (NeRF): To synthesize novel views and enhance scene representation.",
+      "answer_excerpt": "Based on the provided ontology context, the concept \"TELE-050-neural-rendering-telepresence\" is not explicitly defined. However, we can infer the requirements by combining the relevant aspects of Neural Rendering and Telepresence.\n\n### Neural Rendering Requirements:\n- **Graphics Processing Unit (GPU)**: For accelerating the rendering process.\n- **Implicit Neural Representation**: For encoding scene geometry and appearance.\n- **Deep Learning and Convolutional Neural Networks (CNNs)**: For training and inference.\n- **Gradient Descent and Ray Marching**: For optimization and rendering techniques."
+    }
+  ]
+}
