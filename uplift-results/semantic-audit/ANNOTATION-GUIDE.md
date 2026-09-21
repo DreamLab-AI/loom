@@ -26,6 +26,26 @@ of the unit id so the categories are interleaved. Do not consult `sample.jsonl` 
 | `human_quote` | shortest verbatim span of `model_answer` your label rests on; empty iff `absent` |
 | `human_notes` | free text, optional |
 
+## `unresolved` — a category of the audit, not of the rubric
+
+The six labels above are the only ones you choose from. `unresolved` is a seventh
+category the **audit** assigns afterwards, and you never write it yourself.
+
+It exists because a verdict has to be evidenced. Every non-`absent` label must cite
+a verbatim span of the answer. When a cited span cannot be found in the answer, the
+audit re-asks the adjudicator for a span that can — supplying the answer again and
+requiring a character-for-character copy. If a verifying span comes back, the
+verdict stands on the repaired evidence. If none does, the unit becomes
+`unresolved`: the label was not shown to be wrong, but it was not shown to be right
+either, so it is neither the original verdict nor `absent`, and the headline rates
+are reported three ways (unresolved counted against the matcher, for the matcher,
+and excluded) rather than picking one. This policy is applied to every failed
+citation in every stratum, so it never depends on which side a verdict favours.
+
+The same will apply to your annotations: fill `human_quote` with a span you have
+actually copied out of `model_answer`, and if you cannot find one, the label you
+want is almost certainly `absent`.
+
 ## The rubric (identical to the one given to the model judge)
 
 ```

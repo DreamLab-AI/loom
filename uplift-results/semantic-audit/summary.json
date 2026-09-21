@@ -1,6 +1,6 @@
 {
-  "what_this_is": "A focused, stratified audit of when the paper's lexical title matcher agrees with semantic answer correctness, and how it fails. THE ADJUDICATOR IS A LARGE LANGUAGE MODEL, NOT A HUMAN. No human has annotated any unit in this release; human-audit-sample.csv is prepared for that pass and is blind to both the matcher category and the model judge's verdict.",
-  "generated": "2026-09-21T14:46:17.631064+00:00",
+  "what_this_is": "A focused, stratified audit of when the paper's lexical title matcher agrees with semantic answer correctness, and how it fails. Protocol v1 (sections 3, 4, 9) is the earlier release, unchanged. Protocol v2 (sections 3A, 3B, 4A) adds the symmetric quote gate, the `unresolved` category, three-way sensitivity bounds and a stratified cluster bootstrap; section 12 audits the bare-arm recoveries behind the suppression result. THE ADJUDICATOR IS A LARGE LANGUAGE MODEL, NOT A HUMAN. No human has annotated any unit in this release; human-audit-sample.csv is prepared for that pass and is blind to both the matcher category and the model judge's verdict.",
+  "generated": "2026-09-21T15:42:51.948303+00:00",
   "judge": {
     "backend": "openrouter",
     "judge_base_url": "https://openrouter.ai/api/v1",
@@ -18,12 +18,12 @@
     "prompt_tokens": 0,
     "completion_tokens": 0,
     "cost_estimate_usd": 0.0,
-    "total_judge_calls": 425,
-    "total_prompt_tokens": 396229,
-    "total_completion_tokens": 17139,
-    "cost_estimate_usd_total": 0.9296,
+    "total_judge_calls": 549,
+    "total_prompt_tokens": 522142,
+    "total_completion_tokens": 22473,
+    "cost_estimate_usd_total": 1.2241,
     "cost_basis": "gpt-4.1 list price $2.00/M input, $8.00/M output. `cost_estimate_usd` covers the uncached calls of the last run only; `cost_estimate_usd_total` sums every call ever written to judge-cache.jsonl, which is what the audit actually cost to produce.",
-    "when": "2026-09-21T14:46:17.459873+00:00"
+    "when": "2026-09-21T15:41:49.909563+00:00"
   },
   "judge_family_caveat": "The judge is GPT-4.1, cross-family to the local Qwen model the Loom serves and to eight of the ten sweep models. It is the SAME family as gpt-4.1-mini, one of the ten, so that model's per-model row carries a self-preference risk the others do not; the per-model breakdown is reported so a reader can check it.",
   "rubric": "You are auditing whether a model's free-text answer actually ASSERTS a specific fact from a knowledge graph, or merely mentions a name.\n\nYou are given: a QUESTION about the DreamLab knowledge graph; the GOLD EDGE, which is the single graph fact being audited (subject, relation, target); the GOLD ITEM, which is that edge's target; the FULL GOLD SET for the question and whether the question requires ALL of them or ANY ONE of them; and the model's ANSWER.\n\nDecide what the ANSWER asserts about the GOLD ITEM, with respect to the relation the QUESTION asks for. Judge the answer's claims only; do not reward or punish style, length, hedging or extra correct material.\n\nField 1 - \"asserted\", exactly one of:\n  \"correct_relation\" - the answer states that the GOLD ITEM stands in the relation the question asks for, with the correct direction and no negation. Paraphrase, synonym and inflection count: \"relies on X\", \"X is a prerequisite\" and \"depends on X\" are the same assertion. A bare list offered as the answer to the question counts as asserting the relation for every item in it.\n  \"name_only\" - the GOLD ITEM's name (or an unambiguous paraphrase of it) appears in the answer, but the answer does not assert that it stands in the asked-for relation: e.g. it appears in a caveat, a restatement of the question, an aside, a different relation's list, an example of something else, or a list the answer explicitly declines to endorse.\n  \"wrong_relation\" - the answer places the GOLD ITEM in a DIFFERENT relation to the subject than the one asked for (e.g. the question asks what the subject enables and the answer says the subject depends on it, or calls it a sibling/synonym/part).\n  \"reversed\" - the answer asserts the asked-for relation but with subject and target swapped (e.g. asked \"what does A enable?\", the answer says the GOLD ITEM enables A).\n  \"negated\" - the answer explicitly denies the relation (e.g. \"A does not depend on the GOLD ITEM\", \"the GOLD ITEM is not among them\").\n  \"absent\" - the GOLD ITEM is not referred to at all, under any name.\n\nChoose the first label that fits in this order of precedence: negated, reversed, wrong_relation, correct_relation, name_only, absent.\n\nField 2 - \"required_or_alternative\", exactly one of:\n  \"required\" - a complete answer to the QUESTION must include the GOLD ITEM (the question requires ALL of the gold set, or the gold set has only this member).\n  \"alternative\" - the question accepts ANY ONE of several gold items, and the ANSWER satisfies the question by supplying a DIFFERENT member of the gold set instead. Use this only when the answer really does supply an accepted alternative.\n  \"n/a\" - the question accepts any one of several gold items, but the answer supplies none of them (so nothing was substituted).\n\nField 3 - \"confidence\", a number between 0 and 1: how sure you are of field 1.\n\nField 4 - \"quote\": the shortest verbatim span of the ANSWER your field-1 label rests on, copied exactly. Use the empty string \"\" if and only if field 1 is \"absent\".\n\nRespond with ONLY a JSON object and nothing else:\n{\"asserted\": \"...\", \"required_or_alternative\": \"...\", \"confidence\": 0.0, \"quote\": \"...\"}\n",
@@ -511,6 +511,1514 @@
       0.9224
     ],
     "overstatement_pp": 2.54
+  },
+  "quote_gate_v2": {
+    "policy": "One policy for every failed supporting quote in every stratum: re-ask the judge for a verbatim supporting span with the answer supplied again; if the re-asked span verifies, keep the verdict with the repaired evidence; if it still fails, the unit is `unresolved` - neither the original verdict nor `absent`. Acceptance is verbatim (whitespace-normalised) OR matcher-normalised containment, so the gate is never stricter than protocol v1.",
+    "per_unit_log": "quote-gate-v2.jsonl",
+    "reading_definitions": {
+      "unresolved_verdict_stands": "the original judge label is kept although its citation could not be repaired",
+      "unresolved_withdrawn": "the verdict that rested on the citation is withdrawn; the unit falls back to `absent` and any substitution claim is dropped",
+      "unresolved_excluded": "the unit leaves both numerator and denominator"
+    },
+    "n_adjudicated": 29,
+    "decisions": {
+      "repaired": 11,
+      "unresolved": 18
+    },
+    "by_category": {
+      "n00": {
+        "unresolved": 4
+      },
+      "n10": {
+        "unresolved": 14
+      },
+      "n11": {
+        "repaired": 11
+      }
+    },
+    "n_repaired_verbatim": 6,
+    "n_repaired_normalised_only": 5,
+    "n_conceded_no_span": 18,
+    "quote_reask_rubric_sha256_16": "0867909a4403300f",
+    "quote_reask_rubric": "You previously audited whether a model's free-text ANSWER asserts a specific fact from a knowledge graph about a GOLD ITEM. You recorded a verdict together with a supporting quotation. That quotation cannot be found in the ANSWER.\n\nYour only task now is to supply a supporting span, or to concede that none exists. Do not revise the recorded verdict; do not judge anything else.\n\nRules for the span:\n  * It MUST be copied from the ANSWER character for character. Only whitespace may be normalised: a run of spaces, tabs or newlines may be collapsed to a single space. Nothing else may change - not the case, not the punctuation, not the spelling, not the word order.\n  * Do not paraphrase, summarise, re-case, correct, abbreviate, expand, reorder or elide. Do not use \"...\" or any other ellipsis. Supply ONE contiguous span.\n  * The span must, on its own, support the RECORDED VERDICT about the GOLD ITEM.\n  * If the ANSWER contains no such span, reply with \"found\": false and an empty span. Conceding is the correct answer when the supporting text is simply not there. Do not invent a span and do not stretch an unrelated sentence to fit.\n\nRespond with ONLY a JSON object and nothing else:\n{\"found\": true, \"span\": \"the exact text, copied from the ANSWER\"}\nor\n{\"found\": false, \"span\": \"\"}\n",
+    "finding": "Protocol v1 kept the 11 failures in credited strata and demoted the 18 in uncredited strata, and the reviewer rightly called that asymmetric. Applying ONE policy to all 29 reproduces the same split from evidence rather than from assumption: every one of the 11 credited-stratum failures was repaired by a span that verifies, and on every one of the 18 uncredited-stratum failures the judge conceded that no supporting span exists. The v1 asymmetry was the right call; it is now earned."
+  },
+  "headline_rates_v2": {
+    "unresolved_verdict_stands": {
+      "matcher_credit_precision_correct_relation": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "matcher_credit_name_only": {
+        "k": 4,
+        "n": 240,
+        "p": 0.0167,
+        "ci95": [
+          0.0065,
+          0.0421
+        ]
+      },
+      "matcher_credit_relationally_wrong": {
+        "k": 1,
+        "n": 240,
+        "p": 0.0042,
+        "ci95": [
+          0.0007,
+          0.0232
+        ]
+      },
+      "matcher_credit_absent_judge_disagrees": {
+        "k": 2,
+        "n": 240,
+        "p": 0.0083,
+        "ci95": [
+          0.0023,
+          0.0299
+        ]
+      },
+      "n10_compliant_omission_rate": {
+        "k": 5,
+        "n": 120,
+        "p": 0.0417,
+        "ci95": [
+          0.0179,
+          0.0938
+        ]
+      },
+      "n10_judge_finds_item_asserted_anyway": {
+        "k": 3,
+        "n": 120,
+        "p": 0.025,
+        "ci95": [
+          0.0085,
+          0.0709
+        ]
+      },
+      "n10_matcher_false_negative_name_present": {
+        "k": 27,
+        "n": 120,
+        "p": 0.225,
+        "ci95": [
+          0.1595,
+          0.3076
+        ]
+      },
+      "n10_negated": {
+        "k": 5,
+        "n": 120,
+        "p": 0.0417,
+        "ci95": [
+          0.0179,
+          0.0938
+        ]
+      },
+      "n10_true_omission_rate": {
+        "k": 85,
+        "n": 120,
+        "p": 0.7083,
+        "ci95": [
+          0.6216,
+          0.7822
+        ]
+      },
+      "n00_absent_as_expected": {
+        "k": 52,
+        "n": 60,
+        "p": 0.8667,
+        "ci95": [
+          0.7583,
+          0.9309
+        ]
+      },
+      "n00_matcher_false_negative": {
+        "k": 0,
+        "n": 60,
+        "p": 0.0,
+        "ci95": [
+          0.0,
+          0.0602
+        ]
+      },
+      "n00_name_present_matcher_missed": {
+        "k": 8,
+        "n": 60,
+        "p": 0.1333,
+        "ci95": [
+          0.0691,
+          0.2417
+        ]
+      },
+      "n01_verdicts": {
+        "absent": 2,
+        "name_only": 1
+      }
+    },
+    "unresolved_withdrawn": {
+      "matcher_credit_precision_correct_relation": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "matcher_credit_name_only": {
+        "k": 4,
+        "n": 240,
+        "p": 0.0167,
+        "ci95": [
+          0.0065,
+          0.0421
+        ]
+      },
+      "matcher_credit_relationally_wrong": {
+        "k": 1,
+        "n": 240,
+        "p": 0.0042,
+        "ci95": [
+          0.0007,
+          0.0232
+        ]
+      },
+      "matcher_credit_absent_judge_disagrees": {
+        "k": 2,
+        "n": 240,
+        "p": 0.0083,
+        "ci95": [
+          0.0023,
+          0.0299
+        ]
+      },
+      "n10_compliant_omission_rate": {
+        "k": 2,
+        "n": 120,
+        "p": 0.0167,
+        "ci95": [
+          0.0046,
+          0.0587
+        ]
+      },
+      "n10_judge_finds_item_asserted_anyway": {
+        "k": 3,
+        "n": 120,
+        "p": 0.025,
+        "ci95": [
+          0.0085,
+          0.0709
+        ]
+      },
+      "n10_matcher_false_negative_name_present": {
+        "k": 13,
+        "n": 120,
+        "p": 0.1083,
+        "ci95": [
+          0.0644,
+          0.1766
+        ]
+      },
+      "n10_negated": {
+        "k": 5,
+        "n": 120,
+        "p": 0.0417,
+        "ci95": [
+          0.0179,
+          0.0938
+        ]
+      },
+      "n10_true_omission_rate": {
+        "k": 99,
+        "n": 120,
+        "p": 0.825,
+        "ci95": [
+          0.7472,
+          0.8826
+        ]
+      },
+      "n00_absent_as_expected": {
+        "k": 56,
+        "n": 60,
+        "p": 0.9333,
+        "ci95": [
+          0.8407,
+          0.9738
+        ]
+      },
+      "n00_matcher_false_negative": {
+        "k": 0,
+        "n": 60,
+        "p": 0.0,
+        "ci95": [
+          0.0,
+          0.0602
+        ]
+      },
+      "n00_name_present_matcher_missed": {
+        "k": 4,
+        "n": 60,
+        "p": 0.0667,
+        "ci95": [
+          0.0262,
+          0.1593
+        ]
+      },
+      "n01_verdicts": {
+        "absent": 2,
+        "name_only": 1
+      }
+    },
+    "unresolved_excluded": {
+      "matcher_credit_precision_correct_relation": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "matcher_credit_name_only": {
+        "k": 4,
+        "n": 240,
+        "p": 0.0167,
+        "ci95": [
+          0.0065,
+          0.0421
+        ]
+      },
+      "matcher_credit_relationally_wrong": {
+        "k": 1,
+        "n": 240,
+        "p": 0.0042,
+        "ci95": [
+          0.0007,
+          0.0232
+        ]
+      },
+      "matcher_credit_absent_judge_disagrees": {
+        "k": 2,
+        "n": 240,
+        "p": 0.0083,
+        "ci95": [
+          0.0023,
+          0.0299
+        ]
+      },
+      "n10_compliant_omission_rate": {
+        "k": 2,
+        "n": 106,
+        "p": 0.0189,
+        "ci95": [
+          0.0052,
+          0.0662
+        ]
+      },
+      "n10_judge_finds_item_asserted_anyway": {
+        "k": 3,
+        "n": 106,
+        "p": 0.0283,
+        "ci95": [
+          0.0097,
+          0.0799
+        ]
+      },
+      "n10_matcher_false_negative_name_present": {
+        "k": 13,
+        "n": 106,
+        "p": 0.1226,
+        "ci95": [
+          0.0731,
+          0.1986
+        ]
+      },
+      "n10_negated": {
+        "k": 5,
+        "n": 106,
+        "p": 0.0472,
+        "ci95": [
+          0.0203,
+          0.1057
+        ]
+      },
+      "n10_true_omission_rate": {
+        "k": 85,
+        "n": 106,
+        "p": 0.8019,
+        "ci95": [
+          0.716,
+          0.8666
+        ]
+      },
+      "n00_absent_as_expected": {
+        "k": 52,
+        "n": 56,
+        "p": 0.9286,
+        "ci95": [
+          0.8302,
+          0.9719
+        ]
+      },
+      "n00_matcher_false_negative": {
+        "k": 0,
+        "n": 56,
+        "p": 0.0,
+        "ci95": [
+          0.0,
+          0.0642
+        ]
+      },
+      "n00_name_present_matcher_missed": {
+        "k": 4,
+        "n": 56,
+        "p": 0.0714,
+        "ci95": [
+          0.0281,
+          0.1698
+        ]
+      },
+      "n01_verdicts": {
+        "absent": 2,
+        "name_only": 1
+      }
+    }
+  },
+  "headline_rates_v2_bounds": {
+    "matcher_credit_precision_correct_relation": {
+      "against_matcher": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "against_matcher_reading": "unresolved_withdrawn",
+      "for_matcher": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "for_matcher_reading": "unresolved_verdict_stands",
+      "excluded": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      }
+    },
+    "matcher_credit_name_only": {
+      "against_matcher": {
+        "k": 4,
+        "n": 240,
+        "p": 0.0167,
+        "ci95": [
+          0.0065,
+          0.0421
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 4,
+        "n": 240,
+        "p": 0.0167,
+        "ci95": [
+          0.0065,
+          0.0421
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 4,
+        "n": 240,
+        "p": 0.0167,
+        "ci95": [
+          0.0065,
+          0.0421
+        ]
+      }
+    },
+    "matcher_credit_relationally_wrong": {
+      "against_matcher": {
+        "k": 1,
+        "n": 240,
+        "p": 0.0042,
+        "ci95": [
+          0.0007,
+          0.0232
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 1,
+        "n": 240,
+        "p": 0.0042,
+        "ci95": [
+          0.0007,
+          0.0232
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 1,
+        "n": 240,
+        "p": 0.0042,
+        "ci95": [
+          0.0007,
+          0.0232
+        ]
+      }
+    },
+    "matcher_credit_absent_judge_disagrees": {
+      "against_matcher": {
+        "k": 2,
+        "n": 240,
+        "p": 0.0083,
+        "ci95": [
+          0.0023,
+          0.0299
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 2,
+        "n": 240,
+        "p": 0.0083,
+        "ci95": [
+          0.0023,
+          0.0299
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 2,
+        "n": 240,
+        "p": 0.0083,
+        "ci95": [
+          0.0023,
+          0.0299
+        ]
+      }
+    },
+    "n10_compliant_omission_rate": {
+      "against_matcher": {
+        "k": 5,
+        "n": 120,
+        "p": 0.0417,
+        "ci95": [
+          0.0179,
+          0.0938
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 2,
+        "n": 120,
+        "p": 0.0167,
+        "ci95": [
+          0.0046,
+          0.0587
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 2,
+        "n": 106,
+        "p": 0.0189,
+        "ci95": [
+          0.0052,
+          0.0662
+        ]
+      }
+    },
+    "n10_judge_finds_item_asserted_anyway": {
+      "against_matcher": {
+        "k": 3,
+        "n": 120,
+        "p": 0.025,
+        "ci95": [
+          0.0085,
+          0.0709
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 3,
+        "n": 120,
+        "p": 0.025,
+        "ci95": [
+          0.0085,
+          0.0709
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 3,
+        "n": 106,
+        "p": 0.0283,
+        "ci95": [
+          0.0097,
+          0.0799
+        ]
+      }
+    },
+    "n10_matcher_false_negative_name_present": {
+      "against_matcher": {
+        "k": 27,
+        "n": 120,
+        "p": 0.225,
+        "ci95": [
+          0.1595,
+          0.3076
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 13,
+        "n": 120,
+        "p": 0.1083,
+        "ci95": [
+          0.0644,
+          0.1766
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 13,
+        "n": 106,
+        "p": 0.1226,
+        "ci95": [
+          0.0731,
+          0.1986
+        ]
+      }
+    },
+    "n10_negated": {
+      "against_matcher": {
+        "k": 5,
+        "n": 120,
+        "p": 0.0417,
+        "ci95": [
+          0.0179,
+          0.0938
+        ]
+      },
+      "against_matcher_reading": "unresolved_withdrawn",
+      "for_matcher": {
+        "k": 5,
+        "n": 120,
+        "p": 0.0417,
+        "ci95": [
+          0.0179,
+          0.0938
+        ]
+      },
+      "for_matcher_reading": "unresolved_verdict_stands",
+      "excluded": {
+        "k": 5,
+        "n": 106,
+        "p": 0.0472,
+        "ci95": [
+          0.0203,
+          0.1057
+        ]
+      }
+    },
+    "n10_true_omission_rate": {
+      "against_matcher": {
+        "k": 85,
+        "n": 120,
+        "p": 0.7083,
+        "ci95": [
+          0.6216,
+          0.7822
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 99,
+        "n": 120,
+        "p": 0.825,
+        "ci95": [
+          0.7472,
+          0.8826
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 85,
+        "n": 106,
+        "p": 0.8019,
+        "ci95": [
+          0.716,
+          0.8666
+        ]
+      }
+    },
+    "n00_absent_as_expected": {
+      "against_matcher": {
+        "k": 52,
+        "n": 60,
+        "p": 0.8667,
+        "ci95": [
+          0.7583,
+          0.9309
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 56,
+        "n": 60,
+        "p": 0.9333,
+        "ci95": [
+          0.8407,
+          0.9738
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 52,
+        "n": 56,
+        "p": 0.9286,
+        "ci95": [
+          0.8302,
+          0.9719
+        ]
+      }
+    },
+    "n00_matcher_false_negative": {
+      "against_matcher": {
+        "k": 0,
+        "n": 60,
+        "p": 0.0,
+        "ci95": [
+          0.0,
+          0.0602
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 0,
+        "n": 60,
+        "p": 0.0,
+        "ci95": [
+          0.0,
+          0.0602
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 0,
+        "n": 56,
+        "p": 0.0,
+        "ci95": [
+          0.0,
+          0.0642
+        ]
+      }
+    },
+    "n00_name_present_matcher_missed": {
+      "against_matcher": {
+        "k": 8,
+        "n": 60,
+        "p": 0.1333,
+        "ci95": [
+          0.0691,
+          0.2417
+        ]
+      },
+      "against_matcher_reading": "unresolved_verdict_stands",
+      "for_matcher": {
+        "k": 4,
+        "n": 60,
+        "p": 0.0667,
+        "ci95": [
+          0.0262,
+          0.1593
+        ]
+      },
+      "for_matcher_reading": "unresolved_withdrawn",
+      "excluded": {
+        "k": 4,
+        "n": 56,
+        "p": 0.0714,
+        "ci95": [
+          0.0281,
+          0.1698
+        ]
+      }
+    }
+  },
+  "corrected_estimate_v2": {
+    "unresolved_verdict_stands": {
+      "reading": "unresolved_verdict_stands",
+      "n11_sampled": 240,
+      "n10_sampled": 120,
+      "p11": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "p10": {
+        "k": 3,
+        "n": 120,
+        "p": 0.025,
+        "ci95": [
+          0.0085,
+          0.0709
+        ]
+      },
+      "matcher_credit_rate_context_utilisation": 0.9307,
+      "corrected_relational_correctness_of_exposed_items": 0.9052,
+      "naive_ci95_propagated_wilson": [
+        0.8763,
+        0.9224
+      ],
+      "cluster_bootstrap_question": {
+        "cluster": "question_id",
+        "n_clusters_n11": 184,
+        "n_clusters_n10": 59,
+        "draws": 10000,
+        "seed": 42,
+        "ci95": [
+          0.884,
+          0.9231
+        ],
+        "bootstrap_mean": 0.9054,
+        "bootstrap_sd": 0.0101
+      },
+      "cluster_bootstrap_model": {
+        "cluster": "model",
+        "n_clusters_n11": 10,
+        "n_clusters_n10": 10,
+        "draws": 10000,
+        "seed": 42,
+        "ci95": [
+          0.8856,
+          0.9235
+        ],
+        "bootstrap_mean": 0.9052,
+        "bootstrap_sd": 0.0097
+      },
+      "overstatement_pp": 2.54
+    },
+    "unresolved_withdrawn": {
+      "reading": "unresolved_withdrawn",
+      "n11_sampled": 240,
+      "n10_sampled": 120,
+      "p11": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "p10": {
+        "k": 3,
+        "n": 120,
+        "p": 0.025,
+        "ci95": [
+          0.0085,
+          0.0709
+        ]
+      },
+      "matcher_credit_rate_context_utilisation": 0.9307,
+      "corrected_relational_correctness_of_exposed_items": 0.9052,
+      "naive_ci95_propagated_wilson": [
+        0.8763,
+        0.9224
+      ],
+      "cluster_bootstrap_question": {
+        "cluster": "question_id",
+        "n_clusters_n11": 184,
+        "n_clusters_n10": 59,
+        "draws": 10000,
+        "seed": 42,
+        "ci95": [
+          0.884,
+          0.9231
+        ],
+        "bootstrap_mean": 0.9054,
+        "bootstrap_sd": 0.0101
+      },
+      "cluster_bootstrap_model": {
+        "cluster": "model",
+        "n_clusters_n11": 10,
+        "n_clusters_n10": 10,
+        "draws": 10000,
+        "seed": 42,
+        "ci95": [
+          0.8856,
+          0.9235
+        ],
+        "bootstrap_mean": 0.9052,
+        "bootstrap_sd": 0.0097
+      },
+      "overstatement_pp": 2.54
+    },
+    "unresolved_excluded": {
+      "reading": "unresolved_excluded",
+      "n11_sampled": 240,
+      "n10_sampled": 106,
+      "p11": {
+        "k": 233,
+        "n": 240,
+        "p": 0.9708,
+        "ci95": [
+          0.941,
+          0.9858
+        ]
+      },
+      "p10": {
+        "k": 3,
+        "n": 106,
+        "p": 0.0283,
+        "ci95": [
+          0.0097,
+          0.0799
+        ]
+      },
+      "matcher_credit_rate_context_utilisation": 0.9307,
+      "corrected_relational_correctness_of_exposed_items": 0.9054,
+      "naive_ci95_propagated_wilson": [
+        0.8764,
+        0.923
+      ],
+      "cluster_bootstrap_question": {
+        "cluster": "question_id",
+        "n_clusters_n11": 184,
+        "n_clusters_n10": 57,
+        "draws": 10000,
+        "seed": 42,
+        "ci95": [
+          0.8844,
+          0.9232
+        ],
+        "bootstrap_mean": 0.9056,
+        "bootstrap_sd": 0.01
+      },
+      "cluster_bootstrap_model": {
+        "cluster": "model",
+        "n_clusters_n11": 10,
+        "n_clusters_n10": 10,
+        "draws": 10000,
+        "seed": 42,
+        "ci95": [
+          0.8858,
+          0.9236
+        ],
+        "bootstrap_mean": 0.9055,
+        "bootstrap_sd": 0.0097
+      },
+      "overstatement_pp": 2.52
+    }
+  },
+  "corrected_estimate_v2_bounds": {
+    "against_matcher": "unresolved_verdict_stands",
+    "for_matcher": "unresolved_excluded",
+    "range": [
+      0.9052,
+      0.9054
+    ]
+  },
+  "corrected_estimate_uncertainty": "Estimator. The frame holds N11 = 9,865 exposed-and-credited and N10 = 735 exposed-and-omitted gold-item slots, N11 + N10 = 10,600 exposed slots. Each stratum is sampled at its own rate (240 of 9,865 and 120 of 735), so the corrected relational-correctness rate of exposed items is the frame-weighted combination of the two judged stratum rates:\n\n    R = (9865 * p11 + 735 * p10) / 10600\n\nwhere p11 = P(the answer asserts the gold edge | the matcher credited it) and p10 = P(the answer asserts the gold edge | the matcher scored it omitted), both estimated on the stratified sample. Interval: a stratified cluster bootstrap. Within each stratum the QUESTION is resampled with replacement (not the unit), because one question contributes several gold items and a gold item's target is fixed by its question; both stratum rates are recomputed on each draw and recombined through the same weights, so the interval carries the sampling weights, the uncertainty in BOTH rates, and the within-question clustering. 10,000 draws, seed 42, percentile method. A model-clustered bootstrap is reported beside it as a robustness bound. R is an ESTIMATE under this adjudicator (openai/gpt-4.1, temperature 0) and this protocol, on this sample. It is not a measurement of truth, it is not human-validated, and a different judge or rubric would move it.",
+  "camelcase_mechanism": {
+    "budget": 1500,
+    "what_this_is": "Exactly what the run-together gold titles cost the matcher, frame-wide.\n\nThe paper's earlier wording (\"no spaced answer can match it\") described the normalisation correctly but implied the units were lost. They are not: the scaffold presents the title in its run-together form and the models copy that form, so most of these units are credited. This census separates the three outcomes per unit - credited by verbatim substring, credited only via the loose word-bag path, or omitted - and, for each omission, whether the answer contains the SPACED form of the title (the matcher evaded) or does not mention it at all (a genuine omission).",
+    "n_titles": 7,
+    "titles": [
+      "DeFi",
+      "EdDSA",
+      "GraphQL",
+      "MultiAccessEdgeComputing",
+      "OpenXR",
+      "SustainabilityReporting",
+      "WebRTC"
+    ],
+    "totals": {
+      "frame_units": 70,
+      "credited": 58,
+      "credited_verbatim_substring": 58,
+      "credited_word_bag_only": 0,
+      "omitted": 12,
+      "omitted_spaced_form_present": 10,
+      "omitted_not_mentioned": 2
+    },
+    "per_title": [
+      {
+        "title": "DeFi",
+        "spaced_form": "De Fi",
+        "frame_units": 10,
+        "credited": 10,
+        "credited_verbatim_substring": 10,
+        "credited_word_bag_only": 0,
+        "omitted": 0,
+        "omitted_spaced_form_present": 0,
+        "omitted_not_mentioned": 0
+      },
+      {
+        "title": "EdDSA",
+        "spaced_form": "Ed DSA",
+        "frame_units": 10,
+        "credited": 9,
+        "credited_verbatim_substring": 9,
+        "credited_word_bag_only": 0,
+        "omitted": 1,
+        "omitted_spaced_form_present": 0,
+        "omitted_not_mentioned": 1
+      },
+      {
+        "title": "GraphQL",
+        "spaced_form": "Graph QL",
+        "frame_units": 10,
+        "credited": 9,
+        "credited_verbatim_substring": 9,
+        "credited_word_bag_only": 0,
+        "omitted": 1,
+        "omitted_spaced_form_present": 0,
+        "omitted_not_mentioned": 1
+      },
+      {
+        "title": "MultiAccessEdgeComputing",
+        "spaced_form": "Multi Access Edge Computing",
+        "frame_units": 10,
+        "credited": 9,
+        "credited_verbatim_substring": 9,
+        "credited_word_bag_only": 0,
+        "omitted": 1,
+        "omitted_spaced_form_present": 1,
+        "omitted_not_mentioned": 0
+      },
+      {
+        "title": "OpenXR",
+        "spaced_form": "Open XR",
+        "frame_units": 10,
+        "credited": 10,
+        "credited_verbatim_substring": 10,
+        "credited_word_bag_only": 0,
+        "omitted": 0,
+        "omitted_spaced_form_present": 0,
+        "omitted_not_mentioned": 0
+      },
+      {
+        "title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "frame_units": 10,
+        "credited": 1,
+        "credited_verbatim_substring": 1,
+        "credited_word_bag_only": 0,
+        "omitted": 9,
+        "omitted_spaced_form_present": 9,
+        "omitted_not_mentioned": 0
+      },
+      {
+        "title": "WebRTC",
+        "spaced_form": "Web RTC",
+        "frame_units": 10,
+        "credited": 10,
+        "credited_verbatim_substring": 10,
+        "credited_word_bag_only": 0,
+        "omitted": 0,
+        "omitted_spaced_form_present": 0,
+        "omitted_not_mentioned": 0
+      }
+    ],
+    "omissions": [
+      {
+        "unit_id": "claude-haiku-4.5|q0110|1",
+        "model": "claude-haiku-4.5",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "deepseek-chat|q0110|1",
+        "model": "deepseek-chat",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "deepseek-chat|q0420|1",
+        "model": "deepseek-chat",
+        "question_id": "q0420",
+        "gold_title": "EdDSA",
+        "spaced_form": "Ed DSA",
+        "spaced_form_present_in_answer": false
+      },
+      {
+        "unit_id": "gemini-2.5-flash-lite|q0110|1",
+        "model": "gemini-2.5-flash-lite",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "gemini-2.5-flash-lite|q0160|2",
+        "model": "gemini-2.5-flash-lite",
+        "question_id": "q0160",
+        "gold_title": "GraphQL",
+        "spaced_form": "Graph QL",
+        "spaced_form_present_in_answer": false
+      },
+      {
+        "unit_id": "gemini-3.5-flash-lite|q0110|1",
+        "model": "gemini-3.5-flash-lite",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "glm-4.6|q0110|1",
+        "model": "glm-4.6",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "gpt-4.1-mini|q0110|1",
+        "model": "gpt-4.1-mini",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "llama-3.3-70b|q0110|1",
+        "model": "llama-3.3-70b",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "mistral-small-24b|q0110|1",
+        "model": "mistral-small-24b",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0110|1",
+        "model": "qwen-2.5-72b",
+        "question_id": "q0110",
+        "gold_title": "SustainabilityReporting",
+        "spaced_form": "Sustainability Reporting",
+        "spaced_form_present_in_answer": true
+      },
+      {
+        "unit_id": "qwen-2.5-72b|q0478|1",
+        "model": "qwen-2.5-72b",
+        "question_id": "q0478",
+        "gold_title": "MultiAccessEdgeComputing",
+        "spaced_form": "Multi Access Edge Computing",
+        "spaced_form_present_in_answer": true
+      }
+    ],
+    "mechanism": "58 of the 70 frame units carrying a run-together gold title ARE credited, and every one of them by a verbatim substring hit (58 of 58; 0 via the loose word-bag path): the model reproduced the run-together form the scaffold put in front of it, so `normalise`'s refusal to split camel case never bit. The mechanism bites only on the 12 omitted units, and there on the 10 where the answer does contain the SPACED form of the title and the matcher cannot see it; the remaining 2 do not mention the item under any spelling and are genuine omissions. The defect therefore costs 10 units of 11,360, not 70, and those come from 2 of the 7 run-together titles `MultiAccessEdgeComputing`, `SustainabilityReporting`. The remaining titles are conventional unspaced proper nouns (`DeFi`, `WebRTC`, `OpenXR`, `EdDSA`, `GraphQL` are written that way in the field), which is why models reproduce them exactly and the matcher never misses them."
+  },
+  "raw_hits_audit": {
+    "what_this_is": "The 92 raw-arm lexical recoveries, judged, plus the relational version of the suppression comparison.\n\nThe paper's suppression result is lexical: on the 760 unexposed gold-item slots the BARE model lexically recovers 92 and the GROUNDED model 3. That compares name hits. This block asks the harder question of both arms - does the answer assert the correct relation, or does it only name the target? - and restates the comparison on relational recoveries.",
+    "judge": {
+      "model": "openai/gpt-4.1",
+      "backend": "openrouter",
+      "temperature": 0,
+      "rubric_sha256_16": "2895842241850808",
+      "is_model_not_human": true
+    },
+    "n_unexposed_item_slots": 760,
+    "n_raw_lexical_recoveries": 92,
+    "count_verified": true,
+    "quote_gate": {
+      "repaired": 2,
+      "unresolved": 1
+    },
+    "by_reading": {
+      "unresolved_verdict_stands": {
+        "n_judged": 92,
+        "verdicts": {
+          "absent": 6,
+          "correct_relation": 71,
+          "name_only": 15
+        },
+        "relationally_correct": {
+          "k": 71,
+          "n": 92,
+          "p": 0.7717,
+          "ci95": [
+            0.6761,
+            0.8456
+          ]
+        },
+        "name_only": {
+          "k": 15,
+          "n": 92,
+          "p": 0.163,
+          "ci95": [
+            0.1014,
+            0.2517
+          ]
+        },
+        "wrong_or_reversed_or_negated": {
+          "k": 0,
+          "n": 92,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.0401
+          ]
+        },
+        "absent": {
+          "k": 6,
+          "n": 92,
+          "p": 0.0652,
+          "ci95": [
+            0.0302,
+            0.1351
+          ]
+        },
+        "relational_recoveries_per_unexposed_slot": {
+          "k": 71,
+          "n": 760,
+          "p": 0.0934,
+          "ci95": [
+            0.0747,
+            0.1162
+          ]
+        }
+      },
+      "unresolved_withdrawn": {
+        "n_judged": 92,
+        "verdicts": {
+          "absent": 7,
+          "correct_relation": 71,
+          "name_only": 14
+        },
+        "relationally_correct": {
+          "k": 71,
+          "n": 92,
+          "p": 0.7717,
+          "ci95": [
+            0.6761,
+            0.8456
+          ]
+        },
+        "name_only": {
+          "k": 14,
+          "n": 92,
+          "p": 0.1522,
+          "ci95": [
+            0.0929,
+            0.2394
+          ]
+        },
+        "wrong_or_reversed_or_negated": {
+          "k": 0,
+          "n": 92,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.0401
+          ]
+        },
+        "absent": {
+          "k": 7,
+          "n": 92,
+          "p": 0.0761,
+          "ci95": [
+            0.0373,
+            0.1488
+          ]
+        },
+        "relational_recoveries_per_unexposed_slot": {
+          "k": 71,
+          "n": 760,
+          "p": 0.0934,
+          "ci95": [
+            0.0747,
+            0.1162
+          ]
+        }
+      },
+      "unresolved_excluded": {
+        "n_judged": 91,
+        "verdicts": {
+          "absent": 6,
+          "correct_relation": 71,
+          "name_only": 14
+        },
+        "relationally_correct": {
+          "k": 71,
+          "n": 91,
+          "p": 0.7802,
+          "ci95": [
+            0.6848,
+            0.853
+          ]
+        },
+        "name_only": {
+          "k": 14,
+          "n": 91,
+          "p": 0.1538,
+          "ci95": [
+            0.0939,
+            0.2418
+          ]
+        },
+        "wrong_or_reversed_or_negated": {
+          "k": 0,
+          "n": 91,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.0405
+          ]
+        },
+        "absent": {
+          "k": 6,
+          "n": 91,
+          "p": 0.0659,
+          "ci95": [
+            0.0306,
+            0.1365
+          ]
+        },
+        "relational_recoveries_per_unexposed_slot": {
+          "k": 71,
+          "n": 759,
+          "p": 0.0935,
+          "ci95": [
+            0.0748,
+            0.1164
+          ]
+        }
+      }
+    },
+    "relationally_correct_bounds": {
+      "against_matcher": {
+        "k": 71,
+        "n": 92,
+        "p": 0.7717,
+        "ci95": [
+          0.6761,
+          0.8456
+        ]
+      },
+      "for_matcher": {
+        "k": 71,
+        "n": 91,
+        "p": 0.7802,
+        "ci95": [
+          0.6848,
+          0.853
+        ]
+      },
+      "excluded": {
+        "k": 71,
+        "n": 91,
+        "p": 0.7802,
+        "ci95": [
+          0.6848,
+          0.853
+        ]
+      }
+    },
+    "per_model": {
+      "claude-haiku-4.5": {
+        "n_raw_lexical_recoveries": 3,
+        "verdicts": {
+          "correct_relation": 2,
+          "name_only": 1
+        },
+        "relationally_correct": 2
+      },
+      "deepseek-chat": {
+        "n_raw_lexical_recoveries": 13,
+        "verdicts": {
+          "absent": 1,
+          "correct_relation": 9,
+          "name_only": 3
+        },
+        "relationally_correct": 9
+      },
+      "gemini-2.5-flash-lite": {
+        "n_raw_lexical_recoveries": 6,
+        "verdicts": {
+          "absent": 1,
+          "correct_relation": 5
+        },
+        "relationally_correct": 5
+      },
+      "gemini-3.5-flash-lite": {
+        "n_raw_lexical_recoveries": 10,
+        "verdicts": {
+          "absent": 1,
+          "correct_relation": 7,
+          "name_only": 2
+        },
+        "relationally_correct": 7
+      },
+      "gemini-3.7-flash": {
+        "n_raw_lexical_recoveries": 14,
+        "verdicts": {
+          "absent": 1,
+          "correct_relation": 8,
+          "name_only": 5
+        },
+        "relationally_correct": 8
+      },
+      "glm-4.6": {
+        "n_raw_lexical_recoveries": 12,
+        "verdicts": {
+          "absent": 2,
+          "correct_relation": 8,
+          "name_only": 1,
+          "unresolved": 1
+        },
+        "relationally_correct": 8
+      },
+      "gpt-4.1-mini": {
+        "n_raw_lexical_recoveries": 1,
+        "verdicts": {
+          "correct_relation": 1
+        },
+        "relationally_correct": 1
+      },
+      "llama-3.3-70b": {
+        "n_raw_lexical_recoveries": 9,
+        "verdicts": {
+          "correct_relation": 8,
+          "name_only": 1
+        },
+        "relationally_correct": 8
+      },
+      "mistral-small-24b": {
+        "n_raw_lexical_recoveries": 10,
+        "verdicts": {
+          "correct_relation": 10
+        },
+        "relationally_correct": 10
+      },
+      "qwen-2.5-72b": {
+        "n_raw_lexical_recoveries": 14,
+        "verdicts": {
+          "correct_relation": 13,
+          "name_only": 1
+        },
+        "relationally_correct": 13
+      }
+    },
+    "grounded_arm_n01_under_v2_gate": {
+      "units": [
+        {
+          "unit_id": "claude-haiku-4.5|q0055|3",
+          "model": "claude-haiku-4.5",
+          "question_id": "q0055",
+          "gold_title": "Nearest Neighbor Search",
+          "asserted": "absent",
+          "gate_decision": "ok",
+          "asserted_after_gate": "absent"
+        },
+        {
+          "unit_id": "mistral-small-24b|q0055|3",
+          "model": "mistral-small-24b",
+          "question_id": "q0055",
+          "gold_title": "Nearest Neighbor Search",
+          "asserted": "absent",
+          "gate_decision": "ok",
+          "asserted_after_gate": "absent"
+        },
+        {
+          "unit_id": "qwen-2.5-72b|q0055|3",
+          "model": "qwen-2.5-72b",
+          "question_id": "q0055",
+          "gold_title": "Nearest Neighbor Search",
+          "asserted": "name_only",
+          "gate_decision": "ok",
+          "asserted_after_gate": "name_only"
+        }
+      ],
+      "n_lexical_credits": 3,
+      "n_relationally_correct": 0,
+      "note": "The grounded arm's unexposed-yet-credited census is 3 units in the whole released sweep. Under the v2 gate 0 of them assert the gold relation, so precision on that census is zero: the three lexical credits are two items the judge cannot find at all and one named without the relation."
+    },
+    "relational_suppression_comparison": {
+      "definition": "Recoveries of gold items the deterministic scaffold does not expose, per 760 unexposed item-slots, bare arm vs grounded arm. The lexical row is the paper's published comparison; the relational row requires the answer to assert the gold edge, not merely to name the target.",
+      "lexical": {
+        "raw": {
+          "k": 92,
+          "n": 760,
+          "p": 0.1211,
+          "ci95": [
+            0.0997,
+            0.1462
+          ]
+        },
+        "grounded": {
+          "k": 3,
+          "n": 760,
+          "p": 0.0039,
+          "ci95": [
+            0.0013,
+            0.0115
+          ]
+        }
+      },
+      "relational": {
+        "raw": {
+          "k": 71,
+          "n": 760,
+          "p": 0.0934,
+          "ci95": [
+            0.0747,
+            0.1162
+          ]
+        },
+        "raw_sensitivity_excluded": {
+          "k": 71,
+          "n": 759,
+          "p": 0.0935,
+          "ci95": [
+            0.0748,
+            0.1164
+          ]
+        },
+        "grounded": {
+          "k": 0,
+          "n": 760,
+          "p": 0.0,
+          "ci95": [
+            0.0,
+            0.005
+          ]
+        }
+      },
+      "reading": "Of the 92 bare-arm lexical recoveries, 71 assert the correct relation, so the suppression comparison restated relationally is 71/760 bare versus 0/760 grounded. Relational adjudication costs the bare arm 21 of its 92 credits and the grounded arm all 3 of its 3; the direction and the near-total suppression survive, and the grounded side goes to exactly zero."
+    }
   },
   "judge_reliability": {
     "definition": "Every non-`absent` verdict must cite a verbatim span of the answer. This check normalises both (lowercase, strip punctuation, collapse whitespace \u2014 the matcher's own `normalise`) and asks whether the cited span, or every fragment of an elided span, actually occurs in the answer. A failure means one of two things. In a CREDITED stratum (n11/n01) the matcher has already established that the title occurs, and inspection shows these are abridged list reconstructions \u2014 the judge quotes a list but drops the gloss between entries; the verdict stands and only the citation is loose (`abridged_citation`). In an UNCREDITED stratum (n10/n00) the matcher says the title does not occur, so the quote is the whole of the judge's evidence for the contrary claim; if that span is not in the answer the claim is unsupported (`unsupported_citation`) and the conservative reading demotes it to `absent`.",

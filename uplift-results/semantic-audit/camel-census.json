@@ -1,0 +1,201 @@
+{
+  "budget": 1500,
+  "what_this_is": "Exactly what the run-together gold titles cost the matcher, frame-wide.\n\nThe paper's earlier wording (\"no spaced answer can match it\") described the normalisation correctly but implied the units were lost. They are not: the scaffold presents the title in its run-together form and the models copy that form, so most of these units are credited. This census separates the three outcomes per unit - credited by verbatim substring, credited only via the loose word-bag path, or omitted - and, for each omission, whether the answer contains the SPACED form of the title (the matcher evaded) or does not mention it at all (a genuine omission).",
+  "n_titles": 7,
+  "titles": [
+    "DeFi",
+    "EdDSA",
+    "GraphQL",
+    "MultiAccessEdgeComputing",
+    "OpenXR",
+    "SustainabilityReporting",
+    "WebRTC"
+  ],
+  "totals": {
+    "frame_units": 70,
+    "credited": 58,
+    "credited_verbatim_substring": 58,
+    "credited_word_bag_only": 0,
+    "omitted": 12,
+    "omitted_spaced_form_present": 10,
+    "omitted_not_mentioned": 2
+  },
+  "per_title": [
+    {
+      "title": "DeFi",
+      "spaced_form": "De Fi",
+      "frame_units": 10,
+      "credited": 10,
+      "credited_verbatim_substring": 10,
+      "credited_word_bag_only": 0,
+      "omitted": 0,
+      "omitted_spaced_form_present": 0,
+      "omitted_not_mentioned": 0
+    },
+    {
+      "title": "EdDSA",
+      "spaced_form": "Ed DSA",
+      "frame_units": 10,
+      "credited": 9,
+      "credited_verbatim_substring": 9,
+      "credited_word_bag_only": 0,
+      "omitted": 1,
+      "omitted_spaced_form_present": 0,
+      "omitted_not_mentioned": 1
+    },
+    {
+      "title": "GraphQL",
+      "spaced_form": "Graph QL",
+      "frame_units": 10,
+      "credited": 9,
+      "credited_verbatim_substring": 9,
+      "credited_word_bag_only": 0,
+      "omitted": 1,
+      "omitted_spaced_form_present": 0,
+      "omitted_not_mentioned": 1
+    },
+    {
+      "title": "MultiAccessEdgeComputing",
+      "spaced_form": "Multi Access Edge Computing",
+      "frame_units": 10,
+      "credited": 9,
+      "credited_verbatim_substring": 9,
+      "credited_word_bag_only": 0,
+      "omitted": 1,
+      "omitted_spaced_form_present": 1,
+      "omitted_not_mentioned": 0
+    },
+    {
+      "title": "OpenXR",
+      "spaced_form": "Open XR",
+      "frame_units": 10,
+      "credited": 10,
+      "credited_verbatim_substring": 10,
+      "credited_word_bag_only": 0,
+      "omitted": 0,
+      "omitted_spaced_form_present": 0,
+      "omitted_not_mentioned": 0
+    },
+    {
+      "title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "frame_units": 10,
+      "credited": 1,
+      "credited_verbatim_substring": 1,
+      "credited_word_bag_only": 0,
+      "omitted": 9,
+      "omitted_spaced_form_present": 9,
+      "omitted_not_mentioned": 0
+    },
+    {
+      "title": "WebRTC",
+      "spaced_form": "Web RTC",
+      "frame_units": 10,
+      "credited": 10,
+      "credited_verbatim_substring": 10,
+      "credited_word_bag_only": 0,
+      "omitted": 0,
+      "omitted_spaced_form_present": 0,
+      "omitted_not_mentioned": 0
+    }
+  ],
+  "omissions": [
+    {
+      "unit_id": "claude-haiku-4.5|q0110|1",
+      "model": "claude-haiku-4.5",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "deepseek-chat|q0110|1",
+      "model": "deepseek-chat",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "deepseek-chat|q0420|1",
+      "model": "deepseek-chat",
+      "question_id": "q0420",
+      "gold_title": "EdDSA",
+      "spaced_form": "Ed DSA",
+      "spaced_form_present_in_answer": false
+    },
+    {
+      "unit_id": "gemini-2.5-flash-lite|q0110|1",
+      "model": "gemini-2.5-flash-lite",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "gemini-2.5-flash-lite|q0160|2",
+      "model": "gemini-2.5-flash-lite",
+      "question_id": "q0160",
+      "gold_title": "GraphQL",
+      "spaced_form": "Graph QL",
+      "spaced_form_present_in_answer": false
+    },
+    {
+      "unit_id": "gemini-3.5-flash-lite|q0110|1",
+      "model": "gemini-3.5-flash-lite",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "glm-4.6|q0110|1",
+      "model": "glm-4.6",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "gpt-4.1-mini|q0110|1",
+      "model": "gpt-4.1-mini",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "llama-3.3-70b|q0110|1",
+      "model": "llama-3.3-70b",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "mistral-small-24b|q0110|1",
+      "model": "mistral-small-24b",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "qwen-2.5-72b|q0110|1",
+      "model": "qwen-2.5-72b",
+      "question_id": "q0110",
+      "gold_title": "SustainabilityReporting",
+      "spaced_form": "Sustainability Reporting",
+      "spaced_form_present_in_answer": true
+    },
+    {
+      "unit_id": "qwen-2.5-72b|q0478|1",
+      "model": "qwen-2.5-72b",
+      "question_id": "q0478",
+      "gold_title": "MultiAccessEdgeComputing",
+      "spaced_form": "Multi Access Edge Computing",
+      "spaced_form_present_in_answer": true
+    }
+  ],
+  "mechanism": "58 of the 70 frame units carrying a run-together gold title ARE credited, and every one of them by a verbatim substring hit (58 of 58; 0 via the loose word-bag path): the model reproduced the run-together form the scaffold put in front of it, so `normalise`'s refusal to split camel case never bit. The mechanism bites only on the 12 omitted units, and there on the 10 where the answer does contain the SPACED form of the title and the matcher cannot see it; the remaining 2 do not mention the item under any spelling and are genuine omissions. The defect therefore costs 10 units of 11,360, not 70, and those come from 2 of the 7 run-together titles `MultiAccessEdgeComputing`, `SustainabilityReporting`. The remaining titles are conventional unspaced proper nouns (`DeFi`, `WebRTC`, `OpenXR`, `EdDSA`, `GraphQL` are written that way in the field), which is why models reproduce them exactly and the matcher never misses them."
+}

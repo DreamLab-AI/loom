@@ -1,0 +1,46 @@
+{
+  "backend": "openrouter",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "judge_model": "openai/gpt-4.1",
+  "judge_key_env": "OPENROUTER_API_KEY",
+  "judge_family": "openai/gpt",
+  "judge_is_model_not_human": true,
+  "backend_probes": {
+    "openai": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-*********************************************************************************************",
+    "openrouter": "live probe ok"
+  },
+  "temperature": 0,
+  "rubric_sha256_16": "2895842241850808",
+  "quote_reask_rubric_sha256_16": "0867909a4403300f",
+  "cache_hits": 0,
+  "prompt_tokens": 15093,
+  "completion_tokens": 725,
+  "cost_estimate_usd": 0.036,
+  "total_judge_calls": 454,
+  "total_prompt_tokens": 411322,
+  "total_completion_tokens": 17864,
+  "cost_estimate_usd_total": 0.9656,
+  "cost_basis": "gpt-4.1 list price $2.00/M input, $8.00/M output. `cost_estimate_usd` covers the uncached calls of the last run only; `cost_estimate_usd_total` sums every call ever written to judge-cache.jsonl, which is what the audit actually cost to produce.",
+  "when": "2026-09-21T15:35:22.624378+00:00",
+  "protocol": "v2 symmetric quote gate",
+  "policy": "One policy for every failed supporting quote in every stratum: re-ask the judge for a verbatim supporting span with the answer supplied again; if the re-asked span verifies, keep the verdict with the repaired evidence; if it still fails, the unit is `unresolved` - neither the original verdict nor `absent`. Acceptance is verbatim (whitespace-normalised) OR matcher-normalised containment, so the gate is never stricter than protocol v1.",
+  "n_adjudicated": 29,
+  "decisions": {
+    "repaired": 11,
+    "unresolved": 18
+  },
+  "n_repaired_verbatim": 6,
+  "n_repaired_normalised_only": 5,
+  "n_conceded_no_span": 18,
+  "by_category": {
+    "n00": {
+      "unresolved": 4
+    },
+    "n10": {
+      "unresolved": 14
+    },
+    "n11": {
+      "repaired": 11
+    }
+  }
+}

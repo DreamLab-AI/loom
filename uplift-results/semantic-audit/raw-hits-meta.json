@@ -1,0 +1,38 @@
+{
+  "backend": "openrouter",
+  "judge_base_url": "https://openrouter.ai/api/v1",
+  "judge_model": "openai/gpt-4.1",
+  "judge_key_env": "OPENROUTER_API_KEY",
+  "judge_family": "openai/gpt",
+  "judge_is_model_not_human": true,
+  "backend_probes": {
+    "openai": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-*********************************************************************************************",
+    "openrouter": "live probe ok"
+  },
+  "temperature": 0,
+  "rubric_sha256_16": "2895842241850808",
+  "quote_reask_rubric_sha256_16": "0867909a4403300f",
+  "cache_hits": 0,
+  "prompt_tokens": 110820,
+  "completion_tokens": 4609,
+  "cost_estimate_usd": 0.2585,
+  "total_judge_calls": 549,
+  "total_prompt_tokens": 522142,
+  "total_completion_tokens": 22473,
+  "cost_estimate_usd_total": 1.2241,
+  "cost_basis": "gpt-4.1 list price $2.00/M input, $8.00/M output. `cost_estimate_usd` covers the uncached calls of the last run only; `cost_estimate_usd_total` sums every call ever written to judge-cache.jsonl, which is what the audit actually cost to produce.",
+  "when": "2026-09-21T15:35:58.308681+00:00",
+  "what_this_is": "Every raw-arm (bare, no-scaffold) lexical recovery of a gold item the deterministic scaffold does NOT expose, judged under the audit rubric and the v2 symmetric quote gate. The question is whether the bare answer asserts the correct relation or merely names the target.",
+  "n_unexposed_item_slots": 760,
+  "n_raw_lexical_recoveries": 92,
+  "n_verdicts": 92,
+  "n_failures": 0,
+  "failures": [],
+  "n_repair_reasks": 0,
+  "repair_policy": "A reply whose field 1 is not one of the six rubric labels, or which is not valid JSON, gets exactly one re-ask with an appended formatting correction (the rubric and the item are unchanged); malformed JSON whose fields are nonetheless unambiguous is salvaged by mechanical field extraction. Both paths are cached under their own key and flagged (`repair_pass`, `parse_repair`) on the verdict.",
+  "n_quote_gate_adjudicated": 3,
+  "quote_gate_decisions": {
+    "repaired": 2,
+    "unresolved": 1
+  }
+}
