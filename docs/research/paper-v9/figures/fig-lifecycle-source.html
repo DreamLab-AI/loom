@@ -1,0 +1,102 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>body{margin:0;background:#fff}</style>
+<svg id="d" width="1560" height="560" viewBox="0 0 1560 560" xmlns="http://www.w3.org/2000/svg"
+     font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5a5f66"/>
+    </marker>
+  </defs>
+
+  <!-- title row: statuses legend -->
+  <g font-size="17" >
+    <rect x="60" y="26" width="26" height="16" rx="4" fill="#006E6E"/>
+    <text x="94" y="39" fill="#191c20">built and running</text>
+    <rect x="266" y="26" width="26" height="16" rx="4" fill="#fff" stroke="#006E6E" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <text x="300" y="39" fill="#191c20">designed, instruments validated</text>
+    <rect x="592" y="26" width="26" height="16" rx="4" fill="#fff" stroke="#C05000" stroke-width="2.5" stroke-dasharray="2 4"/>
+    <text x="626" y="39" fill="#191c20">pending judged evidence</text>
+  </g>
+
+  <!-- ================= main pipeline row ================= -->
+  <!-- stage boxes: y=110 h=84 -->
+  <g font-size="19" text-anchor="middle">
+    <!-- extract -->
+    <rect x="40" y="110" width="150" height="84" rx="10" fill="#006E6E"/>
+    <text x="115" y="146" fill="#fff" font-weight="bold">extract</text>
+    <text x="115" y="172" fill="#cfe8e8" font-size="15">Loom-grounded</text>
+    <!-- verify -->
+    <rect x="238" y="110" width="150" height="84" rx="10" fill="#006E6E"/>
+    <text x="313" y="146" fill="#fff" font-weight="bold">verify</text>
+    <text x="313" y="172" fill="#cfe8e8" font-size="15">web-checked</text>
+    <!-- ledger -->
+    <rect x="436" y="110" width="186" height="84" rx="10" fill="#006E6E"/>
+    <text x="529" y="140" fill="#fff" font-weight="bold">assertion ledger</text>
+    <text x="529" y="163" fill="#cfe8e8" font-size="15">per-episode pages,</text>
+    <text x="529" y="182" fill="#cfe8e8" font-size="15">[[topic]]-linked · unserved</text>
+    <!-- candidacy -->
+    <rect x="670" y="110" width="160" height="84" rx="10" fill="#006E6E"/>
+    <text x="750" y="140" fill="#fff" font-weight="bold">candidacy</text>
+    <text x="750" y="163" fill="#cfe8e8" font-size="15">ledger cluster or</text>
+    <text x="750" y="182" fill="#cfe8e8" font-size="15">graduated thin page</text>
+    <!-- pre-filter -->
+    <rect x="878" y="98" width="210" height="108" rx="10" fill="#006E6E"/>
+    <text x="983" y="128" fill="#fff" font-weight="bold">two-instrument pre-filter</text>
+    <text x="983" y="153" fill="#9fe0bd" font-size="15">✓ blind before/after judge</text>
+    <text x="983" y="175" fill="#9fe0bd" font-size="15">✓ copy-ceiling completeness</text>
+    <text x="983" y="196" fill="#cfe8e8" font-size="14">survivors only, with dossier</text>
+    <!-- governed approval -->
+    <rect x="1136" y="110" width="170" height="84" rx="10" fill="#fff" stroke="#006E6E" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <text x="1221" y="140" fill="#006E6E" font-weight="bold">governed</text>
+    <text x="1221" y="161" fill="#006E6E" font-weight="bold">approval</text>
+    <text x="1221" y="182" fill="#3c4046" font-size="15">propose → approve</text>
+    <!-- regenerate & serve -->
+    <rect x="1354" y="110" width="166" height="84" rx="10" fill="#006E6E"/>
+    <text x="1437" y="140" fill="#fff" font-weight="bold">regenerate</text>
+    <text x="1437" y="163" fill="#cfe8e8" font-size="15">batched splice,</text>
+    <text x="1437" y="182" fill="#cfe8e8" font-size="15">authored → served</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#5a5f66" stroke-width="2" fill="none">
+    <line x1="190" y1="152" x2="232" y2="152" marker-end="url(#arr)"/>
+    <line x1="388" y1="152" x2="430" y2="152" marker-end="url(#arr)"/>
+    <line x1="622" y1="152" x2="664" y2="152" marker-end="url(#arr)"/>
+    <line x1="830" y1="152" x2="872" y2="152" marker-end="url(#arr)"/>
+    <line x1="1088" y1="152" x2="1130" y2="152" marker-end="url(#arr)"/>
+    <line x1="1306" y1="152" x2="1348" y2="152" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- rejected path from pre-filter back to ledger -->
+  <path d="M 983 206 L 983 258 L 529 258 L 529 200" stroke="#8a8f96" stroke-width="1.8"
+        fill="none" stroke-dasharray="5 5" marker-end="url(#arr)"/>
+  <text x="756" y="250" fill="#5a5f66" font-size="15" text-anchor="middle">non-survivors stay staged in the ledger</text>
+
+  <!-- ================= thin-page conditional branch ================= -->
+  <rect x="560" y="330" width="330" height="76" rx="10" fill="#fff" stroke="#C05000" stroke-width="2.5" stroke-dasharray="2 4"/>
+  <text x="725" y="360" fill="#C05000" font-weight="bold" font-size="19" text-anchor="middle">thin-page direct enrichment</text>
+  <text x="725" y="384" fill="#3c4046" font-size="15" text-anchor="middle">fail-closed splice while page is under threshold;</text>
+  <text x="725" y="401" fill="#3c4046" font-size="15" text-anchor="middle">graduation returns the page to ledger-only</text>
+  <path d="M 529 194 L 529 368 L 554 368" stroke="#C05000" stroke-width="1.8" fill="none"
+        stroke-dasharray="2 4" marker-end="url(#arr)"/>
+  <path d="M 860 330 L 860 286 L 800 286 L 800 200" stroke="#C05000" stroke-width="1.8" fill="none"
+        stroke-dasharray="2 4" marker-end="url(#arr)"/>
+  <text x="906" y="300" fill="#C05000" font-size="14" text-anchor="middle">graduates</text>
+
+  <!-- ================= open-source hooks row ================= -->
+  <g font-size="14.5" fill="#5a5f66" text-anchor="middle">
+    <text x="313" y="470">ingest pipeline · DreamLab-AI/VisionFlow</text>
+    <text x="529" y="446">graph + CI builder · DreamLab-AI/knowledgeGraph</text>
+    <text x="983" y="470">judge harness + /loom/scaffold ceiling · DreamLab-AI/loom</text>
+    <text x="1221" y="446">ontology-bridge propose/approve</text>
+    <text x="1437" y="470">served node · DreamLab-AI/loom</text>
+  </g>
+  <g stroke="#c8c8c8" stroke-width="1">
+    <line x1="313" y1="200" x2="313" y2="455"/>
+    <line x1="529" y1="412" x2="529" y2="432"/>
+    <line x1="983" y1="264" x2="983" y2="455"/>
+    <line x1="1221" y1="200" x2="1221" y2="432"/>
+    <line x1="1437" y1="200" x2="1437" y2="455"/>
+  </g>
+</svg>

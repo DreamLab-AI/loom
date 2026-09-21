@@ -7,62 +7,61 @@ its limitations before quoting a number from it.
 
 ## Current manuscript
 
-**[`paper-v8/main.pdf`](paper-v8/main.pdf)** — *The Copy Ceiling: An Input-Exposure Control
-for Ontology-Grounded Generation over Curated Corpora* (26 pp, 21 September 2026).
+**[`paper-v9/main.pdf`](paper-v9/main.pdf)** — *The Copy Ceiling: An Input-Exposure Control
+for Ontology-Grounded Generation over Curated Corpora* (24 pp, 21 September 2026).
 
-This is the version to cite. It is the response to the first external review and it claims
-considerably less than its predecessors did.
+This is the version to cite. Every table, figure and headline number in it maps to a released
+artefact and a released script ([`paper-v9/MANIFEST.md`](paper-v9/MANIFEST.md)); nothing in it
+is reported without its observations.
 
-**What it establishes, in its own register.** When a model answers from a curated corpus and
-the gold answers derive from that same corpus, headline "grounding uplift" mixes delivery of
-facts already shown to the model with reasoning over the injected structure, and nothing in
-the usual reporting separates them. The paper proposes *exposure accounting*: classify every
-gold item by whether the shown context exposed it and whether the answer recovered it, and
-report the four counts. The copy ceiling — the recall a verbatim copy of the shown context
-would score — is that table's scalar. Measured across ten models, unaided recall averages
-0.26 and grounded recall 0.92, yet gain over copy is uniformly negative (−0.067 to −0.022),
-and beyond-exposure recovery is three items in 11,360 observations of the same 1,136 target
-instances. **The defensible reading is the narrow one: such a score does not establish
-reasoning beyond answer-name exposure, and equally does not establish its absence.** Zero
-gain is compatible with successful reasoning over names the context already shows. Three
-results stand without the ceiling: rephrasing questions out of the graph's vocabulary
-collapses exposure from 0.96 to 0.34 while the fallback designed for that case fires on 3 of
-510 questions; on gold targets the corpus contains but the retrieved scaffold did not expose,
-recovery falls from 0.121 bare to 0.004 grounded, so injection is followed by loss of recall
-the bare model demonstrably has; and a paired production study lifts judged quality by +0.27
-pooled. What the paper does **not** establish: relational correctness, precision against
-fabrication, attribution accuracy, transfer beyond one corpus, or any architectural
-prescription. "Delivery" throughout means recall of exposed gold target names and nothing
-more.
+**What it establishes.** When a model answers from a curated corpus and the gold answers derive
+from that same corpus, headline "grounding uplift" mixes delivery of facts already shown to the
+model with reasoning over the injected structure. The paper proposes *exposure accounting*:
+classify every gold item by whether the shown context exposed it and whether the answer
+recovered it, and report the four counts; the copy ceiling, the recall a verbatim copy of the
+shown context would score, is that table's per-item scalar and a copy baseline, not an upper
+bound. Across ten models, unaided recall averages 0.26 and grounded recall 0.92, yet gain over
+copy is uniformly negative (−0.067 to −0.022) and beyond-exposure recovery is three items in
+11,360 observations of the same 1,136 target instances. The reading is the narrow one: such a
+score does not establish reasoning beyond answer-name exposure, and does not establish its
+absence either. A stratified, model-judged audit of the matcher (423 units, gpt-4.1, quote-gated)
+finds its credit relationally correct in 0.971 [0.941, 0.986] of cases, no false credit on
+unexposed items, and three characterised failure modes; the corrected exposed-item correctness
+is 0.905 against the matcher's 0.931. A fresh paraphrase stress set collapses the lexical
+ceiling from 0.964 to 0.328 while the absence-keyed fallback fires on 2 of 506; on gold targets
+the corpus contains but the retrieved scaffold did not expose, recovery falls from 0.121 bare to
+0.004 grounded; a paired production study lifts judged quality by +0.27 pooled. On the four-arm
+negative-control cohort, re-judged with gpt-4.1 and corrected over the whole contrast family,
+only the served path against no context survives; whether the scaffold's specific content
+matters is not established at that power. What the paper does **not** establish: precision
+against fabrication, attribution accuracy, transfer beyond one corpus, or any architectural
+prescription.
 
 The paper also carries the **write path**: a production case study in which scaffold grounding
-raises ontology-term resolution 0.17 → 0.55 while *every* arm degrades judged page quality, and
-the write-path lifecycle that result forced — assertions landing on unserved ledger pages,
-a two-instrument pre-filter, and admission only through the graph's governed propose/approve
-path. That part of the paper is deliberately embedded in the stack it was measured on: the
-ingest pipeline and ledger writer run in [VisionFlow](https://github.com/DreamLab-AI/VisionFlow)
-and promotion runs through the ontology-bridge governed write path. The instrument is
-corpus-general; the write-path result is only checkable there.
+raises ontology-term resolution 0.17 → 0.55 while every arm degrades judged page quality, and
+the write-path lifecycle that result forced. That part is deliberately embedded in the stack it
+was measured on: the ingest pipeline and ledger writer run in
+[VisionFlow](https://github.com/DreamLab-AI/VisionFlow) and promotion runs through the
+ontology-bridge governed write path. The instrument is corpus-general; the write-path result is
+only checkable there.
 
-**Disclosure that travels with the numbers.** The negative-control rerun reported in
-§Negative controls — the five-arm common-retry-policy cohort, including the fluent-noise arm,
-judged by `gemini-3.1-pro-preview` — has **no released per-row evidence**. Its completions,
-its judge outputs and its generating script were never written to disk. Those figures are
-reported-but-not-released and cannot be independently reproduced; only the historical
-four-arm complete-case cohort at the 1536-token budget can. The manuscript discloses this in
-its abstract, its release statement, the section itself and its limitations. Two further
-holes are disclosed there: two of the routing companion's three judge rows, and the semantic
-re-score's saved results and embedding cache.
+**What left the paper, and why.** The two-edge composition study and the five-arm control rerun
+of earlier versions had no surviving observations and are not reported. The control rerun is
+being repeated with rows persisted and will be added as v9.1 when it lands; the composition
+study would be a new experiment. The typed-skill-routing study is a companion note
+([`companion-routing/`](companion-routing/)) measuring a choice task against a ranker baseline,
+a different instrument from the exposure scalar.
 
 Alongside the manuscript:
 
 | File | What it is |
 |---|---|
-| [`paper-v8/REVIEW-2026-09-21-external.md`](paper-v8/REVIEW-2026-09-21-external.md) | the external review, verbatim |
-| [`paper-v8/REMEDIATION-2026-09-21.md`](paper-v8/REMEDIATION-2026-09-21.md) | item-by-item disposition: fixed / verified / deferred-as-owed-experiment / disagreed |
-| [`paper-v8/CHANGES-2026-09-21-v8.md`](paper-v8/CHANGES-2026-09-21-v8.md) | what left the paper, what was reworded, 31 pp → 26 pp |
-| [`paper-v8/MANIFEST.md`](paper-v8/MANIFEST.md) | table-to-artefact manifest: every table and figure mapped to its rows and generating script, or marked not-released |
-| [`paper-v8/notes/`](paper-v8/notes/) | the three verification passes behind the ledger: fact-check, prior-work differentiation, recomputation from released rows |
+| [`paper-v9/MANIFEST.md`](paper-v9/MANIFEST.md) | table-to-artefact manifest: every table, figure and headline number mapped to its released rows and generating script |
+| [`paper-v9/CHANGES-2026-09-21-v9.md`](paper-v9/CHANGES-2026-09-21-v9.md) | what left, what was re-run, what changed, 26 pp → 24 pp |
+| [`paper-v9/arxiv-v9.zip`](paper-v9/arxiv-v9.zip) | the arXiv bundle, verified to build standalone |
+| [`paper-v8/REVIEW-2026-09-21-external.md`](paper-v8/REVIEW-2026-09-21-external.md), [`paper-v8/REVIEW-2026-09-21-external-2.md`](paper-v8/REVIEW-2026-09-21-external-2.md) | the two external reviews, verbatim |
+| [`paper-v8/REMEDIATION-2026-09-21.md`](paper-v8/REMEDIATION-2026-09-21.md) | the first review's item-by-item disposition; the second review's dispositions are the v9 change log and the artefacts below |
+| [`paper-v8/notes/`](paper-v8/notes/) | the verification passes: fact-check, prior-work, recomputation, number provenance (`R5-numbers.md`) |
 
 ## Companion note
 
@@ -82,10 +81,15 @@ Repaired, a BM25 ranker reaches 83.7% against the local 4B engine's 88.4%. The c
 self-authored and single-seed, which is the binding limitation and is stated as such.
 See [`companion-routing/HARNESS-NOTES.md`](companion-routing/HARNESS-NOTES.md) for the rig.
 
-## Reviewed version (superseded)
+## Reviewed versions (superseded)
+
+**[`paper-v8/main.pdf`](paper-v8/main.pdf)** — the v8 text (26 pp) the second external review
+read. It still reported the five-arm control rerun, the two-edge composition study and the
+original paraphrase stress set, none of which had surviving observations; v9 removes the first
+two and replaces the third with a fresh set. Do not cite it.
 
 **[`paper-v6/main.pdf`](paper-v6/main.pdf)** — the v7 text (31 pp, 21 September 2026). This
-is the manuscript the external review read, kept so the review can be checked against what it
+is the manuscript the first external review read, kept so the review can be checked against what it
 reviewed. Its §Ideal State architecture section and its routing section do not survive into
 v8, and several of its claims are retracted there — notably the "thirty times worse outside
 the corpus" reading of the suppression result, the content-specificity reading of the
@@ -123,7 +127,11 @@ which several scripts nonetheless need).
 | [`../../uplift-results/paper-v2/`](../../uplift-results/paper-v2/) | Study 2 and the historical controls (below) |
 | [`../../uplift-results/routing/`](../../uplift-results/routing/) | the routing-seam evidence for the companion note: 86-turn corpus, 115 rubrics, mined rows, per-run reports, embedding caches, 21 analysis scripts, and its own [`README.md`](../../uplift-results/routing/README.md) manifest |
 | `../../uplift-results/{general,arcane,arcane-prose,thin-prose,quality}/` | the judged-arm study directories and the case-study candidates |
-| `../../uplift-results/semantic-rescore/` | `rescore.py` and `RESCORE.md` only — the saved results, cache and one imported module are **absent** |
+| `../../uplift-results/semantic-rescore/` | `rescore.py`, the reconstructed `embed_lib.py` and `make_copy_contexts.py`, `rescore_results.json`, `RESCORE-2026-09-21.md` (recomputed 2026-09-21; replicates); the 571 MB embedding cache is regenerable and excluded |
+| `../../uplift-results/semantic-audit/` | the stratified model-judged matcher audit: frame, 423-unit sample, verdicts, judge cache, `SUMMARY.md`, blind human sample and guide; `tools/paper/semantic_audit.py` |
+| `../../uplift-results/controls-rejudge-2026-09-21/` | the four-arm control cohort re-judged with gpt-4.1, family-wide Holm, common-intersection analysis, per-arm accounting |
+| `../../uplift-results/paraphrase-stress/` | the fresh paraphrase stress set (506 accepted), per-question ceilings, `PARAPHRASE-2026-09-21.md`; `tools/paper/paraphrase_stress.py` |
+| `../../uplift-results/recovered/` | the sweep-generating harness recovered from git history, and `RECOVERY.md` recording what could not be recovered |
 
 Inside `uplift-results/paper-v2/`:
 
@@ -136,8 +144,9 @@ Inside `uplift-results/paper-v2/`:
 | `analysis.json` | paired bootstrap, exact signed-rank, rank-biserial, Holm; control contrasts merged in under `"controls"` |
 | `decomposition.json`, `DECOMPOSITION-SUMMARY.md` | the item-level exposure/recovery decomposition |
 
-The five-arm control rerun's rows are **not here and do not exist**; see the disclosure above
-and [`paper-v8/MANIFEST.md`](paper-v8/MANIFEST.md) for the full list of what is missing.
+The five-arm control rerun with a length-matched noise arm is being repeated with every row
+persisted (`uplift-results/control-rerun-2026-09-21/`, `tools/paper/control_rerun.py`); it is
+not in v9 and will be reported as v9.1 when complete.
 
 ## The harness
 
