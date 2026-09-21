@@ -89,7 +89,11 @@ Both panels, and every rate quoted in that section.
   `quote-gate-v2-meta.json` (judge, temperature, main rubric sha256[:16] `2895842241850808`,
   re-ask rubric sha256[:16] `0867909a4403300f`, call and cost accounting). Outcome 11
   repaired / 18 unresolved; every rate in the paper's audit section is read three ways
-  against it.
+  against it. Acceptance is character-for-character **or** under the matcher's own
+  normalisation, and each row carries both flags
+  (`repaired_verifies_verbatim_whitespace_only`, `repaired_verifies_matcher_normalised`), so
+  the strictly-verbatim sensitivity the paper quotes (5 repairs would become unresolved,
+  credit precision 0.950 / 0.971 / 0.970) is recomputable from the log.
 - **Corrected-rate interval (§4A):** same `verdicts.jsonl`; stratified cluster bootstrap
   resampling questions within stratum, 184 `n11` and 59 `n10` clusters, 10,000 draws,
   seed 42. Reported beside a model-clustered bootstrap and the (invalid for this design)
