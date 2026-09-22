@@ -8,6 +8,7 @@ members = [
     "crates/loom-embed-xinference",
     "crates/loom-backend-openai",
     "crates/loom-client",
+    "crates/loom-mcp",
     "crates/loom-attest-proofgate",
     "crates/loom-facade",
 ]

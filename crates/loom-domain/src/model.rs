@@ -4,6 +4,7 @@
 //! other type is a projection that resolves back to an `Iri` (Invariant I-P1).
 
 use crate::grounding::{Grounding, DEFAULT_MIN_INJECT_SCORE};
+use crate::okf::Provenance;
 
 // --- identity ---------------------------------------------------------------
 
@@ -52,24 +53,28 @@ impl From<&str> for Iri {
 // --- THE PRIZE, as a type ---------------------------------------------------
 
 /// The canonical served unit — a per-IRI markdown-with-ontology block. Aggregate
-/// root of the bounded context. `dfull`, `landscape` and `corpus_nature` are
-/// never dropped by a compact serialiser (the frame forbids degrading legibility).
+/// root of the bounded context. `dfull`, `landscape` and `provenance` are never
+/// dropped by a compact serialiser (the frame forbids degrading legibility).
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct CanonicalUnit {
     pub iri: Iri,
-    pub title: String,               // scaffold "t"
-    pub definition: String,          // scaffold "d" (<=400 chars, truncated)
-    pub dfull: Option<String>,       // prose "dfull" — untruncated curated prose (THE PRIZE body)
-    pub landscape: Option<String>,   // prose "cl" — Current Landscape research prose
-    pub domain: Option<String>,      // "dom"
-    pub maturity: Option<String>,    // "m"
-    pub quality: Option<f32>,        // "q"
-    pub is_a: Vec<Iri>,              // "sup" (direct parents)
-    pub ancestors: Vec<Iri>,         // "isup" (inferred ancestors from the reasoned closure)
-    pub relations: Vec<Relation>,    // typed ontology-relation header ("rel")
-    pub backlinks: Vec<Iri>,         // "bl"
-    pub corpus_nature: CorpusNature, // provenance stamp
-    pub generation: GenerationId,    // which build this unit belongs to
+    pub title: String,             // scaffold "t"
+    pub definition: String,        // scaffold "d" (<=400 chars, truncated)
+    pub dfull: Option<String>,     // prose "dfull" — untruncated curated prose (THE PRIZE body)
+    pub landscape: Option<String>, // prose "cl" — Current Landscape research prose
+    pub domain: Option<String>,    // "dom"
+    pub maturity: Option<String>,  // "m"
+    pub quality: Option<f32>,      // "q"
+    pub is_a: Vec<Iri>,            // "sup" (direct parents)
+    pub ancestors: Vec<Iri>,       // "isup" (inferred ancestors from the reasoned closure)
+    pub relations: Vec<Relation>,  // typed ontology-relation header ("rel")
+    pub backlinks: Vec<Iri>,       // "bl"
+    /// OKF trust (ADR-140 D4 as amended 2026-09-22): who generated this unit
+    /// and who has verified it. Replaces the single `corpus_nature` label,
+    /// which could say only *how* the corpus was made and never *who stands
+    /// behind this entry*.
+    pub provenance: Provenance,
+    pub generation: GenerationId, // which build this unit belongs to
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -150,13 +155,6 @@ impl<'de> serde::Deserialize<'de> for RelationKind {
         let s = <String as serde::Deserialize>::deserialize(deserializer)?;
         Ok(Self::from_predicate(&s))
     }
-}
-
-/// `corpusNature`: synthetic-ai-generated-human-directed. The provenance the
-/// reviewer needs to trust the prose. Never dropped on serialise.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
-pub enum CorpusNature {
-    SyntheticAiGeneratedHumanDirected,
 }
 
 // --- the retrieval nouns ----------------------------------------------------
@@ -437,6 +435,58 @@ pub struct Generation {
     pub artifacts: Vec<ArtifactSha>, // per-artifact sha256 (never-mixed proof)
     pub verified_single_generation: bool,
     pub class_count: Option<usize>,
+    /// The digest the BUILD recorded over its own artefact set (`content_digest`
+    /// in the `vault build` marker). Distinct from
+    /// [`ServingIdentity::content_digest`](crate::bundle::ServingIdentity),
+    /// which this process computes over the bytes it actually read: when both
+    /// are present and disagree, the disk is not the bundle the builder
+    /// committed. `None` on the older mirror marker, which records no such
+    /// digest.
+    #[serde(default)]
+    pub content_digest: Option<String>,
+    /// Pages in the source vault at this generation (`page_count`). Reported
+    /// beside `class_count` because a class count alone cannot show that a
+    /// build dropped half the corpus.
+    #[serde(default)]
+    pub page_count: Option<usize>,
+    /// The `ontology/vocabulary.yaml` version the build validated against —
+    /// the schema half of the generation's identity.
+    #[serde(default)]
+    pub vocabulary_version: Option<u32>,
+    /// OKF lifecycle: the instant after which this generation should be treated
+    /// as stale (RFC 3339, or a bare `YYYY-MM-DD` date). Carried, reported on
+    /// `/health` and named in the MCP manifest's `degraded` list — never
+    /// enforced: a stale generation is still served, honestly labelled.
+    #[serde(default)]
+    pub stale_after: Option<String>,
+}
+
+impl Generation {
+    /// Whether `now` is past [`Self::stale_after`].
+    ///
+    /// `None` when the generation declares no expiry — which is a different
+    /// answer from "not stale", and the caller must be able to tell them apart.
+    ///
+    /// Both stamps are compared as ISO-8601 strings, which order correctly by
+    /// ordinary string comparison when they are UTC and equally precise. A
+    /// date-only `stale_after` (`2026-10-06`) is compared against the date half
+    /// of `now`, so a generation stales at the END of its declared day rather
+    /// than at midnight of it.
+    ///
+    /// The clock is the caller's: the domain holds no I/O, and that includes
+    /// the time.
+    #[must_use]
+    pub fn is_stale(&self, now: &str) -> Option<bool> {
+        let stale_after = self.stale_after.as_deref()?.trim();
+        if stale_after.is_empty() {
+            return None;
+        }
+        Some(if stale_after.len() == 10 {
+            now.get(..10).unwrap_or(now) > stale_after
+        } else {
+            now > stale_after
+        })
+    }
 }
 
 impl PartialEq for Generation {
@@ -458,6 +508,10 @@ pub struct ArtifactSha {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum GenerationSource {
     BuildManifest,
+    /// The `vault build` generation marker (PRD sovereign-corpus C3): an `id`
+    /// of `visionGraph@<sha>`, a content digest, corpus counts and a lifecycle
+    /// `stale_after`. The current source for a bundle built by the vault CLI.
+    VaultBuild,
     MirrorManifest,
     ScaffoldIndex,
     Unavailable,

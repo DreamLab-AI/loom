@@ -47,6 +47,13 @@ pub struct HealthResponse {
     /// The `Generation` this node is SERVING — the identity captured when the
     /// bundle was activated, not a fresh read of the data directory (ADR-135
     /// closeout). `serving_bundle` below carries the disk view beside it.
+    ///
+    /// Two keys are added to the serialised descriptor here rather than stored
+    /// on it: `stale_after` (the generation's own OKF lifecycle promise, echoed
+    /// so an operator does not have to open the bundle to find it) and `stale`,
+    /// this node's judgement of that promise against its clock (ADR-141). A
+    /// generation with no promise reports `stale: false, stale_after: null` —
+    /// it cannot have broken a promise it never made.
     pub generation: Value,
     /// The activated bundle: its immutable identity, its lifecycle phase, and
     /// how the disk currently compares to it.
@@ -130,6 +137,13 @@ pub(super) async fn health(State(st): State<AppState>) -> Response {
     });
 
     let identity = st.generation.reported_identity();
+    let mut generation = super::to_value(&identity.generation);
+    if let Some(obj) = generation.as_object_mut() {
+        obj.insert(
+            "stale".to_owned(),
+            json!(crate::bundle::generation_is_stale(&identity.generation)),
+        );
+    }
     let serving_bundle = ServingBundleBlock {
         disk_generation: super::to_value(&st.generation.disk_generation()),
         disk_matches_loaded: st.generation.disk_matches_loaded(),
@@ -145,7 +159,7 @@ pub(super) async fn health(State(st): State<AppState>) -> Response {
         index_classes: st.retriever.class_count(),
         graph: super::to_value(&st.graph.status()),
         semantic,
-        generation: super::to_value(&identity.generation),
+        generation,
         serving_bundle,
         build: BuildInfo::current(),
         deploy_profile: st.config.deploy_profile.clone(),

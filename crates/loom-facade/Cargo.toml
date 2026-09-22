@@ -32,14 +32,26 @@ path = "src/bin/graph_check.rs"
 name = "generation-check"
 path = "src/bin/generation_check.rs"
 
+[features]
+# The governance ledger route (ADR-141). Default-on: the estate's promotion loop
+# needs a ledger endpoint, and the port has no other writer.
+default = ["attest"]
+attest = ["dep:loom-attest-proofgate"]
+
 [dependencies]
 loom-domain = { path = "../loom-domain" }
 # The adapters — the composition root binds one concrete impl per port.
 loom-scaffold = { path = "../loom-scaffold" }
+loom-mcp = { path = "../loom-mcp" }
 loom-graph-oxigraph = { path = "../loom-graph-oxigraph" }
 loom-vector-ruvector = { path = "../loom-vector-ruvector" }
 loom-embed-xinference = { path = "../loom-embed-xinference" }
 loom-backend-openai = { path = "../loom-backend-openai" }
+# The governance ledger behind `POST /loom/attest`, optional with the feature
+# that mounts it. NOT built with loom-attest-proofgate's own `attest` feature:
+# that one exists to prove the frozen `dep:ruvector-core` wiring links, and the
+# route needs the always-compiled sha2 ChainedLedger, not a second RuVector.
+loom-attest-proofgate = { path = "../loom-attest-proofgate", optional = true }
 
 axum = { workspace = true }
 tower = { workspace = true }

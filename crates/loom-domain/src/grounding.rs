@@ -328,6 +328,13 @@ pub enum GroundingStatus {
     Verbatim,
     /// The scaffold was injected (or not) and the backend answered 200.
     Delegated,
+    /// A navigation or index tool ran on the agentic plane (ADR-140 D1):
+    /// `loom.manifest`, `loom.browse`, `loom.sparql`, `loom.neighbours`,
+    /// `loom.paths`. The corpus WAS consulted, nothing was injected, and nothing
+    /// is claimed as an answer — which is none of the other six statuses. A
+    /// consumer must be able to tell this from `NoMatch` (the gate looked and
+    /// found nothing) because a browse returning candidates is a success.
+    Navigated,
     /// The backend did not answer: unreachable, non-2xx, or not configured.
     /// There is no answer to be grounded, and `corpus_backed` is false however
     /// good the retrieval was.
@@ -342,6 +349,7 @@ impl GroundingStatus {
             Self::OptOut => "opt-out",
             Self::Passthrough => "passthrough",
             Self::SemanticFallback => "semantic-fallback",
+            Self::Navigated => "navigated",
             Self::Verbatim => "verbatim",
             Self::Delegated => "delegated",
             Self::BackendFailure => "backend-failure",
@@ -351,15 +359,16 @@ impl GroundingStatus {
     /// Whether an answer delivered on this path may be treated as corpus-backed,
     /// GIVEN that the scaffold actually engaged.
     ///
-    /// The three `false` cases are the ones a consumer most needs: a no-match
-    /// has no evidence, a backend failure has no answer, and a passthrough never
-    /// consulted the corpus. Everything else is corpus-backed exactly when the
+    /// The four `false` cases are the ones a consumer most needs: a no-match has
+    /// no evidence, a backend failure has no answer, a passthrough never
+    /// consulted the corpus, and a navigation returned addresses rather than an
+    /// answer to back. Everything else is corpus-backed exactly when the
     /// scaffold engaged.
     #[must_use]
     pub fn may_be_corpus_backed(self) -> bool {
         !matches!(
             self,
-            Self::NoMatch | Self::BackendFailure | Self::Passthrough
+            Self::NoMatch | Self::BackendFailure | Self::Passthrough | Self::Navigated
         )
     }
 }

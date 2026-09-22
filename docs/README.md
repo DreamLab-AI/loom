@@ -16,14 +16,18 @@ with the ground truth — reality wins, but history is annotated, not rewritten.
 design/PRD-025 ............ product capstone (the ontology-loom + connector platform)
 design/PRD-026 ............ consolidation requirements (single-source build, fallback, admission)
 design/PRD-027 ............ Rust re-engineering requirements + acceptance criteria (§10.1 status)
-design/PRD-028 ............ does Loom earn its complexity on genuinely private knowledge? (preregistration spec; pilot first; proposed)
+design/PRD-028 ............ does Loom earn its complexity on genuinely private knowledge? (preregistration spec; pilot first; proposed — arms extended by ADR-140 D8)
 design/ADR-135 ........... keystone: node boundary, model-is-a-URL, generation discipline, A/B
 design/ADR-136 ........... tooling allocation: RuVector behind the markdown, keep oxigraph SPARQL
 design/ADR-137 ........... Rust re-platform + both compose profiles   [Accepted + Implemented]
+design/ADR-138 ........... confidence-surfacing / grounding contract         [Accepted]
+design/ADR-139 ........... per-request scaffold opt-out (the plain-proxy door) [Accepted]
+design/ADR-140 ........... Loom v2: agentic MCP plane beside the injection plane; Mapping/Evidence; governed evolution  [Proposed; D1+D4 amended by ADR-141]
+design/ADR-141 ........... Loom consumes the vault build: generation = visionGraph@sha; OKF vocabulary; /loom/attest ledger; stdio dropped  [Proposed]
 design/RUST-ARCHITECTURE.md  the buildable blueprint (crates, ports, fusion, deploy) + errata
 design/ddd-ontology-loom-context.md  bounded context + THE PRIZE (source-of-record)
 design/LOOM-POSITIONING.md  product framing, the multivariate bar
-design/ONTOLOGY-LOOM-PIPELINE.md  generation-identity contract the mirror consumes
+design/ONTOLOGY-LOOM-PIPELINE.md  generation-identity contract the mirror consumes (amended 2026-09-22: the two commit-marker shapes, local wasDerivedFrom)
 design/agentbox-ADR-051-*  harness-side client (de-vendored stub → canonical in agentbox)
 design/DOC-REENGINEERING-PLAN.md  the plan this doc set was re-engineered against  [executed]
 ```
@@ -37,6 +41,7 @@ design/DOC-REENGINEERING-PLAN.md  the plan this doc set was re-engineered agains
 ```
 QWEN3.8-CONNECTION.md .... the model behind the façade today (Qwen3.8-27B on :8085)
 REMOTE-CLIENT-SETUP.md ... connect a LAN machine (Profile A/B endpoints)
+published-generation-reload.md  verify-then-reload a promoted bundle; the timer's precondition + enable commands
 ../tools/ingest/README.md  ontology-corpus ingestion (build/off-turn write channel) + HNSW law
 ../justfile .............. build/test/ci recipes + docker-run-a/b (deploy per ../deploy/)
 dream-cycle/LEDGER.md .... nightly dream-cycle ledger
@@ -79,7 +84,7 @@ VisionClaw ADR-135/136/137  the Loom design capstone (mirrored into design/ here
 RuVector ADR-001 ....... HNSW production index (the in-process read behind the markdown)
 RuVector ADR-047 ....... ProofGate<T> / MutationLedger  (attestation design target — see the
                           Erratum in RUST-ARCHITECTURE §11.5 for where they actually live)
-jjohare/logseq ......... the canonical corpus builder + CI-enforced gate (publish.yml / enrich-gate.yml)
+vault build ............ the canonical corpus builder over visionGraph (ADR-141; replaced jjohare/logseq's publish.yml)
 ```
 
 ## Conventions this set enforces

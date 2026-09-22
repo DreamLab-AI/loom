@@ -70,6 +70,7 @@ fn build_big_index(n: usize) -> ScaffoldIndex {
                 isup: Vec::new(),
                 rel: IndexMap::new(),
                 bl: Vec::new(),
+                ..ClassEntry::default()
             },
         );
     }

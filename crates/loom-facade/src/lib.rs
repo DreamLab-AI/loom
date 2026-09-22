@@ -14,6 +14,7 @@ pub mod bundle;
 pub mod config;
 pub mod error;
 pub mod fusion;
+pub mod mcp_host;
 pub mod mirror;
 pub mod routes;
 pub mod serving;
@@ -167,8 +168,13 @@ pub fn try_app_state_from_env() -> Result<AppState, loom_domain::BundleError> {
 
     let policy = InjectionPolicy::from_env();
 
+    // One retriever, two ports: it is both the lexical index and the authority
+    // on what the corpus contains, and those must never disagree.
+    let retriever = Arc::new(retriever);
+
     Ok(AppState::new(
-        Arc::new(retriever),
+        retriever.clone(),
+        retriever,
         Arc::new(semantic),
         Arc::new(graph),
         Arc::new(embedder),

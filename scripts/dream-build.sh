@@ -34,7 +34,9 @@ echo "LOOM_URL=${LOOM_URL}"
 bash "${here}/dream-health.sh" || echo 'FACADE UNREACHABLE'
 
 echo
-echo '== ontology-mcp =='
-(cd -- "${repo}/app/ontology-mcp" && npm ci --ignore-scripts 2>&1 | tail -5) || echo 'NPM CI FAILED'
+# ADR-140 D3: app/ontology-mcp is retired. The agentic plane is served by the
+# Rust node itself (POST /mcp), through the same index, the same gate and the
+# same generation as the HTTP plane. There is no stdio transport: inside the
+# estate agents use the vault CLI and loom-client (ADR-141 / PRD Q10).
 
 exit 0

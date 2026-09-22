@@ -63,8 +63,11 @@ fn live_state(backend: OpenAiBackend) -> AppState {
         ..Config::default()
     };
 
+    let retriever = Arc::new(retriever);
+
     AppState::new(
-        Arc::new(retriever),
+        retriever.clone(),
+        retriever,
         Arc::new(semantic),
         Arc::new(graph),
         Arc::new(embedder),

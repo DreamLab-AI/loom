@@ -32,6 +32,12 @@ supersedes: "PRD-025 connector-platform draft (pre-Loom reframe); this is the op
 
 # PRD-025 — Ontology Loom & Connector Platform
 
+> **Corpus-builder note (2026-09-22).** Written when the corpus was a Logseq graph built by
+> `jjohare/logseq` (`pipeline/`, `publish.yml`, `enrich-gate.yml`). That builder is retired: the
+> corpus is now the visionGraph Obsidian vault (frontmatter-only OKF) and the build authority is
+> `vault build` (ADR-141). References below to the upstream Logseq builder are historical.
+
+
 **Status:** Proposed (adversarially reviewed; operator-reframed 2026-08-11 — see §12)
 **Date:** 2026-08-11
 **Owner:** VisionFlow operator (Dr J. O'Hare, did:nostr:jjohare)

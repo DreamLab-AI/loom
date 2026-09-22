@@ -60,4 +60,60 @@ class ReloadTests(unittest.TestCase):
         with self.assertRaises(ValueError): reload.reconcile(self.root, self.receipt, lambda: {}, restart)
         self.assertEqual(json.loads(self.receipt.read_text())['state'], 'reload-pending')
 
+class VaultBuildMarkerTests(unittest.TestCase):
+    """The `vault build` commit marker (contract C3) — the shape Loom serves after
+    the first clean promotion. The legacy mirror shape stays covered above: the
+    reload script, like the node, reads both."""
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.receipt = self.root / 'receipt.json'
+        self.identity = 'visionGraph@abc1234'
+        artifacts, digests = [], []
+        for name in sorted(reload.REQUIRED):
+            content = b'fixture'
+            if name.endswith('.generation.json'):
+                content = json.dumps({'generatedAt': self.identity, 'embeddingModel': 'bge-small-en-v1.5', 'dimensions': 384}).encode()
+            (self.root / name).write_bytes(content)
+            digest = hashlib.sha256(content).hexdigest()
+            artifacts.append({'name': name, 'sha256': digest, 'bytes': len(content)})
+            digests.append(f'{name}:{digest}')
+        self.manifest = {'id': self.identity, 'commit': 'abc1234',
+                         'content_digest': hashlib.sha256('\n'.join(sorted(digests)).encode()).hexdigest(),
+                         'generated_at': '2026-09-22T00:00:00Z', 'class_count': 8146,
+                         'page_count': 8454, 'vocabulary_version': 1,
+                         'stale_after': '2026-10-06', 'artifacts': artifacts}
+        self.save()
+    def save(self):
+        (self.root / '.generation.json').write_text(json.dumps(self.manifest))
+    def test_vault_build_bundle_is_accepted(self):
+        bundle = reload.verified_bundle(self.root)
+        self.assertEqual(bundle['generation'], self.identity)
+        self.assertEqual(bundle['content_digest'], self.manifest['content_digest'])
+    def test_declared_content_digest_must_agree_with_the_artifact_set(self):
+        self.manifest['content_digest'] = '0' * 64; self.save()
+        with self.assertRaises(ValueError): reload.verified_bundle(self.root)
+    def test_identity_must_name_its_own_commit(self):
+        self.manifest['commit'] = 'deadbee'; self.save()
+        with self.assertRaises(ValueError): reload.verified_bundle(self.root)
+    def test_missing_c3_field_is_refused(self):
+        del self.manifest['vocabulary_version']; self.save()
+        with self.assertRaises(ValueError): reload.verified_bundle(self.root)
+    def test_semantic_sidecar_must_declare_the_same_generation(self):
+        # Re-stamp the marker too, so the ONLY disagreement under test is the
+        # sidecar's generation rather than its hash.
+        name = 'ontology-corpus.rvdb.generation.json'
+        content = json.dumps({'generatedAt': 'visionGraph@other', 'embeddingModel': 'bge-small-en-v1.5', 'dimensions': 384}).encode()
+        (self.root / name).write_bytes(content)
+        digests = []
+        for spec in self.manifest['artifacts']:
+            if spec['name'] == name:
+                spec['sha256'], spec['bytes'] = hashlib.sha256(content).hexdigest(), len(content)
+            digests.append(f"{spec['name']}:{spec['sha256']}")
+        self.manifest['content_digest'] = hashlib.sha256('\n'.join(sorted(digests)).encode()).hexdigest()
+        self.save()
+        with self.assertRaises(ValueError): reload.verified_bundle(self.root)
+
+
 if __name__ == '__main__': unittest.main()

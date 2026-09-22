@@ -1,18 +1,56 @@
 # Ontology Loom — the Generation-Identity Contract the Mirror Consumes
 
-## Status: Contract (consumer-side). The **build authority moved upstream to `jjohare/logseq`**; this doc is the generation-identity contract the Rust `loom-facade` mirror consumes and verifies.
-## Date: 2026-08-11 (authored); retargeted 2026-08-17 (Rust re-platform)
+## Status: Contract (consumer-side). The **build authority is `vault build` over the local vault `/home/devuser/workspace/visionGraph`** (ADR-141, 2026-09-22; previously `jjohare/logseq` — see the amendment below). This doc is the generation-identity contract the Rust `loom-facade` mirror consumes and verifies.
+## Date: 2026-08-11 (authored); retargeted 2026-08-17 (Rust re-platform); amended 2026-09-22 (ADR-141, the vault build)
 ## Author: Loom capstone workstream (WS-A), retargeted for ADR-137 / PRD-027
 ## Depends on: OCP Revised Design Brief (2026-08-11); ADR-135 (façade + generation discipline); ADR-136 D4 (SSOT + atomic mirror); ADR-137 (Rust re-platform)
-## Scope: **the contract** — `build-manifest.json`, `urn:ngm:generation:<sha>`, the atomic never-mixed generation, and how the Rust mirror verifies them. The *builder implementation* (`pipeline/*`, `publish.yml`) is **upstream in `jjohare/logseq`** and is reproduced below only as the contract the mirror relies on, not as Loom work.
+## Scope: **the contract** — `build-manifest.json`, `urn:ngm:generation:<sha>`, the atomic never-mixed generation, and how the Rust mirror verifies them. The *builder implementation* is **`vault build`** (`project/crates/vault`, ADR-141; formerly `pipeline/*` + `publish.yml` in `jjohare/logseq`) and is reproduced below only as the contract the mirror relies on, not as Loom work.
 
 ---
 
+> **Amendment (2026-09-22, ADR-141) — the builder moved again, and locally.**
+> The build authority is no longer `jjohare/logseq`'s `publish.yml`: it is the `vault build`
+> subcommand over the local vault `/home/devuser/workspace/visionGraph` (PRD sovereign-corpus
+> Q8/Q11). Three things in the contract below change accordingly, and only these three:
+>
+> 1. **Identity.** A generation is `visionGraph@<sha>` — the vault's own commit sha, qualified by
+>    the vault name so a bare sha can never be mistaken for another repository's. `commitSha`
+>    keeps its meaning (the bare sha) and remains what `corpusSha_match` resolves against.
+> 2. **Provenance.** `wasDerivedFrom` names the **local** repository —
+>    `file:///home/devuser/workspace/visionGraph@<sha>` — and never a GitHub URL. The corpus is
+>    not published from GitHub any more; a provenance IRI that pointed there would assert an
+>    origin the bytes do not have.
+> 3. **The commit marker has two shapes, and the reader accepts both.** See the table below.
+>
+> Everything else — the atomic never-mixed guarantee, per-artefact digests, the verify-all-then-
+> flip promotion, the refusal of an unpinnable all-zero sha — is unchanged and still load-bearing.
+>
+> ### `.generation.json`, the two shapes
+>
+> | | `vault build` (contract C3, current) | mirror (legacy, still live) |
+> |---|---|---|
+> | identity | `id: "visionGraph@<sha>"` + `commit: "<sha>"` | `generation: "<ISO stamp>"` |
+> | build digest | `content_digest` over the artefact set | — |
+> | counts | `class_count`, `page_count` | — |
+> | schema | `vocabulary_version` | — |
+> | lifecycle | `stale_after` (OKF) | — |
+> | artefacts | **list**: `[{name, sha256, bytes}]` | **map**: `{name: {sha256, bytes}}` |
+> | `GenerationSource` | `VaultBuild` | `MirrorManifest` |
+>
+> `loom-facade::mirror` reads either and reports ONE shape: the served descriptor always carries
+> the new keys, `null` where the legacy marker cannot supply them. This is a **reader-side
+> superset, not a compatibility shim in the served contract** — there is one `/loom/generation`
+> shape, one grounding envelope, and no consumer branch on which marker was on disk. It exists
+> because the live HP node carries a mirror marker until the first vault-build promotion, and a
+> reader that refused it would take the node down to gain nothing. `scripts/reload-published-
+> generation.py` validates both on the same terms.
+
+
 > **Retargeting note (2026-08-17).** This document was authored as the WS-A *build-stage* spec
 > back when the Loom vendored a `pipeline/` copy. That copy is retired (#21): the Loom is a
-> **serving mirror, not a builder**, and the canonical builder is `jjohare/logseq` (`publish.yml`
-> runs `pytest pipeline/tests` + `pipeline.validate` before deploy; `enrich-gate.yml` gates
-> enrichment PRs). So the *authority* for everything in §3–§8 lives upstream; those sections stay
+> **serving mirror, not a builder**, and the canonical builder was then `jjohare/logseq` (`publish.yml`
+> ran `pytest pipeline/tests` + `pipeline.validate` before deploy; `enrich-gate.yml` gated
+> enrichment PRs; superseded by `vault build` on 2026-09-22, see the amendment above). So the *authority* for everything in §3–§8 lives upstream; those sections stay
 > here as the **contract the mirror consumes and verifies** — the manifest shape, the generation
 > identity, the atomic never-mixed guarantee — not as a build to run in this repo. The Rust
 > realisation of the consumer side is `app/mirror.sh` (still the shipped promote mechanism — the
@@ -26,8 +64,8 @@
 
 The Loom is a portable VisionFlow node with a stable, model-swappable façade. In the pre-Rust
 design it was described as *owning* the corpus lifecycle including the build; the Rust
-re-platform sharpens that (ADR-137 D7): **the build is upstream (`jjohare/logseq`) and the Loom
-is a serving mirror of its output.** What the Loom owns is the **consumer side** of the
+re-platform sharpens that (ADR-137 D7): **the build is upstream (`vault build` over visionGraph since ADR-141; `jjohare/logseq`
+before it) and the Loom is a serving mirror of its output.** What the Loom owns is the **consumer side** of the
 generation contract: pull the published generation, verify it is one whole never-mixed
 generation, serve it, and expose which generation it is serving. It satisfies agentbox ADR-112
 (one-brain / no hot-path LLM) by construction: the upstream pipeline is the authoritative slow
@@ -60,14 +98,14 @@ class BuildContext:
     build_id: str          # f"{commit_sha[:12]}-{pipeline_version}"
     pipeline_version: str   # single source: PIPELINE_VERSION ("ng-1.0.0")
     corpus_nature: str      # "synthetic-ai-generated-human-directed"  (corpus-honesty, §6)
-    repo_iri: str           # "https://github.com/jjohare/logseq"
+    repo_iri: str           # "file:///home/devuser/workspace/visionGraph"  (local vault, ADR-141)
 
     @classmethod
     def from_env(cls, pipeline_version: str) -> "BuildContext": ...
 
     def version_iri(self) -> str:      # "urn:ngm:generation:<commit_sha>"
         return f"urn:ngm:generation:{self.commit_sha}"
-    def derived_from_iri(self) -> str:  # "https://github.com/jjohare/logseq@<commit_sha>"
+    def derived_from_iri(self) -> str:  # "file:///home/devuser/workspace/visionGraph@<commit_sha>"
         return f"{self.repo_iri}@{self.commit_sha}"
 ```
 
@@ -96,7 +134,7 @@ The manifest is the last artifact written, after every generation artifact exist
   "pipelineVersion": "ng-1.0.0",
   "corpusNature": "synthetic-ai-generated-human-directed",
   "versionIRI": "urn:ngm:generation:4f5e1150e84a4531...",
-  "wasDerivedFrom": "https://github.com/jjohare/logseq@4f5e1150e84a4531...",
+  "wasDerivedFrom": "file:///home/devuser/workspace/visionGraph@4f5e1150e84a4531...",
   "artifacts": {
     "data/ontology.ttl":            {"sha256": "…", "bytes": 4821334, "count": 98214},
     "data/ontology-inferred.ttl":   {"sha256": "…", "bytes": 1120044, "count": 21877},

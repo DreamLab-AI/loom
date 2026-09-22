@@ -378,6 +378,10 @@ fn sidecar_to_generation(parsed: Option<&GenerationSidecar>) -> Generation {
             artifacts: Vec::new(),
             verified_single_generation: true,
             class_count: Some(g.class_count),
+            content_digest: None,
+            page_count: None,
+            vocabulary_version: None,
+            stale_after: None,
         },
         None => Generation {
             id: GenerationId("unavailable".to_owned()),
@@ -389,6 +393,10 @@ fn sidecar_to_generation(parsed: Option<&GenerationSidecar>) -> Generation {
             artifacts: Vec::new(),
             verified_single_generation: false,
             class_count: None,
+            content_digest: None,
+            page_count: None,
+            vocabulary_version: None,
+            stale_after: None,
         },
     }
 }

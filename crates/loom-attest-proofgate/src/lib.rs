@@ -8,7 +8,7 @@
 //! `{ seq, ts, predicate, passed, detail, subject, prev_sha256, entry_sha256 }`
 //! where `entry_sha256 = sha256(prev_sha256 || canonical-json(entry-sans-hashes))`.
 //! [`ChainedLedger::attest`] appends and returns the entry's
-//! [`LedgerEntryId`](loom_domain::LedgerEntryId); [`ChainedLedger::verify_chain`]
+//! [`loom_domain::LedgerEntryId`]; [`ChainedLedger::verify_chain`]
 //! re-hashes the file end-to-end and reports whether the chain is intact — a
 //! single flipped byte anywhere breaks a hash and fails the check. Each
 //! [`attest`](ChainedLedger::attest) also advances an atomically-written HEAD
@@ -43,8 +43,8 @@
 //! dependent, not a byte-exact re-hash.
 //!
 //! So, per the mission's fallback: the `attest` feature **re-exports the sha2
-//! ledger** ([`ProofGateLedger`] is a re-export of [`ChainedLedger`]) and links
-//! `ruvector-core` to prove the frozen wiring compiles ([`ruvector_core`] is
+//! ledger** (`ProofGateLedger` is a re-export of [`ChainedLedger`]) and links
+//! `ruvector-core` to prove the frozen wiring compiles (`ruvector_core` is
 //! re-exported under the feature). Binding to the real `ProofGate` is a
 //! one-line wiring change (`ruvector-graph-transformer` + `ruvector-verified`)
 //! deferred out of this crate's frozen scope.
@@ -123,10 +123,15 @@ pub struct LedgerEntry {
 /// the last appended entry. `verify_chain` requires the on-disk tail to match it,
 /// so truncating trailing entries (a valid-prefix attack) is detected even though
 /// the surviving prefix re-hashes cleanly (audit finding 4).
+///
+/// Public because it is also the chain head a caller quotes: the governance
+/// route answers `201 {entry_id, chain_head}`, and `chain_head` is this.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-struct HeadCheckpoint {
-    seq: u64,
-    entry_sha256: String,
+pub struct HeadCheckpoint {
+    /// Sequence number of the last appended entry, dense from 0.
+    pub seq: u64,
+    /// Its `entry_sha256` — the chain head.
+    pub entry_sha256: String,
 }
 
 /// The hashed projection of an entry — everything except the two hash fields,
@@ -249,6 +254,29 @@ impl ChainedLedger {
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(None),
             Err(e) => Err(LoomError::Attest(format!("open head: {e}"))),
         }
+    }
+
+    /// The current chain head, or `None` on a ledger that has never been
+    /// appended to.
+    ///
+    /// Reads the checkpoint sidecar rather than the ledger, so quoting the head
+    /// after an append is O(1) in chain length — a governance route answers on
+    /// every decision and must not re-read the whole ledger to do it.
+    ///
+    /// # Errors
+    /// [`LoomError::Attest`] when the checkpoint exists but does not parse.
+    pub fn head(&self) -> Result<Option<HeadCheckpoint>, LoomError> {
+        self.read_head()
+    }
+
+    /// How many entries the ledger holds. Reads the whole file, so it belongs
+    /// on the verification path (which re-hashes anyway), not the append path.
+    ///
+    /// # Errors
+    /// [`LoomError::Attest`] when the ledger is unreadable or a line does not
+    /// parse.
+    pub fn entry_count(&self) -> Result<usize, LoomError> {
+        Ok(self.read_entries()?.len())
     }
 
     /// Read and parse every entry, in file order. A missing file is an empty

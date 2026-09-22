@@ -34,6 +34,12 @@ supersedes: "Extends PRD-025 (does not replace it). Supersedes PRD-025's implici
 
 # PRD-026 — Loom Consolidation
 
+> **Corpus-builder note (2026-09-22).** Written when the corpus was a Logseq graph built by
+> `jjohare/logseq` (`pipeline/`, `publish.yml`, `enrich-gate.yml`). That builder is retired: the
+> corpus is now the visionGraph Obsidian vault (frontmatter-only OKF) and the build authority is
+> `vault build` (ADR-141). References below to the upstream Logseq builder are historical.
+
+
 **Status:** Proposed (grounded in the 2026-08 consolidation mesh; operationalises ADR-136)
 **Date:** 2026-08-16
 **Owner:** VisionFlow operator (Dr J. O'Hare, did:nostr:jjohare)

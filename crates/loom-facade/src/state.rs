@@ -8,7 +8,8 @@ use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 
 use loom_domain::{
-    EmbeddingProvider, GraphStore, InjectionDecision, LexicalIndex, ModelBackend, VectorIndex,
+    EmbeddingProvider, GraphStore, InjectionDecision, LexicalIndex, ManifestSource, ModelBackend,
+    VectorIndex,
 };
 use loom_scaffold::policy::InjectionPolicy;
 
@@ -107,6 +108,12 @@ pub struct ConfidenceStats {
 /// The port bundle behind an `Arc` so `AppState` clones are pointer-cheap.
 pub struct AppStateInner {
     pub retriever: Arc<dyn LexicalIndex>,
+    /// The session-manifest port (ADR-140 D2). In the composition root this is
+    /// the SAME object as `retriever` behind a second trait — one index cannot
+    /// describe a corpus it is not serving — but it is held as its own port so
+    /// the manifest can later come from an exposure-profile-aware source (D7)
+    /// without touching the retrieval seam.
+    pub manifest: Arc<dyn ManifestSource>,
     pub semantic: Arc<dyn VectorIndex>,
     pub graph: Arc<dyn GraphStore>,
     pub embedder: Arc<dyn EmbeddingProvider>,
@@ -124,6 +131,15 @@ pub struct AppStateInner {
     pub config: Config,
     /// Rolling per-request gate telemetry, summarised by `/health`.
     pub confidence: ConfidenceWindow,
+    /// The governance ledger `POST /loom/attest` appends to (ADR-141).
+    ///
+    /// ONE instance per process, not one per request: `ChainedLedger` serialises
+    /// its appends with an internal lock, and two handles over the same file
+    /// would each compute against a stale chain head. It is built from
+    /// `config.ledger_path` here rather than passed in, so the ports the
+    /// constructor takes stay the hexagonal ring and nothing else.
+    #[cfg(feature = "attest")]
+    pub ledger: std::sync::Arc<loom_attest_proofgate::ChainedLedger>,
 }
 
 /// Cheap-to-clone handle to the port bundle (axum extension state).
@@ -135,10 +151,12 @@ impl AppState {
     /// their in-memory app through (fixture index, stub/absent accelerators).
     ///
     /// One argument per hexagonal port + config + policy; the arity IS the ring.
+    /// `manifest` is usually the same object as `retriever` (see the field doc).
     #[must_use]
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         retriever: Arc<dyn LexicalIndex>,
+        manifest: Arc<dyn ManifestSource>,
         semantic: Arc<dyn VectorIndex>,
         graph: Arc<dyn GraphStore>,
         embedder: Arc<dyn EmbeddingProvider>,
@@ -149,12 +167,17 @@ impl AppState {
     ) -> Self {
         Self(Arc::new(AppStateInner {
             retriever,
+            manifest,
             semantic,
             graph,
             embedder,
             backend,
             generation,
             policy,
+            #[cfg(feature = "attest")]
+            ledger: std::sync::Arc::new(loom_attest_proofgate::ChainedLedger::with_path(
+                config.ledger_path.clone(),
+            )),
             config,
             confidence: ConfidenceWindow::default(),
         }))

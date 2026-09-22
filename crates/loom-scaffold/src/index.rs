@@ -8,13 +8,19 @@ use std::collections::HashSet;
 use std::sync::OnceLock;
 
 use indexmap::IndexMap;
+use loom_domain::{Attestation, AttestedComputation, Mapping};
 use regex::Regex;
 use serde::Deserialize;
 
-/// The on-disk `scaffold-index.json` class shape (`t,d,dom,q,m,sup,isup,rel,bl`).
+/// The on-disk `scaffold-index.json` class shape (`t,d,dom,q,m,sup,isup,rel,bl`)
+/// plus the OKF keys the vault build adds (`generated`, `verified`, `map`,
+/// `ac` — ADR-141).
+///
 /// Every field is optional on disk; `rel` preserves the camelCase predicate keys
-/// verbatim (they are emitted into the block unchanged — byte-parity).
-#[derive(Debug, Clone, Deserialize)]
+/// verbatim (they are emitted into the block unchanged — byte-parity). The OKF
+/// keys default to absent, so a v1 index built before they existed parses
+/// unchanged and reports `process:vault`-generated, unverified provenance.
+#[derive(Debug, Clone, Default, Deserialize)]
 pub struct ClassEntry {
     #[serde(default)]
     pub t: Option<String>,
@@ -34,6 +40,22 @@ pub struct ClassEntry {
     pub rel: IndexMap<String, Vec<String>>,
     #[serde(default)]
     pub bl: Vec<String>,
+    /// OKF `trust.generated` — who produced this entry. Absent ⇒
+    /// [`Provenance::vault_generated`](loom_domain::Provenance::vault_generated).
+    #[serde(default)]
+    pub generated: Option<Attestation>,
+    /// OKF `trust.verified` — every verification of this entry, machine or
+    /// human, in corpus order.
+    #[serde(default)]
+    pub verified: Vec<Attestation>,
+    /// Loci this term is bound to (ADR-140 D4). Empty until the build emits
+    /// them.
+    #[serde(default)]
+    pub map: Vec<Mapping>,
+    /// Attested computations underwriting this term (ADR-140 D4 in OKF
+    /// vocabulary). Empty until the build emits them.
+    #[serde(default)]
+    pub ac: Vec<AttestedComputation>,
 }
 
 /// The `{version, generated, counts, classes}` envelope of `scaffold-index.json`

@@ -19,6 +19,41 @@ REQUIRED = frozenset(('scaffold-index.json', 'prose-index.json', 'ontology.ttl',
                      'ontology-corpus.rvdb.generation.json'))
 
 
+C3_REQUIRED = ('commit', 'content_digest', 'class_count', 'page_count', 'vocabulary_version')
+
+
+def bundle_identity(manifest):
+    """Identity + artifact specs from either commit-marker shape.
+
+    `vault build` (contract C3) writes {id: "visionGraph@<sha>", commit,
+    content_digest, class_count, page_count, vocabulary_version, stale_after,
+    artifacts: [{name, sha256, bytes}]}. The legacy mirror wrote
+    {generation: "<ISO>", artifacts: {name: {sha256, bytes}}}. Both are accepted
+    and the C3 fields are validated only when the marker claims to be C3, so a
+    node still serving a mirror bundle is not refused a reload.
+    """
+    artifacts = manifest.get('artifacts')
+    identity = manifest.get('id')
+    if isinstance(identity, str) and identity:
+        if not all(isinstance(manifest.get(key), (str, int)) for key in C3_REQUIRED):
+            raise ValueError('vault build marker missing ' + ', '.join(C3_REQUIRED))
+        if not identity.startswith('visionGraph@') or manifest['commit'] not in identity:
+            raise ValueError('generation id must be visionGraph@<commit>')
+        if not isinstance(artifacts, list):
+            raise ValueError('vault build marker must list artifacts')
+        specs = {}
+        for spec in artifacts:
+            name = spec.get('name')
+            if not isinstance(name, str) or name in specs:
+                raise ValueError('artifact entries need one unique name each')
+            specs[name] = spec
+        return identity, specs, manifest.get('content_digest')
+    identity = manifest.get('generation')
+    if not isinstance(identity, str) or not identity or not isinstance(artifacts, dict):
+        raise ValueError('complete graph and semantic generation required')
+    return identity, artifacts, None
+
+
 def verified_bundle(directory):
     directory = Path(directory)
     marker = directory / '.generation.json'
@@ -26,9 +61,8 @@ def verified_bundle(directory):
         raise ValueError('publication in flight or indirect marker')
     raw = marker.read_bytes()
     manifest = json.loads(raw)
-    generation = manifest.get('generation')
-    artifacts = manifest.get('artifacts', {})
-    if not isinstance(generation, str) or not generation or not REQUIRED <= artifacts.keys():
+    generation, artifacts, declared_digest = bundle_identity(manifest)
+    if not REQUIRED <= artifacts.keys():
         raise ValueError('complete graph and semantic generation required')
     digests = []
     for name, spec in artifacts.items():
@@ -42,13 +76,20 @@ def verified_bundle(directory):
         if digest != spec.get('sha256') or artifact.stat().st_size != spec.get('bytes'):
             raise ValueError('artifact hash or size mismatch: ' + name)
         digests.append(f'{name}:{digest}')
+    content_digest = hashlib.sha256('\n'.join(sorted(digests)).encode()).hexdigest()
+    # A declared digest that disagrees means the directory is not the set the
+    # builder committed, even though every individual file hashed correctly.
+    if declared_digest is not None and declared_digest != content_digest:
+        raise ValueError('content digest disagrees with the published artifact set')
     sidecar = json.loads((directory / 'ontology-corpus.rvdb.generation.json').read_bytes())
-    if sidecar.get('generatedAt') != generation or sidecar.get('embeddingModel') != 'bge-small-en-v1.5' or sidecar.get('dimensions') != 384:
+    sidecar_generation = sidecar.get('generatedAt', sidecar.get('generation'))
+    if (sidecar_generation != generation
+            or sidecar.get('embeddingModel', sidecar.get('embedding_model')) != 'bge-small-en-v1.5'
+            or sidecar.get('dimensions') != 384):
         raise ValueError('semantic sidecar must match generation/model/dimensions')
     if marker.read_bytes() != raw or (directory / '.promotion-in-flight').exists():
         raise ValueError('publication changed during verification')
-    return {'generation': generation,
-            'content_digest': hashlib.sha256('\n'.join(sorted(digests)).encode()).hexdigest()}
+    return {'generation': generation, 'content_digest': content_digest}
 
 
 def served_matches(report, bundle):

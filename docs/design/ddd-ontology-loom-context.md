@@ -48,8 +48,8 @@ The **substrate axis is the new column**: it names, per capability, what exists 
 | **ontology-corpus HNSW namespace** (8,146 IRI-keyed bge-small/384 records, cosine, validated 0.87/0.45) | `ruvector-postgres` (data) → `loom-vector-ruvector` reads it | **Shipped (data), unconsumed** | **Aspirational (Rust consumer)** | The new ground truth. The *index exists and is validated*; **no Loom code reads it on the hot path yet**. |
 | Semantic-fallback wiring (lexical miss → embed → ANN → gate) | `loom-vector-ruvector` + `loom-embed-xinference` + `loom-scaffold` | **Not built** (silent no-injection below threshold) | **Aspirational (Rust), benchmark-gated, default-OFF** | The one real retrieval gap. Ships behind the WS-O multivariate bench; the −0.40 over-retrieval result is the standing guard. |
 | In-process HNSW read on the hot path (network-free) | `loom-vector-ruvector` (`@ruvector/core` embedded) | **Not built** | **Aspirational (Rust)** | The Rust win over Python: an in-process index read, not an MCP round-trip. The `ruvector-postgres`/MCP path is build/off-turn write only. |
-| Single-source-of-truth build (one source → ttl + scaffold + prose + HNSW) | build pipeline (jjohare/logseq, not the Loom) | **Not built** (three drifting materialisations ≈ 25M) | **N/A to the Loom** | SSOT is a *builder* concern; the Loom is a serving mirror (#21). The Rust Loom consumes generations, it does not derive them. |
-| Admission-control **domain predicates** (acyclicity, dupe-label, type-match, relation-contradiction) | canonical `jjohare/logseq` pipeline (CI-enforced there) | **Shipped + CI-enforced (canonically, upstream)** | **N/A to the Loom** | Enforced in `publish.yml`/`enrich-gate.yml` upstream. The Loom serves pre-gated artifacts; its vendored `app/pipeline/` is dropped (#21). |
+| Single-source-of-truth build (one source → ttl + scaffold + prose + HNSW) | `vault build` over visionGraph (ADR-141), not the Loom | **Not built** (three drifting materialisations ≈ 25M) | **N/A to the Loom** | SSOT is a *builder* concern; the Loom is a serving mirror (#21). The Rust Loom consumes generations, it does not derive them. |
+| Admission-control **domain predicates** (acyclicity, dupe-label, type-match, relation-contradiction) | canonical `vault` builder (`vault validate` + `vault build` over visionGraph, ADR-141) | **Shipped + CI-enforced (canonically, upstream)** | **N/A to the Loom** | Enforced by `vault validate` before `vault build` upstream. The Loom serves pre-gated artifacts; its vendored `app/pipeline/` is dropped (#21). |
 | Admission-control **attestation mechanics** (verdict → tamper-evident ledger) | `loom-attest-proofgate` (RuVector ADR-047) | **Not built** (unattested) | **Aspirational (Rust), build/CI-time** | Re-platform the mechanics onto ProofGate/MutationLedger; predicates stay upstream. Not on the serving hot path. |
 | EL++ reasoning **authority** (build/CI-time closure) | VisionClaw Whelk-rs (ADR-099) | **Aspirational (upstream)** | **Aspirational (upstream)** | Unchanged by this rewrite. Whelk-rs at build time; the Loom serves the pre-reasoned snapshot. |
 | EL++ reasoning at Loom **query time** | none | **Deferred** | **Deferred** | The pre-reasoned snapshot is served; keeping the façade GPU-free/portable depends on this staying deferred. |
@@ -78,7 +78,7 @@ The **Canonical Unit** remains the aggregate root. The Rust rev adds precise ter
 | **Injection policy** | The confidence-gated selective-injection product decision (`STRONG_MATCH_SCORE`, `MIN_INJECT_FRACTION`, skip below `MIN_INJECT_SCORE`), owned by `loom-scaffold`. Decides *which* Canonical Units inject; never alters the Units. The sole injection authority over which Retrieval Fusion feeds. |
 | **Accelerator ACL** | The anti-corruption layer at the `loom-vector-ruvector` crate seam (§6.1). Its one job: an index shape (vector id, HNSW node handle, postgres row) never crosses into a Canonical Unit. In the Rust rev this is enforced by the `VectorIndex` port signature — it can return `(IRI, score)` and nothing else. |
 | **Reasoned closure** | The one authoritative EL closure over the TBox, computed **at build time** by Whelk-rs (VisionClaw ADR-099). Serialised to `ontology-inferred.ttl`; loaded read-only by `loom-graph-oxigraph`; projected into each Unit's ontology block. Not recomputed at query time. |
-| **Admission control** | The write-time gate that blocks a bad write before it reaches the corpus. **Domain predicates** live upstream in the canonical `jjohare/logseq` builder (CI-enforced); **attestation mechanics** re-platform onto `loom-attest-proofgate` (RuVector ProofGate/MutationLedger). Build/CI-time; never the serving hot path. |
+| **Admission control** | The write-time gate that blocks a bad write before it reaches the corpus. **Domain predicates** live upstream in the canonical `vault` builder (`vault validate` + `vault build` over visionGraph, ADR-141); **attestation mechanics** re-platform onto `loom-attest-proofgate` (RuVector ProofGate/MutationLedger). Build/CI-time; never the serving hot path. |
 | **Distillation Job** | A job-URN-anchored request for an LLM-distilled, ontology-grounded summary over a corpus scope (ADR-135 D4). The aggregate root of the deferred distillation channel, off-turn, not a serving crate (§10.2). |
 | **corpusNature** | `"synthetic-ai-generated-human-directed"` — carried on every served answer and distillate. The corpus is AI-authored under human direction; the system never implies otherwise. |
 
@@ -168,7 +168,7 @@ Two crates that the Python revision *implied* but did not name are now explicit:
 
 ```mermaid
 graph TD
-    GH[("jjohare/logseq corpus repo<br/>Logseq md + JSON-LD — UPSTREAM builder")]
+    GH[("visionGraph vault<br/>Obsidian md (frontmatter OKF) — UPSTREAM vault build")]
 
     subgraph LOOM["OntologyLoom node (BC24) — Rust workspace, one static binary"]
       direction TB
@@ -210,7 +210,7 @@ graph TD
       CLIENT["one-brain PUSH/PULL + distill MCP tools + email gateway"]
     end
 
-    GH -->|sync + parse: CONFORMIST to logseq generation| CU
+    GH -->|sync + parse: CONFORMIST to vault-build generation| CU
     RZ -.build-time closure.-> CU
     CU --> PORTS
     PORTS -.implemented by.-> LEX
@@ -259,7 +259,7 @@ Binding obligations of the ACL (unchanged in intent from the 2026-08-16 rev; now
 
 **Relationship:** a split-ownership write door, off the serving hot path. The split from ADR-136 D5 is unchanged; the Rust rev only names where the mechanics land.
 
-- **Domain predicates stay in the canonical `jjohare/logseq` builder** (acyclicity, duplicate-label, type-match, relation-contradiction), CI-enforced there (`publish.yml`, `enrich-gate.yml`). These are domain-semantic — what a contradiction or duplicate *means* for this ontology. The Rust Loom is a **serving mirror**: it serves pre-gated artifacts and does **not** vendor the builder (the `app/pipeline/*` copy is dropped, #21). RuVector's proof-gate has, and should have, zero opinion about ontology vocabulary.
+- **Domain predicates stay in the canonical `vault` builder (`vault validate` + `vault build` over visionGraph, ADR-141)** (acyclicity, duplicate-label, type-match, relation-contradiction), enforced there before a generation is emitted. These are domain-semantic — what a contradiction or duplicate *means* for this ontology. The Rust Loom is a **serving mirror**: it serves pre-gated artifacts and does **not** vendor the builder (the `app/pipeline/*` copy is dropped, #21). RuVector's proof-gate has, and should have, zero opinion about ontology vocabulary.
 - **Attestation mechanics re-platform onto `loom-attest-proofgate`** (RuVector ADR-047 `ProofGate<T>` / `MutationLedger`): the unattested verdict becomes a `ProofRequirement::InvariantPreserved` obligation routed through ProofGate, recorded as a chain-hashed tamper-evident ledger entry. ADR-047's types are domain-agnostic — a straight mechanics upgrade with no domain-knowledge cost. Build/CI-time only; never on the serving hot path. It attests *that the gate ran*; the `CanonicalUnit` remains the human-facing artifact.
 
 ### 6.5 Retrieval Fusion: a candidate union feeding one gate, benchmark-gated, default-OFF
@@ -278,9 +278,9 @@ The wiring is **default-OFF and benchmark-gated.** The standing regression guard
 
 **Relationship:** an internal invariant of `loom-scaffold`, elevated here because the Semantic Fallback makes it load-bearing. Every retrieval signal — lexical, HNSW, SPARQL — is a *candidate source*. Exactly one component decides what injects: `loom-scaffold`'s confidence gate. No adapter injects directly; no adapter's score bypasses `MIN_INJECT_SCORE`/`MIN_INJECT_FRACTION`. This is why adding HNSW cannot, by construction, degrade a query below the gate's floor: a weak semantic candidate that does not clear the gate simply does not inject, exactly as a weak lexical candidate does not today.
 
-### 6.7 Conformist to logseq's Generation; Upstream/Downstream to agentbox and VisionClaw
+### 6.7 Conformist to the vault build's Generation; Upstream/Downstream to agentbox and VisionClaw
 
-- **Conformist to jjohare/logseq's Generation.** The Loom does not negotiate the corpus schema; it consumes the Generation the canonical builder emits (`{commitSha, buildId, artifacts…}`, ADR-135 D2.1) and conforms to it. The Loom is a **serving mirror, not a builder** — it holds no authority to reshape the corpus. (This is the relationship that makes dropping the vendored `app/pipeline/*` correct, not lossy: the builder is upstream and canonical.)
+- **Conformist to the vault build's Generation** (`visionGraph@<sha>`, ADR-141). The Loom does not negotiate the corpus schema; it consumes the Generation the canonical builder emits (`{commitSha, buildId, artifacts…}`, ADR-135 D2.1) and conforms to it. The Loom is a **serving mirror, not a builder** — it holds no authority to reshape the corpus. (This is the relationship that makes dropping the vendored `app/pipeline/*` correct, not lossy: the builder is upstream and canonical.)
 - **Downstream: agentbox is a Loom client (ADR-051).** agentbox binds the `/v1` façade — the one-brain PUSH/PULL retrieval, the deferred-distillation MCP tools, and the email gateway (`REASONER_BASE_URL = http://loom:8080/v1`). agentbox conforms to the façade contract; the model swaps behind it with zero agentbox change. The Rust rev does not alter the wire shape agentbox binds — the façade endpoints and their semantics are preserved (that is the point of keeping `loom-facade` a thin composition root).
 - **Upstream: VisionClaw is the reasoner side (Whelk-rs, ADR-099; generation consumer, ADR-135 D2.3).** VisionClaw supplies the build-time closure and consumes published Generations by atomic load (shadow-graph swap, not CLEAR+INSERT). The Rust Loom's obligation to VisionClaw is unchanged: emit atomic, sha-verified Generations; never a mixed build.
 
@@ -374,7 +374,7 @@ Citations are repo-qualified to avoid the two-PRD-022 / two-ADR-050 ambiguity PR
 | **ADR-051** | agentbox | Loom client + deferred distillation (harness side). The downstream consumer (§6.7). Distinct from agentbox ADR-050 (decision-elevation). |
 | **PRD-022 (semantic-trust-layer)** | VisionClaw | Provenance-graph constraints. |
 | **PRD-022 (semantic-integrity-provenance-decisions)** | agentbox | URI/DID grammar authority (Conformist target for identifiers; did:nostr + NIP-98 convergence). |
-| Sibling Rust workspaces | ruvector / solid-pod-rs / nostr-rust-forum / logseq-publisher-rust | Style referents: tokio workspace, `resolver = "2"`, `unsafe_code = "deny"`, `lto = "thin"`, `codegen-units = 1`, `strip`. |
+| Sibling Rust workspaces | ruvector / solid-pod-rs / nostr-rust-forum | Style referents: tokio workspace, `resolver = "2"`, `unsafe_code = "deny"`, `lto = "thin"`, `codegen-units = 1`, `strip`. |
 
 ## 12. BC catalogue reconciliation (retained)
 

@@ -149,6 +149,10 @@ pub fn generation_with_id(id: &str) -> Generation {
         artifacts: Vec::new(),
         verified_single_generation: true,
         class_count: None,
+        content_digest: None,
+        page_count: None,
+        vocabulary_version: None,
+        stale_after: None,
     }
 }
 
@@ -179,6 +183,8 @@ pub struct TestEnvBuilder {
     backend_no_think: bool,
     think_token_floor: u64,
     commit_marker: bool,
+    vault_marker: Option<(String, Option<String>)>,
+    ledger_path: Option<String>,
     profile: Option<String>,
     data_dir: Option<std::path::PathBuf>,
 }
@@ -199,6 +205,8 @@ impl TestEnvBuilder {
             backend_no_think: false,
             think_token_floor: 0, // matches Config::default — F3 off unless a test opts in
             commit_marker: false,
+            vault_marker: None,
+            ledger_path: None,
             profile: None,
             data_dir: None,
         }
@@ -219,6 +227,22 @@ impl TestEnvBuilder {
     /// checkout: content-bound, but not publisher-attested.
     pub fn with_commit_marker(mut self, enabled: bool) -> Self {
         self.commit_marker = enabled;
+        self
+    }
+
+    /// Write a `vault build` commit marker (contract C3, ADR-141): an
+    /// `id` of `visionGraph@<sha>`, the build's own `content_digest`, corpus
+    /// counts and an optional OKF `stale_after`. Mutually exclusive with
+    /// [`Self::with_commit_marker`], which writes the legacy mirror shape.
+    pub fn with_vault_marker(mut self, sha: &str, stale_after: Option<&str>) -> Self {
+        self.vault_marker = Some((sha.to_owned(), stale_after.map(ToOwned::to_owned)));
+        self
+    }
+
+    /// Point `LOOM_LEDGER_PATH` at a test-owned file so `POST /loom/attest`
+    /// appends somewhere the test can inspect and throw away.
+    pub fn with_ledger_path(mut self, path: &std::path::Path) -> Self {
+        self.ledger_path = Some(path.to_string_lossy().into_owned());
         self
     }
 
@@ -299,6 +323,14 @@ impl TestEnvBuilder {
         if self.commit_marker {
             write_commit_marker(&data_dir, &["scaffold-index.json"]);
         }
+        if let Some((sha, stale_after)) = &self.vault_marker {
+            write_vault_marker(
+                &data_dir,
+                &["scaffold-index.json"],
+                sha,
+                stale_after.as_deref(),
+            );
+        }
 
         let retriever = LexicalRetriever::from_json_str(FIXTURE).expect("fixture retriever");
         let lexical_generation_id = retriever.generation().id.0.clone();
@@ -327,6 +359,10 @@ impl TestEnvBuilder {
                 .profile
                 .clone()
                 .unwrap_or_else(|| Config::default().deploy_profile),
+            ledger_path: self
+                .ledger_path
+                .clone()
+                .unwrap_or_else(|| Config::default().ledger_path),
             ..Config::default()
         };
 
@@ -340,8 +376,11 @@ impl TestEnvBuilder {
         let generation = LoadedBundle::activate_or_degraded(&config.index_path)
             .expect("fixture directory activates");
 
+        let retriever = Arc::new(retriever);
+
         let state = AppState::new(
-            Arc::new(retriever),
+            retriever.clone(),
+            retriever,
             vector,
             Arc::new(graph),
             Arc::new(embedder),
@@ -444,4 +483,44 @@ pub fn write_commit_marker_at(
         serde_json::to_vec_pretty(&marker).unwrap(),
     )
     .expect("write commit marker");
+}
+
+/// Write a `vault build` `.generation.json` (contract C3) over `names` in
+/// `dir`: the `visionGraph@<sha>` identity, the build's own content digest, and
+/// the artefact LIST shape (the mirror marker uses a map).
+pub fn write_vault_marker(
+    dir: &std::path::Path,
+    names: &[&str],
+    sha: &str,
+    stale_after: Option<&str>,
+) {
+    let mut artifacts = Vec::new();
+    let mut pairs: Vec<String> = Vec::new();
+    for name in names {
+        let bytes = std::fs::read(dir.join(name)).unwrap_or_else(|e| panic!("marker source: {e}"));
+        let digest = sha256_hex(&bytes);
+        pairs.push(format!("{name}:{digest}"));
+        artifacts.push(serde_json::json!({
+            "name": name, "sha256": digest, "bytes": bytes.len()
+        }));
+    }
+    pairs.sort();
+    let mut marker = serde_json::json!({
+        "id": format!("visionGraph@{sha}"),
+        "commit": sha,
+        "content_digest": sha256_hex(pairs.join("\n").as_bytes()),
+        "generated_at": "2026-09-22T00:00:00Z",
+        "class_count": 7,
+        "page_count": 7,
+        "vocabulary_version": 1,
+        "artifacts": artifacts,
+    });
+    if let Some(stale_after) = stale_after {
+        marker["stale_after"] = serde_json::json!(stale_after);
+    }
+    std::fs::write(
+        dir.join(".generation.json"),
+        serde_json::to_vec_pretty(&marker).unwrap(),
+    )
+    .expect("write vault marker");
 }

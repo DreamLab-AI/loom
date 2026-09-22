@@ -1,0 +1,21 @@
+[package]
+name = "loom-mcp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "MCP (Model Context Protocol) driving adapter for the Ontology Loom: JSON-RPC framing and tool schemas only, no retrieval logic."
+
+[dependencies]
+loom-domain = { path = "../loom-domain" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+async-trait = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+
+[lints]
+workspace = true

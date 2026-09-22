@@ -5,6 +5,7 @@
 
 use crate::artefact::ArtefactQualification;
 use crate::error::LoomError;
+use crate::manifest::{Manifest, UnitKind};
 use crate::model::*;
 use async_trait::async_trait;
 
@@ -26,6 +27,23 @@ pub trait LexicalIndex: Send + Sync {
         opts: ScaffoldOpts,
     ) -> Result<Scaffold, LoomError>;
 
+    /// Bounded, kind-filtered navigation for the agentic plane (ADR-140 D1).
+    ///
+    /// Returns CANDIDATES — `Iri` + score + provenance — and never unit content,
+    /// so Invariant I-P1 holds on the new plane exactly as it does on the old
+    /// one: `resolve`/`assemble` remain the only paths from an address to a
+    /// `CanonicalUnit`. The default implementation is `seeds` (kind-agnostic),
+    /// which is the honest behaviour for a corpus whose only populated family is
+    /// `Term`; an index that distinguishes families overrides it.
+    async fn browse(
+        &self,
+        query: &str,
+        _kind: UnitKind,
+        n: usize,
+    ) -> Result<Vec<ConceptMatch>, LoomError> {
+        self.seeds(query, n).await
+    }
+
     /// Resolve an IRI to its full `CanonicalUnit` (markdown body source). The
     /// address→unit step that keeps every projection honest.
     fn resolve(&self, iri: &Iri) -> Option<CanonicalUnit>;
@@ -40,7 +58,7 @@ pub trait LexicalIndex: Send + Sync {
 #[async_trait]
 pub trait VectorIndex: Send + Sync {
     /// ANN over the embedded query vector. `k` bounded. Cosine. Each hit carries
-    /// its IRI (primary key) and cosine score (∈ [0,1]).
+    /// its IRI (primary key) and cosine score (∈ `[0,1]`).
     async fn nearest(&self, query_vec: &[f32], k: usize) -> Result<Vec<ConceptMatch>, LoomError>;
     /// Whether this index may be queried at all. MUST be derived from
     /// [`Self::qualification`] — an openable-but-incompatible artefact is not
@@ -107,4 +125,18 @@ pub trait GenerationStore: Send + Sync {
 pub trait AttestationLedger: Send + Sync {
     async fn attest(&self, verdict: &GateVerdict) -> Result<LedgerEntryId, LoomError>;
     async fn verify_chain(&self) -> Result<bool, LoomError>; // tamper check
+}
+
+/// Builds the session manifest (ADR-140 D2) from the loaded generation and the
+/// active exposure profile.
+///
+/// Separate from [`LexicalIndex`] because a manifest is a statement about the
+/// whole corpus rather than a retrieval, and because the exposure profile that
+/// shapes it is backbone-fitted data (ADR-140 D7) while the index is not.
+#[async_trait]
+pub trait ManifestSource: Send + Sync {
+    /// `salience` bounds the address list; `degraded` names the accelerators the
+    /// caller already knows to be unavailable, which the manifest reports
+    /// verbatim rather than re-deriving.
+    async fn manifest(&self, salience: usize, degraded: &[String]) -> Result<Manifest, LoomError>;
 }

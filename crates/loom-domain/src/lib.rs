@@ -19,14 +19,18 @@ pub mod artefact;
 pub mod bundle;
 pub mod error;
 pub mod grounding;
+pub mod manifest;
 pub mod model;
+pub mod okf;
 pub mod ports;
 
 pub use artefact::*;
 pub use bundle::*;
 pub use error::LoomError;
 pub use grounding::*;
+pub use manifest::*;
 pub use model::*;
+pub use okf::*;
 pub use ports::*;
 
 // Test modules live beside their subject but in their own files, so no source

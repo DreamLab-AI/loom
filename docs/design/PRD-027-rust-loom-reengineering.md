@@ -34,6 +34,12 @@ supersedes: "Extends PRD-025 and PRD-026; supersedes nothing wholesale. Supersed
 
 # PRD-027 — Rust Re-engineering of the Ontology Loom Serving Node
 
+> **Corpus-builder note (2026-09-22).** Written when the corpus was a Logseq graph built by
+> `jjohare/logseq` (`pipeline/`, `publish.yml`, `enrich-gate.yml`). That builder is retired: the
+> corpus is now the visionGraph Obsidian vault (frontmatter-only OKF) and the build authority is
+> `vault build` (ADR-141). References below to the upstream Logseq builder are historical.
+
+
 **Status:** Proposed (design + workstream plan; grounded in the 2026-08 re-platform mesh and the newly-landed ontology-corpus RuVector namespace)
 **Date:** 2026-08-17
 **Owner:** VisionFlow operator (Dr J. O'Hare, did:nostr:jjohare)

@@ -12,6 +12,12 @@ supersedes: "nothing wholesale — this plan schedules the doc changes ADR-137/P
 
 # DOC-REENGINEERING-PLAN — the Rust Loom documentation set
 
+> **Corpus-builder note (2026-09-22).** Written when the corpus was a Logseq graph built by
+> `jjohare/logseq` (`pipeline/`, `publish.yml`, `enrich-gate.yml`). That builder is retired: the
+> corpus is now the visionGraph Obsidian vault (frontmatter-only OKF) and the build authority is
+> `vault build` (ADR-141). References below to the upstream Logseq builder are historical.
+
+
 **Status:** **Executed (2026-08-17)** — the doc re-engineering this plan schedules is done: README rewritten to the Rust ground truth; `docs/README.md` index created; ADR-137 marked Accepted+Implemented with ADR-135/136 implementation-notes; PRD-027 §10.1 status added (recall floor unmet → gated-off documented); errata folded in (ProofGate location, redb ro-mount hazard, ruvector-core feature trim, gpt-5.4 audit outcomes); agentbox ADR-051 de-vendored to a stub; `ONTOLOGY-UPLIFT-PLAN.md` + `MODEL-BENCHMARKS.md` retired to `legacy/`; `tools/ingest/README.md` created; `ONTOLOGY-LOOM-PIPELINE.md` retargeted to the consumer-side generation contract; Python serving code retired (§12 map). Where the plan and reality diverged, reality won and is annotated. Retained as the record of the intent. (Originally: Proposed — planning artefact; changes no design decision.)
 **Date:** 2026-08-17
 **Owner:** VisionFlow operator (Dr J. O'Hare, did:nostr:jjohare)

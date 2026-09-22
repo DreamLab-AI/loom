@@ -56,7 +56,7 @@ pub enum BundlePhase {
 pub struct ServingIdentity {
     /// The generation descriptor resolved AT LOAD, frozen.
     pub generation: Generation,
-    /// Digest over the loaded artefact set — see [`Self::digest_of`].
+    /// Digest over the loaded artefact set — see [`Self::digest_input`].
     pub content_digest: String,
     /// The artefacts whose bytes this identity covers, with the digests observed
     /// at load (not the ones the marker claimed — those were checked against
@@ -190,6 +190,10 @@ mod tests {
                 artifacts: Vec::new(),
                 verified_single_generation: true,
                 class_count: None,
+                content_digest: None,
+                page_count: None,
+                vocabulary_version: None,
+                stale_after: None,
             },
             content_digest: digest.to_owned(),
             artefacts: Vec::new(),

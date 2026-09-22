@@ -448,6 +448,19 @@ fn hash_present_artefacts(store: &MirrorStore) -> Vec<ArtifactSha> {
         .collect()
 }
 
+/// Whether a generation has passed its OKF `stale_after`, judged against the
+/// system clock (ADR-141).
+///
+/// A generation that declares no `stale_after` is NOT stale — it made no
+/// freshness promise, so there is none to have broken. Staleness never changes
+/// what is served: the node answers exactly as before and says so on `/health`
+/// and in the MCP manifest's `degraded` list, because a stale corpus that
+/// silently stopped answering would be the worse failure.
+#[must_use]
+pub fn generation_is_stale(generation: &Generation) -> bool {
+    generation.is_stale(&rfc3339_utc_now()).unwrap_or(false)
+}
+
 /// RFC 3339 UTC stamp from the system clock, without pulling a date crate into
 /// a workspace that has none. Civil-from-days is Howard Hinnant's algorithm.
 #[must_use]

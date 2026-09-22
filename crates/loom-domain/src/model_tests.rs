@@ -81,6 +81,10 @@ fn scaffold_empty_shape() {
         artifacts: Vec::new(),
         verified_single_generation: false,
         class_count: None,
+        content_digest: None,
+        page_count: None,
+        vocabulary_version: None,
+        stale_after: None,
     };
     // Deliberately exercising the deprecated constructor: it is still published
     // for one release, so its no-match shape stays under test.
@@ -131,6 +135,10 @@ fn generation_equality_is_identity() {
         artifacts: Vec::new(),
         verified_single_generation: true,
         class_count: count,
+        content_digest: None,
+        page_count: None,
+        vocabulary_version: None,
+        stale_after: None,
     };
     assert_eq!(base("g1", Some(10)), base("g1", Some(9999)));
     assert_ne!(base("g1", Some(10)), base("g2", Some(10)));

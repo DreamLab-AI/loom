@@ -765,7 +765,7 @@ Carried from the frame's `deprecation_map`, with the Rust destination made concr
 | `app/ontology_scaffold.py` (lexical matcher + injection policy) | **port** | `loom-scaffold` (§5), fixture ported to tests |
 | `pyoxigraph` dependency (Python binding) | **replace-with-crate** | `oxigraph` direct crate dep |
 | `app/ontology_proxy.py` (524-line legacy proxy) | **drop** | — (superseded by the façade; not carried) |
-| `app/pipeline/*` (vendored logseq/pipeline copy) | **drop** | — (#21: Loom is a serving mirror, builder stays `jjohare/logseq`) |
+| `app/pipeline/*` (vendored copy of the former upstream pipeline) | **drop** | — (#21: Loom is a serving mirror; the builder is `vault build`, ADR-141) |
 | `app/test_proxy.py` (proxy unit tests) | **drop** | — (tests the dropped proxy) |
 | `app/mirror.sh` (atomic generation-verified mirror) | **port** | `loom-facade::mirror` (or retained script; §11.6) |
 | `app/entrypoint.sh`, `Dockerfile`, `docker-compose.yml` | **replace** | `deploy/Dockerfile` (multi-stage static) + `compose.profile-{a,b}.yml` |
@@ -845,7 +845,7 @@ Matching the sibling repos' bar:
 - **agentbox — ADR-051** ([agentbox-ADR-051-loom-client-and-deferred-distillation.md](./agentbox-ADR-051-loom-client-and-deferred-distillation.md)) — the loom client + deferred distillation consumer; the façade contract this binary must keep stable.
 - **VisionClaw — ADR-099** (Whelk-rs EL++ reasoner) and **ADR-090/PRD-016** (hexagonal ring placement) — the reasoner is build-time authority; this workspace is the ADR-090 ring realised for the Loom surface.
 - **ruvector — ADR-001** (HNSW production index) — the in-process `ruvector-core` HNSW read (behind the `hnsw` feature, explicitly enabled with defaults off; Erratum C §2.1). **ADR-047** (`ProofGate<T>`/`MutationLedger`) is the *design target* for attestation but is realised in `ruvector-graph-transformer::proof_gated`, **not** `ruvector-core`; the Loom ships its own `sha2` `ChainedLedger` today and rewires to the real `ProofGate` behind the `attest` feature later (Erratum A, §11.5).
-- **logseq (`jjohare/logseq`)** — the canonical corpus builder + CI-enforced gate; the Loom serves its output, never rebuilds it (the dropped `pipeline/`).
+- **`vault build` (VisionClaw `crates/vault`, over visionGraph)** — the canonical corpus builder + `vault validate` gate (ADR-141); the Loom serves its output, never rebuilds it (the dropped `pipeline/`).
 
 ---
 
@@ -854,7 +854,7 @@ Matching the sibling repos' bar:
 - **No DL reasoning at query time.** No Whelk EL++, no live inference in any handler. The graph store serves the *pre-reasoned* closure only. (Keeps the façade GPU-free and portable — ADR-136 D6.)
 - **No `@ruvector/graph-node` Cypher, no ruvector-hybrid/mincut/gnn-rerank.** oxigraph SPARQL stays (D2); the fusion is the lexical→gate→HNSW-candidate union of §6, nothing more, until D8's bench clears something better.
 - **No encoding replaces the markdown.** No GraphRAG community summaries, no GNN soft-prompt subgraphs, no RuVector-row-as-record. The served unit is always the per-IRI markdown block resolved by `Iri`. This is not a preference; it is the type system (§3–§4).
-- **The Loom is not a builder.** `app/pipeline/*` is dropped; `jjohare/logseq` stays the source of truth. The Rust Loom is a serving mirror with an in-process semantic accelerator — nothing writes the corpus here.
+- **The Loom is not a builder.** `app/pipeline/*` is dropped; the visionGraph vault, built by `vault build`, is the source of truth (ADR-141). The Rust Loom is a serving mirror with an in-process semantic accelerator — nothing writes the corpus here.
 - **No multi-agent coordination substrate (WS-Q).** Deferred, not shipped. When built, it must still resolve every claim to the same per-IRI markdown identity — the `Iri`→`CanonicalUnit` port contract is the seam it will attach to.
 
 _Written to `/home/devuser/workspace/loom/docs/design/RUST-ARCHITECTURE.md`._

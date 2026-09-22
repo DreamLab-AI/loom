@@ -38,6 +38,8 @@ use crate::fusion::build_scaffold;
 use crate::serving;
 use crate::state::AppState;
 
+#[cfg(feature = "attest")]
+pub mod attest;
 pub mod grounding;
 pub mod health;
 
@@ -47,7 +49,7 @@ pub mod health;
 pub fn build_router(state: AppState) -> Router {
     let timeout = Duration::from_secs(state.config.timeout_secs);
     let max_body = state.config.max_body_bytes;
-    Router::new()
+    let router = Router::new()
         .route("/health", get(health::health))
         .route("/loom/generation", get(generation))
         .route("/generation", get(generation)) // alias (Python parity)
@@ -58,8 +60,18 @@ pub fn build_router(state: AppState) -> Router {
         .route("/loom/search", post(search))
         .route("/search", post(search)) // alias
         .route("/loom/search/semantic", post(semantic_search)) // NEW: HNSW debug surface (gated)
+        // ADR-140 D1: the agentic plane, same listener, same AppState, same gate.
+        .route("/mcp", post(mcp).get(mcp_no_sse))
         .route("/v1/chat/completions", post(chat_completions))
-        .route("/v1/models", get(models))
+        .route("/v1/models", get(models));
+    // ADR-141 / contract C5: the governance ledger. Compiled only with the
+    // `attest` feature (default-on) so a strictly read-only node can build
+    // without a writer on the serving path at all.
+    #[cfg(feature = "attest")]
+    let router = router
+        .route("/loom/attest", post(attest::attest))
+        .route("/loom/attest/verify", get(attest::verify));
+    router
         .with_state(state)
         .layer(TimeoutLayer::with_status_code(
             StatusCode::REQUEST_TIMEOUT,
@@ -68,6 +80,54 @@ pub fn build_router(state: AppState) -> Router {
         .layer(RequestBodyLimitLayer::new(max_body))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())
+}
+
+// --- POST /mcp — the agentic plane (ADR-140 D1) -----------------------------
+
+/// One JSON-RPC message in, one response out.
+///
+/// Streamable HTTP without the SSE half: this server has no server-initiated
+/// messages to push, so an open event stream would be a channel that never
+/// carries anything. Batching is accepted because the specification allows an
+/// array, and a client that sends one should not have to discover we only take
+/// singles.
+async fn mcp(State(st): State<AppState>, body: Bytes) -> Response {
+    let Ok(request) = serde_json::from_slice::<Value>(&body) else {
+        return Json(loom_mcp::parse_error("request body is not valid JSON")).into_response();
+    };
+
+    if let Some(batch) = request.as_array() {
+        let mut responses = Vec::with_capacity(batch.len());
+        for message in batch {
+            if let Some(r) = loom_mcp::dispatch(&st, message).await {
+                responses.push(r);
+            }
+        }
+        // An all-notification batch has no response by definition.
+        return if responses.is_empty() {
+            StatusCode::ACCEPTED.into_response()
+        } else {
+            with_serving_identity(Json(Value::Array(responses)).into_response(), &st)
+        };
+    }
+
+    match loom_mcp::dispatch(&st, &request).await {
+        Some(response) => with_serving_identity(Json(response).into_response(), &st),
+        None => StatusCode::ACCEPTED.into_response(),
+    }
+}
+
+/// A GET on the MCP endpoint asks to open an SSE stream. We answer honestly
+/// rather than holding a connection open that will never emit: 405 is what the
+/// specification prescribes for a server that does not offer the stream.
+async fn mcp_no_sse() -> Response {
+    (
+        StatusCode::METHOD_NOT_ALLOWED,
+        Json(json!({
+            "error": "this MCP endpoint is POST-only; it has no server-initiated stream"
+        })),
+    )
+        .into_response()
 }
 
 // --- GET /loom/generation (+ /generation) -----------------------------------

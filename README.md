@@ -11,7 +11,7 @@
 
 **One endpoint. One corpus generation. The model is always a URL behind the door.**
 
-**Maintainer**: [John O'Hare](https://github.com/jjohare) · **Upstream IP**: [Melvin Carvalho](https://github.com/melvincarvalho) ([JSS](https://github.com/JavaScriptSolidServer/JavaScriptSolidServer), [DID:Nostr](https://github.com/nicholasgasior/did-nostr)) · [knowledgeGraph pipeline](https://github.com/jjohare/logseq)
+**Maintainer**: [John O'Hare](https://github.com/jjohare) · **Upstream IP**: [Melvin Carvalho](https://github.com/melvincarvalho) ([JSS](https://github.com/JavaScriptSolidServer/JavaScriptSolidServer), [DID:Nostr](https://github.com/nicholasgasior/did-nostr)) · [corpus build: `vault build` over visionGraph (ADR-141)](docs/design/ADR-141-loom-consumes-the-vault-build.md)
 
 [Why](#why--the-measured-result) · [Façade](#what--the-façade) · [Quickstart](#quickstart) · [Ecosystem](#where-loom-sits) · [Status](#status--honesty) · [Docs](docs/README.md)
 
@@ -46,7 +46,7 @@ Loom is one component of **[VisionFlow](https://github.com/DreamLab-AI/VisionFlo
 | [solid-pod-rs](https://github.com/DreamLab-AI/solid-pod-rs) | Rust Solid pod server — the personal-data-sovereignty layer under each human's and agent's own key |
 | [nostr-rust-forum](https://github.com/DreamLab-AI/nostr-rust-forum) | Nostr-native forum + relay — the one place a human decision gets cryptographically signed |
 | [dreamlab-ai-website](https://github.com/DreamLab-AI/dreamlab-ai-website) | DreamLab AI company website — the commercial face, a thin consumer of the forum kit |
-| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Logseq→OWL pipeline, 8,100+ pages, ODbL-1.0 |
+| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Obsidian-vault→OWL build (`vault build`), 8,100+ pages, ODbL-1.0 |
 
 Each sibling in its own words:
 
@@ -102,14 +102,14 @@ Each sibling in its own words:
 <summary><b>knowledgeGraph</b> — <em>The published corpus</em></summary>
 <br/>
 
-> **8,100+ ordinary Logseq markdown pages that compile losslessly into a formal OWL 2 ontology — pure TBox, every page a class, zero individuals by design.** Corpus, pipeline, viewer and method ship as one open release (ODbL-1.0 data, AGPL-3.0 pipeline) published at narrativegoldmine.com; siblings reason over it (VisionClaw) and serve it as measured LLM grounding (Loom, ~0.94 grounded recall), and third-party extractors such as OntoCast stage RDF into it as governed, reviewable candidates. Rigorous curation is amortised once and reused per query — this repo is the once.
+> **8,100+ ordinary Obsidian markdown pages (frontmatter-only OKF) that compile losslessly into a formal OWL 2 ontology — pure TBox, every page a class, zero individuals by design.** Corpus, pipeline, viewer and method ship as one open release (ODbL-1.0 data, AGPL-3.0 pipeline) published at narrativegoldmine.com; siblings reason over it (VisionClaw) and serve it as measured LLM grounding (Loom, ~0.94 grounded recall), and third-party extractors such as OntoCast stage RDF into it as governed, reviewable candidates. Rigorous curation is amortised once and reused per query — this repo is the once.
 
 </details>
 
 ```
 knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned closure + indexes)
  (corpus + pipeline + method)         │
-   built by jjohare/logseq            ▼  mirror
+   built by `vault build`             ▼  mirror
                                   ┌─────────┐   scaffold-inject     ┌────────────┐
    agents / email / any client ──▶│  LOOM   │───────────────────▶ │  the model  │
         (hold the Loom URL)       │ façade  │◀───────────────────  │ (swappable) │
@@ -161,6 +161,9 @@ One deployment-agnostic contract (`ADR-135` D1). The model is always a URL behin
 | `POST /loom/scaffold` | budget-clamped ontology grounding for a prompt (the retrieval facet) | **no** |
 | `POST /loom/sparql` | read-only, clamped SPARQL over the reasoned closure | no |
 | `POST /loom/search` | label/substring search over the store | no |
+| `POST /loom/attest` | record one human-signed governance decision (`{case_id, digest, outcome, signer, at}`) on the chain-hashed ledger → `201 {entry_id, chain_head}` (`ADR-141`; feature `attest`, default-on) | no |
+| `GET  /loom/attest/verify` | re-hash the whole ledger chain → `{ok, length}` | no |
+| `POST /mcp` | **the agentic plane** — MCP over Streamable HTTP: `loom.manifest`, `loom.browse`, `loom.resolve`, `loom.sparql`, `loom.neighbours`, `loom.paths`. Same index, same gate, same generation, same `grounding` contract as the routes above (`ADR-140` D1) | **no** |
 | `POST /v1/chat/completions` | scaffold-inject the last user message → delegate to the model; `loom_options.scaffold=false` makes the façade a plain proxy for that request | yes |
 | `GET  /v1/models` | model identity passthrough (probe what's behind the façade) | yes |
 
@@ -172,7 +175,19 @@ curl -sXPOST localhost:8084/loom/scaffold \
 # grounded generation — scaffold-injected, then delegated to the model behind the façade
 curl -sXPOST localhost:8084/v1/chat/completions \
   -d '{"model":"qwen3.8-27B","messages":[{"role":"user","content":"what is a rollup?"}],"max_tokens":1536}'
+
+# the agentic plane — an agent drives retrieval itself, one O(1) manifest first
+curl -sXPOST localhost:8084/mcp \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call",
+       "params":{"name":"loom.manifest","arguments":{"salience":40}}}'
 ```
+
+**Two planes, one gate.** A consumer that cannot call tools keeps the injection plane exactly as it
+was; an agentic consumer drives `/mcp` and pays O(1) prompt cost in corpus size instead of
+O(matched blocks). Both resolve through the same `LexicalIndex::assemble` gate and stamp the same
+`grounding` object, so there is no second retrieval policy to keep in sync. `/mcp` is the door for
+hosts **outside** the estate; inside it, agents use the `vault` CLI and `loom-client` rather than
+any MCP transport (ADR-141).
 
 The response of a grounded completion carries a `loom` block (`injected_tokens`, `mode`, `grounding`, `fusion_path`, `generation`) so consumers can account for the grounding and prove which corpus generation produced the answer. `loom.grounding` is documented below and is present on every completion, engaged or not.
 
@@ -331,10 +346,10 @@ Since 2026-08-14 the reference deployment ships the model engine **inside this s
 flowchart TB
     subgraph KG["knowledgeGraph — corpus + pipeline"]
         direction LR
-        LOGSEQ["Logseq corpus\n(8,100+ pages, ODbL)"]
-        PIPE["rdflib 7-stage\npipeline (AGPL)"]
+        VAULT["visionGraph Obsidian vault\n(8,100+ pages, ODbL)"]
+        PIPE["vault build\n(Rust, ADR-141)"]
         GEN["Published GENERATION\n(OWL + closure + indexes)"]
-        LOGSEQ --> PIPE --> GEN
+        VAULT --> PIPE --> GEN
     end
 
     subgraph LOOM["Loom — the grounding node"]

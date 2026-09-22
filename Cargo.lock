@@ -1573,10 +1573,12 @@ dependencies = [
  "axum",
  "futures-util",
  "http-body-util",
+ "loom-attest-proofgate",
  "loom-backend-openai",
  "loom-domain",
  "loom-embed-xinference",
  "loom-graph-oxigraph",
+ "loom-mcp",
  "loom-scaffold",
  "loom-vector-ruvector",
  "reqwest",
@@ -1601,6 +1603,17 @@ dependencies = [
  "oxigraph",
  "regex",
  "tempfile",
+ "tokio",
+]
+
+[[package]]
+name = "loom-mcp"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "loom-domain",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 

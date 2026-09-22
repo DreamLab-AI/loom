@@ -15,9 +15,24 @@
 //!
 //! Best source first, exactly as Python:
 //!   1. `build-manifest.json` (commitSha/buildId — WS-A, when upstream ships it);
-//!   2. `.generation.json` (the mirror's atomic commit marker — proof the served
-//!      set is ONE verified generation, never mixed-build);
+//!   2. `.generation.json` (the atomic commit marker — proof the served set is
+//!      ONE verified generation, never mixed-build);
 //!   3. the scaffold index's own `generated` stamp (barest pre-manifest fallback).
+//!
+//! # Two commit-marker shapes, one reader (ADR-141)
+//!
+//! `.generation.json` exists in two shapes and this reader accepts both:
+//!
+//! | Shape | Identity | Artefacts | Emitted by |
+//! |---|---|---|---|
+//! | **vault build** (C3) | `id: "visionGraph@<sha>"`, `commit`, `content_digest`, `class_count`, `page_count`, `vocabulary_version`, `stale_after` | `artifacts: [ {name, sha256, bytes} ]` | `vault build` |
+//! | **mirror** (legacy) | `generation: "<ISO stamp>"`, `promoted_at`, `cluster_span_seconds` | `artifacts: { name: {sha256, bytes} }` | `app/mirror.sh` |
+//!
+//! This is a READER-side superset, not a served compatibility shim: the
+//! grounding contract and `/loom/generation` have one shape whichever marker
+//! was read. The live HP node still carries a mirror marker until the first
+//! `vault build` promotion, and a reader that refused it would take the node
+//! down to gain nothing.
 
 use std::path::{Path, PathBuf};
 
@@ -115,12 +130,21 @@ impl MirrorStore {
             artifacts: Vec::new(),
             verified_single_generation: true,
             class_count: None,
+            content_digest: None,
+            page_count: None,
+            vocabulary_version: None,
+            stale_after: None,
         })
     }
 
-    fn mirror_manifest(&self) -> Option<Generation> {
+    /// The `.generation.json` commit marker in either shape — the `vault build`
+    /// generation (C3) or the legacy mirror marker. See the module docs.
+    fn generation_marker(&self) -> Option<Generation> {
         let raw = std::fs::read_to_string(self.generation_manifest_path()).ok()?;
         let m: Value = serde_json::from_str(&raw).ok()?;
+        if let Some(id) = str_field(&m, "id") {
+            return Some(vault_build_generation(&m, id));
+        }
         let generated_at = str_field(&m, "generation");
         let id = generated_at.clone().unwrap_or_else(|| "mirror".to_owned());
         Some(Generation {
@@ -133,6 +157,10 @@ impl MirrorStore {
             artifacts: parse_artifacts(&m),
             verified_single_generation: true,
             class_count: None,
+            content_digest: None,
+            page_count: None,
+            vocabulary_version: None,
+            stale_after: None,
         })
     }
 
@@ -163,6 +191,10 @@ impl MirrorStore {
                     artifacts: Vec::new(),
                     verified_single_generation: false,
                     class_count,
+                    content_digest: None,
+                    page_count: None,
+                    vocabulary_version: None,
+                    stale_after: None,
                 }
             }
             None => Generation {
@@ -175,6 +207,10 @@ impl MirrorStore {
                 artifacts: Vec::new(),
                 verified_single_generation: false,
                 class_count: None,
+                content_digest: None,
+                page_count: None,
+                vocabulary_version: None,
+                stale_after: None,
             },
         }
     }
@@ -188,14 +224,14 @@ impl MirrorStore {
 impl GenerationStore for MirrorStore {
     fn current(&self) -> Generation {
         self.build_manifest()
-            .or_else(|| self.mirror_manifest())
+            .or_else(|| self.generation_marker())
             .unwrap_or_else(|| self.scaffold_index_stamp())
     }
 
     async fn verify_atomicity(&self) -> Result<(), LoomError> {
-        // Only the mirror manifest carries per-artifact shas to re-verify. With
-        // no manifest there is nothing promoted to check — fail-open (Ok).
-        let Some(gen) = self.mirror_manifest() else {
+        // Only the commit marker carries per-artifact shas to re-verify. With
+        // no marker there is nothing promoted to check — fail-open (Ok).
+        let Some(gen) = self.generation_marker() else {
             return Ok(());
         };
         if gen.artifacts.is_empty() {
@@ -223,24 +259,67 @@ fn str_field(v: &Value, key: &str) -> Option<String> {
         .map(std::borrow::ToOwned::to_owned)
 }
 
-/// Parse the `.generation.json` `artifacts` map: `{ name: {sha256, bytes} }`.
-/// The mirror records the `.rvdb` sidecar here alongside the JSON indices, so
-/// re-hashing this list covers the HNSW artifact (§11.6).
+/// The `vault build` marker (C3) as a [`Generation`]. `id` is
+/// `visionGraph@<sha>` and is the identity every surface reports; `commit` is
+/// the same sha unqualified, kept separately because `corpusSha` admission
+/// compares against the bare sha.
+fn vault_build_generation(m: &Value, id: String) -> Generation {
+    Generation {
+        id: GenerationId(id),
+        source: GenerationSource::VaultBuild,
+        generated_at: str_field(m, "generated_at"),
+        commit_sha: str_field(m, "commit"),
+        promoted_at: str_field(m, "promoted_at"),
+        cluster_span_seconds: None,
+        artifacts: parse_artifacts(m),
+        verified_single_generation: true,
+        class_count: usize_field(m, "class_count"),
+        content_digest: str_field(m, "content_digest"),
+        page_count: usize_field(m, "page_count"),
+        vocabulary_version: m
+            .get("vocabulary_version")
+            .and_then(Value::as_u64)
+            .and_then(|n| u32::try_from(n).ok()),
+        stale_after: str_field(m, "stale_after"),
+    }
+}
+
+fn usize_field(v: &Value, key: &str) -> Option<usize> {
+    v.get(key)
+        .and_then(Value::as_u64)
+        .and_then(|n| usize::try_from(n).ok())
+}
+
+/// Parse the `.generation.json` `artifacts` collection in EITHER shape: the
+/// vault build's list `[ {name, sha256, bytes} ]` or the mirror's map
+/// `{ name: {sha256, bytes} }`. Both record the `.rvdb` sidecar alongside the
+/// JSON indices, so re-hashing the result covers the HNSW artifact (§11.6).
 fn parse_artifacts(m: &Value) -> Vec<ArtifactSha> {
-    let Some(obj) = m.get("artifacts").and_then(Value::as_object) else {
-        return Vec::new();
-    };
-    obj.iter()
-        .filter_map(|(name, meta)| {
-            let sha256 = meta.get("sha256").and_then(Value::as_str)?.to_owned();
-            let bytes = meta.get("bytes").and_then(Value::as_u64).unwrap_or(0);
-            Some(ArtifactSha {
-                name: name.clone(),
-                sha256,
-                bytes,
+    match m.get("artifacts") {
+        Some(Value::Array(list)) => list
+            .iter()
+            .filter_map(|meta| {
+                Some(ArtifactSha {
+                    name: meta.get("name").and_then(Value::as_str)?.to_owned(),
+                    sha256: meta.get("sha256").and_then(Value::as_str)?.to_owned(),
+                    bytes: meta.get("bytes").and_then(Value::as_u64).unwrap_or(0),
+                })
             })
-        })
-        .collect()
+            .collect(),
+        Some(Value::Object(obj)) => obj
+            .iter()
+            .filter_map(|(name, meta)| {
+                let sha256 = meta.get("sha256").and_then(Value::as_str)?.to_owned();
+                let bytes = meta.get("bytes").and_then(Value::as_u64).unwrap_or(0);
+                Some(ArtifactSha {
+                    name: name.clone(),
+                    sha256,
+                    bytes,
+                })
+            })
+            .collect(),
+        _ => Vec::new(),
+    }
 }
 
 /// Lower-case hex SHA-256 of `bytes`. Shared with the bundle activator so the

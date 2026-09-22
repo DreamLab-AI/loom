@@ -86,6 +86,13 @@ pub struct Config {
     /// IRI+score and NEVER feeds `/v1/chat/completions`. Default-OFF ⇒ 404 (audit
     /// finding 1). Turn on only for eval/debugging.
     pub semantic_debug_surface: bool,
+
+    // --- governance ledger (ADR-141) ---
+    /// `LOOM_LEDGER_PATH` (`data/ledger.jsonl`). Where `POST /loom/attest`
+    /// appends. Beside the corpus by default, so the chain survives the restart
+    /// that every generation reload is — a ledger in a tmpfs would record
+    /// governance decisions only until the next promotion.
+    pub ledger_path: String,
 }
 
 impl Config {
@@ -120,6 +127,7 @@ impl Config {
             exposure_append: env_bool("LOOM_EXPOSURE_APPEND", d.exposure_append),
             backend_no_think: env_bool("LOOM_BACKEND_NO_THINK", d.backend_no_think),
             think_token_floor: env_parse("LOOM_THINK_TOKEN_FLOOR", d.think_token_floor),
+            ledger_path: env_string("LOOM_LEDGER_PATH", d.ledger_path),
         }
     }
 
@@ -160,6 +168,7 @@ impl Default for Config {
             exposure_append: false,        // F2 telemetry always on; content append opt-in
             backend_no_think: false,       // F3 OFF ⇒ current behaviour preserved
             think_token_floor: 0,          // OFF by default; Profile A sets 1536 explicitly
+            ledger_path: "data/ledger.jsonl".to_owned(),
         }
     }
 }

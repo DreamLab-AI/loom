@@ -24,6 +24,7 @@
 pub mod exposure;
 pub mod grounding;
 pub mod index;
+pub mod manifest;
 pub mod match_;
 pub mod messages;
 pub mod policy;
@@ -42,9 +43,9 @@ use std::sync::OnceLock;
 use async_trait::async_trait;
 
 use loom_domain::{
-    CanonicalUnit, ConceptMatch, CorpusNature, FusionPath, Generation, GenerationId,
-    GenerationSource, Grounding, GroundingSignal, Iri, LexicalIndex, LoomError, MatchProvenance,
-    Relation, RelationKind, Scaffold, ScaffoldOpts,
+    CanonicalUnit, ConceptMatch, FusionPath, Generation, GenerationId, GenerationSource, Grounding,
+    GroundingSignal, Iri, LexicalIndex, LoomError, Manifest, ManifestSource, MatchProvenance,
+    Provenance, Relation, RelationKind, Scaffold, ScaffoldOpts, UnitKind,
 };
 
 use crate::grounding::lexical_grounding;
@@ -291,6 +292,23 @@ impl LexicalRetriever {
     }
 }
 
+impl LexicalRetriever {
+    /// Keep only the candidates whose index entry satisfies `keep` — the
+    /// kind filter behind [`LexicalIndex::browse`]. Candidates whose slug is
+    /// not in the index are dropped: an address the index cannot describe
+    /// cannot be shown to carry a family.
+    fn retain_with(
+        &self,
+        candidates: Vec<ConceptMatch>,
+        keep: impl Fn(&crate::index::ClassEntry) -> bool,
+    ) -> Vec<ConceptMatch> {
+        candidates
+            .into_iter()
+            .filter(|c| self.index.get(c.iri.slug()).is_some_and(&keep))
+            .collect()
+    }
+}
+
 fn build_generation(index: &ScaffoldIndex) -> Generation {
     let generated_at = if index.generated.is_empty() {
         None
@@ -312,6 +330,10 @@ fn build_generation(index: &ScaffoldIndex) -> Generation {
         artifacts: Vec::new(),
         verified_single_generation: false,
         class_count: Some(index.class_count()),
+        content_digest: None,
+        page_count: None,
+        vocabulary_version: None,
+        stale_after: None,
     }
 }
 
@@ -411,6 +433,28 @@ impl LexicalIndex for LexicalRetriever {
         })
     }
 
+    /// Kind-aware override of the port default.
+    ///
+    /// `Any` and `Term` are the lexical match. `Mapping` and
+    /// `AttestedComputation` are the SAME match filtered to the terms that
+    /// actually carry that family, which on a corpus that carries neither is an
+    /// honest empty result rather than a silent fallback to Terms: an agent
+    /// that asks for a Mapping and receives a Term would conclude the corpus is
+    /// grounded when it is not (ADR-140 D4, OKF vocabulary per ADR-141).
+    async fn browse(
+        &self,
+        query: &str,
+        kind: UnitKind,
+        n: usize,
+    ) -> Result<Vec<ConceptMatch>, LoomError> {
+        let matched = self.seeds(query, n).await?;
+        Ok(match kind {
+            UnitKind::Any | UnitKind::Term => matched,
+            UnitKind::Mapping => self.retain_with(matched, |e| !e.map.is_empty()),
+            UnitKind::AttestedComputation => self.retain_with(matched, |e| !e.ac.is_empty()),
+        })
+    }
+
     fn resolve(&self, iri: &Iri) -> Option<CanonicalUnit> {
         let slug = iri.slug();
         let e = self.index.get(slug)?;
@@ -453,7 +497,13 @@ impl LexicalIndex for LexicalRetriever {
                 .iter()
                 .map(|r| Iri::from_slug(&ref_to_slug(r)))
                 .collect(),
-            corpus_nature: CorpusNature::SyntheticAiGeneratedHumanDirected,
+            provenance: Provenance {
+                generated: e
+                    .generated
+                    .clone()
+                    .unwrap_or_else(|| Provenance::vault_generated().generated),
+                verified: e.verified.clone(),
+            },
             generation: self.generation.id.clone(),
         })
     }
@@ -464,6 +514,18 @@ impl LexicalIndex for LexicalRetriever {
 
     fn class_count(&self) -> usize {
         self.index.class_count()
+    }
+}
+
+#[async_trait::async_trait]
+impl ManifestSource for LexicalRetriever {
+    async fn manifest(&self, salience: usize, degraded: &[String]) -> Result<Manifest, LoomError> {
+        Ok(manifest::build(
+            &self.index,
+            self.generation.clone(),
+            salience,
+            degraded,
+        ))
     }
 }
 
