@@ -87,12 +87,40 @@ class VaultBuildMarkerTests(unittest.TestCase):
         self.save()
     def save(self):
         (self.root / '.generation.json').write_text(json.dumps(self.manifest))
+    def test_graph_tier_subdirectory_artifact_is_accepted(self):
+        (self.root / 'graph').mkdir()
+        content = b'tier'
+        (self.root / 'graph' / 'full.bin').write_bytes(content)
+        digest = hashlib.sha256(content).hexdigest()
+        self.manifest['artifacts'].append({'name': 'graph/full.bin', 'sha256': digest, 'bytes': len(content)})
+        digests = [f"{a['name']}:{a['sha256']}" for a in self.manifest['artifacts']]
+        self.manifest['content_digest'] = hashlib.sha256('\n'.join(sorted(digests)).encode()).hexdigest()
+        self.save()
+        self.assertEqual(reload.verified_bundle(self.root)['content_digest'], self.manifest['content_digest'])
+    def test_escaping_or_indirect_subpaths_are_refused(self):
+        outside = Path(self.temp.name).parent / 'outside.bin'
+        (self.root / 'graph').mkdir()
+        (self.root / 'linked').symlink_to(self.root / 'graph')
+        for name in ('graph/../../outside.bin', '/etc/passwd', 'graph//full.bin', './graph/full.bin',
+                     'graph\\full.bin', 'linked/full.bin'):
+            with self.subTest(name=name):
+                self.setUp_marker_with(name)
+                with self.assertRaises(ValueError): reload.verified_bundle(self.root)
+    def setUp_marker_with(self, name):
+        self.manifest['artifacts'] = [a for a in self.manifest['artifacts'] if a['name'] in reload.REQUIRED]
+        self.manifest['artifacts'].append({'name': name, 'sha256': '0' * 64, 'bytes': 0})
+        self.save()
     def test_vault_build_bundle_is_accepted(self):
         bundle = reload.verified_bundle(self.root)
         self.assertEqual(bundle['generation'], self.identity)
         self.assertEqual(bundle['content_digest'], self.manifest['content_digest'])
-    def test_declared_content_digest_must_agree_with_the_artifact_set(self):
+    def test_declared_corpus_digest_is_carried_not_compared(self):
+        # `content_digest` in a vault-build marker is the source-corpus digest;
+        # it cannot be recomputed from the artefacts and must not be.
         self.manifest['content_digest'] = '0' * 64; self.save()
+        reload.verified_bundle(self.root)
+    def test_a_tampered_artifact_still_refuses_whatever_the_declared_digest(self):
+        (self.root / 'ontology.ttl').write_bytes(b'tampered'); self.save()
         with self.assertRaises(ValueError): reload.verified_bundle(self.root)
     def test_identity_must_name_its_own_commit(self):
         self.manifest['commit'] = 'deadbee'; self.save()

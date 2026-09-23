@@ -54,6 +54,28 @@ def bundle_identity(manifest):
     return identity, artifacts, None
 
 
+def contained_artifact(directory, name):
+    """Resolve a marker artefact name to a regular file inside `directory`.
+
+    A `vault build` marker names the graph tiers by relative path
+    (`graph/full.bin`), so a subdirectory is allowed. What is refused is any
+    way out of the bundle or around its hashes: an absolute path, an empty or
+    `.`/`..` component, a backslash, or a symlink at any level of the path.
+    """
+    parts = name.split('/')
+    if (not name or name.startswith('/') or '\\' in name
+            or any(part in ('', '.', '..') for part in parts)):
+        raise ValueError('artifact must be a relative path inside the bundle: ' + name)
+    current = directory
+    for part in parts:
+        current = current / part
+        if current.is_symlink():
+            raise ValueError('artifact missing or indirect: ' + name)
+    if not current.is_file():
+        raise ValueError('artifact missing or indirect: ' + name)
+    return current
+
+
 def verified_bundle(directory):
     directory = Path(directory)
     marker = directory / '.generation.json'
@@ -66,21 +88,20 @@ def verified_bundle(directory):
         raise ValueError('complete graph and semantic generation required')
     digests = []
     for name, spec in artifacts.items():
-        if Path(name).name != name or name in ('.', '..'):
-            raise ValueError('artifact must be a direct filename')
-        artifact = directory / name
-        if artifact.is_symlink() or not artifact.is_file():
-            raise ValueError('artifact missing or indirect')
+        artifact = contained_artifact(directory, name)
         with artifact.open('rb') as stream:
             digest = hashlib.file_digest(stream, 'sha256').hexdigest()
         if digest != spec.get('sha256') or artifact.stat().st_size != spec.get('bytes'):
             raise ValueError('artifact hash or size mismatch: ' + name)
         digests.append(f'{name}:{digest}')
     content_digest = hashlib.sha256('\n'.join(sorted(digests)).encode()).hexdigest()
-    # A declared digest that disagrees means the directory is not the set the
-    # builder committed, even though every individual file hashed correctly.
-    if declared_digest is not None and declared_digest != content_digest:
-        raise ValueError('content digest disagrees with the published artifact set')
+    # The marker's `content_digest` (contract C3) identifies the source CORPUS
+    # the bundle was built from — `vault build` hashes the page files — so it
+    # is carried, not compared. What Loom serves and this script proves is the
+    # ARTEFACT digest computed above from the individually verified files; a
+    # tampered artefact list is caught by those per-file hashes, not by a
+    # digest the same list could restate.
+    del declared_digest
     sidecar = json.loads((directory / 'ontology-corpus.rvdb.generation.json').read_bytes())
     sidecar_generation = sidecar.get('generatedAt', sidecar.get('generation'))
     if (sidecar_generation != generation
