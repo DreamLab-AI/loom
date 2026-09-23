@@ -17,6 +17,8 @@ async-trait = { workspace = true }
 tokio = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+# Promotion verifies the records file and records the derived files' digests.
+sha2 = { workspace = true }
 tracing = { workspace = true }
 # Off-turn / build-time write channel to ruvector-postgres ONLY — feature-gated
 # so the serving binary never links Postgres on the query hot path.
@@ -52,6 +54,12 @@ required-features = ["pg-write"]
 name = "stage_corpus"
 path = "src/bin/stage_corpus.rs"
 required-features = ["pg-write"]
+
+# Promotion of a `vault build` bundle: portable records -> serving artefact.
+# No Postgres, no network — runs wherever the bundle is.
+[[bin]]
+name = "promote_vault_build"
+path = "src/bin/promote_vault_build.rs"
 
 [lints]
 workspace = true

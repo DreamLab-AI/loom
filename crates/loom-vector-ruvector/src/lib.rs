@@ -12,6 +12,7 @@
 //!   bootstraps the artifact from the verified `ontology-corpus` namespace in
 //!   ruvector-postgres. Compiled out of the serving binary by default.
 
+pub mod artifact;
 mod hnsw;
 
 pub use hnsw::{HnswIndex, DEFAULT_ARTIFACT_PATH, EMBEDDING_DIMENSIONS};

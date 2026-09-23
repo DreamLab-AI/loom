@@ -15,16 +15,12 @@
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use ruvector_core::types::{
-    DbOptions, DistanceMetric, HnswConfig, QuantizationConfig, VectorEntry,
-};
-use ruvector_core::VectorDB;
+use ruvector_core::types::VectorEntry;
 
 const EMBEDDING_DIMENSIONS: usize = 384;
 const DEFAULT_NAMESPACE: &str = "ontology-corpus";
 const DEFAULT_CONNINFO: &str =
     "host=ruvector-postgres port=5432 dbname=ruvector user=ruvector password=ruvector";
-const INSERT_BATCH: usize = 1000;
 
 type BoxErr = Box<dyn std::error::Error + Send + Sync>;
 
@@ -191,58 +187,24 @@ async fn fetch_vectors(
     ))
 }
 
-/// Build a fresh `VectorDB` at `out` from `entries` and write the sidecar.
-/// Returns (`inserted`, `sidecar_path`, `generated_at`).
+/// Build a fresh serving artefact at `out` from `entries` and write the sidecar.
+/// Returns (`inserted`, `sidecar_path`, `generated_at`). The database settings
+/// live in one place, [`loom_vector_ruvector::artifact::write_serving_artifact`],
+/// shared with `promote_vault_build`.
 fn build_artifact(out: &Path, entries: &[VectorEntry]) -> Result<(usize, PathBuf, String), BoxErr> {
-    if out.exists() {
-        std::fs::remove_file(out)?;
-    }
-    let sidecar = sidecar_path(out);
-    if sidecar.exists() {
-        std::fs::remove_file(&sidecar)?;
-    }
-
-    let opts = DbOptions {
-        dimensions: EMBEDDING_DIMENSIONS,
-        distance_metric: DistanceMetric::Cosine,
-        storage_path: out.to_string_lossy().into_owned(),
-        // Index-law: non-concurrent rebuild, m=16, ef_construction=128 (§11.2).
-        hnsw_config: Some(HnswConfig {
-            m: 16,
-            ef_construction: 128,
-            ef_search: 100,
-            max_elements: entries.len() + 1024,
-        }),
-        // Full precision preserves the recall floor.
-        quantization: Some(QuantizationConfig::None),
-    };
-    let db = VectorDB::new(opts).map_err(|e| format!("create VectorDB failed: {e}"))?;
-
-    let total = entries.len();
-    let mut inserted = 0_usize;
-    for chunk in entries.chunks(INSERT_BATCH) {
-        let ids = db
-            .insert_batch(chunk.to_vec())
-            .map_err(|e| format!("insert_batch failed at {inserted}/{total}: {e}"))?;
-        inserted += ids.len();
-        eprintln!("  inserted {inserted}/{total}");
-    }
-
-    let stored = db.len().map_err(|e| format!("len() failed: {e}"))?;
-    if stored != inserted {
-        return Err(format!("count mismatch: stored {stored} != inserted {inserted}").into());
-    }
-
     let now = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
     let generated_at = rfc3339_utc(now);
-    let sidecar_json = serde_json::json!({
-        "generatedAt": generated_at,
-        "classCount": inserted,
-        "source": "ontology-corpus-export",
-    });
-    std::fs::write(&sidecar, serde_json::to_string_pretty(&sidecar_json)?)?;
-
-    Ok((inserted, sidecar, generated_at))
+    let inserted = loom_vector_ruvector::artifact::write_serving_artifact(
+        out,
+        entries,
+        &generated_at,
+        "ontology-corpus-export",
+    )?;
+    Ok((
+        inserted,
+        loom_vector_ruvector::artifact::sidecar_path(out),
+        generated_at,
+    ))
 }
 
 #[tokio::main]
@@ -296,12 +258,6 @@ async fn main() -> Result<(), BoxErr> {
     Ok(())
 }
 
-fn sidecar_path(artifact: &Path) -> PathBuf {
-    let mut raw = artifact.as_os_str().to_owned();
-    raw.push(".generation.json");
-    PathBuf::from(raw)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -323,13 +279,5 @@ mod tests {
         // 2026-08-17T00:00:00Z = 1_786_924_800 (verified against date -u).
         assert_eq!(rfc3339_utc(1_786_924_800), "2026-08-17T00:00:00Z");
         assert_eq!(rfc3339_utc(1_786_924_800 + 3661), "2026-08-17T01:01:01Z");
-    }
-
-    #[test]
-    fn sidecar_path_suffix() {
-        assert_eq!(
-            sidecar_path(Path::new("data/ontology-corpus.rvdb")),
-            PathBuf::from("data/ontology-corpus.rvdb.generation.json")
-        );
     }
 }
