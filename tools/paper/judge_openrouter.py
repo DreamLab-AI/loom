@@ -71,7 +71,7 @@ def main(argv=None) -> int:
             r = json.loads(line)
             if r.get("set") not in keep_sets:
                 continue
-            if "error" in r or "skipped" in r:
+            if r.get("error") or r.get("skipped"):
                 continue
             if not (r.get("content") or "").strip():
                 continue          # empty completions are ungradeable, by design

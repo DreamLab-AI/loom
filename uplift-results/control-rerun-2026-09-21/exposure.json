@@ -1,0 +1,55 @@
+{
+ "rows": 280,
+ "per_arm": {
+  "fluent_noise": {
+   "n": 56,
+   "mean_exposure_fraction": 0.1676,
+   "median": 0.2,
+   "min": 0.0,
+   "max": 0.6,
+   "n_zero_exposure": 24,
+   "n_full_exposure": 0,
+   "mean_injected_est_tokens": 1074.9
+  },
+  "irrelevant": {
+   "n": 56,
+   "mean_exposure_fraction": 0.2946,
+   "median": 0.25,
+   "min": 0.0,
+   "max": 0.75,
+   "n_zero_exposure": 13,
+   "n_full_exposure": 0,
+   "mean_injected_est_tokens": 1239.8
+  },
+  "masked": {
+   "n": 56,
+   "mean_exposure_fraction": 0.1777,
+   "median": 0.2,
+   "min": 0.0,
+   "max": 1.0,
+   "n_zero_exposure": 26,
+   "n_full_exposure": 1,
+   "mean_injected_est_tokens": 1115.5
+  },
+  "shuffled": {
+   "n": 56,
+   "mean_exposure_fraction": 0.8592,
+   "median": 0.8,
+   "min": 0.5,
+   "max": 1.0,
+   "n_zero_exposure": 0,
+   "n_full_exposure": 23,
+   "mean_injected_est_tokens": 1112.3
+  },
+  "true": {
+   "n": 56,
+   "mean_exposure_fraction": 0.8592,
+   "median": 0.8,
+   "min": 0.5,
+   "max": 1.0,
+   "n_zero_exposure": 0,
+   "n_full_exposure": 23,
+   "mean_injected_est_tokens": 1113.0
+  }
+ }
+}

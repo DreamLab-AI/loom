@@ -1,0 +1,32 @@
+[
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "true",
+  "skipped": "no-scaffold"
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "shuffled",
+  "skipped": "no-scaffold"
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "masked",
+  "skipped": "no-scaffold"
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "irrelevant",
+  "skipped": "no-scaffold"
+ },
+ {
+  "set": "arcane",
+  "id": "arc_sov09",
+  "arm": "fluent_noise",
+  "skipped": "no-scaffold"
+ }
+]

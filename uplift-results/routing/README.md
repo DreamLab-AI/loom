@@ -31,12 +31,15 @@ repo's skills tree; the snapshot here is for reproduction of the paper's numbers
 | `sweep.txt`, `sweep-low.txt`, `sweep-v2.txt` | decline-threshold sweeps on the 4B engine | one whole corpus run per threshold; accuracy 88.4 % at the deployed 0.5 |
 | `eval-report-stub-engine-e2e.json` | `sso-stubengine`, `laya-typed-decisions` | an end-to-end rig test against a stub engine, NOT a measurement; kept only because it documents the report schema |
 
-Not located as per-item artefacts: the cloud judge (`jev-1.13.0`) run and the 421M
-shared-head encoder run that fill the other two rows of the three-judge table. Their
-numbers appear in the drafts (`docs/research/companion-routing/drafts/`) and in
-`analysis/run*.py` which called the backends live; if per-item JSON for those two rows
-exists it was never written to disk. Treat those two rows as reported-but-not-released
-until re-run with `--json`.
+| `jev-cloud-2026-09-23.json` | TypeSafe cloud, `jev-1.13.0` | **the cloud row, released**: `run --json` against the 116-option tree; 93.0 % (80/86), p50 419 ms, $0.00062/route — reproduces the drafts' figure |
+| `openjev-2026-09-23.json` | `sso` façade, `openjev`, same day and tree | 88.4 % (76/86), p50 4,937 ms; the paired local run for the cascade |
+| `cascade-2026-09-23.json` | `system-one-eval cascade`, both judges above | BM25 / bge-small / RRF in front of each judge: in-sample frontier and leave-one-out; summarised in agentbox ADR-2095 addendum 2026-09-23 |
+
+The cloud judge's per-item run was re-made on 2026-09-23 (above), with a 116-option tree
+against the original 115; its accuracy matches the reported figure. Not located as a per-item
+artefact: the 421M shared-head encoder run. Its numbers appear in the drafts
+(`docs/research/companion-routing/drafts/`) and in `analysis/run*.py`, which called the
+backend live. Treat that row as reported-but-not-released until re-run with `--json`.
 
 ## analysis/
 

@@ -93,10 +93,10 @@ def accounting(rows_files: list, judged: list, keep_sets: set, planned_per_arm: 
             if k in seen:
                 continue
             seen.add(k)
-            if "skipped" in r:
+            if r.get("skipped"):
                 continue
             attempted[r["arm"]] += 1
-            if "error" not in r and (r.get("content") or "").strip():
+            if not r.get("error") and (r.get("content") or "").strip():
                 completed[r["arm"]] += 1
     graded = defaultdict(int)
     for j in judged:
