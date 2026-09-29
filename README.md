@@ -19,17 +19,17 @@
 
 ---
 
-> **Your LLM doesn't know your data — Loom makes any LLM answer from it, verifiably.** Point any OpenAI-compatible client at one URL and every answer is grounded in your curated, reasoner-checked private corpus: recall on in-domain questions rises from as low as 0.15 to ~0.94, faster than the bare model, with every claim traceable to a corpus generation. The model is just a URL behind the door — swap it for the next one and nothing else changes, because the knowledge lives in the corpus you govern, not the weights you rent.
+> **Your LLM doesn't know your data — Loom makes any LLM answer from it, with every answer tagged to the corpus generation it was served from.** Point any OpenAI-compatible client at one URL and every answer is grounded in your curated, reasoner-checked corpus, served from a LAN-confined deployment with no cloud egress (the corpus itself is published, not secret — see the paper's exposure-accounting note on what "private" means here): recall on in-domain questions rises from as low as 0.15 to ~0.94, faster than the bare model, with every claim traceable to a corpus generation. The model is just a URL behind the door — swap it for the next one and nothing else changes, because the knowledge lives in the corpus you govern, not the weights you rent.
 
 ---
 
 ## What is Loom?
 
-Loom is the **grounding door**: a single-binary Rust node that serves a reasoned ontology into an LLM's context at query time, behind a stable, model-swappable façade. Three verbs describe what it exists to give an operator — **ground** an LLM's answers in checked formal semantics rather than parametric guesses, **swap** the model behind the door without any consumer change, and **measure** the value of that grounding against a reproducible benchmark with bootstrap confidence intervals.
+Loom is the **grounding door**: a single-binary Rust node that serves a reasoned ontology into an LLM's context at query time, behind a stable, model-swappable façade. Three verbs describe what it exists to give an operator — **ground** an LLM's answers in a corpus whose ontology structure is checked for logical consistency at build time (not for factual accuracy of its content, which remains human-directed/AI-drafted and unverified per answer) rather than parametric guesses, **swap** the model behind the door without any consumer change, and **measure** the value of that grounding against a reproducible benchmark with bootstrap confidence intervals.
 
 Instead of thick agents wired to raw data, Loom implements the architecture the 2026 industry calls **neurosymbolic** — thin agents on a shared formal semantic layer. The layer is an OWL 2 ontology compiled from a curated corpus; Loom serves it. The reasoner (Whelk EL++) checks it at build time; the model restates it at query time. The invariant — one human-reviewable markdown block per IRI as the single served, auditable unit — is enforced by the crate architecture, not by convention. That is **THE PRIZE**, and it is the whole point of the node.
 
-**What it is *for*: making swappable models performant against large, important, private customer datasets** — answering accurately and attributably on an in-domain corpus the model could never know parametrically, and delivering that curated, vetted knowledge faithfully and cheaply. The bar is **multivariate**: excellent recall on the locally-grounded questions, *without going jagged* on the general or novel ones. Full framing: [`docs/design/LOOM-POSITIONING.md`](docs/design/LOOM-POSITIONING.md).
+**What it is *for*: making swappable models performant against large, important corpora your organisation curates** — answering with source-generation metadata attached on an in-domain corpus the model could never know parametrically (attribution accuracy itself is not yet measured, see [`docs/research/README.md`](docs/research/README.md)), and delivering that curated content cheaply. The bar is **multivariate**: excellent recall on the locally-grounded questions, *without going jagged* on the general or novel ones. Full framing: [`docs/design/LOOM-POSITIONING.md`](docs/design/LOOM-POSITIONING.md).
 
 ---
 
@@ -135,25 +135,32 @@ Loom is the *serving* half of a neurosymbolic pair. Its sibling [knowledgeGraph]
 
 ## Why — the measured result
 
-Grounding an LLM in a formal ontology is not a hunch here; it is measured. On a held-out, objective benchmark (37 questions, gold answers derived from the graph itself, paired raw-vs-grounded scoring with bootstrap 95% confidence intervals — `bench/`), static ontology scaffolding is a **decisive, model-agnostic win**:
+Grounding an LLM in a formal ontology is not a hunch here; it is measured, on two separate benchmarks that use different question sets and must not be pooled.
+
+**37-question local bench** (gold answers derived from the graph itself, paired raw-vs-grounded scoring with bootstrap 95% confidence intervals — `bench/`). Across two local models, static ontology scaffolding is a decisive, model-agnostic win on this bench:
 
 | Model | Raw (parametric) | + Loom scaffold | Paired uplift (95% CI) | Latency |
 |---|---|---|---|---|
 | Gemma-4-31B (local) | 0.146 | **0.939** | **+0.793** [+0.680, +0.894] | 31.5 s → 5.1 s |
 | Muse-Glimmer-30B (local) | 0.268 | **0.939** | **+0.671** [+0.527, +0.804] | 34.7 s → 9.8 s |
-| Gemini 3.7 Flash (cloud) † | 0.359 | **0.942** | **+0.583** [+0.546, +0.618] | 2.4 s → 1.2 s |
 
-Three different models — two local, one a frontier cloud model — all land at **~0.94** grounded, from wildly different parametric baselines, and grounding is **faster in every case**. The lift concentrates where you'd want it — the niche domains a model doesn't already know (spatial-computing 0.23→0.97, distributed-collaboration 0.22→0.95) — and adds least where the model is already right. The stronger the model, the smaller the *uplift* it needs, but the grounded ceiling is the same. That is the whole bet of the swappable façade: the scaffold carries the recall, not the model behind the door.
+**510-question single-model run** (2026-08-16, `gemini-3.7-flash`, a larger, separate question set; `temp=1.0`, `reasoning_effort=low`, `max_tokens=2048`). The paired delta is within-model and stays valid; absolute raw recall is not cell-for-cell comparable with the 37-question bench above:
 
-† First cloud model benched (2026-08-16, `gemini-3.7-flash`), on a larger set — 510 questions vs 37 local. `temp=1.0`, `reasoning_effort=low`, `max_tokens=2048`. The *paired* delta is within-model and stays valid; absolute raw recall is not cell-for-cell comparable. Full provenance: [`docs/research/report-gemini-3.7-flash.md`](docs/research/report-gemini-3.7-flash.md).
+| Model | Raw (parametric) | + Loom scaffold | Paired uplift (95% CI) | Latency |
+|---|---|---|---|---|
+| Gemini 3.7 Flash (cloud) | 0.359 | **0.942** | **+0.583** [+0.546, +0.618] | 2.4 s → 1.2 s |
 
-**What that uplift *is*, measured.** The paper *An Input-Exposure Control for Ontology Grounded Generation over Private Corpora* ([`docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf`](docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf)) went further: it introduces a *copy ceiling* (recall a verbatim copy would already score) and reports the signed *gain over copy*. On this node the copy ceiling is 0.964; across ten models from five providers the gain over copy is uniformly negative (−0.067 to −0.022). The reading: the model adds **faithful delivery of the exposed facts, not reasoning over the injected structure** — exactly the product for private-knowledge grounding, where the answer is trustworthy because the curated source is.
+Full provenance: [`docs/research/report-gemini-3.7-flash.md`](docs/research/report-gemini-3.7-flash.md).
 
-Three findings shaped Loom's defaults:
+Across both benches, models land close to **~0.94** grounded from wildly different parametric baselines, and grounding is faster in every case measured. The lift concentrates where you'd want it — the niche domains a model doesn't already know (spatial-computing 0.23→0.97, distributed-collaboration 0.22→0.95, both on the 37-question bench) — and adds least where the model is already right. The stronger the model, the smaller the *uplift* it needs, but the grounded ceiling stays similar across both benches: the scaffold, not the specific model, explains most of the measured recall difference here; whether an ontology-structured scaffold beats a simpler retrieval baseline at equal budget is not tested by either bench (open question — see [`docs/research/README.md`](docs/research/README.md)).
 
-1. **Static structured scaffold is the product.** The taxonomy + typed-relation + definition extract carries the value. `POST /loom/scaffold` is this, and it works with no model at all.
-2. **Prose adds nothing over structure** (+0.007 Muse / +0.000 Gemma). Loom ships prose off the default path — it costs budget for no recall.
-3. **Agentic tool-traversal is model-dependent.** Gemma's best axis (0.973) but Muse's worst (0.649). So Loom defaults to *inject*, not *traverse*; the tools path stays available for models that traverse well.
+**What that uplift *is*, measured.** The paper *The Copy Ceiling: An Input-Exposure Control for Ontology-Grounded Generation over Curated Corpora* ([`docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf`](docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf); the revision now in preparation is tagged `paper-v10`) went further: it built this grounding system, then set out to challenge its own successful-looking evaluation. It introduces a *copy baseline* (the recall a verbatim copy of the shown context would already score) and reports the signed *gain over copy*, both judge-free. On this node the macro (question-averaged) copy ceiling is 0.964; pooled at the item level the exposed fraction is 0.933 — two different denominators, reported separately and never interchangeable. Across ten models from **eight developer families**, the gain over copy is uniformly negative (−0.067 to −0.022). The reading: on this metric the model's score is fully explained by restating names the context already showed it; the copy comparison tests what a recall score establishes, it does not test whether reasoning occurred — a negative gain does not prove the absence of reasoning, just as a positive one would not have proved graph-structured deduction (full account, including the worked two-edge example: [`docs/research/README.md`](docs/research/README.md)). The corpus evaluated is the scaffold-index snapshot generated 2026-08-15 (8,146 classes); this is distinct from the present visionGraph corpus, which has since migrated from Logseq to Obsidian (September 2026) and is published at [narrativegoldmine.com](https://narrativegoldmine.com) — word and page counts quoted against one should not be mixed with the other.
+
+Three findings from the 37-question local bench shaped Loom's defaults:
+
+1. **The structured scaffold carries most of the measured recall.** The taxonomy + typed-relation + definition extract is what `POST /loom/scaffold` returns, and it works with no model call at all.
+2. **On this bench, prepending generated prose to the structured scaffold added no measured recall over the structure alone** (+0.007 Muse / +0.000 Gemma). This bears on prose-vs-structure in the prompt, not on whether an LLM call is needed at all — `/loom/scaffold` returns text, not an answer to the user's question. Loom ships prose off the default path on this basis.
+3. **Agentic tool-traversal is model-dependent**, on the same bench. Gemma's best axis (0.973) but Muse's worst (0.649). So Loom defaults to *inject*, not *traverse*; the tools path stays available for models that traverse well.
 
 Evidence index: [`docs/research/README.md`](docs/research/README.md).
 
@@ -415,7 +422,7 @@ Honest state as of **2026-08-18**. Maturity words follow the ADR-002 ladder (*sc
 | The façade (all `/v1/*` and `/loom/*` endpoints) | released | Both compose profiles, `max_tokens` floor, atomic generation-verified mirror. |
 | Corpus generation served | released | 8,146 concept classes, ~282k triples in the reasoned closure, one sha-addressable generation. |
 | Findings-driven serving controls (F1–F3) | integrated | Verbatim serving, exposure telemetry, thinking control — wired, default-off, per-deployment opt-in. |
-| HNSW semantic fallback (RuVector) | gated off | Recall gate RED: `rgb-protocol 0.816`, below `0.87` design floor. Wiring done and tested; the default does not change until the multivariate bench passes. |
+| HNSW semantic fallback (RuVector) | gated off | Recall gate RED: `rgb-protocol 0.816`, below the `0.87` recorded implementation acceptance floor (not a value derived from a calibration study — see [`docs/research/README.md`](docs/research/README.md)). Wiring done and tested; the default does not change until the multivariate bench passes. |
 | Two-profile generation parity (A≡B) | integrated | Code implements both; the live health assertion runs at deployment cutover. |
 | Platform for any ontology connector | planned | Stated plainly: today Loom is one node with a provider-plugin seam. "Platform" is earned when a second provider lands. |
 

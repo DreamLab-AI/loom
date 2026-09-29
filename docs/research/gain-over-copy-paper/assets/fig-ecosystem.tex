@@ -13,9 +13,9 @@
   offflow/.style={->,burnt,dash pattern=on 2.5pt off 1.5pt,line width=0.7pt},
 ]
 % ---- ingestion row ----
-\node[corpus] (kg) {\textbf{knowledgeGraph} corpus\\8{,}138 Logseq pages\\$\rightarrow$ pure-TBox OWL~2, 8{,}146 classes};
+\node[corpus] (kg) {\textbf{knowledgeGraph} corpus\\snapshot 2026-08-15\\$\rightarrow$ pure-TBox OWL~2, 8{,}146 classes};
 \node[ext,above left=6mm and -6mm of kg] (ontocast) {OntoCast (external)\\ontology extraction};
-\node[block,right=9mm of kg] (ci) {CI gate $+$ Whelk EL reasoner\\conflict detect $\cdot$ reject contradictions};
+\node[block,right=9mm of kg] (ci) {CI gate $+$ Whelk EL reasoner\\consistency $\cdot$ reject contradictions};
 \node[gen,right=9mm of ci] (gen) {Versioned generation\\282{,}492-triple closure};
 % ontocast -> kg via preview import
 \draw[flow,ink!55,dash pattern=on 2pt off 2pt] (ontocast) -- node[right=1pt,font=\scriptsize,align=left]{preview-first\\staged import} (kg);
@@ -32,7 +32,7 @@
 \draw[flow] (scaf) -- (deleg);
 \draw[flow] (deleg) -- (model);
 % HNSW fallback (default-off)
-\node[offgate,below=6mm of gate] (hnsw) {HNSW semantic fallback\\recall 0.816 $<$ 0.87 floor $\cdot$ \textbf{default-off}};
+\node[offgate,below=6mm of gate] (hnsw) {HNSW semantic fallback\\recall 0.816 $<$ 0.87 acceptance floor $\cdot$ \textbf{default-off}};
 \draw[offflow] (hnsw) -- (gate);
 % node grouping box
 \begin{scope}[on background layer]
@@ -45,17 +45,18 @@
 \node[block,below=8mm of model,align=center] (cons) {Consumers\\email gateway $\cdot$ working agents};
 \draw[flow] (model) -- (cons);
 \end{tikzpicture}}
-\caption{The data path around the measured node. Knowledge enters at the \emph{knowledgeGraph} corpus
-(8{,}138 Logseq pages compiled losslessly into a pure-TBox OWL~2 ontology of 8{,}146 classes); output
-from OntoCast, an independent third-party extractor, enters only through a preview-first staged import
-that reports collisions and emits review candidates rather than publishing machine output directly. A
-CI gate and a Whelk OWL~2~EL reasoner classify each build and reject contradictions before publishing a
-versioned generation (a 282{,}492-triple reasoned closure). The \emph{Loom} node mirrors a generation
-and serves it through a model-free pipeline (lexical match at 2.02\,ms, confidence gate, scaffold
-injection) before delegating to whatever LAN model sits behind its OpenAI-compatible fa\c{c}ade
-(Qwen3.8-27B here); consumers hold the fa\c{c}ade URL and inherit grounding. The HNSW semantic fallback
-is drawn dashed in burnt orange because it ships default-off: its document-embedding recall (0.816) is
-below the 0.87 design floor, a red gate we report rather than hide (\S\ref{sec:ecosystem},
-\S\ref{sec:system}).}
+\caption{The data path around the measured node. Knowledge enters at the \emph{knowledgeGraph} corpus;
+the evaluated snapshot is the scaffold index of 2026-08-15 (8{,}146 classes; 8{,}138 pages and a
+282{,}492-triple reasoned closure as reported by that build). The corpus is public and almost entirely
+LLM-derived under the author's direction, which establishes neither that any evaluated model saw it in
+training nor that its content is novel or reliable. Output from OntoCast, an independent third-party
+extractor, enters only through a preview-first staged import that emits review candidates. The CI gate and
+the Whelk OWL~2~EL reasoner check consistency and entailment and reject contradictions; they do not check
+factual accuracy. The \emph{Loom} node mirrors a generation and serves it through a model-free pipeline
+(lexical match at 2.02\,ms, confidence gate, scaffold injection) before delegating to whatever LAN model sits
+behind its OpenAI-compatible fa\c{c}ade (Qwen3.8-27B here). The HNSW semantic fallback is drawn dashed
+because it ships default-off: its measured recall (0.816) is below 0.87, a recorded implementation
+acceptance floor with no recorded derivation, and the per-query trigger, when enabled, is keyed to
+lexical absence (\S\ref{sec:ecosystem}, \S\ref{sec:paraphrase}).}
 \label{fig:ecosystem}
 \end{figure*}

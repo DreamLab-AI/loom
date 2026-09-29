@@ -36,13 +36,16 @@
 \node[gain,right=12mm of ci,yshift=-9mm] (g) {\textbf{gain over copy}\\[1pt]$g_i=r_i-c_i$\\[3pt]
   \begin{tabular}{@{}l@{\ }l@{}}
     $g{\approx}0$ & net zero\\
-    $g{<}0$ & lossy restatement\\
+    $g{<}0$ & net omission\\
     $g{>}0$ & beyond-exposure recovery\\
   \end{tabular}};
 \draw[flow] (ci.east) -- ++(4mm,0) |- (g.west);
 \draw[flow] (ri.east) -- ++(4mm,0) |- (g.west);
 \end{tikzpicture}}
-\caption{The copy ceiling and the signed gain over copy on one panel. The same shown context $S_i$ feeds
+\caption{The copy baseline (copy ceiling) and the signed gain over copy on one panel. The copy
+comparison tests what a recall score establishes; it does not test whether reasoning occurred: when an
+answer name is already in the shown context, a reasoned answer and a verbatim copy score the same, and
+the copy is a recall reference, not an upper bound or a better answer. The same shown context $S_i$ feeds
 two extractors: a no-op extractor that returns $S_i$ verbatim, whose recall against the gold set $G_i$
 is the per-item \emph{copy ceiling} $c_i$; and the model, whose answer $a_i$ scores the grounded recall
 $r_i$. Both scores use the identical surface matcher $\mathrm{m}(t,\cdot)$ with $G_i$ as reference
@@ -51,7 +54,7 @@ some of that error may cancel; how much is an empirical question, since error ra
 scaffold text and generated prose (\S\ref{sec:audit}). The sign reads as a net, not as a verdict on
 fidelity: $g\approx0$ means the model recovered about as much as the context exposed, which holds both
 when nothing was dropped or added and when omissions and recoveries cancel; $g<0$ is net loss of
-surfaced gold; and $g>0$ is recovery beyond what the exposure check finds, without identifying its
+exposed gold names, whatever its cause; and $g>0$ is recovery beyond what the exposure check finds, without identifying its
 source (\S\ref{sec:ceiling}).}
 \label{fig:ceiling}
 \end{figure*}

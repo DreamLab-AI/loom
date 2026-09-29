@@ -12,7 +12,9 @@ for Ontology-Grounded Generation over Curated Corpora* (28 pp, 21 September 2026
 
 This is the version to cite. Every table, figure and headline number in it maps to a released
 artefact and a released script ([`gain-over-copy-paper/MANIFEST.md`](gain-over-copy-paper/MANIFEST.md)); nothing in it
-is reported without its observations.
+is reported without its observations. A v10 revision (tag `paper-v10`; editorial brief:
+[`gain-over-copy-paper/BRIEF-2026-09-29-reframe.md`](gain-over-copy-paper/BRIEF-2026-09-29-reframe.md))
+is in preparation and will supersede the description below once published.
 
 **What it establishes.** When a model answers from a curated corpus and the gold answers derive
 from that same corpus, headline "grounding uplift" mixes delivery of facts already shown to the
@@ -30,7 +32,9 @@ unexposed items, and three characterised failure modes; the corrected exposed-it
 is 0.905 against the matcher's 0.931. A fresh paraphrase stress set collapses the lexical
 ceiling from 0.964 to 0.328 while the absence-keyed fallback fires on 2 of 506; on gold targets
 the corpus contains but the retrieved scaffold did not expose, recovery falls from 0.121 bare to
-0.004 grounded; a paired production study lifts judged quality by +0.27 pooled. On the four-arm
+0.004 grounded, under the authority-instruction wrapper and confidence-gated retrieval policy
+tested here (not shown to generalise to other prompting or gating designs); a paired production
+study lifts judged quality by +0.27 pooled. On the four-arm
 negative-control cohort, re-judged with gpt-4.1 and corrected over the whole contrast family,
 only the served path against no context survives; whether the scaffold's specific content
 matters is not established at that power. What the paper does **not** establish: precision
@@ -45,12 +49,15 @@ was measured on: the ingest pipeline and ledger writer run in
 ontology-bridge governed write path. The instrument is corpus-general; the write-path result is
 only checkable there.
 
-**What left the paper, and why.** The two-edge composition study and the five-arm control rerun
-of earlier versions had no surviving observations and are not reported. The control rerun is
-being repeated with rows persisted and will be added as v9.1 when it lands; the composition
-study would be a new experiment. The typed-skill-routing study is a companion note
-([`companion-routing/`](companion-routing/)) measuring a choice task against a ranker baseline,
-a different instrument from the exposure scalar.
+**What left the paper, and why.** The two-edge composition study of earlier versions had no
+surviving observations and is not reported; it would be a new experiment. The five-arm control
+rerun of earlier versions likewise had no surviving observations in v9.2; it has since been
+repeated under a common retry policy with every row persisted, judged with `gpt-4.1` and
+analysed (`uplift-results/control-rerun-2026-09-21/`), and is reported as a completed study in
+the forthcoming v10 revision (tag `paper-v10`): every context arm beats no context under Holm
+correction, and no content-specificity contrast survives it. The typed-skill-routing study is a
+companion note ([`companion-routing/`](companion-routing/)) measuring a choice task against a
+ranker baseline, a different instrument from the exposure scalar.
 
 Alongside the manuscript:
 
@@ -151,9 +158,10 @@ Inside `uplift-results/paper-v2/`:
 | `analysis.json` | paired bootstrap, exact signed-rank, rank-biserial, Holm; control contrasts merged in under `"controls"` |
 | `decomposition.json`, `DECOMPOSITION-SUMMARY.md` | the item-level exposure/recovery decomposition |
 
-The five-arm control rerun with a length-matched noise arm is being repeated with every row
-persisted (`uplift-results/control-rerun-2026-09-21/`, `tools/paper/control_rerun.py`); it is
-not in v9 and will be reported as v9.1 when complete.
+The five-arm control rerun with a length-matched noise arm has been repeated with every row
+persisted (`uplift-results/control-rerun-2026-09-21/`, `tools/paper/control_rerun.py`), judged
+and analysed; it is not in the current v9.2 PDF and is reported as a completed study in the
+forthcoming v10 revision (tag `paper-v10`).
 
 ## The harness
 

@@ -1,18 +1,19 @@
-# Table-to-artefact manifest — paper v9 (21 September 2026)
+# Table-to-artefact manifest: paper v10 (29 September 2026)
 
-Every table and figure in `main.tex`, and every headline number in the prose, mapped to the
-artefact that holds its rows and the script that produces it. Paths are relative to the
-repository root (`https://github.com/DreamLab-AI/loom`).
+Every table and figure in `gain-over-copy-paper.tex`, and every headline number in the prose,
+mapped to the artefact that holds its rows and the script that produces it. Paths are relative
+to the repository root (`https://github.com/DreamLab-AI/loom`).
 
-**Every entry below is released.** v8 carried six "reported but not released" gaps; v9 has
-none. Three were closed by release or recovery, one by re-running the study, and two by
-removing the studies whose underlying observations do not exist anywhere in the reachable
-record (see `CHANGES-2026-09-21-v9.md` §1 and `uplift-results/recovered/RECOVERY.md`).
+**Every entry below is released.**
 
-**Pinned at:** `a6d3e41f898c9c18efdf947fc4924ce93c79f4c8` (short `a6d3e41`, 21 September 2026)
-and its ancestors. The manuscript is tagged `paper-v9.2`; the evidence directories below are as
-of `a6d3e41`. Release directory:
-`https://github.com/DreamLab-AI/loom/tree/a6d3e41f898c9c18efdf947fc4924ce93c79f4c8/docs/research/paper-v9`.
+**Pinned at:** the manuscript is tagged `paper-v10`
+(`https://github.com/DreamLab-AI/loom/tree/paper-v10/docs/research/gain-over-copy-paper`).
+Evidence commits: `e7147bec67f1de609ad47bbb06a7aa72d306d9ce` (short `e7147be`, 29 September
+2026) for the five-arm control rerun (`uplift-results/control-rerun-2026-09-21/`) and the
+corpus-snapshot note (`docs/research/gain-over-copy-paper/notes/R6-corpus.md`);
+`a6d3e41f898c9c18efdf947fc4924ce93c79f4c8` (short `a6d3e41`, 21 September 2026) for every
+earlier artefact (sweep, decomposition, semantic audit, re-score, paraphrase set, production
+study, four-arm control cohort and its re-judge). Both are ancestors of `paper-v10`.
 
 **Two standing notes.** `uplift-results/` is listed in `.gitignore` and its evidence files
 are force-added, so a fresh clone gets them but `git status` will not notice new ones. And
@@ -33,13 +34,13 @@ paper reports that is not also in a released summary.
 
 ## Tables
 
-### `tab:pipeline` — Request pipeline (§Ontology Scaffold)
+### `tab:pipeline`: Request pipeline (§Ontology Scaffold)
 
 Descriptive; no measured rows. The behaviour it documents is pinned by the golden fixtures
 in the served-node repository. The 2.02 ms p50 lexical-match figure is a node benchmark, not
 a paper study. **Not a data table.**
 
-### `tab:sweep` — Ten models, one fixed configuration, n=510 (§Ten models)
+### `tab:sweep`: Ten models, one fixed configuration, n=510 (§Ten models)
 
 - **Rows:** `uplift-results/sweep/results-<label>-{raw,scaffold}.jsonl` and
   `scores-<label>-{raw,scaffold}.jsonl`, 40 files of 510 lines; plus 20
@@ -52,7 +53,7 @@ a paper study. **Not a data table.**
   `bench/sweep/models.tsv`, logs in `uplift-results/sweep/logs/`.
 - **Status: released** (rows and generator).
 
-### `tab:decomp` — Exposure/recovery decomposition (§Ten models)
+### `tab:decomp`: Exposure/recovery decomposition (§Ten models)
 
 - **Rows:** the same sweep files as `tab:sweep`, plus `uplift-results/questions.jsonl` for
   the gold sets.
@@ -64,7 +65,7 @@ a paper study. **Not a data table.**
 - **Compliant-omission recount (52 of 735, 166 `any`-type):** same script, same rows.
 - **Status: released.**
 
-### `tab:audit` — Semantic audit: confusion and mechanism census (§Semantic audit)
+### `tab:audit`: Semantic audit: confusion and mechanism census (§Semantic audit)
 
 Both panels, and every rate quoted in that section.
 
@@ -104,7 +105,7 @@ Both panels, and every rate quoted in that section.
 - **Status: released** (frame, sample, every verdict, the judge cache, the summariser, the
   v2 quote gate with its per-unit log, the camelCase census and the prepared human sample).
 
-### `tab:live` — Production-node paired study (§Production-node paired study)
+### `tab:live`: Production-node paired study (§Production-node paired study)
 
 - **Rows:** `uplift-results/paper-v2/live-results.jsonl`, judged in
   `uplift-results/paper-v2/judged.json` (360 rows, committed 2026-08-17).
@@ -118,31 +119,59 @@ Both panels, and every rate quoted in that section.
   blinding and resume protocol.
 - **Status: released.**
 
-### `tab:controls` — Negative-control contrasts and cohort accounting (§Negative controls)
+### `tab:instruments`: Questions, instruments, observations, open items (§Results)
+
+Summary table; every number in it is a restatement of a number mapped elsewhere in this
+manifest (rows 1–2: `tab:sweep`, `tab:decomp`, `tab:audit`; row 3: `tab:live`,
+`sec:judgefamily`, `tab:controls`; row 4: `sec:ood`; rows 5–6: `tab:casestudy` and the
+judged-page artefacts). Rows 7–8 report experiments that were **not run**, so they carry no
+artefact. It replaces the earlier deployment-questions table (`tab:bar`), whose rows it absorbs.
+
+### `tab:controls`: Five-arm negative-control rerun: contrasts, accounting, placebo exposure (§Negative controls)
+
+Upper panel (eleven pooled contrasts with Holm), lower panel (per-arm planned → attempted →
+completed → graded, and the measured exposure of the injected block).
+
+- **Completions:** `uplift-results/control-rerun-2026-09-21/rows.jsonl` (280 rows = 56 × 5
+  arms; one row per (question, arm) with the exact system and user messages, the injected
+  block and its size, the `irrelevant` donor pairing with a verified `iri_disjoint` flag,
+  `fluent_noise_slugs`, the full attempt ledger, the final budget and the per-row `exposure`).
+  Cells never attempted (`arc_sov09`, no scaffold, × 5 arms) are in `manifest-skipped.json`.
+  The `loom` and `raw` arms are **reused** from `uplift-results/paper-v2/live-results.jsonl`
+  (Study 2, 1536-token policy with 4096 re-runs), so contrasts against them mix retry policies.
+- **Generator:** `tools/paper/control_rerun.py` (imports `control_harness.py`), `max_tokens`
+  4096 with one retry at 8192 on empty output, temperature 0, `qwen3.8-27B` via the façade with
+  `loom_options.scaffold=false`; run log `run.log`.
+- **Scores:** `judged.json`, `openai/gpt-4.1` via OpenRouter, t=0, rubric sha256[:16]
+  `7231654abc776c3e` (byte-identical to `judge_v2.RUBRIC`), `tools/paper/judge_openrouter.py`;
+  380 rows judged (`finish.log`).
+- **Analysis:** `tools/paper/analyze_controls_v2.py` → `analysis.json`, rendered to
+  `ANALYSIS.md` by `tools/paper/render_controls_md.py`. Holm–Bonferroni across the
+  eleven-contrast family at the pooled scope; per-set tables (arcane, thin) and the
+  common-intersection repeat (n = 51) with the question ids behind every contrast.
+- **Placebo exposure:** `exposure.json`, `EXPOSURE.md` (`tools/paper/exposure_summary.py`),
+  measured with `decompose_exposure.gold_hit` against each question's gold proxy (true
+  scaffold seed-class titles plus declared topic).
+- **Steps 2–4 in one script:** `finish.sh`; design notes in `README.md`.
+- **Status: released** (`e7147be`).
+
+### Earlier four-arm control cohort (§Negative controls, "Earlier four-arm cohort"; prose only)
 
 - **Completions:** `uplift-results/paper-v2/control-results.jsonl` (228 rows = 57 × 4 arms;
-  `arc_sov09` carries a `{"skipped": "no-scaffold"}` placeholder in all four, which is the
-  57-planned / 56-attempted distinction in the lower panel) and `live-results.jsonl` for the
-  loom and raw arms.
-- **Generator:** `tools/paper/control_harness.py`
-  (`ARMS = ("true","shuffled","masked","irrelevant")`, `MAX_TOKENS = 1536`).
-- **Scores as reported:** `uplift-results/controls-rejudge-2026-09-21/judged.json`,
-  `openai/gpt-4.1` via OpenRouter, t=0, rubric sha256[:16] `7231654abc776c3e`
-  (byte-identical to `judge_v2.RUBRIC`), produced by `tools/paper/judge_openrouter.py`.
-- **Archived scores for comparison:** `uplift-results/paper-v2/judged.json` (2026-08-17). The
-  re-judge agrees on 227/240 rows exactly and 240/240 within one point; the side-by-side is
-  `controls-rejudge-2026-09-21/analysis-archived-2026-08-17.json`.
-- **Analysis:** `tools/paper/analyze_controls_v2.py`, writing
-  `controls-rejudge-2026-09-21/analysis.json` and `ANALYSIS.md`. Holm–Bonferroni across the
-  whole nine-contrast family at the pooled scope; the common-intersection sensitivity
-  analysis (n = 20) and the exact question ids behind every contrast are in `analysis.json`.
-  Rendered by `tools/paper/render_controls_md.py`.
-- **Status: released.**
-- **Known limit, stated in the paper:** the harness builds each arm's block in memory and
-  persists only the answer, so the donor pairing and the injected bytes of the `irrelevant`
-  arm are not recoverable from these rows.
+  `arc_sov09` placeholder in all four) and `live-results.jsonl` for loom and raw.
+- **Generator:** `tools/paper/control_harness.py` (`MAX_TOKENS = 1536`).
+- **Scores as reported:** `uplift-results/controls-rejudge-2026-09-21/judged.json`, same judge
+  and rubric as above; archived scores `uplift-results/paper-v2/judged.json` (2026-08-17);
+  agreement (227/240 exact, 240/240 within one point) tabulated in
+  `controls-rejudge-2026-09-21/ANALYSIS.md` (from `preamble.md`); the archived-score analysis
+  is `analysis-archived-2026-08-17.json`.
+- **Analysis:** `controls-rejudge-2026-09-21/analysis.json` and `ANALYSIS.md` (nine-contrast
+  family, common intersection n = 20).
+- **Known limit, stated in the paper:** the harness persisted only the answers, so this
+  cohort's injected bytes and placebo exposure are not recoverable.
+- **Status: released** (`a6d3e41`).
 
-### `tab:casestudy` — Podcast assertion extraction (§Production case study)
+### `tab:casestudy`: Podcast assertion extraction (§Production case study)
 
 - **Rows and analysis:** the VisionFlow ingest run records and the sandbox before/after judged
   pairs, with the judged-page gate's two rubrics and the 20% second-judge subset.
@@ -153,22 +182,29 @@ Both panels, and every rate quoted in that section.
 
 ## Figures
 
-### `fig:ecosystem` — Read path around the measured node
+### `fig:ecosystem`: Read path around the measured node
 
-`assets/fig-ecosystem.tex`. Descriptive TikZ; no measured rows.
+`assets/fig-ecosystem.tex`. Descriptive TikZ; no measured rows. The corpus facts in its caption
+and in §Curated-Corpus Setting (snapshot 2026-08-15, 8,146 classes, reported 8,138 pages and
+282,492 triples, provenance, governance, public URL, migration window, 8,446 pages at
+2026-09-28) are sourced in `docs/research/gain-over-copy-paper/notes/R6-corpus.md` (`e7147be`),
+from `app/data/scaffold-index.json` (`generated`, `counts.classes`) and the visionGraph and
+knowledgeGraph histories. The 0.87 acceptance floor and 0.816 measured recall come from
+`docs/design/ADR-137-loom-rust-replatform.md` and `.claude/evidence/EXP-008.evidence.md`; the
+floor first appears in commit `53026db` (2026-08-17) with no recorded derivation.
 
-### `fig:ceiling` — Copy ceiling and signed gain over copy on one panel
+### `fig:ceiling`: Copy ceiling and signed gain over copy on one panel
 
 `assets/fig-ceiling.tex`. Definitional TikZ; no measured rows. Its caption states the
 cancellation claim in the same terms as assumption A2.
 
-### `fig:gain` — Signed gain over copy, ten models, with bootstrap intervals
+### `fig:gain`: Signed gain over copy, ten models, with bootstrap intervals
 
 Coordinates, whiskers and the value column are all generated from
 `uplift-results/sweep/sweep-analysis.json` at full precision and rounded independently for
 display. Same artefact and script as `tab:sweep`. **Status: released.**
 
-### `fig:lifecycle` — Write-path lifecycle
+### `fig:lifecycle`: Write-path lifecycle
 
 `assets/fig-lifecycle.pdf`, source `assets/fig-lifecycle-source.html`. Architectural; no
 measured rows. The two judged figures it rests on (the integration-phase degradation and the
@@ -185,6 +221,8 @@ above.
 | Paraphrase: 506 of 510 accepted, ceilings 0.964 to 0.328, 326 of 506 below 0.5, fallback 2 of 506, semantic recovery +0.446 [+0.398, +0.493] on the failing subset and +0.269 [+0.227, +0.310] overall | `sec:paraphrase` | `uplift-results/paraphrase-stress/{paraphrases.jsonl, ceilings.jsonl, summary.json}` and `PARAPHRASE-2026-09-21.md`; `tools/paper/paraphrase_stress.py --stage all` (three resumable stages). Paraphrase generator `openai/gpt-4.1`, t=0, seed 42, prompt stored as `PARAPHRASE_PROMPT` and named in every row |
 | Out-of-domain five-model judged arm | `sec:ood` | `uplift-results/general/` question sets and judged outputs |
 | Scoring-symmetry invariant: concatenated visible input scored as an answer equals the reported per-item ceiling on all 510 questions | `sec:ceiling` | Hard check in `tools/paper/decompose_exposure.py` |
+| Five-arm control rerun: attrition 1.8–5.4% per arm; per-set contrasts (arcane true−irrelevant +0.61, thin −0.20); loom−true −0.21 | `sec:controls`, `sec:practitioner` | `uplift-results/control-rerun-2026-09-21/analysis.json`, `ANALYSIS.md` |
+| Proposed matched graph-versus-text study (future work only; nothing run) | `sec:analysis` | `docs/design/PRD-028-does-loom-earn-its-complexity.md` |
 | Worked example (q0003), its gold, its scaffold and its paraphrase | Appendix `sec:appendix-samples` | `uplift-results/questions.jsonl`; `uplift-results/paraphrase-stress/paraphrases.jsonl`; scaffold from `ontology_scaffold_v1.py` |
 
 ## Seeds
