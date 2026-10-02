@@ -77,6 +77,63 @@ journalctl --user -u loom-generation-reload.service -n 50
 
 To stop it again: `systemctl --user disable --now loom-generation-reload.timer`.
 
-Thirteen isolated tests exercise success, no-op, refusal and failure-state
+Sixteen isolated tests exercise success, no-op, refusal and failure-state
 handling across both marker shapes. Reloading is an implemented transition;
 producing a valid new upstream bundle and activating it remain distinct work.
+
+## Publishing a new generation
+
+The timer reloads what is already in `data/`; it never builds or fetches. A node
+therefore follows `visionGraph` only as fast as someone publishes. One publication
+has three steps, and only the last touches HP.
+
+**1. Build** from a clean `visionGraph` checkout with a `vault` built from current
+VisionClaw source. The `vault` baked into agentbox images up to at least
+2026-10-02 (0.1.0) predates the portable-records file and writes JSONL under the
+database's name, `ontology-corpus.rvdb`, which `promote_vault_build` cannot use.
+Build `vault` into a private target directory, because `project/target` is shared
+with host builds:
+
+```bash
+cd ~/workspace/project
+CARGO_TARGET_DIR=~/workspace/loom-publish/vault-target cargo build --release -p vault
+SHA=$(git -C ~/workspace/visionGraph rev-parse --short=9 HEAD)
+~/workspace/loom-publish/vault-target/release/vault --repo ~/workspace/visionGraph \
+  build --out ~/workspace/loom-publish/$SHA --with-rvdb --stats
+```
+
+`data/` in the output holds the Loom bundle, with `.generation.json` listing its
+artefacts by path relative to `data/`.
+
+**2. Promote and verify** in its own process:
+
+```bash
+cd ~/workspace/loom
+CARGO_TARGET_DIR=~/workspace/loom-publish/loom-target \
+  cargo build --release -p loom-vector-ruvector --bin promote_vault_build
+~/workspace/loom-publish/loom-target/release/promote_vault_build \
+  --data ~/workspace/loom-publish/$SHA/data
+python3 -c "import importlib.util as u; s=u.spec_from_file_location('r','scripts/reload-published-generation.py'); \
+m=u.module_from_spec(s); s.loader.exec_module(m); print(m.verified_bundle('$HOME/workspace/loom-publish/$SHA/data'))"
+```
+
+**3. Copy to HP under the in-flight marker**, from the machinelearn host shell (HP
+is reachable only from there). The agentbox workspace is
+`/mnt/nvme/docker/volumes/multi-agent-docker_workspace/_data` on that host. Never
+use `--delete`: `data/` also holds `ledger.jsonl`, the attestation chain.
+
+```bash
+SRC=/mnt/nvme/docker/volumes/multi-agent-docker_workspace/_data/loom-publish/$SHA/data
+rsync -a "$SRC"/ john@10.10.10.1:githubs/loom/data.$SHA/
+ssh john@10.10.10.1 "set -e; cd ~/githubs/loom
+  rm -rf data.rollback; cp -a data data.rollback # previous generation + ledger
+  touch data/.promotion-in-flight
+  rsync -a --exclude .generation.json data.$SHA/ data/
+  cp data.$SHA/.generation.json data/.generation.json.new
+  mv data/.generation.json.new data/.generation.json
+  rm data/.promotion-in-flight"
+```
+
+The marker is replaced last and atomically, and the in-flight file makes any tick
+that runs during the copy refuse rather than reload a half-copied bundle. The next
+tick, or a manual one, then restarts `loom` and writes `served`.

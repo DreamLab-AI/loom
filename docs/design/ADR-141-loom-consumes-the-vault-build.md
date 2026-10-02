@@ -135,3 +135,13 @@ agent access estate-wide as **Rust CLI-first, no MCP inside the estate**.
 - **Priority:** P1 — this cycle (demonstrator path, planning-cycle §9: the Loom is the door every consumer holds; TODO row N-1, corpus/vault landing)
 - **Why:** The record is implemented (`1a6a470`, `4ec3a00` `promote_vault_build`) and in force on the live node. On 2026-10-02, `GET http://192.168.2.132:8084/loom/generation` returned `source: VaultBuild`, `id: visionGraph@ae913f93…`, `atomicity_verified: true` and `drift.ok: true`. `GET /loom/attest/verify` returned `{"ok":true,"length":0}`. D6's precondition, the first clean vault-build promotion, is met. Whether the reload timer is enabled is unverified. The served generation dates from 2026-09-23, while `visionGraph` has moved on (HEAD `015ca2c1f`), which suggests it is not. The ledger is empty: no governance decision has been attested yet. Verified against loom `main` at `8c618fa`.
 - **Next:** Ready to accept on the live `/loom/generation` and `/loom/attest/verify` reads above. Before that, enable the reload timer per `docs/published-generation-reload.md` and record one `served` tick.
+- **2026-10-02, later — next generation staged, not yet served.** `visionGraph@015ca2c1f`
+  (9,366 classes) is built, promoted and verified in the agentbox workspace at
+  `loom-publish/015ca2c1f/data`. `verified_bundle` accepts it with artefact digest `519692687fb1…`,
+  and a local `loom-facade` over it satisfies `served_matches` (same id, digest, drift and
+  embedding contract). The door still reports `visionGraph@ae913f93…`. HP is reachable only
+  from the machinelearn host, so the copy, the manual tick and the timer install are owner
+  steps, written down in `docs/published-generation-reload.md` § Publishing a new generation.
+  The baked agentbox `vault` 0.1.0 predates the portable-records file and cannot produce a
+  promotable bundle; build `vault` from source until the image is rebuilt. Status stays
+  **Proposed** until the receipt reads `served` and the door reports the new id.
