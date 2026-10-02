@@ -351,3 +351,38 @@ These sources inform the design; all corpus sizes, gates and product thresholds 
      Otherwise Phase 0 fails as §12 defines it. The owner then chooses between finding a partner
      corpus and running the §3.2 synthetic track alone. The synthetic track would be reported as
      what it is, with no natural-corpus headline, because §3.2 rules out substituting it.
+
+### Phase 0 private-source inventory — 2026-10-02
+
+The owner authorised the private sources on 2 October 2026 (owner decision R3), for local and
+development use only. The five steps above were run the same day. Counts per source class are in
+[`candidate-inventory.md` § Private sources](../research/prd-028-phase0/candidate-inventory.md#private-sources-owner-authorised-2-october-2026).
+The raw inventory stays outside git, in the local workspace and in a RuVector `project-state`
+entry.
+
+1. **Sources authorised:** private-repository ADRs, PRDs and runbooks; RuVector `project-state`;
+   workspace notes; incident histories (dream-night reports, dream-inbox items, private-repo fix
+   commits). Personal journals and personal-portfolio repositories were left out, because they
+   are not operational records.
+2. **Git-held sources profiled** with the `profile_corpus.py` measures: 89 decision records
+   (0.28 M deduplicated tokens) and 181 runbook and site-operations units (0.40 M).
+3. **`project-state` profiled** through the memory MCP tools: 1,937 entries (0.76 M tokens,
+   median 151 words), dated from March to October 2026.
+4. **Scored against §2 and §3.4.** Hand reads of 20 units per class found local facts in 19, 15,
+   18, 11 and 19 of 20 (decision records, runbooks, memory, workspace notes, incidents). Every
+   git-held unit has an owner, a timestamp and a stable ID. Memory entries are agent-written, so
+   source-owner review falls on each project's human owner. Units about the public repositories
+   have public counterparts; the **strict private subset** without them is 837 units, about
+   0.90 M tokens, across nine subdomains, six of them with 20 or more units.
+5. **Gate: passed, with conditions.** The strict private subset clears the 400-unit,
+   four-subdomain pilot floor. A 400 to 800-unit pilot costs about **0.43 to 0.86 M tokens** of
+   corpus, and about 1,240 public-project units are available as distractors. The conditions:
+   stratify sampling by subdomain, because two subdomains supply 75% of units; disclose shared
+   authorship (§3.1); and have the owner attest handling of the client-engagement subdomains
+   before Phase 1 reads them. **The full-study band (8 to 33 M tokens) is out of reach** from
+   private estate material, which is about 2 M tokens in total. Phase 3 will need a partner corpus,
+   or a justified smaller target.
+
+**Next:** run the pilot after 20 October (owner decision 2026-10-02, Q6). Phase 1 begins with the
+owner's client-material attestation, then draws a stratified 400 to 800-unit sample from the
+strict private subset, locally and outside git.

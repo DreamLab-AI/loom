@@ -14,7 +14,8 @@ facts at pilot scale. The published `knowledge/` vault is the regression referen
 describes, and it is now measured. The only private material, about 300 curator notes, falls
 below the pilot floor of 400 units and is mostly commentary on public technology. Phase 0 has to
 continue with the estate's operational records (see "What remains" below), and only the owner
-can authorise handling them.
+can authorise handling them. The owner did so later the same day, and those sources do meet the
+pilot floor; see [Private sources](#private-sources-owner-authorised-2-october-2026).
 
 ## Strata
 
@@ -87,4 +88,66 @@ Phase 0's preferred candidates (§3.1) are internal deployment decisions, equipm
 configurations, incident resolutions and versioned procedures. In this estate those are
 operational records outside visionGraph. They are listed by category, because some of them live in
 private repositories whose names do not belong in a public repo. The PRD-028 Disposition
-carries the plan and its commands.
+carries the plan and its commands. The owner authorised those sources on 2 October 2026; the
+result is the next section.
+
+## Private sources (owner-authorised, 2 October 2026)
+
+The owner authorised the remaining Phase 0 sources on 2 October 2026 (owner decision R3):
+private-repository ADRs, PRDs and runbooks, the RuVector `project-state` namespace, and workspace
+notes and incident histories, for **local and development use only**. This section reports
+counts per source class and nothing else. The raw inventory, the profiling script and the
+hand-read samples stay outside git, in the local workspace and in a RuVector `project-state` entry. Subdomains are lettered, not named, because their
+names are private.
+
+Method: the measures of `profile_corpus.py` (body text, tokens estimated as characters ÷ 4),
+applied to tracked Markdown in the private checkouts and to the memory store read through the
+memory MCP tools. Vendored agent tooling, third-party pages, archives and literature folders
+were excluded after the first sample read found them. "Deduplicated tokens" removes exact
+duplicate units and repeated paragraphs of 40 characters or more. "Local signal" is the fraction
+of units carrying at least three kinds of local identifier (address, port, version, commit, date,
+record ID, repository path). "Hand-read local" is how many of a random 20-unit sample per class
+held facts particular to this estate.
+
+| Source class | Units | Deduplicated tokens | Median words | Local signal | Hand-read local | Owner, timestamp, stable ID |
+|---|---:|---:|---:|---:|---:|---|
+| Private-repo decision records (ADR, PRD) | 89 | 0.28 M | 1,234 | 94% | 19 / 20 | git author, git date, path and record ID |
+| Private-repo runbooks and site operations | 181 | 0.40 M | 714 | 46% | 15 / 20 | git author, git date, path |
+| RuVector `project-state` | 1,937 | 0.76 M | 151 | 55% | 18 / 20 | agent-written; date in 85%; key |
+| Workspace notes | 29 | 0.10 M | 1,405 | 83% | 11 / 20 | dated in 24%; path |
+| Incident histories (dream reports, dream-inbox items, fix commits) | 387 | 0.42 M | 92 | 66% | 19 / 20 | engine or git author; date in 56%; night or commit ID |
+| **Union, exact-deduplicated** | **2,623** | **≈ 1.99 M** | | | | |
+
+Public counterparts (§5.3). Many `project-state` entries, dream reports and workspace notes
+describe the public agentbox, VisionFlow, Loom and forum repositories, whose commits and ADRs are
+public. Units whose subject is a private project, with no public counterpart, form the
+**strict private subset: 837 units, about 0.90 M tokens**, drawn from all five classes (460
+memory entries, 180 runbooks, 106 incident records, 89 decision records, 2 notes). It spans
+nine subdomains: A 343 units, B 285, C 51, D 49, E 46, F 23, G 17, H 12, I 11. Six of those
+subdomains have at least 20 units.
+
+Quality flags from the hand reads: two of the 20 sampled memory entries had their whitespace
+stripped; nine of the 20 workspace notes are 2025 agent-swarm reports whose claims are stale or
+unreliable; the memory entries are agent-written summaries, so §3.4 source-owner review has to
+fall on the human owner of each project. At least two subdomains, A and D, are client
+engagements, so the owner must attest that their material may be handled even locally.
+
+### Gate verdict
+
+**The Phase 0 pilot floor is met, with conditions.** The strict private subset reaches 837 units
+across six subdomains of 20 or more units, against a floor of 400 units across four subdomains,
+and the hand reads found substantive local facts in every class except the workspace notes. A
+pilot of 400 to 800 units drawn from it costs about **0.43 to 0.86 M tokens** of corpus (about
+1,080 tokens per unit). The roughly 1,240 public-project units are available as nearby
+distractors (§3.4). The conditions are:
+
+1. Subdomains A and B supply 75% of the strict subset, so pilot sampling must be stratified by
+   subdomain and must report results per subdomain.
+2. Authorship is shared with the Loom's own authoring process (DreamLab and its agents), which §3.1
+   requires to be disclosed, with transfer claims restricted.
+3. The owner attests handling for the two client-engagement subdomains before Phase 1 reads them.
+
+**The full-study band is not reachable from private estate material.** The whole union is about
+2 M tokens, against the 8 to 33 M tokens that §3.4 derives from the measured Loom reference. The
+full study will need a partner corpus, or the owner will need to justify a smaller corpus against
+the measured profile, as §3.4 allows.
