@@ -657,3 +657,125 @@ three latency classes, one provenance grammar.
 - **Priority:** P2 — next cycle (investment gated on the PRD-028 pilot's answer, per planning-cycle §3)
 - **Why:** The façade half of the platform exists (ADR-137, ADR-141; agentbox ADR-2023 and ADR-2084 accepted). The flagship deferred distillation loop (§5: jobd, job URNs, lease fencing, reaper) has no implementation in agentbox or in loom `crates/`. The consolidation map (§4) is overtaken by the sovereign corpus: VisionFlow ADR-2013 accepted, `vault build` as the one corpus authority, and agentbox ADR-2107's "no MCP inside the estate". Open decisions OD-1 and OD-3 have since been resolved by ADR-136 D6 and ADR-137 §D8. Verified against loom `main` at `8c618fa`.
 - **Next:** After the pilot, rewrite the PRD around the distillation loop alone, or withdraw it if the pilot says to invest in corpus quality rather than serving complexity. That choice is the owner's.
+
+## Amendment — 2026-10-02: the smallest distillation loop that could show a result
+
+Status: proposed (the PRD's status is unchanged). Owner decision 2026-10-02, R5a: try it, because
+it is cheap on an estate that already runs around the clock; keep the disturbance small; and,
+since the dream engine and RuVector already handle self-improvement, call them in rather than
+repeat them.
+
+**What this loop is, and what it is not.** §5's deferred distillation loop (jobd, job URNs,
+signed envelopes, lease fencing) is a serving capability and stays unbuilt. Nothing here depends
+on it. This amendment adds a different, much smaller loop: it takes the Loom's answers that an
+existing evaluator has already judged correct and feeds them back as an artefact whose effect is
+measured. It does not touch the serving path. Until the owner adopts a positive result, nothing
+it produces reaches a live answer.
+
+### A1. The three new parts
+
+1. **Collector (built).** `cargo run -q -p loom-facade --bin best-answers -- <questions.jsonl>
+   <scores-*.jsonl>…` reads scored uplift-bench runs (`uplift-results/`). A row counts as a
+   **best answer** only when the existing, frozen gold-recall scorer has already judged it so:
+   served through the scaffold (`mode = scaffold`, `scaffold_engaged = true`), finished normally
+   (`finish_reason = stop`), and recovering every gold item (`recall = 1.0`). The collector does
+   not judge prose. Questions are split by their first class slug (`sha256(slug)[0] % 5 == 0` is
+   held out), so no exemplar shares a class with a held-out question. It keeps the shortest best
+   answer per train question and emits one row per question, keyed `loom-best:<id>`, for the
+   RuVector namespace **`loom-best-answers`**. On the current results it yields 326 train-split
+   questions with a best answer and holds out 108 questions.
+2. **Artefact: a retrieval-augmented exemplar set (planned, no training).** For each held-out
+   question, `memory_search` over `loom-best-answers` returns the three nearest exemplars, which
+   are prepended to the scaffold prompt. The selection is frozen into a committed file,
+   `bench/distil/exemplars-k3.jsonl` (held-out id → three exemplar keys and texts). Every text
+   in it is a question over the public corpus and a model answer to it, with no private
+   material; `uplift-results/` itself is gitignored, so this is the one distillation file that
+   is committed. The file is needed because the dream annexe never sees RuVector, and the
+   engine parses `controlPlaneProbes` but does not run them.
+   The commit also lets the night's witness bind the exact artefact it measured. A LoRA comes
+   only after the exemplar set shows a gain (A4).
+3. **Kill switch.** Three layers. The operative one is removing the `answer-distillation` slot
+   from `dream.config.json`, a one-line revert, which stops scheduling. For manual runs,
+   `LOOM_DISTIL=0` makes the collector and the A/B script print `DISTIL-OFF` and do nothing; the
+   annexe does not inherit the engine's environment, so this variable cannot stop a night. And
+   the stop rule in A3 ends the loop on its own. Because
+   serving is untouched, nothing needs unwinding once the switch is thrown. Dropping the
+   `loom-best-answers` namespace removes the artefact.
+
+### A2. What the loop must not re-implement (it calls these in)
+
+| Concern | Called in from | Not built here |
+|---|---|---|
+| Scheduling, window, roster, retries | the dream engine (`dream.config.json` slot, nightly window, roster cap, run journal) | no cron, timer or daemon |
+| Evidence gating | dream-engine typed receipts and the deterministic gate (ADR-2024), plus the frozen uplift gold-recall scorer as the judge of "best" | no new judge, no LLM-as-judge |
+| Memory and retrieval | RuVector through the memory tools (`memory_store`, `memory_search`; bge-small embeddings, HNSW) | no vector store, no embedding code |
+| Journal and witness | the dream-cycle journal (agentbox ADR-2071), the ledger row and the witness hash | no new log format |
+| Governance | dream-inbox cases on the forum governance panel (kind 31402/31403, ADR-2115) | no approval flow |
+| Promotion into serving | an owner decision recorded as an ADR, as for any serving change | no automatic adoption |
+
+### A3. Bounded first run
+
+**Trigger.** The loom repository is already nominated: it has a `dream.config.json` and is
+currently on standby. This amendment drafts one more slot and one evaluator. It applies neither,
+and it does not lift the standby. Changing the roster is the owner's call (`/dream`). Draft:
+
+```json
+"slots": [ …, { "deep": "answer-distillation", "scan": ["best-answers", "exemplar-ab"] } ],
+"evaluatorEntrypoints": {
+  …,
+  "distil": { "cmd": "bash scripts/dream-distil.sh", "deeps": ["answer-distillation"],
+              "required": true, "timeoutSecs": 3600 }
+}
+```
+
+A one-shot run on the operator's say-so (`dream-engine --once --target loom`, with the loop
+stopped first because of the singleton lock) does the same thing without touching the rotation.
+
+**Night one, in order.**
+
+0. **The day before, on the control plane** (one agent session, the first task of the run): run
+   `best-answers`, store its rows into `loom-best-answers` through the memory tools, retrieve
+   k = 3 for a seeded sample of **50 held-out questions**, commit
+   `bench/distil/exemplars-k3.jsonl`, and write `scripts/dream-distil.sh` (under 100
+   lines).
+1. **At night, on the annexe**, the `distil` evaluator asks each of the 50 questions twice
+   through the Loom on that host (`LOOM_URL`, default `127.0.0.1:8084`, which is the same door as
+   `http://192.168.2.132:8084/v1`), with the scaffold on, the Loom's own model, temperature 0 and
+   `max_tokens` 1536. Arm **before** is the scaffold only; arm **after** is the scaffold plus the
+   three committed exemplars. That is 100 calls, inside the dream window, on the GPU the Loom
+   already holds.
+2. Score both arms with the frozen gold-recall scorer, and print the line below.
+
+**The number it reports.** One line, `DISTIL-AB n=50 recall_before=… recall_after=… delta=…
+ci95=[…,…]`. The figure is mean gold recall: on the public regression reference (PRD-028 §3.3) it
+plays the part of PRD-028 §7.2's required-proposition recall, with a paired bootstrap confidence
+interval. Once PRD-028 Phase 1 has development questions on the private corpus (after
+20 October), the same A/B runs on that development split, locally, and never on the sealed test
+split.
+
+**Verdict and stop condition.** The engine's night verdict reads the line. **ACCEPT** if the
+interval's lower bound is above 0 and delta is at least +0.03. **REJECT** if the upper bound is
+below 0. **INCONCLUSIVE** otherwise. The loop **stops after night one** whatever the verdict.
+A second night needs the operator's approval of a dream-inbox case, and there are at most three
+nights in total. Two consecutive REJECTs, or three nights without an ACCEPT, retire the slot.
+
+### A4. The training step (named, not built)
+
+A LoRA is considered only after an ACCEPT on the exemplar A/B, and only by an owner decision.
+It would train on the **Loom backend's own** best answers. The current best rows mostly come from
+third-party models, which stay retrieval exemplars and never become training data. It would run on
+the HP host (two Quadro RTX 6000s, which `loom-model` holds while serving), so it needs
+`docker stop loom-model`. Budget: one 4-hour window a week, outside the 01:00–05:00 UTC dream
+window, with the Loom degraded to `backend_reachable: false` for the duration. Its metric is the
+same A/B with the adapter in place of the exemplars.
+
+### A5. Built and planned
+
+| Part | State |
+|---|---|
+| Collector `best-answers` (loom-facade bin, about 115 lines plus 2 unit tests) | built |
+| `loom-best-answers` namespace, populated | planned: night one, step 0 |
+| `bench/distil/exemplars-k3.jsonl` (frozen retrieval) | planned: night one, step 0 |
+| `scripts/dream-distil.sh` (A/B and scoring) | planned: night one, step 0 |
+| `answer-distillation` slot and `distil` evaluator | drafted above, not applied |
+| LoRA | named, gated on an ACCEPT plus an owner decision |

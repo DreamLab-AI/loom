@@ -32,6 +32,12 @@ path = "src/bin/graph_check.rs"
 name = "generation-check"
 path = "src/bin/generation_check.rs"
 
+# PRD-025 Amendment 2026-10-02: the distillation loop's collector. Selects
+# gold-recall-1.0 scaffold answers from scored uplift runs; no new dependency.
+[[bin]]
+name = "best-answers"
+path = "src/bin/best_answers.rs"
+
 [features]
 # The governance ledger route (ADR-141). Default-on: the estate's promotion loop
 # needs a ledger endpoint, and the port has no other writer.
