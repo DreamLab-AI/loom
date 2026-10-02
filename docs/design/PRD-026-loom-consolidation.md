@@ -540,3 +540,10 @@ own gate.
 One source, one reasoner authority, one enforced gate, and one canonical per-IRI markdown unit that
 every accelerator points at and no accelerator replaces. That is the consolidation, and the prize
 stays primary through all of it.
+
+## Disposition — 2026-10-02
+
+- **Suitability:** fits, needs revision
+- **Priority:** P2 — next cycle (investment gated on the PRD-028 pilot's answer, per planning-cycle §3)
+- **Why:** The consolidation goals largely landed in another form. The single-source build is now `vault build` over `visionGraph` (ADR-141; live node at `visionGraph@ae913f9`). The reasoner is build-time Whelk (ADR-136 D6). Gate mechanics sit on ProofGate (`crates/loom-attest-proofgate`). The semantic fallback is built but default off because the recall gate is red (PRD-027 AC-5). The §3 honesty table is dated 2026-08-16 and describes the Python node, so it no longer matches the code. Phase 3 (WS-Q mesh substrate, ruvector-hybrid) is deferred by its own text. Verified against loom `main` at `8c618fa`.
+- **Next:** Refresh the §3 honesty table against the Rust workspace. The remaining open item, the fallback recall gate, goes to the PRD-028 pilot.

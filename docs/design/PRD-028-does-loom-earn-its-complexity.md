@@ -304,3 +304,10 @@ These sources inform the design; all corpus sizes, gates and product thresholds 
 - **[S3] Friel et al., RAGBench.** Provides precedent for evaluating relevance, utilisation and completeness separately across RAG settings. It is methodological context, not an eligible private test corpus. [Paper](https://arxiv.org/html/2407.11005v2).
 - **[S4] Oren et al., Proving Test Set Contamination in Black Box Language Models.** Demonstrates a specific contamination test under assumptions about benchmark ordering. It does not provide a universal certificate of non-contamination for private documents. [Paper](https://proceedings.iclr.cc/paper_files/paper/2024/file/46e624c244cff669223d488defd4e835-Paper-Conference.pdf).
 - **Project source:** John O'Hare, The Copy Ceiling, final manuscript `docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf` (v9.2, 21 September 2026). Corpus counts and the motivation for this follow-on study come from that manuscript; new targets above are not findings of it.
+
+## Disposition — 2026-10-02
+
+- **Suitability:** fits
+- **Priority:** P2 — next cycle (planning-cycle §3: the full study, 200 reviewer-hours, is parked for 12 weeks. The 400 to 800-unit pilot may start after this cycle exits on 20 October, and the Phase 0 corpus inventory may proceed now.)
+- **Why:** This is the question the estate has chosen to settle by measurement. TODO row X-5 defers the OWL/RDF-as-core debate to it, plan §9 calls the pilot "a good residential exercise", and PRD-025 to 027 investment waits on its answer. ADR-140 D8 has extended its arms to include cost and turns. No Phase 0 inventory or pilot evidence exists under `docs/research/` yet. Verified against loom `main` at `8c618fa`.
+- **Next:** Run the zero-engineering Phase 0 corpus inventory now. The pilot follows once the cycle exits.

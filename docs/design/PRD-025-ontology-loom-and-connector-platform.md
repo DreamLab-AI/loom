@@ -650,3 +650,10 @@ pillar end-to-end: every distilled answer is attributable to a **signed identity
 corpus generation**, and a **probed model identity** — verifiable from the signed envelope +
 build-manifest sha, without trusting any intermediary. One corpus, one Loom, one contract,
 three latency classes, one provenance grammar.
+
+## Disposition — 2026-10-02
+
+- **Suitability:** fits, needs revision
+- **Priority:** P2 — next cycle (investment gated on the PRD-028 pilot's answer, per planning-cycle §3)
+- **Why:** The façade half of the platform exists (ADR-137, ADR-141; agentbox ADR-2023 and ADR-2084 accepted). The flagship deferred distillation loop (§5: jobd, job URNs, lease fencing, reaper) has no implementation in agentbox or in loom `crates/`. The consolidation map (§4) is overtaken by the sovereign corpus: VisionFlow ADR-2013 accepted, `vault build` as the one corpus authority, and agentbox ADR-2107's "no MCP inside the estate". Open decisions OD-1 and OD-3 have since been resolved by ADR-136 D6 and ADR-137 §D8. Verified against loom `main` at `8c618fa`.
+- **Next:** After the pilot, rewrite the PRD around the distillation loop alone, or withdraw it if the pilot says to invest in corpus quality rather than serving complexity. That choice is the owner's.

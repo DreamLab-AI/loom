@@ -243,3 +243,10 @@ Decision status unchanged. Recorded against the closeout extension's acceptance 
 **Receipts.** [Local façade receipt](../estate-closeout/2026-09-05/local-facade-receipt.json).
 
 **Remaining.** No benchmark was run and no default was changed: the recall/uplift work — frozen datasets, copy controls, measured consumer budgets — is untouched, and no recall or performance claim is made here.
+
+## Disposition — 2026-10-02
+
+- **Suitability:** fits, needs revision
+- **Priority:** P2 — next cycle (reopens on the PRD-028 pilot's answer, which decides whether structured-path tooling earns further investment)
+- **Why:** Most allocations shipped in the Rust workspace under ADR-137 (accepted). Build-time Whelk (D6) and ProofGate attestation (D5) appear in `crates/loom-domain/src/ports.rs` and `crates/loom-attest-proofgate/`. HNSW is a gated fallback, default off (`crates/loom-facade/src/config.rs:160`, `semantic_fallback: false`, D3). D2's "keep pyoxigraph" is overtaken by native `oxigraph` (`crates/loom-graph-oxigraph`, ADR-137). D4's single-source build is overtaken by `vault build` (ADR-141). The recall gate behind D3 is still red (PRD-027 AC-5, 0.816 against 0.87), and no benchmark has run since. Whether the live node has the fallback switched on is unverified. Verified against loom `main` at `8c618fa`.
+- **Next:** Ready to accept D1, D2 (as amended by ADR-137), D5 and D6 on the crates cited. Leave D3 and D8 to the pilot and the recall benchmark.

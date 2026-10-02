@@ -564,3 +564,10 @@ Decision status unchanged. This records implementation against the closeout exte
 **Receipts.** [Local façade receipt](../estate-closeout/2026-09-05/local-facade-receipt.json), [browser receipt](../estate-closeout/2026-09-05/browser-receipt.json). A locally-run façade was driven over curl and through the browsercontainer sidecar; all surfaces agreed on one generation and one content digest, drift injection flipped `drift.ok` to false while leaving the served generation unchanged, and restoring the file restored it.
 
 **Remaining.** HP deployment — the production façade still runs the pre-closeout binary and has no `serving_bundle` block; it was read only here. `app/mirror.sh` still promotes file-at-a-time and should be ported onto `BundlePromoter`'s protocol. The compose data-directory mismatch is unchanged.
+
+## Disposition — 2026-10-02
+
+- **Suitability:** fits, needs revision
+- **Priority:** P2 — next cycle (reopens on the PRD-028 pilot's answer; planning-cycle §3 gates PRD-025 to 027 investment on it)
+- **Why:** The node boundary and the model-swap door are live. `http://192.168.2.132:8084/health` answered `facet: loom-facade` with a reachable backend on 2026-10-02, and agentbox ADR-2023 and ADR-2084 (both accepted) bind consumers to that door. Much of the text is overtaken by later records. ADR-137 (accepted) replaced D1's stdlib-Python artefact. ADR-136 D6 resolved D3's open reasoner choice. ADR-141 and VisionFlow ADR-2013 (accepted) moved corpus-lifecycle authority (D2) from `jjohare/logseq` to `vault build`. D4's deferred distillation loop (jobd, `urn:agentbox:job:` URNs) has no implementation in agentbox or in loom `crates/`. Whether host VisionClaw retired CLEAR+INSERT under D2.3 is unverified. Verified against loom `main` at `8c618fa`.
+- **Next:** After the pilot, split the record. Accept the boundary, door and generation discipline that are now built, and carry D4 distillation with PRD-025 or retire it.
