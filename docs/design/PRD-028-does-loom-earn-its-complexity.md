@@ -311,3 +311,43 @@ These sources inform the design; all corpus sizes, gates and product thresholds 
 - **Priority:** P2 — next cycle (planning-cycle §3: the full study, 200 reviewer-hours, is parked for 12 weeks. The 400 to 800-unit pilot may start after this cycle exits on 20 October, and the Phase 0 corpus inventory may proceed now.)
 - **Why:** This is the question the estate has chosen to settle by measurement. TODO row X-5 defers the OWL/RDF-as-core debate to it, plan §9 calls the pilot "a good residential exercise", and PRD-025 to 027 investment waits on its answer. ADR-140 D8 has extended its arms to include cost and turns. No Phase 0 inventory or pilot evidence exists under `docs/research/` yet. Verified against loom `main` at `8c618fa`.
 - **Next:** Run the zero-engineering Phase 0 corpus inventory now. The pilot follows once the cycle exits.
+
+### Phase 0 progress — 2026-10-02
+
+- **Done:** the visionGraph strata are inventoried in
+  [`docs/research/prd-028-phase0/candidate-inventory.md`](../research/prd-028-phase0/candidate-inventory.md),
+  with the reproducible counts in `corpus-profile.json` and `profile_corpus.py` beside it, at
+  `visionGraph@015ca2c1f`. The §3.3 regression reference is now measured: 9,366 public classes,
+  about 16.7 M deduplicated estimated tokens, 338,191 asserted and 83,555 inferred triples. The
+  §3.4 full-study band is therefore roughly 8 to 33 M tokens.
+- **Gate not met from visionGraph.** Its only private material is 302 curator notes, below the
+  400-unit pilot floor and mostly commentary on public technology, plus personal journals made up
+  largely of links. Transcripts have public counterparts and third-party copyright.
+- **Remaining Phase 0 work** is an owner-gated inventory of the estate's operational records. That
+  is §3.1's preferred category: deployment decisions, equipment configurations, incident
+  resolutions, versioned procedures. It needs more than one session because each source needs its
+  own permission decision. Steps:
+  1. **Owner selects and authorises sources** (§12's Phase 0 gate). Candidate categories are the
+     ADR, PRD and runbook sets in the private repositories; the RuVector `project-state` memory
+     namespace; the workspace operational notes (`~/workspace/docs`: estate network, deployment
+     guides, audits); and dream-cycle ledgers and private-repo commit histories, as a source of
+     incident resolutions. The public agentbox, VisionFlow and loom ADR sets do not qualify as
+     private, but they are useful as distractors. Record each decision privately in agentbox's gitignored
+     `config/instructions/local/` tier, and commit only the category and the decision here, never
+     a private repository name.
+  2. **Profile each authorised git-held source** with the same measures:
+     `python3 docs/research/prd-028-phase0/profile_corpus.py <checkout> <name>=<dir> > <name>.json`.
+     The script emits counts only. Commit the JSON here only if the source's category name is safe
+     to publish.
+  3. **Profile `project-state`** through the memory MCP tools (`memory_list` with namespace
+     `project-state`). Count entries, the created-at span and value lengths, and use no raw SQL.
+     Record the counts only.
+  4. **Score each source against §2 and §3.4.** Score private access, local-fact density
+     (hand-read a 20-unit random sample per source), owner/timestamp/stable-ID coverage, units,
+     deduplicated tokens and subdomain count, and record public counterparts (§5.3). Add the rows
+     to the inventory's tables.
+  5. **Gate decision.** Phase 0 passes if one authorised source, or a disclosed union of sources,
+     reaches 400 or more units across four or more subdomains with substantive local facts.
+     Otherwise Phase 0 fails as §12 defines it. The owner then chooses between finding a partner
+     corpus and running the §3.2 synthetic track alone. The synthetic track would be reported as
+     what it is, with no natural-corpus headline, because §3.2 rules out substituting it.

@@ -1,0 +1,196 @@
+{
+ "corpus": "visionGraph@015ca2c1f2d7289955ebf16b98b6775a57ec0f7b",
+ "strata": [
+  {
+   "stratum": "knowledge",
+   "units": 9380,
+   "words": 9056119,
+   "est_tokens_chars_div_4": 18045011,
+   "words_per_unit": {
+    "median": 238,
+    "p90": 1732,
+    "max": 67875
+   },
+   "stub_fraction_lt_50_words": 0.102,
+   "exact_duplicate_unit_fraction": 0.072,
+   "repeated_long_line_fraction": 0.117,
+   "url_bearing_line_fraction": 0.041,
+   "wikilinks_per_unit": 31.96,
+   "units_with_outbound_link_fraction": 0.999,
+   "frontmatter_public": {
+    "true": 9366,
+    "false": 14
+   },
+   "frontmatter_status": {
+    "stable": 8446,
+    "draft": 934
+   },
+   "frontmatter_type": {
+    "Class": 9380
+   },
+   "domains": {
+    "blockchain": 1212,
+    "infrastructure": 1205,
+    "artificial-intelligence": 1139,
+    "spatial-computing": 1078,
+    "robotics": 601,
+    "governance": 560,
+    "space-science-and-systems": 545,
+    "ai": 513,
+    "security": 484,
+    "machine-learning": 450,
+    "earth-observation-and-geospatial-sensing": 389,
+    "finance": 243,
+    "data": 225,
+    "standards": 212,
+    "metaverse": 154,
+    "distributed-collaboration": 146,
+    "distributed-systems": 95,
+    "economics": 84,
+    "supply-chain": 45
+   },
+   "generated_by": {
+    "process:vault-migrate/1.0": 8444,
+    "process:space-corpus/0.1.0": 664,
+    "process:space-corpus-research/0.1.0": 264,
+    "agent:codex/space-headers-1": 8
+   },
+   "dated_filename_years": {},
+   "git_add_events_by_year": {
+    "2023": 1094,
+    "2024": 380,
+    "2025": 4168,
+    "2026": 8167
+   }
+  },
+  {
+   "stratum": "working-pages",
+   "units": 786,
+   "words": 973400,
+   "est_tokens_chars_div_4": 1955448,
+   "words_per_unit": {
+    "median": 769,
+    "p90": 2471,
+    "max": 35294
+   },
+   "stub_fraction_lt_50_words": 0.17,
+   "exact_duplicate_unit_fraction": 0.029,
+   "repeated_long_line_fraction": 0.217,
+   "url_bearing_line_fraction": 0.13,
+   "wikilinks_per_unit": 6.85,
+   "units_with_outbound_link_fraction": 0.542,
+   "frontmatter_public": {
+    "false": 597,
+    "true": 187,
+    "absent": 2
+   },
+   "frontmatter_status": {
+    "stable": 782,
+    "draft": 2,
+    "absent": 2
+   },
+   "frontmatter_type": {
+    "Note": 489,
+    "Episode": 295,
+    "absent": 2
+   },
+   "domains": {
+    "infrastructure": 10,
+    "artificial-intelligence": 4,
+    "spatial-computing": 4,
+    "robotics": 1
+   },
+   "generated_by": {
+    "process:vault-migrate/1.0": 782,
+    "absent": 3,
+    "human:jjohare": 1
+   },
+   "dated_filename_years": {},
+   "git_add_events_by_year": {
+    "2025": 454,
+    "2026": 333
+   }
+  },
+  {
+   "stratum": "working-journals",
+   "units": 1236,
+   "words": 144716,
+   "est_tokens_chars_div_4": 374059,
+   "words_per_unit": {
+    "median": 43,
+    "p90": 276,
+    "max": 4751
+   },
+   "stub_fraction_lt_50_words": 0.539,
+   "exact_duplicate_unit_fraction": 0.061,
+   "repeated_long_line_fraction": 0.385,
+   "url_bearing_line_fraction": 0.533,
+   "wikilinks_per_unit": 5.45,
+   "units_with_outbound_link_fraction": 0.718,
+   "frontmatter_public": {
+    "false": 1234,
+    "absent": 2
+   },
+   "frontmatter_status": {
+    "stable": 1230,
+    "draft": 4,
+    "absent": 2
+   },
+   "frontmatter_type": {
+    "Journal": 1234,
+    "absent": 2
+   },
+   "domains": {},
+   "generated_by": {
+    "process:vault-migrate/1.0": 1230,
+    "absent": 6
+   },
+   "dated_filename_years": {
+    "2021": 1,
+    "2022": 38,
+    "2023": 276,
+    "2024": 349,
+    "2025": 325,
+    "2026": 122
+   },
+   "git_add_events_by_year": {
+    "2025": 988,
+    "2026": 285
+   }
+  },
+  {
+   "stratum": "transcripts",
+   "units": 241,
+   "words": 941992,
+   "est_tokens_chars_div_4": 1380909,
+   "words_per_unit": {
+    "median": 3964,
+    "p90": 5821,
+    "max": 9203
+   },
+   "stub_fraction_lt_50_words": 0.004,
+   "exact_duplicate_unit_fraction": 0.0,
+   "repeated_long_line_fraction": 0.268,
+   "url_bearing_line_fraction": 0.261,
+   "wikilinks_per_unit": 0.0,
+   "units_with_outbound_link_fraction": 0.0,
+   "frontmatter_public": {
+    "absent": 241
+   },
+   "frontmatter_status": {
+    "absent": 241
+   },
+   "frontmatter_type": {
+    "absent": 241
+   },
+   "domains": {},
+   "generated_by": {
+    "absent": 241
+   },
+   "dated_filename_years": {},
+   "git_add_events_by_year": {
+    "2026": 504
+   }
+  }
+ ]
+}
