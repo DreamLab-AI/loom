@@ -128,10 +128,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Non-root serving user. UID/GID 65532 mirrors the distroless `nonroot` id so a
 # ro bind-mount of ./data (owned by the host user) stays readable and /run/loom
 # (created below, owned by this user) stays writable for the rvdb copy.
+# /var/lib/loom holds the append-only attestation ledger (LOOM_LEDGER_PATH):
+# it must outlive the container and sit off the read-only ./data mount, so the
+# compose files back it with a named volume, which Docker seeds with this
+# directory's nonroot ownership on first use.
 RUN groupadd --gid 65532 nonroot \
     && useradd --uid 65532 --gid 65532 --home-dir /home/nonroot --create-home nonroot \
-    && mkdir -p /run/loom /app/data \
-    && chown -R nonroot:nonroot /run/loom
+    && mkdir -p /run/loom /app/data /var/lib/loom \
+    && chown -R nonroot:nonroot /run/loom /var/lib/loom
 
 COPY --from=builder /usr/local/bin/loom-facade /usr/local/bin/loom-facade
 COPY loom/deploy/entrypoint.sh /usr/local/bin/loom-entrypoint.sh

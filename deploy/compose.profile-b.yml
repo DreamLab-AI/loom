@@ -20,6 +20,10 @@ services:
       - "8080:8080"
     environment:
       LOOM_FACADE_PORT: "8080"
+      # The `POST /loom/attest` ledger is append-only and must persist: NOT the
+      # default data/ledger.jsonl, which is under the read-only ../data mount
+      # (every attestation failed EROFS). Backed by the loom-ledger volume.
+      LOOM_LEDGER_PATH: "/var/lib/loom/ledger.jsonl"
       LOOM_DEPLOY_PROFILE: "b"
       # Model delegated by URL — GPU-free sidecar reaches loom-model over the docker net.
       DISTILL_BACKEND_URL: "http://loom-model:8085/v1"
@@ -51,6 +55,7 @@ services:
     # Relative to this compose file (loom/deploy/): the fully mirrored generation dir.
     volumes:
       - ../data:/app/data:ro
+      - loom-ledger:/var/lib/loom
     tmpfs:
       # uid/gid must match the image's non-root user (65532) or the entrypoint
       # cp fails EACCES (verified on the HP profile-A cutover, 2026-08-17).
@@ -62,6 +67,9 @@ services:
       timeout: 5s
       start_period: 25s
       retries: 3
+
+volumes:
+  loom-ledger:
 
 networks:
   # Provisioned outside this stack (the VisionClaw docker network the email gateway,

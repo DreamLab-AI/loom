@@ -21,6 +21,10 @@ services:
     network_mode: host
     environment:
       LOOM_FACADE_PORT: "8084"
+      # The `POST /loom/attest` ledger is append-only and must persist: NOT the
+      # default data/ledger.jsonl, which is under the read-only ../data mount
+      # (every attestation failed EROFS). Backed by the loom-ledger volume.
+      LOOM_LEDGER_PATH: "/var/lib/loom/ledger.jsonl"
       LOOM_DEPLOY_PROFILE: "a"
       # The model-swap seam: loom-model Qwen3.8-27B on the host loopback, GPU-colocated.
       DISTILL_BACKEND_URL: "http://127.0.0.1:8085/v1"
@@ -73,6 +77,7 @@ services:
     # ontology-corpus.rvdb(+.generation.json). `../data` is the repo's mirror dir.
     volumes:
       - ../data:/app/data:ro
+      - loom-ledger:/var/lib/loom
     # CANONICAL artefact dir is `<repo>/data/` (this `../data`); `app/data/` is LEGACY & UNMOUNTED.
     # NB: app/mirror.sh writes to app/data/ — sync artefacts into ../data before `up`, or the log
     # says "lexical index NOT loaded ... empty floor" while /health still 200s (a path bug, not a
@@ -90,3 +95,6 @@ services:
       timeout: 5s
       start_period: 25s
       retries: 3
+
+volumes:
+  loom-ledger:
