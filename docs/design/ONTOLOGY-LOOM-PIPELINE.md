@@ -313,3 +313,8 @@ Consumer-side security/correctness posture (sig-verify at the derived door **and
 7. SPA `pageService.ts` search-envelope reader change (§11 item 3).
 
 Everything above is additive to a working pipeline: the generation this stage mints is the identity every downstream Loom workstream — corpus mirror, distillation `corpusSha` admission, signed result envelopes, corpus elevation — is defined against.
+
+
+## Proposed shared ontology workspace extension — 2026-10-11
+
+[Shared workspace proposal](ADR-142-consume-versioned-shared-ontology-contracts.md) is proposed, unimplemented and inactive. Consume versioned shared ontology bundles while retaining Markdown authority, derived query stores and verification of loaded generation identity. Existing accepted invariants and running behaviour are unchanged. OCR and document ingestion are outside this scope.

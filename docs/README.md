@@ -98,3 +98,8 @@ vault build ............ the canonical corpus builder over visionGraph (ADR-141;
   (the agentbox ADR-051 full copy was replaced by a stub, 2026-08-17).
 - **Generation discipline.** Every `/health` / `/loom/generation` example shows the sha-addressable
   generation stamp; a generation is fully present or absent, byte-identical across Profile A and B.
+
+
+## Proposed shared ontology workspace
+
+[ADR-142 — versioned shared ontology contracts](design/ADR-142-consume-versioned-shared-ontology-contracts.md) proposes the Loom consumer boundary. Decision proposed; implementation none; activation inactive.
