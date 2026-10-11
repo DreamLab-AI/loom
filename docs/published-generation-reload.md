@@ -1,7 +1,6 @@
 # Published generation reload
 
-<!-- lands with ontomark step 10 -->
-The `reload_published_generation` binary (crate `loom-facade`) is the once-per-tick transition from a
+`scripts/reload-published-generation.py` is the once-per-tick transition from a
 **complete published bundle** to a **verified served bundle**. The example user
 timer runs every five minutes. It is supplied but not installed or enabled.
 
@@ -13,15 +12,15 @@ four-file mirror is insufficient and is rejected before a restart. This script
 does not relabel/re-embed an old RVDB, download content, promote files, or attest
 that upstream public-export privacy is correct.
 
-The marker check is the one in `loom-facade::mirror`; there is no second copy of it
-in Python. The marker is accepted in either shape (ADR-141). An `ontomark build`
-marker — the one the corpus build writes, versioned by the bundle manifest — carries `id: "visionGraph@<sha>"`,
+The marker is accepted in either shape (ADR-141). A `vault build` marker — the
+one the sovereign-corpus build writes — carries `id: "visionGraph@<sha>"`,
 `commit`, `content_digest`, `generated_at`, `class_count`, `page_count`,
 `vocabulary_version`, `stale_after` and an artefact **list**; each C3 field is
-required once `id` is present and the id must name its own commit. `content_digest`
-identifies the source corpus the bundle was built from; it is carried, not compared.
-What is served and proved is the artefact digest recomputed from the individually
-verified files. A legacy mirror marker
+required once `id` is present and the id must name its own commit.
+`content_digest` identifies the source corpus the bundle was built from; the
+script carries it and does not compare it (`del declared_digest`). What is served
+and proved is the artefact digest recomputed from the individually verified
+files. A legacy mirror marker
 (`generation: "<ISO stamp>"` and an artefact **map**) is still accepted, because
 the live node carries one until the first vault-build promotion.
 
@@ -44,8 +43,8 @@ used to interpret the reload argument list.
 ## When to enable the timer
 
 The precondition is a single event (PRD sovereign-corpus Q8): **the first clean
-promotion of an `ontomark build` bundle** — a complete six-artefact
-`.generation.json` in the bundle-manifest shape, promoted into `data/`, verified by
+promotion of a `vault build` bundle** — a complete six-artefact
+`.generation.json` in the vault-build shape, promoted into `data/`, verified by
 one manual tick whose receipt reads `served`, and serving a generation no older
 than the raw vault it replaces. Until that has happened the timer stays off: the
 previous blocker was that the published bundle (graph 2026-08-22, semantic
@@ -55,7 +54,7 @@ reloader cannot improve a bundle that should not be served at all.
 Run the manual tick first and read the receipt:
 
 ```bash
-~/githubs/loom/target/release/reload_published_generation \
+python3 ~/githubs/loom/scripts/reload-published-generation.py \
   --data-dir ~/githubs/loom/data \
   --receipt  ~/.local/state/loom/reload.json \
   --url      http://127.0.0.1:8084 \
@@ -80,10 +79,19 @@ journalctl --user -u loom-generation-reload.service -n 50
 
 To stop it again: `systemctl --user disable --now loom-generation-reload.timer`.
 
-Isolated tests in `loom-facade` (`mirror_generation`, `adr141_generation_and_ledger`)
-exercise success, no-op, refusal and failure-state handling across both marker
-shapes. Reloading is an implemented transition;
+Sixteen isolated tests (`tests/test_reload_published_generation.py`) exercise
+the reload script's success, no-op, refusal and failure-state handling across both
+marker shapes. They cover the reload timer and nothing else. The `loom-facade`
+suites `mirror_generation` (the inline Python verifier in `app/mirror.sh`) and
+`adr141_generation_and_ledger` (marker activation, staleness and the ledger) cover
+the mirror and the served identity; neither tests the reload timer, so neither
+is replacement coverage for it. Reloading is an implemented transition;
 producing a valid new upstream bundle and activating it remain distinct work.
+
+<!-- lands with ontomark step 11 -->
+The Rust `reload_published_generation` binary that replaces the Python script, and
+the single marker check that follows from it, belong to ontomark step 11
+(`ontomark/reload-generation`). Nothing above changes until that step lands.
 
 ## Publishing a new generation
 
@@ -91,24 +99,46 @@ The timer reloads what is already in `data/`; it never builds or fetches. A node
 therefore follows `visionGraph` only as fast as someone publishes. One publication
 has three steps, and only the last touches HP.
 
-<!-- lands with ontomark step 10 -->
-**1. Build** from a clean `visionGraph` checkout with a released `ontomark`. Pin
-`ontomark` to a release tag, never to a branch, and confirm `ontomark --version`
-reports that tag. The `vault` baked into agentbox images up to at least
+**1. Build** from a clean `visionGraph` checkout with a `vault` built from current
+VisionClaw source. The `vault` baked into agentbox images up to at least
 2026-10-02 (0.1.0) predates the portable-records file and writes JSONL under the
-database's name, `ontology-corpus.rvdb`, which `promote_vault_build` cannot use,
-so do not use it. Install the released binary into a private directory (agentbox
-bakes `ontomark` once its flake input moves to the tag):
+database's name, `ontology-corpus.rvdb`, which `promote_vault_build` cannot use.
+Build `vault` into a private target directory, because `project/target` is shared
+with host builds:
 
 ```bash
-cargo install ontomark-cli --locked --version <release-tag> --root ~/workspace/loom-publish/ontomark
+cd ~/workspace/project
+CARGO_TARGET_DIR=~/workspace/loom-publish/vault-target cargo build --release -p vault
 SHA=$(git -C ~/workspace/visionGraph rev-parse --short=9 HEAD)
-~/workspace/loom-publish/ontomark/bin/ontomark --repo ~/workspace/visionGraph \
+~/workspace/loom-publish/vault-target/release/vault --repo ~/workspace/visionGraph \
   build --out ~/workspace/loom-publish/$SHA --with-rvdb --stats
 ```
 
 `data/` in the output holds the Loom bundle, with `.generation.json` listing its
 artefacts by path relative to `data/`.
+
+<!-- lands with ontomark step 10 -->
+**1 (after step 10). Build with a pinned `ontomark` release.** Step 10 adds
+`deploy/ontomark-release.env`, which pins the CLI twice: `ONTOMARK_RELEASE_TAG`
+(a release tag of the form `v<semver>[-pre]`, for example `v0.1.0-rc.1`) and
+`ONTOMARK_SHA256` (the digest of the release asset), with `ONTOMARK_RELEASE_REPO`
+and `ONTOMARK_ASSET`. Download that exact release by tag and check the digest
+before running anything from it. `cargo install --version` is not used: it takes a
+SemVer requirement, not a tag, and it would not check the digest. This replaces the
+`vault` build above.
+
+```bash
+source ~/workspace/loom/deploy/ontomark-release.env
+mkdir -p ~/workspace/loom-publish/ontomark
+gh release download "$ONTOMARK_RELEASE_TAG" --repo "$ONTOMARK_RELEASE_REPO" \
+  --pattern "$ONTOMARK_ASSET" --dir ~/workspace/loom-publish/ontomark
+(cd ~/workspace/loom-publish/ontomark \
+  && echo "$ONTOMARK_SHA256  $ONTOMARK_ASSET" | sha256sum --check --strict \
+  && mv "$ONTOMARK_ASSET" ontomark && chmod +x ontomark)
+SHA=$(git -C ~/workspace/visionGraph rev-parse --short=9 HEAD)
+~/workspace/loom-publish/ontomark/ontomark --repo ~/workspace/visionGraph \
+  build --out ~/workspace/loom-publish/$SHA --with-rvdb --stats
+```
 
 **2. Promote and verify** in its own process:
 
@@ -118,10 +148,8 @@ CARGO_TARGET_DIR=~/workspace/loom-publish/loom-target \
   cargo build --release -p loom-vector-ruvector --bin promote_vault_build
 ~/workspace/loom-publish/loom-target/release/promote_vault_build \
   --data ~/workspace/loom-publish/$SHA/data
-CARGO_TARGET_DIR=~/workspace/loom-publish/loom-target \
-  cargo build --release -p loom-facade --bin reload_published_generation
-~/workspace/loom-publish/loom-target/release/reload_published_generation verify \
-  --data-dir ~/workspace/loom-publish/$SHA/data
+python3 -c "import importlib.util as u; s=u.spec_from_file_location('r','scripts/reload-published-generation.py'); \
+m=u.module_from_spec(s); s.loader.exec_module(m); print(m.verified_bundle('$HOME/workspace/loom-publish/$SHA/data'))"
 ```
 
 **3. Copy to HP under the in-flight marker**, from the machinelearn host shell (HP
