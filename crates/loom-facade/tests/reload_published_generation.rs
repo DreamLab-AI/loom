@@ -45,10 +45,13 @@ use tempfile::TempDir;
 const SIDECAR: &str = "ontology-corpus.rvdb.generation.json";
 
 fn sha_hex(bytes: &[u8]) -> String {
+    use std::fmt::Write as _;
     Sha256::digest(bytes)
         .iter()
-        .map(|b| format!("{b:02x}"))
-        .collect()
+        .fold(String::new(), |mut s, b| {
+            let _ = write!(s, "{b:02x}");
+            s
+        })
 }
 
 /// The bundle hash, computed independently of the library: sha256 over the

@@ -336,3 +336,112 @@ pub fn hex_sha256(bytes: &[u8]) -> String {
     }
     out
 }
+
+// --- strict reader (the reload transition) -----------------------------------
+
+/// The `.generation.json` fields a C3 marker must carry once it has an `id`.
+pub const C3_REQUIRED: [&str; 5] = [
+    "commit",
+    "content_digest",
+    "class_count",
+    "page_count",
+    "vocabulary_version",
+];
+
+/// One artefact entry of a [`StrictMarker`], exactly as the marker states it.
+///
+/// `sha256` and `bytes` stay optional so that an entry that omits or
+/// mistypes either is a hash/size mismatch at verification time rather than
+/// being dropped, which is what [`parse_artifacts`] (the lenient server-side
+/// reader) does.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StrictArtifact {
+    /// Path relative to the data directory.
+    pub name: String,
+    /// The recorded sha256, if the marker gave a string.
+    pub sha256: Option<String>,
+    /// The recorded size, if the marker gave an unsigned integer.
+    pub bytes: Option<u64>,
+}
+
+/// A commit marker accepted by [`parse_marker_strict`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StrictMarker {
+    /// The generation identity (`visionGraph@<sha>` or the legacy ISO stamp).
+    pub generation: String,
+    /// Every artefact the marker lists, in marker order.
+    pub artifacts: Vec<StrictArtifact>,
+    /// The marker's declared `content_digest` (C3 only). It identifies the
+    /// source corpus, so it is carried and never compared to the artefact digest.
+    pub declared_content_digest: Option<String>,
+}
+
+/// Parse a `.generation.json` value in either shape, refusing anything the
+/// lenient server-side reader would tolerate.
+///
+/// The shape dispatch is the one [`MirrorStore`] uses: a non-empty string `id`
+/// means a C3 marker, anything else is read as the legacy mirror marker. What
+/// differs is strictness. A C3 marker must carry all of [`C3_REQUIRED`] (as a
+/// string or integer), an id of `visionGraph@<commit>` containing its own
+/// commit, and a list of artefacts with one unique string `name` each. A legacy
+/// marker needs a non-empty `generation` and an artefact map.
+///
+/// # Errors
+/// A human-readable refusal naming the first rule the marker breaks.
+pub fn parse_marker_strict(m: &Value) -> Result<StrictMarker, String> {
+    let artifacts = m.get("artifacts");
+    if let Some(id) = str_field(m, "id").filter(|id| !id.is_empty()) {
+        let typed = |key: &str| match m.get(key) {
+            Some(Value::String(_) | Value::Bool(_)) => true,
+            Some(Value::Number(n)) => !n.is_f64(),
+            _ => false,
+        };
+        if !C3_REQUIRED.iter().all(|key| typed(key)) {
+            return Err(format!(
+                "vault build marker missing {}",
+                C3_REQUIRED.join(", ")
+            ));
+        }
+        let commit = m.get("commit").and_then(Value::as_str).unwrap_or_default();
+        if !id.starts_with("visionGraph@") || !id.contains(commit) {
+            return Err("generation id must be visionGraph@<commit>".to_owned());
+        }
+        let Some(Value::Array(list)) = artifacts else {
+            return Err("vault build marker must list artifacts".to_owned());
+        };
+        let mut specs: Vec<StrictArtifact> = Vec::with_capacity(list.len());
+        for spec in list {
+            let name = spec
+                .get("name")
+                .and_then(Value::as_str)
+                .filter(|name| !specs.iter().any(|s| s.name == *name))
+                .ok_or("artifact entries need one unique name each")?;
+            specs.push(strict_artifact(name, spec));
+        }
+        return Ok(StrictMarker {
+            generation: id,
+            artifacts: specs,
+            declared_content_digest: str_field(m, "content_digest"),
+        });
+    }
+    let generation = str_field(m, "generation").filter(|g| !g.is_empty());
+    match (generation, artifacts) {
+        (Some(generation), Some(Value::Object(map))) => Ok(StrictMarker {
+            generation,
+            artifacts: map
+                .iter()
+                .map(|(name, spec)| strict_artifact(name, spec))
+                .collect(),
+            declared_content_digest: None,
+        }),
+        _ => Err("complete graph and semantic generation required".to_owned()),
+    }
+}
+
+fn strict_artifact(name: &str, spec: &Value) -> StrictArtifact {
+    StrictArtifact {
+        name: name.to_owned(),
+        sha256: str_field(spec, "sha256"),
+        bytes: spec.get("bytes").and_then(Value::as_u64),
+    }
+}

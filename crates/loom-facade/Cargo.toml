@@ -38,6 +38,13 @@ path = "src/bin/generation_check.rs"
 name = "best-answers"
 path = "src/bin/best_answers.rs"
 
+# LM-06 (ontomark migration): the published-generation reloader, ported from
+# scripts/reload-published-generation.py. Underscored: the systemd unit and the
+# runbook name it this way.
+[[bin]]
+name = "reload_published_generation"
+path = "src/bin/reload_published_generation.rs"
+
 [features]
 # The governance ledger route (ADR-141). Default-on: the estate's promotion loop
 # needs a ledger endpoint, and the port has no other writer.
@@ -73,6 +80,8 @@ anyhow = { workspace = true }
 async-trait = { workspace = true }
 # Re-hash artifact shas in the mirror's verify_atomicity (§11.6).
 sha2 = { workspace = true }
+# The reload transition's served-identity probe (`reload_published_generation`).
+reqwest = { workspace = true }
 
 [dev-dependencies]
 futures-util = "0.3"
