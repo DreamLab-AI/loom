@@ -1,6 +1,6 @@
 # ADR-141 — The Loom consumes the vault build: `visionGraph@<sha>`, OKF vocabulary, a ledger route, stdio dropped
 
-Status: Proposed · 2026-09-22 · Extends ADR-135 (generation discipline), ADR-136 D4 (atomic
+Status: Accepted and implemented · 2026-09-22 · <!-- lands with ontomark step 10 --> producer renamed by EXP-10 step 10: the corpus build is `ontomark build` (a released tag), the `vault` name survives only as the governance adapter · Extends ADR-135 (generation discipline), ADR-136 D4 (atomic
 mirror), ADR-138 (grounding contract) and ADR-140 (the two planes) · Amends ADR-140 D1 and D4 in
 place · Realises the Loom half of VisionFlow **PRD Sovereign Corpus** (Q8, Q10, §3.4) and serves
 its contract C5

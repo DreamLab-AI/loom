@@ -2,9 +2,9 @@
 id: ADR-142
 title: Consume versioned shared ontology contracts without moving authored authority
 date: 2026-10-11
-decision_status: proposed
-implementation_status: none
-activation_status: inactive
+decision_status: accepted
+implementation_status: implemented
+activation_status: active
 supersedes: []
 superseded_by: []
 verified_commit:
@@ -24,7 +24,8 @@ Estate proposal: [VisionFlow ADR-2014](../../../VisionFlow/docs/adr/ADR-2014-sha
 
 ## Decision
 
-This is a proposed extension. Existing accepted invariants remain in force until a separately reviewed implementation and migration establish the new baseline.
+<!-- lands with ontomark step 10 -->
+This extension is accepted and implemented through the ontomark migration (EXP-10): class IRIs are minted by one function that follows `ontomark-model` (step 2), the scaffold and prose readers take their typed structs from `ontomark-compile` and the provenance default names the producer from the bundle manifest (step 6), and the publishing path builds with a released `ontomark` and keeps a single Rust marker check (step 10). Existing accepted invariants remain in force; the bundle manifest now carries the contract version.
 
 1. Consume versioned bundle contracts from the independent ontology workspace. Markdown and machine-readable headers remain the sole authored ontology authority. Oxigraph, lexical/vector indexes and loaded bundles remain rebuildable serving projections; Loom does not become an alternate ontology authoring database.
 2. Prefer the existing artefact boundary initially. Shared contract crates may replace duplicated schema/identity logic only after licence and API review. This MIT/Apache workspace must not silently import the producer's AGPL implementation. No copy of ontology parsing or reasoning is introduced to avoid that boundary.

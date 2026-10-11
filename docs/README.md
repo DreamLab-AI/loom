@@ -23,7 +23,7 @@ design/ADR-137 ........... Rust re-platform + both compose profiles   [Accepted 
 design/ADR-138 ........... confidence-surfacing / grounding contract         [Accepted]
 design/ADR-139 ........... per-request scaffold opt-out (the plain-proxy door) [Accepted]
 design/ADR-140 ........... Loom v2: agentic MCP plane beside the injection plane; Mapping/Evidence; governed evolution  [Proposed; D1+D4 amended by ADR-141]
-design/ADR-141 ........... Loom consumes the vault build: generation = visionGraph@sha; OKF vocabulary; /loom/attest ledger; stdio dropped  [Proposed]
+design/ADR-141 ........... Loom consumes the vault build: generation = visionGraph@sha; OKF vocabulary; /loom/attest ledger; stdio dropped  [Accepted + Implemented] <!-- lands with ontomark step 10 -->
 design/RUST-ARCHITECTURE.md  the buildable blueprint (crates, ports, fusion, deploy) + errata
 design/ddd-ontology-loom-context.md  bounded context + THE PRIZE (source-of-record)
 design/LOOM-POSITIONING.md  product framing, the multivariate bar
@@ -76,6 +76,7 @@ research/report.md, report-gemini-3.7-flash.md ... per-run uplift reports (froze
 
 ## EXTERNAL (canonical elsewhere — we link, never copy)
 
+<!-- lands with ontomark step 10 -->
 ```
 agentbox ADR-051 ....... harness-side loom client + deferred distillation
 VisionClaw ADR-099 ..... Whelk-rs EL reasoner (build-time authority)
@@ -84,7 +85,7 @@ VisionClaw ADR-135/136/137  the Loom design capstone (mirrored into design/ here
 RuVector ADR-001 ....... HNSW production index (the in-process read behind the markdown)
 RuVector ADR-047 ....... ProofGate<T> / MutationLedger  (attestation design target — see the
                           Erratum in RUST-ARCHITECTURE §11.5 for where they actually live)
-vault build ............ the canonical corpus builder over visionGraph (ADR-141; replaced jjohare/logseq's publish.yml)
+ontomark build ........ the canonical corpus builder over visionGraph (ADR-141; replaced jjohare/logseq's publish.yml and then `vault build`)
 ```
 
 ## Conventions this set enforces
@@ -102,4 +103,5 @@ vault build ............ the canonical corpus builder over visionGraph (ADR-141;
 
 ## Proposed shared ontology workspace
 
-[ADR-142 — versioned shared ontology contracts](design/ADR-142-consume-versioned-shared-ontology-contracts.md) proposes the Loom consumer boundary. Decision proposed; implementation none; activation inactive.
+<!-- lands with ontomark step 10 -->
+[ADR-142 — versioned shared ontology contracts](design/ADR-142-consume-versioned-shared-ontology-contracts.md) sets the Loom consumer boundary. Decision accepted; implemented through the ontomark migration (steps 2, 6 and 10); activation active.
