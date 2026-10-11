@@ -9,17 +9,22 @@ The publisher must first produce canonical `data/.generation.json` covering all
 six artefacts: scaffold/prose indexes, asserted/inferred Turtle, semantic RVDB and
 its generation sidecar. Every digest and size must match. The semantic sidecar
 must declare the same generation, bge-small-en-v1.5 and 384 dimensions. A legacy
-four-file mirror is insufficient and is rejected before a restart. This script
+four-file mirror is insufficient and is rejected before a restart. This binary
 does not relabel/re-embed an old RVDB, download content, promote files, or attest
 that upstream public-export privacy is correct.
 
-The marker check is the one in `loom-facade::mirror`; there is no second copy of it
-in Python. The marker is accepted in either shape (ADR-141). An `ontomark build`
+The marker check is the one in `loom-facade::mirror` (`parse_marker_strict`, the strict
+side of the reader the server itself uses); there is no second copy of it in Python.
+The strict side refuses what the server's lenient reader would tolerate: a malformed
+artefact entry, a missing C3 field, an id that does not name its commit, or a legacy
+marker without a `generation`. The marker is accepted in either shape (ADR-141). An `ontomark build`
 marker — the one the corpus build writes, versioned by the bundle manifest — carries `id: "visionGraph@<sha>"`,
 `commit`, `content_digest`, `generated_at`, `class_count`, `page_count`,
 `vocabulary_version`, `stale_after` and an artefact **list**; each C3 field is
 required once `id` is present and the id must name its own commit. `content_digest`
-identifies the source corpus the bundle was built from; it is carried, not compared.
+identifies the source corpus the bundle was built from; it is carried, not compared,
+and a declared value that differs from the recomputed artefact digest is discarded,
+not refused.
 What is served and proved is the artefact digest recomputed from the individually
 verified files. A legacy mirror marker
 (`generation: "<ISO stamp>"` and an artefact **map**) is still accepted, because
@@ -39,7 +44,18 @@ the expected loaded digest, matching graph/semantic generation and valid embeddi
 qualification. Only then does it atomically write `state: served`. A failed command,
 timeout or concurrent publication leaves pending state and a non-zero process exit;
 the next tick retries. An already matching service is not restarted. No shell is
-used to interpret the reload argument list.
+used to interpret the reload argument list; the command after `--` is run as given and
+is killed if it outlives `--timeout`.
+
+Exit status: `0` after printing `current` (already serving) or `reloaded`; `1` for a
+refused bundle, a failed or timed-out restart, a service that never proves the bundle,
+or a lock held by another tick; `2` for a usage error (a missing flag or command, or a
+`--timeout` outside 1..300, default 60). The receipt is `{"content_digest", "generation",
+"state"}`, written atomically with mode 0600 next to a `<receipt>.lock` file.
+
+`reload_published_generation verify --data-dir DIR` runs the bundle check alone (no lock,
+receipt, probe or restart), prints `{"content_digest", "generation"}` and exits `0` or
+`1`. The publishing steps below use it before copying to HP.
 
 ## When to enable the timer
 
@@ -52,7 +68,8 @@ previous blocker was that the published bundle (graph 2026-08-22, semantic
 2026-08-17) was both mixed and staler than the corpus on disk, and an automatic
 reloader cannot improve a bundle that should not be served at all.
 
-Run the manual tick first and read the receipt:
+Build the binary on the node (`cargo build --release -p loom-facade --bin
+reload_published_generation`), run the manual tick first and read the receipt:
 
 ```bash
 ~/githubs/loom/target/release/reload_published_generation \
@@ -80,7 +97,8 @@ journalctl --user -u loom-generation-reload.service -n 50
 
 To stop it again: `systemctl --user disable --now loom-generation-reload.timer`.
 
-Isolated tests in `loom-facade` (`mirror_generation`, `adr141_generation_and_ledger`)
+Isolated tests in `loom-facade` (`reload_published_generation`, `mirror_generation`,
+`adr141_generation_and_ledger`)
 exercise success, no-op, refusal and failure-state handling across both marker
 shapes. Reloading is an implemented transition;
 producing a valid new upstream bundle and activating it remain distinct work.
