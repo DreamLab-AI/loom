@@ -205,7 +205,7 @@ mod tests {
                 "verified_single_generation": true
             }}
         });
-        assert!(findings(&health).is_empty());
+        assert_eq!(findings(&health), Vec::<String>::new());
     }
 
     #[test]

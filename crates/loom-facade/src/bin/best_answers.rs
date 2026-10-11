@@ -16,7 +16,7 @@
 //!         uplift-results/questions.jsonl uplift-results/**/scores-*.jsonl > best.jsonl
 //!
 //! Each `scores-X.jsonl` is joined to its sibling `results-X.jsonl` for the
-//! answer text. Output is one JSON object per question, ready for a RuVector
+//! answer text. Output is one JSON object per question, ready for a `RuVector`
 //! `memory_store` into the `loom-best-answers` namespace. `LOOM_DISTIL=0` is the
 //! kill switch: the bin prints `DISTIL-OFF` and emits nothing.
 
@@ -58,7 +58,7 @@ fn collect(questions: &[Value], runs: &[(Vec<Value>, Vec<Value>)]) -> (Vec<Value
             continue;
         };
         if held_out(slug) {
-            held.push(id.to_owned())
+            held.push(id.to_owned());
         } else {
             train.insert(id, q);
         }
@@ -162,7 +162,7 @@ mod tests {
     /// A slug in each split, found by search so the test does not hard-code hashes.
     fn slugs() -> (String, String) {
         let find = |want| {
-            (0..)
+            (0..u32::MAX)
                 .map(|i| format!("s{i}"))
                 .find(|s| held_out(s) == want)
                 .unwrap()
