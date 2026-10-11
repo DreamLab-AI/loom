@@ -402,7 +402,10 @@ pub fn parse_marker_strict(m: &Value) -> Result<StrictMarker, String> {
                 C3_REQUIRED.join(", ")
             ));
         }
-        let commit = m.get("commit").and_then(Value::as_str).unwrap_or_default();
+        // A non-string commit cannot be "in" the id (Python raised TypeError).
+        let Some(commit) = m.get("commit").and_then(Value::as_str) else {
+            return Err("generation id must be visionGraph@<commit>".to_owned());
+        };
         if !id.starts_with("visionGraph@") || !id.contains(commit) {
             return Err("generation id must be visionGraph@<commit>".to_owned());
         }

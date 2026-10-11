@@ -528,13 +528,17 @@ fn a_tampered_artifact_still_refuses_whatever_the_declared_digest() {
 
 #[test]
 fn identity_must_name_its_own_commit() {
-    let mut f = C3::new();
-    f.manifest["commit"] = json!("deadbee");
-    f.save();
-    assert!(matches!(
-        verified_bundle(&f.root),
-        Err(ReloadError::Invalid(_))
-    ));
+    // A different commit, and commits that are not strings at all (an integer
+    // or bool would pass `contains("")` if coerced; Python raised TypeError).
+    for commit in [json!("deadbee"), json!(42), json!(true)] {
+        let mut f = C3::new();
+        f.manifest["commit"] = commit.clone();
+        f.save();
+        assert!(
+            matches!(verified_bundle(&f.root), Err(ReloadError::Invalid(_))),
+            "{commit}"
+        );
+    }
 }
 
 #[test]
