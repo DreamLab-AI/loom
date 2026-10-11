@@ -22,3 +22,10 @@ futures-core = "0.3"
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+# Migration tests (tests/ontomark_*_migration.rs): parse manifests and lex Rust,
+# never import ontomark.
+toml = "0.8"
+proc-macro2 = "1"
+syn = "2"
