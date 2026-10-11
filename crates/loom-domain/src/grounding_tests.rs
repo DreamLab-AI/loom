@@ -99,7 +99,7 @@ fn none_grounding_is_an_honest_zero() {
     assert!((g.threshold - 2.0).abs() < f64::EPSILON);
     assert_eq!(g.effective_budget, None);
     assert!(!g.engaged);
-    assert!(g.seeds.is_empty());
+    assert_eq!(g.seeds.len(), 0);
 }
 
 // --- from_parts derives, it does not trust ------------------------------

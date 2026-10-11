@@ -11,10 +11,10 @@
 
 **One endpoint. One corpus generation. The model is always a URL behind the door.**
 
-**Maintainer**: [John O'Hare](https://github.com/jjohare) · **Upstream IP**: [Melvin Carvalho](https://github.com/melvincarvalho) ([JSS](https://github.com/JavaScriptSolidServer/JavaScriptSolidServer), [DID:Nostr](https://github.com/nicholasgasior/did-nostr)) · [corpus build: `vault build` over visionGraph (ADR-141)](docs/design/ADR-141-loom-consumes-the-vault-build.md)
+**Maintainer**: [John O'Hare](https://github.com/jjohare) · **Upstream IP**: [Melvin Carvalho](https://github.com/melvincarvalho) ([JSS](https://github.com/JavaScriptSolidServer/JavaScriptSolidServer), [DID:Nostr](https://github.com/nicholasgasior/did-nostr)) · [corpus build: `ontomark build` over visionGraph (ADR-141)](docs/design/ADR-141-loom-consumes-the-vault-build.md)
 
 <!-- lands with ontomark step 10 -->
-> Producer rename: after ontomark step 10 the corpus is built by `ontomark build` (a pinned release) rather than `vault build`; the `vault` name survives for the governance verbs only.
+> Publishing uses the pinned `ontomark` CLI release in `deploy/ontomark-release.env`. Loom reads shared scaffold/prose contracts without the compiler reasoner. A first clean promotion and served receipt remain the activation gate; `vault` retains governance verbs.
 
 [Why](#why--the-measured-result) · [Façade](#what--the-façade) · [Quickstart](#quickstart) · [Ecosystem](#where-loom-sits) · [Status](#status--honesty) · [Docs](docs/README.md)
 
@@ -50,7 +50,7 @@ Loom is one component of **[VisionFlow](https://github.com/DreamLab-AI/VisionFlo
 | [sidestr-rs](https://github.com/DreamLab-AI/sidestr-rs) | Rust port of Melvin Carvalho's sidestr sidechains, AGPL-3.0-only: the economic engine for `did:nostr` agents. A `did:nostr` key is a sidechain wallet. |
 | [nostr-rust-forum](https://github.com/DreamLab-AI/nostr-rust-forum) | Nostr-native forum + relay — the one place a human decision gets cryptographically signed |
 | [dreamlab-ai-website](https://github.com/DreamLab-AI/dreamlab-ai-website) | DreamLab AI company website — the commercial face, a thin consumer of the forum kit |
-| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Obsidian-vault→OWL build (`vault build`), 8,100+ pages, ODbL-1.0 |
+| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Obsidian-vault→OWL build (`ontomark build`), 8,100+ pages, ODbL-1.0 |
 
 Each sibling in its own words:
 
@@ -121,7 +121,7 @@ Each sibling in its own words:
 ```
 knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned closure + indexes)
  (corpus + pipeline + method)         │
-   built by `vault build`             ▼  mirror
+   built by `ontomark build`             ▼  mirror
                                   ┌─────────┐   scaffold-inject     ┌────────────┐
    agents / email / any client ──▶│  LOOM   │───────────────────▶ │  the model  │
         (hold the Loom URL)       │ façade  │◀───────────────────  │ (swappable) │
@@ -366,7 +366,7 @@ flowchart TB
     subgraph KG["knowledgeGraph — corpus + pipeline"]
         direction LR
         VAULT["visionGraph Obsidian vault\n(8,100+ pages, ODbL)"]
-        PIPE["vault build\n(Rust, ADR-141)"]
+        PIPE["ontomark build\n(Rust, ADR-141)"]
         GEN["Published GENERATION\n(OWL + closure + indexes)"]
         VAULT --> PIPE --> GEN
     end

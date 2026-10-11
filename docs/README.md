@@ -84,7 +84,7 @@ VisionClaw ADR-135/136/137  the Loom design capstone (mirrored into design/ here
 RuVector ADR-001 ....... HNSW production index (the in-process read behind the markdown)
 RuVector ADR-047 ....... ProofGate<T> / MutationLedger  (attestation design target — see the
                           Erratum in RUST-ARCHITECTURE §11.5 for where they actually live)
-vault build ............ the canonical corpus builder over visionGraph (ADR-141; replaced jjohare/logseq's publish.yml)
+ontomark build ......... the pinned corpus builder over visionGraph; vault retains governance verbs
 ```
 
 ## Conventions this set enforces
@@ -105,4 +105,4 @@ vault build ............ the canonical corpus builder over visionGraph (ADR-141;
 [ADR-142 — versioned shared ontology contracts](design/ADR-142-consume-versioned-shared-ontology-contracts.md) proposes the Loom consumer boundary. Decision proposed; implementation none; activation inactive.
 
 <!-- lands with ontomark step 10 -->
-Once ontomark steps 2, 6 and 10 land, the corpus builder in this index is `ontomark build` (a pinned release; `vault build` becomes the governance adapter only) and ADR-142 moves from proposed to adopted as its own lifecycle note describes. Until then the entries here stand as written.
+The step-10 publishing pin and shared index readers are implemented. Steps 2 and 6 (IRI and provenance adoption) remain separate migration work; ADR-142 records that partial implementation. Activation requires the first clean publication and verified served receipt.

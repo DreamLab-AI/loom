@@ -267,16 +267,12 @@ fn parse_args() -> Result<Args, BoxErr> {
 /// produce a corpus with no `dfull` text, which is the expensive kind of
 /// wrong. Python raised here too.
 fn load_prose_strict(path: &Path) -> Result<ProseIndex, BoxErr> {
-    #[derive(serde::Deserialize)]
-    struct ProseFile {
-        #[serde(default)]
-        pages: ProseIndex,
-    }
+    use loom_scaffold::prose::ProseFile;
     let text = std::fs::read_to_string(path)
         .map_err(|e| format!("read prose index {}: {e}", path.display()))?;
     let file: ProseFile = serde_json::from_str(&text)
         .map_err(|e| format!("parse prose index {}: {e}", path.display()))?;
-    Ok(file.pages)
+    Ok(file.pages.into_iter().collect())
 }
 
 /// Build every record, in Python's `sorted(classes)` (code-point) order.

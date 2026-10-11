@@ -1,4 +1,4 @@
-//! Building the serving HNSW artefact, and promoting a `vault build` bundle.
+//! Building the serving HNSW artefact, and promoting a `ontomark build` bundle.
 //!
 //! Loom serves semantic search from a `ruvector-core` database file,
 //! `ontology-corpus.rvdb`, beside a `<artifact>.generation.json` sidecar. Two
@@ -6,7 +6,7 @@
 //! so the index configuration can never drift between them:
 //!
 //! - `export_corpus` (feature `pg-write`) reads vectors from `ruvector-postgres`;
-//! - [`promote_vault_build`] reads the portable records a `vault build
+//! - [`promote_vault_build`] reads the portable records a `ontomark build
 //!   --with-rvdb` writes as `ontology-corpus.records.jsonl` (contract C3).
 //!
 //! `vault` does not write the database itself: the records file is the
@@ -41,7 +41,7 @@ use crate::EMBEDDING_DIMENSIONS;
 
 /// The only embedding model the serving artefact may be built from.
 pub const EMBEDDING_MODEL: &str = "bge-small-en-v1.5";
-/// The portable records file a `vault build --with-rvdb` writes (contract C3).
+/// The portable records file a `ontomark build --with-rvdb` writes (contract C3).
 pub const RECORDS_FILE: &str = "ontology-corpus.records.jsonl";
 /// The serving artefact Loom opens.
 pub const ARTIFACT_FILE: &str = "ontology-corpus.rvdb";
@@ -146,7 +146,7 @@ pub struct PromoteReport {
     pub artifact_sha256: String,
 }
 
-/// Turn a `vault build` bundle's portable records into Loom's serving artefact.
+/// Turn a `ontomark build` bundle's portable records into Loom's serving artefact.
 ///
 /// Reads `<data>/.generation.json`, verifies [`RECORDS_FILE`] against the digest
 /// and size the marker lists, builds [`ARTIFACT_FILE`] and [`SIDECAR_FILE`], and
@@ -158,7 +158,7 @@ pub struct PromoteReport {
 ///
 /// # Errors
 ///
-/// Refuses, leaving the marker unchanged, if the marker is not a `vault build`
+/// Refuses, leaving the marker unchanged, if the marker is not a `ontomark build`
 /// marker, if the records file is not listed or does not match its listed
 /// digest, or if any record names a different generation or has the wrong
 /// vector width.
@@ -170,7 +170,7 @@ pub fn promote_vault_build(data: &Path) -> Result<PromoteReport, String> {
     let generation = marker
         .get("id")
         .and_then(Value::as_str)
-        .ok_or("marker has no `id`: not a vault build marker")?
+        .ok_or("marker has no `id`: not a ontomark build marker")?
         .to_owned();
     let listed = marker
         .get("artifacts")
@@ -181,7 +181,7 @@ pub fn promote_vault_build(data: &Path) -> Result<PromoteReport, String> {
         })
         .cloned()
         .ok_or_else(|| {
-            format!("marker does not list {RECORDS_FILE}; build with `vault build --with-rvdb`")
+            format!("marker does not list {RECORDS_FILE}; build with `ontomark build --with-rvdb`")
         })?;
 
     let records_path = data.join(RECORDS_FILE);

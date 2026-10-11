@@ -248,7 +248,7 @@ fn golden_budget60_empty() {
     let block = scaffold_opts(&fixture_index(), DEFAULT_PROMPT, 60, 1);
     let golden = workspace_file("tests/golden-python/golden_budget60.txt");
     assert_eq!(block, golden);
-    assert!(golden.is_empty());
+    assert_eq!(golden.len(), 0);
 }
 
 #[test]
@@ -256,7 +256,7 @@ fn golden_irrelevant_empty() {
     let block = scaffold(&fixture_index(), "best sourdough starter recipe");
     let golden = workspace_file("tests/golden-python/golden_irrelevant.txt");
     assert_eq!(block, golden);
-    assert!(golden.is_empty());
+    assert_eq!(golden.len(), 0);
 }
 
 /// Byte-parity ALSO holds through the async port API (`seeds` → `assemble`),
@@ -354,6 +354,8 @@ pub fn build_big_index(n: usize) -> ScaffoldIndex {
         version: Some(1),
         generated: String::new(),
         classes,
+        counts: IndexMap::new(),
+        extensions: IndexMap::new(),
     })
     .expect("big index builds")
 }

@@ -1,13 +1,13 @@
 # Ontology Loom — the Generation-Identity Contract the Mirror Consumes
 
-## Status: Contract (consumer-side). The **build authority is `vault build` over the local vault `/home/devuser/workspace/visionGraph`** (ADR-141, 2026-09-22; previously `jjohare/logseq` — see the amendment below). This doc is the generation-identity contract the Rust `loom-facade` mirror consumes and verifies.
+## Status: Contract (consumer-side). The **build authority is pinned `ontomark build` over the local vault `/home/devuser/workspace/visionGraph`** (ADR-141, 2026-09-22; previously `jjohare/logseq` — see the amendment below). This doc is the generation-identity contract the Rust `loom-facade` mirror consumes and verifies.
 ## Date: 2026-08-11 (authored); retargeted 2026-08-17 (Rust re-platform); amended 2026-09-22 (ADR-141, the vault build)
 ## Author: Loom capstone workstream (WS-A), retargeted for ADR-137 / PRD-027
 ## Depends on: OCP Revised Design Brief (2026-08-11); ADR-135 (façade + generation discipline); ADR-136 D4 (SSOT + atomic mirror); ADR-137 (Rust re-platform)
-## Scope: **the contract** — `build-manifest.json`, `urn:ngm:generation:<sha>`, the atomic never-mixed generation, and how the Rust mirror verifies them. The *builder implementation* is **`vault build`** (`project/crates/vault`, ADR-141; formerly `pipeline/*` + `publish.yml` in `jjohare/logseq`) and is reproduced below only as the contract the mirror relies on, not as Loom work.
+## Scope: **the contract** — `build-manifest.json`, `urn:ngm:generation:<sha>`, the atomic never-mixed generation, and how the Rust mirror verifies them. The *builder implementation* is **`ontomark build`** (released CLI; formerly `project/crates/vault`, ADR-141; previously `pipeline/*` + `publish.yml` in `jjohare/logseq`) and is reproduced below only as the contract the mirror relies on, not as Loom work.
 
 <!-- lands with ontomark step 10 -->
-> After ontomark step 10: the builder is `ontomark build` (a pinned released tag of the ontomark CLI) rather than `vault build`. Loom's served identity is `visionGraph@<sha>`; `urn:ngm:generation:<sha>` below is the legacy build-manifest `versionIRI`, which no Loom code reads. `pipeline/manifest.py` is a historical name and is not in this repository. The marker reader in `loom-facade::mirror` and the Python reload script remain two readers until step 11.
+> Step 10 publishes with the CLI asset pinned in `deploy/ontomark-release.env` and reads typed scaffold/prose contracts from `ontomark-compile` without its reasoner. Loom's served identity is `visionGraph@<sha>`; dirty builds are refused for activation. `urn:ngm:generation:<sha>` below is the legacy build-manifest `versionIRI`, which no Loom code reads. `pipeline/manifest.py` is historical. The Rust reload binary shares the marker reader with `loom-facade::mirror`; the Python reloader is removed. A first clean served promotion remains pending.
 
 ---
 

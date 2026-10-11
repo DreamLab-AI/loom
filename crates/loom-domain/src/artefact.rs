@@ -265,7 +265,7 @@ mod tests {
             q.rejections
         );
         assert_eq!(q.served_metric(), Some(VectorMetric::Cosine));
-        assert!(q.reasons().is_empty());
+        assert_eq!(q.reasons().len(), 0);
     }
 
     /// The probe's row 2: a Euclidean artefact must NOT be relabelled cosine.

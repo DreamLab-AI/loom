@@ -25,13 +25,13 @@
 //!
 //! | Shape | Identity | Artefacts | Emitted by |
 //! |---|---|---|---|
-//! | **vault build** (C3) | `id: "visionGraph@<sha>"`, `commit`, `content_digest`, `class_count`, `page_count`, `vocabulary_version`, `stale_after` | `artifacts: [ {name, sha256, bytes} ]` | `vault build` |
+//! | **ontomark build** (C3) | `id: "visionGraph@<sha>"`, `commit`, `content_digest`, `class_count`, `page_count`, `vocabulary_version`, `stale_after` | `artifacts: [ {name, sha256, bytes} ]` | `ontomark build` |
 //! | **mirror** (legacy) | `generation: "<ISO stamp>"`, `promoted_at`, `cluster_span_seconds` | `artifacts: { name: {sha256, bytes} }` | `app/mirror.sh` |
 //!
 //! This is a READER-side superset, not a served compatibility shim: the
 //! grounding contract and `/loom/generation` have one shape whichever marker
 //! was read. The live HP node still carries a mirror marker until the first
-//! `vault build` promotion, and a reader that refused it would take the node
+//! `ontomark build` promotion, and a reader that refused it would take the node
 //! down to gain nothing.
 
 use std::path::{Path, PathBuf};
@@ -137,7 +137,7 @@ impl MirrorStore {
         })
     }
 
-    /// The `.generation.json` commit marker in either shape — the `vault build`
+    /// The `.generation.json` commit marker in either shape — the `ontomark build`
     /// generation (C3) or the legacy mirror marker. See the module docs.
     fn generation_marker(&self) -> Option<Generation> {
         let raw = std::fs::read_to_string(self.generation_manifest_path()).ok()?;
@@ -259,7 +259,7 @@ fn str_field(v: &Value, key: &str) -> Option<String> {
         .map(std::borrow::ToOwned::to_owned)
 }
 
-/// The `vault build` marker (C3) as a [`Generation`]. `id` is
+/// The `ontomark build` marker (C3) as a [`Generation`]. `id` is
 /// `visionGraph@<sha>` and is the identity every surface reports; `commit` is
 /// the same sha unqualified, kept separately because `corpusSha` admission
 /// compares against the bare sha.
@@ -291,7 +291,7 @@ fn usize_field(v: &Value, key: &str) -> Option<usize> {
 }
 
 /// Parse the `.generation.json` `artifacts` collection in EITHER shape: the
-/// vault build's list `[ {name, sha256, bytes} ]` or the mirror's map
+/// ontomark build's list `[ {name, sha256, bytes} ]` or the mirror's map
 /// `{ name: {sha256, bytes} }`. Both record the `.rvdb` sidecar alongside the
 /// JSON indices, so re-hashing the result covers the HNSW artifact (§11.6).
 fn parse_artifacts(m: &Value) -> Vec<ArtifactSha> {
@@ -352,7 +352,7 @@ pub const C3_REQUIRED: [&str; 5] = [
 ///
 /// `sha256` and `bytes` stay optional so that an entry that omits or
 /// mistypes either is a hash/size mismatch at verification time rather than
-/// being dropped, which is what [`parse_artifacts`] (the lenient server-side
+/// being dropped, which is what `parse_artifacts` (the lenient server-side
 /// reader) does.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct StrictArtifact {
@@ -386,12 +386,17 @@ pub struct StrictMarker {
 /// a vocabulary version that fits a `u32`. Its id must equal
 /// `visionGraph@<commit>`, and its artefact list needs one unique string `name`
 /// per entry. A legacy marker needs a non-empty `generation` and an artefact map.
+/// Dirty C3 source state is refused; historical C3 markers that omitted `dirty`
+/// retain compatibility, but a present value must be `false`.
 ///
 /// # Errors
 /// A human-readable refusal naming the first rule the marker breaks.
 pub fn parse_marker_strict(m: &Value) -> Result<StrictMarker, String> {
     let artifacts = m.get("artifacts");
     if let Some(id) = str_field(m, "id").filter(|id| !id.is_empty()) {
+        if !matches!(m.get("dirty"), None | Some(Value::Bool(false))) {
+            return Err("dirty or mistyped build state cannot be activated".to_owned());
+        }
         let commit = str_field(m, "commit").filter(|s| !s.is_empty());
         let content_digest = str_field(m, "content_digest").filter(|s| !s.is_empty());
         let vocabulary_version = m
@@ -406,7 +411,7 @@ pub fn parse_marker_strict(m: &Value) -> Result<StrictMarker, String> {
             vocabulary_version,
         ) else {
             return Err(format!(
-                "vault build marker missing or mistyped {}",
+                "ontomark build marker missing or mistyped {}",
                 C3_REQUIRED.join(", ")
             ));
         };
@@ -414,7 +419,7 @@ pub fn parse_marker_strict(m: &Value) -> Result<StrictMarker, String> {
             return Err("generation id must be visionGraph@<commit>".to_owned());
         }
         let Some(Value::Array(list)) = artifacts else {
-            return Err("vault build marker must list artifacts".to_owned());
+            return Err("ontomark build marker must list artifacts".to_owned());
         };
         let mut specs: Vec<StrictArtifact> = Vec::with_capacity(list.len());
         for spec in list {

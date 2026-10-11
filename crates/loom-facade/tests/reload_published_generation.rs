@@ -600,6 +600,23 @@ fn c3_identity_rejects_an_empty_or_partial_commit() {
 }
 
 #[test]
+fn c3_dirty_state_cannot_be_activated_or_mistyped() {
+    for dirty in [json!(true), json!("false"), json!(0)] {
+        let mut f = C3::new();
+        f.manifest["dirty"] = dirty;
+        f.save();
+        assert!(matches!(
+            verified_bundle(&f.root),
+            Err(ReloadError::Invalid(_))
+        ));
+    }
+    let mut clean = C3::new();
+    clean.manifest["dirty"] = json!(false);
+    clean.save();
+    assert!(verified_bundle(&clean.root).is_ok());
+}
+
+#[test]
 fn c3_fields_require_their_declared_types() {
     for (field, values) in [
         ("content_digest", vec![json!(true), json!(42), json!("")]),

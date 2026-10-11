@@ -52,6 +52,7 @@ sha2        = "0.10"
 async-trait = "0.1"
 tokio-postgres = "0.7"
 pgvector    = { version = "0.4", features = ["postgres"] }
+ontomark-compile = { version = "=0.1.1", default-features = false }
 # In-process HNSW: sibling workspace core, fixed to fork commit 677b2475409c50cb964be8a3b848da2952390535
 # by scripts/check-ruvector-source.sh and the Rust contracts workflow.
 # New clones must follow docs/development-source.md before Cargo invocation.

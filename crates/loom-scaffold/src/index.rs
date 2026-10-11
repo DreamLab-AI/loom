@@ -10,65 +10,23 @@ use std::sync::OnceLock;
 use indexmap::IndexMap;
 use loom_domain::{Attestation, AttestedComputation, Mapping};
 use regex::Regex;
-use serde::Deserialize;
 
-/// The on-disk `scaffold-index.json` class shape (`t,d,dom,q,m,sup,isup,rel,bl`)
-/// plus the OKF keys the vault build adds (`generated`, `verified`, `map`,
-/// `ac` — ADR-141).
+/// The producer's scaffold class contract, bound to Loom's governance types.
+/// Optional legacy fields retain their defaults without inventing trust.
+pub type ClassEntry =
+    ontomark_compile::bundle::ClassEntry<Attestation, Mapping, AttestedComputation>;
+
+/// The producer's scaffold-v1 envelope in insertion order (ADR-142).
 ///
-/// Every field is optional on disk; `rel` preserves the camelCase predicate keys
-/// verbatim (they are emitted into the block unchanged — byte-parity). The OKF
-/// keys default to absent, so a v1 index built before they existed parses
-/// unchanged and reports `process:vault`-generated, unverified provenance.
-#[derive(Debug, Clone, Default, Deserialize)]
-pub struct ClassEntry {
-    #[serde(default)]
-    pub t: Option<String>,
-    #[serde(default)]
-    pub d: Option<String>,
-    #[serde(default)]
-    pub dom: Option<String>,
-    #[serde(default)]
-    pub q: Option<f64>,
-    #[serde(default)]
-    pub m: Option<String>,
-    #[serde(default)]
-    pub sup: Vec<String>,
-    #[serde(default)]
-    pub isup: Vec<String>,
-    #[serde(default)]
-    pub rel: IndexMap<String, Vec<String>>,
-    #[serde(default)]
-    pub bl: Vec<String>,
-    /// OKF `trust.generated` — who produced this entry. Absent ⇒
-    /// [`Provenance::vault_generated`](loom_domain::Provenance::vault_generated).
-    #[serde(default)]
-    pub generated: Option<Attestation>,
-    /// OKF `trust.verified` — every verification of this entry, machine or
-    /// human, in corpus order.
-    #[serde(default)]
-    pub verified: Vec<Attestation>,
-    /// Loci this term is bound to (ADR-140 D4). Empty until the build emits
-    /// them.
-    #[serde(default)]
-    pub map: Vec<Mapping>,
-    /// Attested computations underwriting this term (ADR-140 D4 in OKF
-    /// vocabulary). Empty until the build emits them.
-    #[serde(default)]
-    pub ac: Vec<AttestedComputation>,
-}
-
-/// The `{version, generated, counts, classes}` envelope of `scaffold-index.json`
-/// v1 — the SAME shape the golden `fixture.json` uses.
-#[derive(Debug, Clone, Deserialize)]
-pub struct RawIndex {
-    #[serde(default)]
-    pub version: Option<i64>,
-    #[serde(default)]
-    pub generated: String,
-    #[serde(default)]
-    pub classes: IndexMap<String, ClassEntry>,
-}
+/// ```
+/// use loom_scaffold::index::RawIndex;
+/// let index: RawIndex = serde_json::from_str(r#"{"classes":{"a":{"t":"A"}}}"#)?;
+/// assert_eq!(index.classes["a"].t.as_deref(), Some("A"));
+/// assert!(index.classes["a"].verified.is_empty());
+/// # Ok::<(), serde_json::Error>(())
+/// ```
+pub type RawIndex =
+    ontomark_compile::bundle::ScaffoldIndex<Attestation, Mapping, AttestedComputation>;
 
 /// In-memory scaffold index with an inverted title-word index. Load is
 /// O(index size); `match_` touches only inverted-surfaced classes plus one

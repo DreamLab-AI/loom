@@ -12,8 +12,10 @@
 //! shares a class with an exemplar: `sha256(slug)[0] % 5 == 0` is held out.
 //! Only train-split rows are emitted; the held-out ids go to stderr for the A/B.
 //!
-//!     cargo run -q -p loom-facade --bin best-answers -- \
-//!         uplift-results/questions.jsonl uplift-results/**/scores-*.jsonl > best.jsonl
+//! ```sh
+//! cargo run -q -p loom-facade --bin best-answers -- \
+//!     uplift-results/questions.jsonl uplift-results/**/scores-*.jsonl > best.jsonl
+//! ```
 //!
 //! Each `scores-X.jsonl` is joined to its sibling `results-X.jsonl` for the
 //! answer text. Output is one JSON object per question, ready for a `RuVector`

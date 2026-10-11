@@ -261,7 +261,7 @@ mod tests {
     fn default_provenance_is_vault_generated_and_unverified() {
         let p = Provenance::default();
         assert_eq!(p.generated.by.as_str(), "process:vault");
-        assert!(p.verified.is_empty());
+        assert_eq!(p.verified.len(), 0);
         assert!(!p.is_human_verified() && !p.is_machine_verified());
     }
 

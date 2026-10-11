@@ -78,6 +78,8 @@ fn build_big_index(n: usize) -> ScaffoldIndex {
         version: Some(1),
         generated: String::new(),
         classes,
+        counts: IndexMap::new(),
+        extensions: IndexMap::new(),
     })
     .expect("big index builds")
 }

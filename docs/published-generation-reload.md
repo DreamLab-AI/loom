@@ -17,7 +17,8 @@ The marker check is the one in `loom-facade::mirror` (`parse_marker_strict`, the
 side of the reader the server itself uses); there is no second copy of it in Python.
 The strict side refuses what the server's lenient reader would tolerate: a malformed
 artefact entry, a missing or mistyped C3 field, an id that does not exactly name its commit, or a legacy
-marker without a `generation`. The marker is accepted in either shape (ADR-141). An `ontomark build`
+marker without a `generation`. Dirty C3 builds (`visionGraph@<sha>-dirty`) are
+refused for activation: publish from a clean source checkout. The marker is accepted in either shape (ADR-141). An `ontomark build`
 marker — the one the corpus build writes, versioned by the bundle manifest — carries `id: "visionGraph@<sha>"`,
 `commit`, `content_digest`, `generated_at`, `class_count`, `page_count`,
 `vocabulary_version`, `stale_after` and an artefact **list**; each C3 field is
@@ -114,8 +115,9 @@ has three steps, and only the last touches HP.
 **1. Build** from a clean `visionGraph` checkout with a released `ontomark`. Pin
 `ontomark` to a release tag and checksum, never to a branch, and confirm
 `ontomark --version` reports the release's CLI version. The release pin file
-`deploy/ontomark-release.env` belongs to the pending step-10 publishing migration;
-these commands require that migration and the published asset first. The `vault` baked into agentbox images up to at least
+`deploy/ontomark-release.env` pins the published `v0.1.0-rc.1` Linux x86-64 asset;
+its CLI version is `0.1.0`. The typed serving readers use the independent
+`ontomark-compile` crate release with its reasoner disabled. The `vault` baked into agentbox images up to at least
 2026-10-02 (0.1.0) predates the portable-records file and writes JSONL under the
 database's name, `ontology-corpus.rvdb`, which `promote_vault_build` cannot use,
 so do not use it. Install the released binary into a private directory (agentbox

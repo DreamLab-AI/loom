@@ -242,6 +242,53 @@ fn lm09_runbook_does_not_install_ontomark_with_cargo_or_build_vault() {
 
 // ------------------------------------------------------------------ LM-04
 
+/// A consumer may keep a public compatibility name while binding it directly
+/// to the producer's type, including its application-owned trust parameters.
+fn aliases_contract(toks: &[Tok], name: &str, contract: &str) -> bool {
+    toks.windows(3).enumerate().any(|(i, declaration)| {
+        if !matches!(&declaration[0], Tok::Ident(word) if word == "type")
+            || !matches!(&declaration[1], Tok::Ident(word) if word == name)
+            || declaration[2] != Tok::Punct('=')
+        {
+            return false;
+        }
+        let rhs = &toks[i + 3..];
+        let end = rhs
+            .iter()
+            .position(|t| *t == Tok::Punct(';'))
+            .unwrap_or(rhs.len());
+        let path_end = rhs[..end]
+            .iter()
+            .position(|t| !matches!(t, Tok::Ident(_) | Tok::Punct(':')))
+            .unwrap_or(end);
+        let path = &rhs[..path_end];
+        matches!(path.first(), Some(Tok::Ident(root)) if root == "ontomark_compile")
+            && matches!(path.last(), Some(Tok::Ident(item)) if item == contract)
+            && uses_item_of(path, "ontomark_compile", contract)
+    })
+}
+
+#[test]
+fn lm04_contract_aliases_bind_to_the_producer_without_private_wrappers() {
+    assert!(aliases_contract(
+        &support::lex("pub type RawIndex = ontomark_compile::bundle::ScaffoldIndex<A,M,C>;"),
+        "RawIndex",
+        "ScaffoldIndex"
+    ));
+    for impostor in [
+        "type RawIndex = PrivateIndex; use ontomark_compile::bundle::ScaffoldIndex;",
+        "type RawIndex = Wrapper<ontomark_compile::bundle::ScaffoldIndex>;",
+        "type RawIndex = ontomark_compile::bundle::Unrelated;",
+        "type RawIndex = ontomark_compile::bundle::Wrapper<ontomark_compile::bundle::ScaffoldIndex>;",
+    ] {
+        assert!(!aliases_contract(
+            &support::lex(impostor),
+            "RawIndex",
+            "ScaffoldIndex"
+        ));
+    }
+}
+
 #[test]
 fn lm04_scaffold_adopts_the_bundle_contract_without_the_reasoner() {
     let dep = assert_depends_on("LM-04", "loom-scaffold", "ontomark-compile");
@@ -292,7 +339,12 @@ fn lm04_surviving_importers_resolve_to_ontomark_compile() {
     // that comes from ontomark_compile (directly or as a re-export).
     let code = production_code();
     let mut offenders = Vec::new();
-    for name in ["ClassEntry", "RawIndex", "ProseEntry", "ProseFile"] {
+    for (name, contract) in [
+        ("ClassEntry", "ClassEntry"),
+        ("RawIndex", "ScaffoldIndex"),
+        ("ProseEntry", "ProseEntry"),
+        ("ProseFile", "ProseIndex"),
+    ] {
         let referenced: Vec<&str> = code
             .iter()
             .filter(|s| s.toks.contains(&Tok::Ident(name.into())))
@@ -301,9 +353,10 @@ fn lm04_surviving_importers_resolve_to_ontomark_compile() {
         if referenced.is_empty() {
             continue;
         }
-        let bound = code
-            .iter()
-            .any(|s| uses_item_of(&s.toks, "ontomark_compile", name));
+        let bound = code.iter().any(|s| {
+            uses_item_of(&s.toks, "ontomark_compile", name)
+                || aliases_contract(&s.toks, name, contract)
+        });
         if !bound {
             offenders.push(format!(
                 "LM-04: `{name}` is still referenced in {referenced:?} but no `use ontomark_compile::..{name}` binds it"

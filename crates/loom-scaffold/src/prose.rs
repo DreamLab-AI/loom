@@ -7,21 +7,7 @@
 use std::collections::HashMap;
 use std::path::Path;
 
-use serde::Deserialize;
-
-#[derive(Debug, Clone, Default, Deserialize)]
-pub struct ProseEntry {
-    #[serde(default)]
-    pub dfull: Option<String>,
-    #[serde(default)]
-    pub cl: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-struct ProseFile {
-    #[serde(default)]
-    pages: HashMap<String, ProseEntry>,
-}
+pub use ontomark_compile::bundle::{ProseEntry, ProseIndex as ProseFile};
 
 /// The prose index: slug → {dfull, cl}. Empty when absent.
 pub type ProseIndex = HashMap<String, ProseEntry>;
@@ -34,7 +20,7 @@ pub fn load_prose(path: &Path) -> ProseIndex {
         return ProseIndex::new();
     };
     match serde_json::from_str::<ProseFile>(&text) {
-        Ok(f) => f.pages,
+        Ok(f) => f.pages.into_iter().collect(),
         Err(_) => ProseIndex::new(),
     }
 }

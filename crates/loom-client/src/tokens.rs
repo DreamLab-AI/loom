@@ -149,6 +149,6 @@ mod tests {
 
         let mut m = obj(&json!({}));
         apply_token_floor(&mut m, 0);
-        assert!(m.is_empty());
+        assert_eq!(m.len(), 0);
     }
 }

@@ -90,10 +90,10 @@ fn scaffold_empty_shape() {
     // for one release, so its no-match shape stays under test.
     #[allow(deprecated)]
     let s = Scaffold::empty(FusionPath::NoMatch, gen);
-    assert!(s.block.is_empty());
+    assert_eq!(s.block, "");
     assert!(!s.engaged);
     assert_eq!(s.approx_tokens, 0);
-    assert!(s.seeds.is_empty());
+    assert_eq!(s.seeds.len(), 0);
     assert_eq!(s.effective_budget, 0);
     assert_eq!(s.fusion_path, FusionPath::NoMatch);
     assert_eq!(s.generation, GenerationId("build-abc".to_owned()));
@@ -104,7 +104,7 @@ fn scaffold_empty_shape() {
     assert_eq!(s.grounding.top_score, None);
     assert_eq!(s.grounding.effective_budget, None);
     assert!(!s.grounding.engaged);
-    assert!(s.grounding.seeds.is_empty());
+    assert_eq!(s.grounding.seeds.len(), 0);
     // The flat aliases agree with the typed form they mirror.
     assert_eq!(
         s.effective_budget,
@@ -176,7 +176,7 @@ fn exposure_report_shape() {
     // Default is the honest empty report.
     let d = ExposureReport::default();
     assert_eq!(d.targets, 0);
-    assert!(d.dropped.is_empty());
+    assert_eq!(d.dropped.len(), 0);
 }
 
 #[test]

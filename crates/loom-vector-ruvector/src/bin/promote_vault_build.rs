@@ -1,4 +1,4 @@
-//! `promote_vault_build` — turn a `vault build --with-rvdb` bundle's portable
+//! `promote_vault_build` — turn an `ontomark build --with-rvdb` bundle's portable
 //! records into Loom's serving HNSW artefact, in place.
 //!
 //! Usage: `promote_vault_build --data <bundle data dir>`

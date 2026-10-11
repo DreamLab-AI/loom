@@ -338,7 +338,7 @@ mod tests {
     async fn empty_batch_short_circuits() {
         let embedder = XinferenceEmbedder::new("http://127.0.0.1:1", Duration::from_secs(2));
         let out = embedder.embed_batch(&[]).await.expect("empty batch is Ok");
-        assert!(out.is_empty());
+        assert_eq!(out.len(), 0);
     }
 
     #[test]

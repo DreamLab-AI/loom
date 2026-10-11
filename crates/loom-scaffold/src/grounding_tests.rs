@@ -184,7 +184,7 @@ fn grounding_present_on_no_match() {
     assert_eq!(gr.effective_budget, None);
     assert!((gr.confidence - 0.0).abs() < f64::EPSILON);
     assert!(!gr.engaged);
-    assert!(gr.seeds.is_empty());
+    assert_eq!(gr.seeds.len(), 0);
 }
 
 #[test]
@@ -195,7 +195,7 @@ fn grounding_reports_a_gated_skip_with_its_evidence() {
     let g = gate(true, 8.0, 12.0, 0.4);
     let out = assemble_block(&idx, &seeds, 1500, 1, false, None, &g);
 
-    assert!(out.block.is_empty());
+    assert_eq!(out.block.len(), 0);
     let gr = &out.grounding;
     assert_eq!(gr.decision, InjectionDecision::Skipped);
     assert_eq!(gr.effective_budget, None);
