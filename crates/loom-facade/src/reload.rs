@@ -10,7 +10,7 @@
 //! The marker is read by [`crate::mirror::parse_marker_strict`], the strict side
 //! of the one reader in `mirror.rs`, and the bundle digest is
 //! [`ServingIdentity::digest_input`] hashed with [`hex_sha256`], so the digest
-//! proved here is the one `LoadedBundle` serves. There is no second marker check.
+//! proved here is the one `LoadedBundle` serves.
 //!
 //! Every external effect sits behind a trait ([`Reloader`], [`IdentityProbe`],
 //! [`Clock`]) so [`reconcile`] is driven by fakes in tests; the production
@@ -20,7 +20,6 @@
 use std::fmt;
 use std::fs;
 use std::io::{self, Write};
-use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::{Duration, Instant};
@@ -344,8 +343,9 @@ impl serde_json::ser::Formatter for PythonJson {
 }
 
 /// Atomically write the receipt `{content_digest, generation, state}` (sorted
-/// keys, trailing newline) to `path`: a private `<path>.tmp` is written,
-/// fsynced and renamed over `path`.
+/// keys, trailing newline) to `path`: a fresh private temporary file in the
+/// same directory is written, fsynced and renamed over `path`. Existing
+/// temporary files or symlinks are never opened.
 pub fn write_receipt(path: &Path, state: &str, bundle: &Bundle) -> io::Result<()> {
     use serde::Serialize as _;
     let receipt = std::collections::BTreeMap::from([
@@ -360,27 +360,20 @@ pub fn write_receipt(path: &Path, state: &str, bundle: &Bundle) -> io::Result<()
         ))
         .map_err(io::Error::from)?;
     body.push(b'\n');
-    let mut temp = path.as_os_str().to_owned();
-    temp.push(".tmp");
-    let temp = PathBuf::from(temp);
-    let mut file = fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .mode(0o600)
-        .open(&temp)?;
+    let parent = path.parent().filter(|p| !p.as_os_str().is_empty());
+    let mut file = tempfile::NamedTempFile::new_in(parent.unwrap_or_else(|| Path::new(".")))?;
     file.write_all(&body)?;
     file.flush()?;
-    file.sync_all()?;
-    drop(file);
-    fs::rename(&temp, path)
+    file.as_file().sync_all()?;
+    file.persist(path).map(|_| ()).map_err(|e| e.error)
 }
 
 /// One tick. Verifies the bundle (no receipt if it is refused); returns
 /// [`Outcome::Current`] and records `served` if the service already proves it;
 /// otherwise records `reload-pending`, restarts, and polls until the service
 /// proves the same bundle or `timeout` passes, re-verifying the disk on every
-/// poll so a concurrent publication is refused rather than acknowledged.
+/// poll and after each successful probe so a publication that starts during
+/// the probe is refused rather than acknowledged.
 /// Failed attempts are never recorded as served, so the next tick retries.
 ///
 /// `timeout` is not validated here (zero means one poll after the restart).
@@ -397,6 +390,9 @@ pub fn reconcile<P: IdentityProbe, R: Reloader, C: Clock>(
         .fetch()
         .is_ok_and(|report| served_matches(&report, &bundle))
     {
+        if verified_bundle(dir)? != bundle {
+            return Err(invalid("publication changed during identity probe"));
+        }
         write_receipt(receipt, "served", &bundle).map_err(ReloadError::Io)?;
         return Ok(Outcome::Current);
     }
@@ -411,6 +407,9 @@ pub fn reconcile<P: IdentityProbe, R: Reloader, C: Clock>(
             .fetch()
             .is_ok_and(|report| served_matches(&report, &bundle))
         {
+            if verified_bundle(dir)? != bundle {
+                return Err(invalid("publication changed during identity probe"));
+            }
             write_receipt(receipt, "served", &bundle).map_err(ReloadError::Io)?;
             return Ok(Outcome::Reloaded);
         }

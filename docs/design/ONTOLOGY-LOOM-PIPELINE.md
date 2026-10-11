@@ -4,8 +4,10 @@
 ## Date: 2026-08-11 (authored); retargeted 2026-08-17 (Rust re-platform); amended 2026-09-22 (ADR-141, the vault build)
 ## Author: Loom capstone workstream (WS-A), retargeted for ADR-137 / PRD-027
 ## Depends on: OCP Revised Design Brief (2026-08-11); ADR-135 (façade + generation discipline); ADR-136 D4 (SSOT + atomic mirror); ADR-137 (Rust re-platform)
+## Scope: **the contract** — `build-manifest.json`, `urn:ngm:generation:<sha>`, the atomic never-mixed generation, and how the Rust mirror verifies them. The *builder implementation* is **`vault build`** (`project/crates/vault`, ADR-141; formerly `pipeline/*` + `publish.yml` in `jjohare/logseq`) and is reproduced below only as the contract the mirror relies on, not as Loom work.
+
 <!-- lands with ontomark step 10 -->
-## Scope: **the contract** — `build-manifest.json`, the generation identity `visionGraph@<sha>`, the atomic never-mixed generation, and how the Rust mirror verifies them. The *builder implementation* is **`ontomark build`** (a released tag of the ontomark CLI, ADR-141; previously `vault build` in `project/crates/vault`; formerly `pipeline/*` + `publish.yml` in `jjohare/logseq`) and is reproduced below only as the contract the mirror relies on, not as Loom work.
+> After ontomark step 10: the builder is `ontomark build` (a pinned released tag of the ontomark CLI) rather than `vault build`. Loom's served identity is `visionGraph@<sha>`; `urn:ngm:generation:<sha>` below is the legacy build-manifest `versionIRI`, which no Loom code reads. `pipeline/manifest.py` is a historical name and is not in this repository. The marker reader in `loom-facade::mirror` and the Python reload script remain two readers until step 11.
 
 ---
 
@@ -90,7 +92,6 @@ A **generation** is the immutable output of one pipeline run over one corpus com
 
 Introduce a single frozen context object in a new module `pipeline/manifest.py`, constructed once at the top of `build.py` and threaded into every emitter:
 
-<!-- lands with ontomark step 10 -->
 ```python
 # pipeline/manifest.py
 @dataclass(frozen=True)
@@ -105,7 +106,7 @@ class BuildContext:
     @classmethod
     def from_env(cls, pipeline_version: str) -> "BuildContext": ...
 
-    def version_iri(self) -> str:      # legacy build-manifest versionIRI; the served identity is "visionGraph@<commit_sha>"
+    def version_iri(self) -> str:      # "urn:ngm:generation:<commit_sha>"
         return f"urn:ngm:generation:{self.commit_sha}"
     def derived_from_iri(self) -> str:  # "file:///home/devuser/workspace/visionGraph@<commit_sha>"
         return f"{self.repo_iri}@{self.commit_sha}"
@@ -122,9 +123,6 @@ class BuildContext:
 `corpusSha` in the distillation job/result envelopes (brief §"Content-address identity core", §"Result envelope") **is** `BuildContext.commit_sha`. The mirror's active generation pointer (§5) is the same value, so `corpusSha_match: exact | at_least | latest` (brief §"Corpus identity & the mirror") resolves against the published `commitSha`. The pipeline emits full 64-char `sha256` artifact digests; the 12-char truncation (`sha256-12`) and the `urn:agentbox:job:*` / bead URN grammar are consumer-side concerns owned by agentbox `uris.js` (ADR-013 §6) — the pipeline neither mints nor truncates those.
 
 ## 3. `pipeline/manifest.py` — the build manifest (written LAST)
-
-<!-- lands with ontomark step 10 -->
-> The `pipeline/manifest.py` named here is historical: it is not in this repository. The manifest and the commit marker are written by `ontomark build`; `loom-facade::mirror` is the only reader that checks them.
 
 The manifest is the last artifact written, after every generation artifact exists and has been flushed. It walks the **generation set** (the `data/` and `api/` outputs that constitute the corpus generation — *not* the SPA/WASM assets, which are presentation, §7) and records identity + a hash/size/count triple per artifact.
 
@@ -285,7 +283,7 @@ The existing `publish.yml` step stays (defence in depth); the point is that the 
 | agentbox ADR-116 tier budgets | Index caps owned once, here: `DEFINITION_CAP=400`, `BACKLINK_CAP=20` (scaffold), `DEFAULT_CL_CAP=1500` (prose), `INHERITED_RELATION_CAP=8` (reason), `RELATION_TOPK`/`MAX_NODES` (tiers). Consumers stop re-deriving indices. |
 | write-path-never-widened | This stage only reads corpus + writes `www/`. Corpus write-back (elevation) is WS-H through the PRD-020 ADR-121 propose spine — not a new pipeline door. |
 | fail-labelled-not-fail-open | Conflict gate hard-fails high severity; mirror aborts on any hash mismatch and keeps the prior generation; local/dirty builds are flagged unpinnable, never mirrored. |
-| URI/DID grammar closed | Pipeline emits `urn:ngm:class:*`, the generation id `visionGraph@<sha>` (the legacy build-manifest `versionIRI` was `urn:ngm:generation:<sha>`; no Loom code reads it), `did:nostr:jjohare` (existing `ATTRIBUTED_TO`) and full 64-hex `sha256`. Bead/job URNs, `sha256-12`, `did:nostr` wrapping are agentbox `uris.js` (ADR-013 §6) — not minted here. <!-- lands with ontomark step 10 --> |
+| URI/DID grammar closed | Pipeline emits `urn:ngm:class:*`, `urn:ngm:generation:<sha>`, `did:nostr:jjohare` (existing `ATTRIBUTED_TO`) and full 64-hex `sha256`. Bead/job URNs, `sha256-12`, `did:nostr` wrapping are agentbox `uris.js` (ADR-013 §6) — not minted here. |
 | corpus-honesty `corpusNature` | Propagated into manifest + every generation artifact (§6). |
 | SPARQL SERVICE forbidden | The static site serves TTL as a downloadable artifact only; no live query endpoint, no federation (§10). |
 | RuVector MCP-only | The pipeline writes files, never RuVector. Ingesting `scaffold-index`/`prose-index` into RuVector (the "RuVector-condense" of brief §0b) is a **Loom-host lifecycle task over MCP**, keyed by the same `commitSha` so the vector store version matches the published generation. Not part of `publish.yml` (CI has no MCP). |

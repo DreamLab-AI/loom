@@ -82,12 +82,13 @@ async-trait = { workspace = true }
 sha2 = { workspace = true }
 # The reload transition's served-identity probe (`reload_published_generation`).
 reqwest = { workspace = true }
+# Secure, private receipt replacement without following pre-existing temp paths.
+tempfile = "3"
 
 [dev-dependencies]
 futures-util = "0.3"
 # In-memory oneshot router tests + a mock model backend for the chat path.
 wiremock = "0.6"
-tempfile = "3"
 tokio = { workspace = true }
 serde_json = { workspace = true }
 http-body-util = "0.1"

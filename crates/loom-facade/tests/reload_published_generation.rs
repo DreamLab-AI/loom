@@ -35,8 +35,11 @@ use std::process::{Command, Output};
 use std::rc::Rc;
 use std::time::Duration;
 
+use loom_domain::GenerationStore;
+use loom_facade::mirror::MirrorStore;
 use loom_facade::reload::{
-    reconcile, served_matches, verified_bundle, Clock, Outcome, ReloadError, REQUIRED,
+    reconcile, served_matches, verified_bundle, write_receipt, Clock, Outcome, ReloadError,
+    REQUIRED,
 };
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
@@ -360,6 +363,47 @@ fn concurrent_publication_after_restart_not_acknowledged() {
     assert_eq!(f.receipt()["state"], "reload-pending");
 }
 
+#[test]
+fn publication_during_the_current_probe_is_not_acknowledged() {
+    let f = Legacy::new();
+    let report = serving(&f.root, "g1");
+    let result = run_reconcile(
+        &f,
+        || {
+            // The HTTP response describes the old snapshot; a publisher
+            // begins copying while that response travels back to the tick.
+            fs::write(f.root.join(".promotion-in-flight"), "").unwrap();
+            Ok(report.clone())
+        },
+        || panic!("a concurrent publication must not be restarted"),
+        SIXTY,
+    );
+    assert!(matches!(result, Err(ReloadError::Invalid(_))), "{result:?}");
+    assert!(!f.receipt.exists(), "no served receipt for a stale proof");
+}
+
+#[test]
+fn publication_during_the_post_restart_probe_leaves_pending() {
+    let f = Legacy::new();
+    let report = serving(&f.root, "g1");
+    let probes = Cell::new(0);
+    let result = run_reconcile(
+        &f,
+        || {
+            probes.set(probes.get() + 1);
+            if probes.get() == 1 {
+                return Ok(json!({}));
+            }
+            fs::write(f.root.join(".promotion-in-flight"), "").unwrap();
+            Ok(report.clone())
+        },
+        || Ok(()),
+        SIXTY,
+    );
+    assert!(matches!(result, Err(ReloadError::Invalid(_))), "{result:?}");
+    assert_eq!(f.receipt()["state"], "reload-pending");
+}
+
 // --- 9-16: the C3 (`vault build` / `ontomark build`) marker ------------------
 
 struct C3 {
@@ -542,6 +586,43 @@ fn identity_must_name_its_own_commit() {
 }
 
 #[test]
+fn c3_identity_rejects_an_empty_or_partial_commit() {
+    for commit in ["", "abc", "1234", "visionGraph"] {
+        let mut f = C3::new();
+        f.manifest["commit"] = json!(commit);
+        f.save();
+        assert!(
+            matches!(verified_bundle(&f.root), Err(ReloadError::Invalid(_))),
+            "accepted partial commit {commit:?} for {}",
+            C3::IDENTITY
+        );
+    }
+}
+
+#[test]
+fn c3_fields_require_their_declared_types() {
+    for (field, values) in [
+        ("content_digest", vec![json!(true), json!(42), json!("")]),
+        ("class_count", vec![json!(true), json!("8146"), json!(-1)]),
+        ("page_count", vec![json!(false), json!("8454"), json!(-1)]),
+        (
+            "vocabulary_version",
+            vec![json!(true), json!("1"), json!(-1)],
+        ),
+    ] {
+        for value in values {
+            let mut f = C3::new();
+            f.manifest[field] = value.clone();
+            f.save();
+            assert!(
+                matches!(verified_bundle(&f.root), Err(ReloadError::Invalid(_))),
+                "accepted {field}={value}"
+            );
+        }
+    }
+}
+
+#[test]
 fn missing_c3_field_is_refused() {
     let mut f = C3::new();
     f.manifest
@@ -626,6 +707,8 @@ fn an_empty_id_falls_back_to_the_legacy_shape() {
     f.manifest["id"] = json!("");
     f.save();
     assert_eq!(verified_bundle(&f.root).unwrap().generation, "g1");
+    let mirror = MirrorStore::new(f.root.join("scaffold-index.json").to_str().unwrap());
+    assert_eq!(mirror.current().id.0, "g1");
 }
 
 #[test]
@@ -671,11 +754,46 @@ fn served_matches_requires_every_proof() {
 #[test]
 fn receipt_is_private_atomic_and_leaves_no_temp_file() {
     let f = Legacy::new();
+    let mut expected: std::collections::BTreeSet<_> = fs::read_dir(&f.root)
+        .unwrap()
+        .map(|entry| entry.unwrap().file_name())
+        .collect();
+    expected.insert(f.receipt.file_name().unwrap().to_owned());
     run_reconcile(&f, || Ok(serving(&f.root, "g1")), || Ok(()), SIXTY).unwrap();
     let mode = fs::metadata(&f.receipt).unwrap().permissions().mode() & 0o777;
     assert_eq!(mode, 0o600);
-    assert!(!f.root.join("receipt.json.tmp").exists());
+    let actual = fs::read_dir(&f.root)
+        .unwrap()
+        .map(|entry| entry.unwrap().file_name())
+        .collect();
+    assert_eq!(expected, actual);
     assert!(fs::read_to_string(&f.receipt).unwrap().ends_with('\n'));
+}
+
+#[test]
+fn a_preexisting_public_temp_file_cannot_make_the_receipt_public() {
+    let f = Legacy::new();
+    let old_temp = f.root.join("receipt.json.tmp");
+    fs::write(&old_temp, "leftover").unwrap();
+    fs::set_permissions(&old_temp, fs::Permissions::from_mode(0o644)).unwrap();
+    let bundle = verified_bundle(&f.root).unwrap();
+    write_receipt(&f.receipt, "served", &bundle).unwrap();
+    let mode = fs::metadata(&f.receipt).unwrap().permissions().mode() & 0o777;
+    assert_eq!(mode, 0o600);
+    assert_eq!(fs::read_to_string(&old_temp).unwrap(), "leftover");
+}
+
+#[test]
+fn a_preexisting_temp_symlink_cannot_truncate_a_bundle_artifact() {
+    let f = Legacy::new();
+    let artifact = f.root.join("ontology.ttl");
+    let original = fs::read(&artifact).unwrap();
+    symlink(&artifact, f.root.join("receipt.json.tmp")).unwrap();
+    let bundle = verified_bundle(&f.root).unwrap();
+    write_receipt(&f.receipt, "served", &bundle).unwrap();
+    assert_eq!(fs::read(&artifact).unwrap(), original);
+    assert_eq!(verified_bundle(&f.root).unwrap(), bundle);
+    assert_eq!(f.receipt()["state"], "served");
 }
 
 // --- the binary, as a real process -------------------------------------------

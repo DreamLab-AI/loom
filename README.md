@@ -11,7 +11,10 @@
 
 **One endpoint. One corpus generation. The model is always a URL behind the door.**
 
-**Maintainer**: [John O'Hare](https://github.com/jjohare) · **Upstream IP**: [Melvin Carvalho](https://github.com/melvincarvalho) ([JSS](https://github.com/JavaScriptSolidServer/JavaScriptSolidServer), [DID:Nostr](https://github.com/nicholasgasior/did-nostr)) · [corpus build: `ontomark build` over visionGraph (ADR-141)](docs/design/ADR-141-loom-consumes-the-vault-build.md) <!-- lands with ontomark step 10 -->
+**Maintainer**: [John O'Hare](https://github.com/jjohare) · **Upstream IP**: [Melvin Carvalho](https://github.com/melvincarvalho) ([JSS](https://github.com/JavaScriptSolidServer/JavaScriptSolidServer), [DID:Nostr](https://github.com/nicholasgasior/did-nostr)) · [corpus build: `vault build` over visionGraph (ADR-141)](docs/design/ADR-141-loom-consumes-the-vault-build.md)
+
+<!-- lands with ontomark step 10 -->
+> Producer rename: after ontomark step 10 the corpus is built by `ontomark build` (a pinned release) rather than `vault build`; the `vault` name survives for the governance verbs only.
 
 [Why](#why--the-measured-result) · [Façade](#what--the-façade) · [Quickstart](#quickstart) · [Ecosystem](#where-loom-sits) · [Status](#status--honesty) · [Docs](docs/README.md)
 
@@ -47,7 +50,7 @@ Loom is one component of **[VisionFlow](https://github.com/DreamLab-AI/VisionFlo
 | [sidestr-rs](https://github.com/DreamLab-AI/sidestr-rs) | Rust port of Melvin Carvalho's sidestr sidechains, AGPL-3.0-only: the economic engine for `did:nostr` agents. A `did:nostr` key is a sidechain wallet. |
 | [nostr-rust-forum](https://github.com/DreamLab-AI/nostr-rust-forum) | Nostr-native forum + relay — the one place a human decision gets cryptographically signed |
 | [dreamlab-ai-website](https://github.com/DreamLab-AI/dreamlab-ai-website) | DreamLab AI company website — the commercial face, a thin consumer of the forum kit |
-| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Obsidian-vault→OWL build (`ontomark build`), 8,100+ pages, ODbL-1.0 <!-- lands with ontomark step 10 --> |
+| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Obsidian-vault→OWL build (`vault build`), 8,100+ pages, ODbL-1.0 |
 
 Each sibling in its own words:
 
@@ -115,11 +118,10 @@ Each sibling in its own words:
 
 </details>
 
-<!-- lands with ontomark step 10 -->
 ```
 knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned closure + indexes)
  (corpus + pipeline + method)         │
-   built by `ontomark build`         ▼  mirror
+   built by `vault build`             ▼  mirror
                                   ┌─────────┐   scaffold-inject     ┌────────────┐
    agents / email / any client ──▶│  LOOM   │───────────────────▶ │  the model  │
         (hold the Loom URL)       │ façade  │◀───────────────────  │ (swappable) │
@@ -203,7 +205,7 @@ curl -sXPOST localhost:8084/mcp \
 was; an agentic consumer drives `/mcp` and pays O(1) prompt cost in corpus size instead of
 O(matched blocks). Both resolve through the same `LexicalIndex::assemble` gate and stamp the same
 `grounding` object, so there is no second retrieval policy to keep in sync. `/mcp` is the door for
-hosts **outside** the estate; inside it, agents use the `ontomark` CLI (and the `vault` adapter for governance verbs) and `loom-client` rather than <!-- lands with ontomark step 10 -->
+hosts **outside** the estate; inside it, agents use the `vault` CLI and `loom-client` rather than
 any MCP transport (ADR-141).
 
 The response of a grounded completion carries a `loom` block (`injected_tokens`, `mode`, `grounding`, `fusion_path`, `generation`) so consumers can account for the grounding and prove which corpus generation produced the answer. `loom.grounding` is documented below and is present on every completion, engaged or not.

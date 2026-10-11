@@ -16,7 +16,7 @@ that upstream public-export privacy is correct.
 The marker check is the one in `loom-facade::mirror` (`parse_marker_strict`, the strict
 side of the reader the server itself uses); there is no second copy of it in Python.
 The strict side refuses what the server's lenient reader would tolerate: a malformed
-artefact entry, a missing C3 field, an id that does not name its commit, or a legacy
+artefact entry, a missing or mistyped C3 field, an id that does not exactly name its commit, or a legacy
 marker without a `generation`. The marker is accepted in either shape (ADR-141). An `ontomark build`
 marker — the one the corpus build writes, versioned by the bundle manifest — carries `id: "visionGraph@<sha>"`,
 `commit`, `content_digest`, `generated_at`, `class_count`, `page_count`,
@@ -41,7 +41,8 @@ The transition refuses incomplete, hash-mismatched, indirect or in-flight
 publication, serialises invocations using a lock, and writes a pending receipt
 before reload. It verifies the same on-disk bundle again and polls the server for
 the expected loaded digest, matching graph/semantic generation and valid embedding
-qualification. Only then does it atomically write `state: served`. A failed command,
+qualification. It checks the disk again after each successful probe, including
+the already-serving case, before atomically writing `state: served`. A failed command,
 timeout or concurrent publication leaves pending state and a non-zero process exit;
 the next tick retries. An already matching service is not restarted. No shell is
 used to interpret the reload argument list; the command after `--` is run as given and
@@ -111,15 +112,24 @@ has three steps, and only the last touches HP.
 
 <!-- lands with ontomark step 10 -->
 **1. Build** from a clean `visionGraph` checkout with a released `ontomark`. Pin
-`ontomark` to a release tag, never to a branch, and confirm `ontomark --version`
-reports that tag. The `vault` baked into agentbox images up to at least
+`ontomark` to a release tag and checksum, never to a branch, and confirm
+`ontomark --version` reports the release's CLI version. The release pin file
+`deploy/ontomark-release.env` belongs to the pending step-10 publishing migration;
+these commands require that migration and the published asset first. The `vault` baked into agentbox images up to at least
 2026-10-02 (0.1.0) predates the portable-records file and writes JSONL under the
 database's name, `ontology-corpus.rvdb`, which `promote_vault_build` cannot use,
 so do not use it. Install the released binary into a private directory (agentbox
 bakes `ontomark` once its flake input moves to the tag):
 
 ```bash
-cargo install ontomark-cli --locked --version <release-tag> --root ~/workspace/loom-publish/ontomark
+source deploy/ontomark-release.env
+mkdir -p ~/workspace/loom-publish/ontomark/bin
+gh release download "$ONTOMARK_RELEASE_TAG" --repo "$ONTOMARK_RELEASE_REPO" \
+  --pattern "$ONTOMARK_ASSET" --dir ~/workspace/loom-publish/ontomark
+printf '%s  %s\n' "$ONTOMARK_SHA256" \
+  "$HOME/workspace/loom-publish/ontomark/$ONTOMARK_ASSET" | sha256sum --check --strict
+install -m755 ~/workspace/loom-publish/ontomark/"$ONTOMARK_ASSET" \
+  ~/workspace/loom-publish/ontomark/bin/ontomark
 SHA=$(git -C ~/workspace/visionGraph rev-parse --short=9 HEAD)
 ~/workspace/loom-publish/ontomark/bin/ontomark --repo ~/workspace/visionGraph \
   build --out ~/workspace/loom-publish/$SHA --with-rvdb --stats

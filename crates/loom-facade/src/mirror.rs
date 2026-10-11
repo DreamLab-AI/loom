@@ -142,7 +142,7 @@ impl MirrorStore {
     fn generation_marker(&self) -> Option<Generation> {
         let raw = std::fs::read_to_string(self.generation_manifest_path()).ok()?;
         let m: Value = serde_json::from_str(&raw).ok()?;
-        if let Some(id) = str_field(&m, "id") {
+        if let Some(id) = str_field(&m, "id").filter(|id| !id.is_empty()) {
             return Some(vault_build_generation(&m, id));
         }
         let generated_at = str_field(&m, "generation");
@@ -381,32 +381,36 @@ pub struct StrictMarker {
 ///
 /// The shape dispatch is the one [`MirrorStore`] uses: a non-empty string `id`
 /// means a C3 marker, anything else is read as the legacy mirror marker. What
-/// differs is strictness. A C3 marker must carry all of [`C3_REQUIRED`] (as a
-/// string or integer), an id of `visionGraph@<commit>` containing its own
-/// commit, and a list of artefacts with one unique string `name` each. A legacy
-/// marker needs a non-empty `generation` and an artefact map.
+/// differs is strictness. A C3 marker must carry all of [`C3_REQUIRED`]:
+/// non-empty string commit and content digest, unsigned class/page counts and
+/// a vocabulary version that fits a `u32`. Its id must equal
+/// `visionGraph@<commit>`, and its artefact list needs one unique string `name`
+/// per entry. A legacy marker needs a non-empty `generation` and an artefact map.
 ///
 /// # Errors
 /// A human-readable refusal naming the first rule the marker breaks.
 pub fn parse_marker_strict(m: &Value) -> Result<StrictMarker, String> {
     let artifacts = m.get("artifacts");
     if let Some(id) = str_field(m, "id").filter(|id| !id.is_empty()) {
-        let typed = |key: &str| match m.get(key) {
-            Some(Value::String(_) | Value::Bool(_)) => true,
-            Some(Value::Number(n)) => !n.is_f64(),
-            _ => false,
-        };
-        if !C3_REQUIRED.iter().all(|key| typed(key)) {
+        let commit = str_field(m, "commit").filter(|s| !s.is_empty());
+        let content_digest = str_field(m, "content_digest").filter(|s| !s.is_empty());
+        let vocabulary_version = m
+            .get("vocabulary_version")
+            .and_then(Value::as_u64)
+            .and_then(|n| u32::try_from(n).ok());
+        let (Some(commit), Some(content_digest), Some(_), Some(_), Some(_)) = (
+            commit,
+            content_digest,
+            usize_field(m, "class_count"),
+            usize_field(m, "page_count"),
+            vocabulary_version,
+        ) else {
             return Err(format!(
-                "vault build marker missing {}",
+                "vault build marker missing or mistyped {}",
                 C3_REQUIRED.join(", ")
             ));
-        }
-        // A non-string commit cannot be "in" the id (Python raised TypeError).
-        let Some(commit) = m.get("commit").and_then(Value::as_str) else {
-            return Err("generation id must be visionGraph@<commit>".to_owned());
         };
-        if !id.starts_with("visionGraph@") || !id.contains(commit) {
+        if id != format!("visionGraph@{commit}") {
             return Err("generation id must be visionGraph@<commit>".to_owned());
         }
         let Some(Value::Array(list)) = artifacts else {
@@ -424,7 +428,7 @@ pub fn parse_marker_strict(m: &Value) -> Result<StrictMarker, String> {
         return Ok(StrictMarker {
             generation: id,
             artifacts: specs,
-            declared_content_digest: str_field(m, "content_digest"),
+            declared_content_digest: Some(content_digest),
         });
     }
     let generation = str_field(m, "generation").filter(|g| !g.is_empty());
