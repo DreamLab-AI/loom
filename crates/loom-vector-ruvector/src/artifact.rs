@@ -15,7 +15,7 @@
 //! against the bundle's own `.generation.json`, requires every record to carry the
 //! bundle's generation and a 384-dimension vector, builds the database with the
 //! index law's settings, and records the two derived files in the marker so the
-//! reload transition (`scripts/reload-published-generation.py`) can verify them.
+//! reload transition (the `reload_published_generation` binary) can verify them.
 //!
 //! **Run promotion as its own process.** `ruvector-core` keeps every database it
 //! opens in a process-wide pool for the life of the process, and the file lock

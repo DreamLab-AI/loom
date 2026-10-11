@@ -51,6 +51,3 @@ jobs:
       - name: Hermetic Rust contracts
         working-directory: loom
         run: cargo +'${{ steps.pins.outputs.toolchain }}' test --workspace --locked
-      - name: Published-generation reload guard
-        working-directory: loom
-        run: python3 tests/test_reload_published_generation.py
