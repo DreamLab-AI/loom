@@ -51,3 +51,10 @@ No implementation or activation is claimed. Source inspected at `37a320ce3f15787
 ## Note — 2026-10-12
 
 The producer of every bundle this record consumes is the released `ontomark` CLI; VisionClaw's in-tree build is retired behind gates ([Ontomark ADR-OM-005](https://github.com/DreamLab-AI/ontomark/blob/ffe06e4/docs/adr/ADR-OM-005-estate-alignment-one-producer-explicit-projections.md), DEPRECATION VC-60). Two bundles now exist from one producer: the public generation (served here) and a private `--vault all` machine bundle for VisionClaw's GPU view, which the Loom does not serve. ADR-141's identity rule is amended (proposed) to separate identity from distribution; the versioned contracts here are unaffected. Status unchanged.
+## Verification — first served Ontomark bundle (2026-10-12)
+
+Served: `visionGraph@45976a8c7ca4305dd38bf66c7c6128732f6de4d7` on the HP façade (`/loom/generation` id and `class_count` 9244; `/health` graph 429,294 triples from `ontology.ttl` + `ontology-inferred.ttl`, semantic layer `ready`, `verified_single_generation: true`). Image `loom:rust` built from `c751fba`; data built by the released `ontomark` CLI (`ontomark build --with-rvdb` on a clean checkout; `dirty: false`; 20 artefacts) and promoted by `promote_vault_build` (9,244 records → `ontology-corpus.rvdb`). Verified on the host by `reload_published_generation verify` before the swap, then reloaded by the systemd timer (`Result=success`).
+
+Root cause of the preceding staleness (served 23 Sep `ae913f93a` while the site was current): the installed user unit still invoked the deleted Python `scripts/reload-published-generation.py` after the Rust port, so every 5-minute tick failed with `INVALIDARGUMENT`. Fixed by installing `deploy/loom-generation-reload.{service,timer}` from this repo. Host binaries are static musl builds; glibc binaries built in the agentbox do not exec on the HP. The `scope` field added to the generation marker (Ontomark ADR-OM-005, C3) needs no change here: the reader is field-by-field and ignores unknown keys.
+
+Previous data retained at `data.prev-ae913f93a` on the host for rollback.
