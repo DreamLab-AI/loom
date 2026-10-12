@@ -148,3 +148,13 @@ agent access estate-wide as **Rust CLI-first, no MCP inside the estate**.
   The baked agentbox `vault` 0.1.0 predates the portable-records file and cannot produce a
   promotable bundle; build `vault` from source until the image is rebuilt. Status stays
   **Proposed** until the receipt reads `served` and the door reports the new id.
+
+## Amendment proposed — 2026-10-12: identity is not distribution
+
+Owner decision, recorded in [Ontomark ADR-OM-005](https://github.com/DreamLab-AI/ontomark/blob/ffe06e4/docs/adr/ADR-OM-005-estate-alignment-one-producer-explicit-projections.md). **Proposed**; this ADR's status is unchanged until the amendment is accepted.
+
+"Never a GitHub URL" protected the *identity* of a generation from a mutable pointer. That stands: the served generation is still `visionGraph@<sha>`, content-addressed. What this amendment separates is **distribution**: a bundle carrying that identity and a sha256 may be served by Agentbox or attached to a release tag, and a consumer that verifies the digest has the same generation whichever path delivered it. The identity is in the bundle (`owl:versionIRI`, `.generation.json`), not in the URL.
+
+The owner also records that identifiers need not be stable over time at this stage: re-minting across the synthetic corpus to best practice is permitted, provided each re-mint ships the identity mapping, visibility diff and rollback artefact VisionClaw ADR-2137 §4 requires. The ledger route keeps recording what was served under which id.
+
+Producer: the bundle is produced by the released `ontomark` CLI (visionGraph `publish.yml`; VisionClaw's own build is retired behind gates). A **private** `--vault all` machine bundle, never published to the site, exists for VisionClaw's GPU view; the Loom continues to serve the public generation.

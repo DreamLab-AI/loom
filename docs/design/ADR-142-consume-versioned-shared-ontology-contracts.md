@@ -45,3 +45,9 @@ Step-10 reader and publishing adoption is implemented: `loom-scaffold` aliases t
 
 <!-- lands with ontomark step 10 -->
 After step 10, the verification record names the executed evidence: the three migration tests (`ontomark_iri_migration`, `ontomark_rdf_migration`, `ontomark_cli_publish_migration`) green, the pre-existing suites listed above green, and the receipt of the first served `ontomark build` bundle. Those fields stay empty until that evidence exists.
+
+No implementation or activation is claimed. Source inspected at `37a320ce3f15787a1ee10fac0faae043ab1ac12e`: `crates/loom-graph-oxigraph/src/lib.rs:38` fixes the Turtle allowlist; `crates/loom-facade/src/bundle.rs:16` defines verification and loaded identity. Before adoption run graph allowlist/inferred-closure integration tests, `mirror_generation`, MCP ancestor/provenance tests and producer-fixture compatibility. Add vocabulary-only and emitter-only identity changes, unsupported-version rejection, mixed-bundle rejection and rollback/restart tests. A reload receipt must prove the intended generation is served; no deployment was exercised here.
+
+## Note — 2026-10-12
+
+The producer of every bundle this record consumes is the released `ontomark` CLI; VisionClaw's in-tree build is retired behind gates ([Ontomark ADR-OM-005](https://github.com/DreamLab-AI/ontomark/blob/ffe06e4/docs/adr/ADR-OM-005-estate-alignment-one-producer-explicit-projections.md), DEPRECATION VC-60). Two bundles now exist from one producer: the public generation (served here) and a private `--vault all` machine bundle for VisionClaw's GPU view, which the Loom does not serve. ADR-141's identity rule is amended (proposed) to separate identity from distribution; the versioned contracts here are unaffected. Status unchanged.
