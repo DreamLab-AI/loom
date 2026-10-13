@@ -345,6 +345,9 @@ Since 2026-08-14 the reference deployment ships the model engine **inside this s
 > `app/data/` is a **legacy Python-layout path** and is **not mounted** — anything there is invisible
 > to the container.
 >
+> `data/` is **untracked** (see `.gitignore`): the artefacts are generated per generation and a `git pull`
+> must never replace or delete the bundle being served.
+>
 > **Mirror discrepancy (root cause, not yet fixed in code):** `app/mirror.sh` resolves its target as
 > `dirname(mirror.sh)/data` → it writes to **`app/data/`**, *not* the mounted `<repo>/data/`. So a
 > fresh mirror populates the legacy dir while the container reads the (empty) canonical dir. Until
