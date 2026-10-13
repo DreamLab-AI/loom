@@ -20,3 +20,9 @@ docs/research/latex/*-blx.bib
 /target
 # agent scheduler scratch (not a project artifact)
 .claude/scheduled_tasks.lock
+
+# Generated serving artefacts (ontomark bundle + exported index). Produced per generation by the
+# reload tooling and mounted read-only at /app/data; never tracked, so a pull cannot replace or
+# delete the bundle the façade is serving. Only the directory itself is kept.
+/data/*
+!/data/.gitkeep

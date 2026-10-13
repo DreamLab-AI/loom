@@ -628,3 +628,7 @@ open item and it is an operations task, not a code one.
 - **Priority:** P2 — next cycle (its phase P1, "measure", is PRD-028 arms 3 and 4 on the pilot corpus, and the pilot may start only after this cycle exits, per planning-cycle §3)
 - **Why:** P0 shipped in `1a6a470`: `/mcp` and `crates/loom-mcp` exist and `app/ontology-mcp/` is gone. ADR-141 has already amended D1 and D4 in place. D3 is overtaken: the "re-point `ontology-bridge`" step will not happen, because agentbox ADR-2107 (accepted) retired that MCP server outright for the `vault` CLI (`agentbox.toml:906`). The currency precondition D3 waited on is now met: the live node serves `visionGraph@ae913f9`, source `VaultBuild`, activated 2026-09-23. Phases P2 to P4 (data grounding, exposure evolution, governed content evolution) have no commits. Verified against loom `main` at `8c618fa`.
 - **Next:** Amend D3 to record that the bridge was retired under ADR-2107 rather than re-pointed. Then run P1 as part of the PRD-028 pilot.
+
+## Note — 2026-10-13 (P0 delivered)
+
+P0 is in service: the façade exposes `/mcp` with `loom.manifest/browse/resolve/sparql/neighbours/paths` over the existing gated index (`crates/loom-facade/tests/adr140_mcp_plane.rs`), and agentbox's `ontology-augment` skill grounds through it (agentbox ADR-2140). P1 onward is not started. Status stays Proposed until the P1 measurement is recorded.
