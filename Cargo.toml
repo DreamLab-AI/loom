@@ -11,6 +11,7 @@ members = [
     "crates/loom-mcp",
     "crates/loom-attest-proofgate",
     "crates/loom-facade",
+    "crates/loom-bench",
 ]
 
 [workspace.package]

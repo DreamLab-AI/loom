@@ -632,3 +632,9 @@ open item and it is an operations task, not a code one.
 ## Note — 2026-10-13 (P0 delivered)
 
 P0 is in service: the façade exposes `/mcp` with `loom.manifest/browse/resolve/sparql/neighbours/paths` over the existing gated index (`crates/loom-facade/tests/adr140_mcp_plane.rs`), and agentbox's `ontology-augment` skill grounds through it (agentbox ADR-2140). P1 onward is not started. Status stays Proposed until the P1 measurement is recorded.
+
+## Note — 2026-10-13 (P1 run as a directional pilot, at the operator's decision)
+
+The ADR-140 planning-cycle rule (§ priority) has the pilot start only after the current cycle exits. The operator decided on 2026-10-13 to run it now as a small directional pilot. This note records that decision; no further rationale is asserted.
+
+Result (40 questions, arm 3 against arm 4 through the one door, preregistered as `bench/p1-pilot/PREREGISTRATION.md`, full write-up in `docs/research/p1-pilot/RESULT.md`): arm 4 used 4 to 7 times arm 3's tokens on lookup and cross questions and about twice on path questions; quality tied on lookup (0.93 against 0.94) and on cross (1.00 both, a ceiling that separates nothing), and arm 4 led on path questions (0.90 against 0.50, clustered CI [+0.06, +0.67]) with two stated caveats, gold derived from the tool under test and arm 3 truncation on 6 of 10 path answers. The pooled difference (+0.11) has a CI that includes zero. This is not PRD-028's powered design. Status stays Proposed; P2 is not gated by an effect size.
