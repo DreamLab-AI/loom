@@ -34,8 +34,7 @@ scored as it stood. No errors; no arm 3 call was served verbatim.
   its recall and inflates its 133 s median wall-clock. Read the path delta as "a model with a path tool
   beats one without", not as a measure of research tasks in general.
 - **Overall.** The pooled delta (+0.11) has a clustered CI that includes zero. 13 of 40 questions
-  differed between arms: 9 favoured arm 4, 2 favoured arm 3 (q017 lookup, q018 path), 2 lookups were
-  mixed at partial scores. With n=40 this is directional only.
+  differed between arms: 11 favoured arm 4 (6 path, 5 lookup) and 2 favoured arm 3 (q017 lookup, q018 path). With n=40 this is directional only.
 
 ## Against the ADR's prediction
 
