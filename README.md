@@ -2,466 +2,155 @@
 
 # Ontology Loom
 
-### Grounding node for the Dynamic Agentic Mesh
+### Corpus grounding behind a model-swappable serving interface
 
-[![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue?style=flat-square)](Cargo.toml)
-[![Rust](https://img.shields.io/badge/Rust-1.90%2B-f74c00?style=flat-square&logo=rust)](Cargo.toml)
-[![Crates](https://img.shields.io/badge/Crates-8%20hexagonal-8b5cf6?style=flat-square)](docs/design/RUST-ARCHITECTURE.md)
-[![Model](https://img.shields.io/badge/Model-swappable-10b981?style=flat-square)](#what--the-fa%C3%A7ade)
+**Retrieve a checked corpus slice, supply it to a model, and inspect which generation and serving policy were used.**
 
-**One endpoint. One corpus generation. The model is always a URL behind the door.**
-
-**Maintainer**: [John O'Hare](https://github.com/jjohare) · **Upstream IP**: [Melvin Carvalho](https://github.com/melvincarvalho) ([JSS](https://github.com/JavaScriptSolidServer/JavaScriptSolidServer), [DID:Nostr](https://github.com/nicholasgasior/did-nostr)) · [corpus build: `ontomark build` over visionGraph (ADR-141)](docs/design/ADR-141-loom-consumes-the-vault-build.md)
-
-<!-- lands with ontomark step 10 -->
-> Publishing uses the pinned `ontomark` CLI release in `deploy/ontomark-release.env`. Loom reads shared scaffold/prose contracts without the compiler reasoner. A first clean promotion and served receipt remain the activation gate; `vault` retains governance verbs.
-
-[Why](#why--the-measured-result) · [Façade](#what--the-façade) · [Quickstart](#quickstart) · [Ecosystem](#where-loom-sits) · [Status](#status--honesty) · [Docs](docs/README.md)
+[Start](#quickstart) · [API](#use-the-serving-interface) · [Architecture](#how-it-works) · [Research](#what-the-measurements-establish) · [Status](#working-status) · [Docs](docs/README.md)
 
 </div>
 
----
+Loom is a Rust serving node for a published ontology generation. It provides bounded retrieval, read-only SPARQL, an agent tool interface and an OpenAI-compatible completion route. The model backend is configured by URL, independently of the corpus. A request can receive selected context, a canonical verbatim response, or a passthrough model response according to configuration and per-request options.
 
-> **Your LLM doesn't know your data — Loom makes any LLM answer from it, with every answer tagged to the corpus generation it was served from.** Point any OpenAI-compatible client at one URL and every answer is grounded in your curated, reasoner-checked corpus, served from a LAN-confined deployment with no cloud egress (the corpus itself is published, not secret — see the paper's exposure-accounting note on what "private" means here): recall on in-domain questions rises from as low as 0.15 to ~0.94, faster than the bare model, with every claim traceable to a corpus generation. The model is just a URL behind the door — swap it for the next one and nothing else changes, because the knowledge lives in the corpus you govern, not the weights you rent.
-
----
-
-## What is Loom?
-
-Loom is the **grounding door**: a single-binary Rust node that serves a reasoned ontology into an LLM's context at query time, behind a stable, model-swappable façade. Three verbs describe what it exists to give an operator — **ground** an LLM's answers in a corpus whose ontology structure is checked for logical consistency at build time (not for factual accuracy of its content, which remains human-directed/AI-drafted and unverified per answer) rather than parametric guesses, **swap** the model behind the door without any consumer change, and **measure** the value of that grounding against a reproducible benchmark with bootstrap confidence intervals.
-
-Instead of thick agents wired to raw data, Loom implements the architecture the 2026 industry calls **neurosymbolic** — thin agents on a shared formal semantic layer. The layer is an OWL 2 ontology compiled from a curated corpus; Loom serves it. The reasoner (Whelk EL++) checks it at build time; the model restates it at query time. The invariant — one human-reviewable markdown block per IRI as the single served, auditable unit — is enforced by the crate architecture, not by convention. That is **THE PRIZE**, and it is the whole point of the node.
-
-**What it is *for*: making swappable models performant against large, important corpora your organisation curates** — answering with source-generation metadata attached on an in-domain corpus the model could never know parametrically (attribution accuracy itself is not yet measured, see [`docs/research/README.md`](docs/research/README.md)), and delivering that curated content cheaply. The bar is **multivariate**: excellent recall on the locally-grounded questions, *without going jagged* on the general or novel ones. Full framing: [`docs/design/LOOM-POSITIONING.md`](docs/design/LOOM-POSITIONING.md).
-
----
-
-## Where Loom sits
-
-Loom is one component of **[VisionFlow](https://github.com/DreamLab-AI/VisionFlow)** — a nine-repo effort built on a simple wager: hierarchy was an information-routing protocol bounded by human bandwidth, AI collapses the cost of that routing toward zero, and so the human role is not eliminated but **promoted from router to judgment broker**. Loom is the context-assembly layer of that mesh — it serves the shared semantic layer that bounds what agents can assert; the siblings build, reason over, store and govern what flows through it.
-
-| Repo | Role |
-|:-----|:-----|
-| [VisionFlow](https://github.com/DreamLab-AI/VisionFlow) | Ecosystem canon — ADRs, PRDs, compatibility matrix, vision report, marketing site |
-| [VisionClaw](https://github.com/DreamLab-AI/VisionClaw) | Flagship engine — OWL 2 EL + Whelk reasoning, 82 CUDA kernels of GPU graph physics, one renderer shared desktop↔headset |
-| [agentbox](https://github.com/DreamLab-AI/agentbox) | Sovereign agent runtime — Nix-built container, `did:nostr` identities, 116 skills, RuVector memory, Solid pod bridge |
-| **Loom** (this repo) | **Grounding node — portable, model-swappable façade that serves the reasoned ontology into any model's context at query time** |
-| [solid-pod-rs](https://github.com/DreamLab-AI/solid-pod-rs) | Rust Solid pod server — the personal-data-sovereignty layer under each human's and agent's own key |
-| [sidestr-rs](https://github.com/DreamLab-AI/sidestr-rs) | Rust port of Melvin Carvalho's sidestr sidechains, AGPL-3.0-only: the economic engine for `did:nostr` agents. A `did:nostr` key is a sidechain wallet. |
-| [nostr-rust-forum](https://github.com/DreamLab-AI/nostr-rust-forum) | Nostr-native forum + relay — the one place a human decision gets cryptographically signed |
-| [dreamlab-ai-website](https://github.com/DreamLab-AI/dreamlab-ai-website) | DreamLab AI company website — the commercial face, a thin consumer of the forum kit |
-| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | The published corpus at [narrativegoldmine.com](https://narrativegoldmine.com) — Obsidian-vault→OWL build (`ontomark build`), 8,100+ pages, ODbL-1.0 |
-
-Each sibling in its own words:
-
-<details>
-<summary><b>VisionFlow</b> — <em>Ecosystem canon</em></summary>
-<br/>
-
-> **Six honest systems can still assemble one collective lie — VisionFlow is the canon that stops that.** It holds the ADRs, PRDs, compatibility matrix and honest status ledger for a nine-repo human–AI mesh built on one wager: AI collapses the cost of routing information, so the human is promoted from router to judgment broker. This repo ships words, not runtime — and it is graded on their accuracy.
-
-</details>
-
-<details>
-<summary><b>VisionClaw</b> — <em>Flagship engine</em></summary>
-<br/>
-
-> **Agent swarms are invisible; VisionClaw makes them something you can stand inside and watch.** It reasons over a curated corpus with an OWL 2 EL engine (Whelk, 5,975 classes), settles the result as a 3D graph under GPU physics, and renders agents acting inside it — desktop and Quest 3 alike, every agent action drawn as a beam to the concept it touched. It observes and never signs: the engine you can watch is deliberately not the surface that can commit.
-
-</details>
-
-<details>
-<summary><b>agentbox</b> — <em>Sovereign agent runtime</em></summary>
-<br/>
-
-> **An agent runtime you can't reproduce is an audit you can't run — Agentbox is a byte-for-byte reproducible Nix container driven by one TOML manifest.** Every agent is minted its own `did:nostr` key at spawn, every durable write passes a privacy filter into a cryptographic audit trail, and what agents may touch is bounded by explicit fail-closed gates. Reproduce the runtime, audit every action, control every capability.
-
-</details>
-
-<details>
-<summary><b>solid-pod-rs</b> — <em>Rust Solid pod server</em></summary>
-<br/>
-
-> **Your data's exit right should sit in the floor, not be granted at the door — solid-pod-rs gives every human and agent a self-owned RDF pod under their own key.** A Rust-native Solid Protocol server with WAC access control and `did:nostr` identity; every write is a git-mark commit and high-value writes anchor to Bitcoin. Standards-based sovereignty: leave at any time, and take everything with you.
-
-</details>
-
-<details>
-<summary><b>sidestr-rs</b> — <em>Economic engine for did:nostr agents</em></summary>
-<br/>
-
-> **Rust port of Melvin Carvalho's sidestr sidechains, AGPL-3.0-only: the economic engine for `did:nostr` agents. A `did:nostr` key is a sidechain wallet.**
-
-</details>
-
-<details>
-<summary><b>nostr-rust-forum</b> — <em>Nostr-native forum + relay</em></summary>
-<br/>
-
-> **Machine coordination is cheap; accountable decisions are not — this forum is the one place in the mesh where a decision gets signed.** Humans and agents are the same kind of participant: each holds a `did:nostr` keypair and publishes Schnorr-signed events to an immutable log, so every governance outcome carries a human signature by construction. The kit ships vanilla — one TOML file stands up a community, no forking.
-
-</details>
-
-<details>
-<summary><b>dreamlab-ai-website</b> — <em>DreamLab AI company website</em></summary>
-<br/>
-
-> **The commercial face of the mesh, running on the mesh's own rails.** A React marketing site and a Rust/Leptos WASM community forum share one Cloudflare-edge origin, end-to-end encrypted where it matters. It is deliberately a thin consumer of the nostr-rust-forum kit — branding and zone config live here, the protocol lives upstream — living proof the kit stands up a real community without a fork.
-
-</details>
-
-<details>
-<summary><b>knowledgeGraph</b> — <em>The published corpus</em></summary>
-<br/>
-
-> **8,100+ ordinary Obsidian markdown pages (frontmatter-only OKF) that compile losslessly into a formal OWL 2 ontology — pure TBox, every page a class, zero individuals by design.** Corpus, pipeline, viewer and method ship as one open release (ODbL-1.0 data, AGPL-3.0 pipeline) published at narrativegoldmine.com; siblings reason over it (VisionClaw) and serve it as measured LLM grounding (Loom, ~0.94 grounded recall), and third-party extractors such as OntoCast stage RDF into it as governed, reviewable candidates. Rigorous curation is amortised once and reused per query — this repo is the once.
-
-</details>
-
-```
-knowledgeGraph  ──publishes──▶  a corpus GENERATION (OWL + reasoned closure + indexes)
- (corpus + pipeline + method)         │
-   built by `ontomark build`             ▼  mirror
-                                  ┌─────────┐   scaffold-inject     ┌────────────┐
-   agents / email / any client ──▶│  LOOM   │───────────────────▶ │  the model  │
-        (hold the Loom URL)       │ façade  │◀───────────────────  │ (swappable) │
-                                  └─────────┘   grounded answer     └────────────┘
-                                      ▲
-                              VisionClaw reasons over the same corpus (OWL 2 EL, Whelk-rs)
-```
-
-Loom is the *serving* half of a neurosymbolic pair. Its sibling [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) is the corpus, the pipeline and the method — *how the ontology gets built*. Loom is *how that checked graph gets served to ground an LLM at runtime*. Agentbox is a **client** of Loom's façade: the "one brain" ontology retrieval resolves through Loom ([ADR-051](docs/design/agentbox-ADR-051-loom-client-and-deferred-distillation.md)) instead of re-deriving index state locally, and deferred-distillation MCP tools let an agent submit a grounding job mid-turn, then await and fetch it out-of-band.
-
-**Self-improvement.** The fleet dreams through this door: a nightly [dream cycle](https://github.com/DreamLab-AI/dream-engine) queries the reasoned ontology so hypotheses restate checked facts, not parametric guesses — then opens a draft PR a human merges. *Evaluation is not promotion.*
-
----
-
-## Why — the measured result
-
-Grounding an LLM in a formal ontology is not a hunch here; it is measured, on two separate benchmarks that use different question sets and must not be pooled.
-
-**37-question local bench** (gold answers derived from the graph itself, paired raw-vs-grounded scoring with bootstrap 95% confidence intervals — `bench/`). Across two local models, static ontology scaffolding is a decisive, model-agnostic win on this bench:
-
-| Model | Raw (parametric) | + Loom scaffold | Paired uplift (95% CI) | Latency |
-|---|---|---|---|---|
-| Gemma-4-31B (local) | 0.146 | **0.939** | **+0.793** [+0.680, +0.894] | 31.5 s → 5.1 s |
-| Muse-Glimmer-30B (local) | 0.268 | **0.939** | **+0.671** [+0.527, +0.804] | 34.7 s → 9.8 s |
-
-**510-question single-model run** (2026-08-16, `gemini-3.7-flash`, a larger, separate question set; `temp=1.0`, `reasoning_effort=low`, `max_tokens=2048`). The paired delta is within-model and stays valid; absolute raw recall is not cell-for-cell comparable with the 37-question bench above:
-
-| Model | Raw (parametric) | + Loom scaffold | Paired uplift (95% CI) | Latency |
-|---|---|---|---|---|
-| Gemini 3.7 Flash (cloud) | 0.359 | **0.942** | **+0.583** [+0.546, +0.618] | 2.4 s → 1.2 s |
-
-Full provenance: [`docs/research/report-gemini-3.7-flash.md`](docs/research/report-gemini-3.7-flash.md).
-
-Across both benches, models land close to **~0.94** grounded from wildly different parametric baselines, and grounding is faster in every case measured. The lift concentrates where you'd want it — the niche domains a model doesn't already know (spatial-computing 0.23→0.97, distributed-collaboration 0.22→0.95, both on the 37-question bench) — and adds least where the model is already right. The stronger the model, the smaller the *uplift* it needs, but the grounded ceiling stays similar across both benches: the scaffold, not the specific model, explains most of the measured recall difference here; whether an ontology-structured scaffold beats a simpler retrieval baseline at equal budget is not tested by either bench (open question — see [`docs/research/README.md`](docs/research/README.md)).
-
-**What that uplift *is*, measured.** The paper *The Copy Ceiling: An Input-Exposure Control for Ontology-Grounded Generation over Curated Corpora* ([`docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf`](docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf); the revision now in preparation is tagged `paper-v10`) went further: it built this grounding system, then set out to challenge its own successful-looking evaluation. It introduces a *copy baseline* (the recall a verbatim copy of the shown context would already score) and reports the signed *gain over copy*, both judge-free. On this node the macro (question-averaged) copy ceiling is 0.964; pooled at the item level the exposed fraction is 0.933 — two different denominators, reported separately and never interchangeable. Across ten models from **eight developer families**, the gain over copy is uniformly negative (−0.067 to −0.022). The reading: on this metric the model's score is fully explained by restating names the context already showed it; the copy comparison tests what a recall score establishes, it does not test whether reasoning occurred — a negative gain does not prove the absence of reasoning, just as a positive one would not have proved graph-structured deduction (full account, including the worked two-edge example: [`docs/research/README.md`](docs/research/README.md)). The corpus evaluated is the scaffold-index snapshot generated 2026-08-15 (8,146 classes); this is distinct from the present visionGraph corpus, which has since migrated from Logseq to Obsidian (September 2026) and is published at [narrativegoldmine.com](https://narrativegoldmine.com) — word and page counts quoted against one should not be mixed with the other.
-
-Three findings from the 37-question local bench shaped Loom's defaults:
-
-1. **The structured scaffold carries most of the measured recall.** The taxonomy + typed-relation + definition extract is what `POST /loom/scaffold` returns, and it works with no model call at all.
-2. **On this bench, prepending generated prose to the structured scaffold added no measured recall over the structure alone** (+0.007 Muse / +0.000 Gemma). This bears on prose-vs-structure in the prompt, not on whether an LLM call is needed at all — `/loom/scaffold` returns text, not an answer to the user's question. Loom ships prose off the default path on this basis.
-3. **Agentic tool-traversal is model-dependent**, on the same bench. Gemma's best axis (0.973) but Muse's worst (0.649). So Loom defaults to *inject*, not *traverse*; the tools path stays available for models that traverse well.
-
-Evidence index: [`docs/research/README.md`](docs/research/README.md).
-
----
-
-## What — the façade
-
-One deployment-agnostic contract (`ADR-135` D1). The model is always a URL behind it (`DISTILL_BACKEND_URL`), never baked into the endpoint:
-
-| Endpoint | Purpose | Needs a model? |
-|---|---|---|
-| `GET  /health` | liveness + corpus generation stamp + backend/graph/index readiness | no |
-| `GET  /loom/generation` | the corpus generation identity being served | no |
-| `POST /loom/scaffold` | budget-clamped ontology grounding for a prompt (the retrieval facet) | **no** |
-| `POST /loom/sparql` | read-only, clamped SPARQL over the reasoned closure | no |
-| `POST /loom/search` | label/substring search over the store | no |
-| `POST /loom/attest` | record one human-signed governance decision (`{case_id, digest, outcome, signer, at}`) on the chain-hashed ledger → `201 {entry_id, chain_head}` (`ADR-141`; feature `attest`, default-on) | no |
-| `GET  /loom/attest/verify` | re-hash the whole ledger chain → `{ok, length}` | no |
-| `POST /mcp` | **the agentic plane** — MCP over Streamable HTTP: `loom.manifest`, `loom.browse`, `loom.resolve`, `loom.sparql`, `loom.neighbours`, `loom.paths`. Same index, same gate, same generation, same `grounding` contract as the routes above (`ADR-140` D1) | **no** |
-| `POST /v1/chat/completions` | scaffold-inject the last user message → delegate to the model; `loom_options.scaffold=false` makes the façade a plain proxy for that request | yes |
-| `GET  /v1/models` | model identity passthrough (probe what's behind the façade) | yes |
-
-```bash
-# grounding, no model required — works anywhere the corpus is mirrored
-curl -sXPOST localhost:8084/loom/scaffold \
-  -d '{"prompt":"how do zero-knowledge proofs relate to blockchain scalability?","budget_tokens":700}'
-
-# grounded generation — scaffold-injected, then delegated to the model behind the façade
-curl -sXPOST localhost:8084/v1/chat/completions \
-  -d '{"model":"qwen3.8-27B","messages":[{"role":"user","content":"what is a rollup?"}],"max_tokens":1536}'
-
-# the agentic plane — an agent drives retrieval itself, one O(1) manifest first
-curl -sXPOST localhost:8084/mcp \
-  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call",
-       "params":{"name":"loom.manifest","arguments":{"salience":40}}}'
-```
-
-**Two planes, one gate.** A consumer that cannot call tools keeps the injection plane exactly as it
-was; an agentic consumer drives `/mcp` and pays O(1) prompt cost in corpus size instead of
-O(matched blocks). Both resolve through the same `LexicalIndex::assemble` gate and stamp the same
-`grounding` object, so there is no second retrieval policy to keep in sync. `/mcp` is the door for
-hosts **outside** the estate; inside it, agents use the `vault` CLI and `loom-client` rather than
-any MCP transport (ADR-141).
-
-The response of a grounded completion carries a `loom` block (`injected_tokens`, `mode`, `grounding`, `fusion_path`, `generation`) so consumers can account for the grounding and prove which corpus generation produced the answer. `loom.grounding` is documented below and is present on every completion, engaged or not.
-
-### Confidence-aware selective injection
-
-Grounding is only helpful when the query is actually on-ontology. Research on *contextual interference* shows that injected context can **displace** the model's own parametric knowledge — models over-rely on retrieved evidence even when it is weak or off-topic. Loom uses the retrieval score as the confidence signal: a strong exact-title hit gets the full scaffold budget; a loose match gets a proportionally smaller one; a below-threshold match is skipped entirely.
-
-| Env var | Default | Set in `deploy/compose.profile-a.yml` | Meaning |
-|---|---|---|---|
-| `LOOM_CONFIDENCE_INJECTION` | `0` (off) | `1` | master switch |
-| `LOOM_STRONG_MATCH_SCORE` | `8.0` | `8.0` | at/above → full budget; also the `confidence` denominator |
-| `LOOM_MIN_INJECT_SCORE` | `2.0` | `2.0` | below → skip injection entirely |
-| `LOOM_MIN_INJECT_FRACTION` | `0.4` | `0.4` | weakest kept match gets this fraction of budget |
-
-> **Corrected 2026-09-02.** This table previously claimed the switch was `1` in the
-> HP compose. It was not: `deploy/compose.profile-a.yml` set none of these four
-> variables, so the reference deployment ran on the repo default (**off**). All
-> four are now set explicitly in that file, and `/health` echoes them back — so the
-> claim is checkable rather than asserted. **The HP container must be redeployed**
-> for the new values and the new `/health` blocks to take effect.
-
-#### The grounding block (the confidence surface)
-
-Every `POST /loom/scaffold` response carries a top-level `grounding` object, and
-every `POST /v1/chat/completions` response carries the same object at
-`loom.grounding`. It is **always present** — a skipped request reports a skip, it
-does not omit the block. `confidence` is `clamp(top_score / strong_match_score, 0, 1)`
-on the scale named by `score_scale`; a score is only comparable within its scale.
-
-```jsonc
-"grounding": {
-  "signal": "lexical",              // lexical | semantic | none
-  "top_score": 10.75,               // null when nothing matched
-  "score_scale": "lexical-additive",// lexical-additive | cosine
-  "confidence": 1.0,                // clamp(top_score / strong_match_score, 0, 1)
-  "decision": "full",               // full | scaled | skipped | verbatim
-  "threshold": 2.0,                 // the min_inject_score this was judged against
-  "effective_budget": 1500,         // null when skipped
-  "engaged": true,
-  "seeds": [
-    { "iri": "urn:ngm:class:rollup", "score": 10.75, "confidence": 1.0,
-      "quality": null, "provenance": "lexical", "injected": true }
-  ]
-}
-```
-
-`GET /health` gains three blocks that make the gate legible without a request:
-`injection_policy` (the four knobs above plus `score_scale`), `serving`
-(`verbatim_mode`, `verbatim_threshold`, `semantic_fallback`, `semantic_min_inject`)
-and `confidence` — a rolling 1,000-request window of `requests` / `engaged` /
-`skipped` / `scaled` / `full` / `verbatim` / `mean_confidence`.
-
-Three evaluators hold this contract (they are the `dream.config.json` entrypoints):
-
-```bash
-curl -s http://127.0.0.1:8084/health | cargo run -q -p loom-facade --bin confidence-check
-curl -s http://127.0.0.1:8084/health | cargo run -q -p loom-facade --bin graph-check
-LOOM_URL=http://127.0.0.1:8084 cargo test -q -p loom-facade --test contract_live
-```
-
-Rationale and the falsification that prompted it: [`docs/design/ADR-138-confidence-surfacing-contract.md`](docs/design/ADR-138-confidence-surfacing-contract.md).
-
-### Findings-driven serving controls
-
-Three controls, each shipped default-off, following the paper's serving-regime finding:
-
-- **Verbatim serving** (`LOOM_VERBATIM_MODE`) — on a high-confidence lookup, serve the canonical markdown block directly and skip the model call entirely. The serving-regime finding made operational.
-- **Exposure telemetry** (`LOOM_EXPOSURE_APPEND`) — the `loom` block carries a per-answer `exposure` object (targets/delivered/dropped); this opt-in also appends a "Not covered above" line when titles are dropped.
-- **Thinking control** (`LOOM_BACKEND_NO_THINK`, `LOOM_THINK_TOKEN_FLOOR`) — disable reasoning on gate-engaged requests and hold a token floor so reasoning cannot starve the answer.
-
-### Per-request options (`loom_options`)
-
-A consumer holds the façade as the stable model door even when its subject is not in the
-ontology. Two Loom-private keys, stripped before delegation so the backend never sees them:
-
-- `{"loom_options": {"verbatim": false}}` — decline a verbatim serve for this request; the
-  scaffold is still injected (`grounding.status: opt-out`).
-- `{"loom_options": {"scaffold": false}}` — ask for the model alone: no retrieval, no
-  injection, no verbatim, no thinking control. The response carries
-  `loom.served_mode: passthrough`, `grounding.status: passthrough`,
-  `corpus_backed: false`, and the request is not counted in the confidence window. Use it
-  for a codebase, a private document, or any subject the corpus does not cover: the
-  scaffold's lexical gate would otherwise match a stray word (a request about a test
-  script's `node` step once served the blockchain *Node* class verbatim). Rationale:
-  [`docs/design/ADR-139-per-request-scaffold-opt-out.md`](docs/design/ADR-139-per-request-scaffold-opt-out.md).
-
-```bash
-# the model alone, through the same door — nothing from the ontology touches the prompt
-curl -sXPOST localhost:8084/v1/chat/completions \
-  -d '{"messages":[{"role":"user","content":"Explain what scripts/verify.sh runs."}],
-       "max_tokens":1536,"loom_options":{"scaffold":false}}'
-```
-
-Protocol detail: [`bench/UPLIFT-BENCH-PROTOCOL.md`](bench/UPLIFT-BENCH-PROTOCOL.md).
-
----
+Use it to ground an assistant in a curated vocabulary, inspect relationships without a model, compare serving policies, or give a tool-using agent access to the same published generation. Formal checks concern the producer's supported logical profile; they do not establish that the corpus's assertions or a generated answer are factually correct.
 
 ## Quickstart
 
-Loom is a **single static Rust binary** — no interpreter, no wheel. The workspace is an eight-crate hexagonal ring (`ADR-090`): a pure `loom-domain` core with port traits, five adapters, the `loom-scaffold` policy crate, and a thin `loom-facade` axum binary.
+Clone the repository and inspect its build requirements before compiling. The workspace declares Rust 1.89; the [task runner](justfile) defines the feature-plane and dependency checks. Some adapters use sibling source dependencies: consult [`Cargo.toml`](Cargo.toml) and the [build architecture](docs/design/RUST-ARCHITECTURE.md) rather than treating this as a self-contained `cargo install` package.
 
-### Build & test
-
-```bash
+```sh
 git clone https://github.com/DreamLab-AI/loom.git
 cd loom
-just            # list recipes
-just build      # gate 1 — compiles on BOTH feature planes (all-features + no-default-features)
-just test       # gate 2 — byte-golden scaffold parity, SPARQL clamp, router oneshot
-just clippy     # gate 3 — clippy pedantic, warnings-as-errors
-just deny       # gate 4 — licence + advisory gate (deny.toml)
-just ci         # the full green bar (gates 1–4)
+just --list
+just build
+just test
 ```
 
-### Deploy
+`just ci` additionally runs formatting, strict Clippy and dependency-policy checks. These commands are the verification procedure, not a claim that this README refresh reran the whole workspace.
 
-Two compose profiles (`ADR-137` D8; files under `deploy/`):
+A useful server needs a **complete corpus bundle**, not just a reachable model. Follow [published-generation reload](docs/published-generation-reload.md) and [the publishing decision](docs/design/ADR-142-consume-versioned-shared-ontology-contracts.md) to build, promote and verify the intended generation. The compose profiles mount **repository-root `data/`** read-only at `/app/data`.
 
-```bash
-just docker-build     # multi-stage static musl build
-just docker-run-a     # Profile A — host-colocated on HP (network_mode: host, :8084)
-just docker-run-b     # Profile B — sidecar on visionclaw_network (:8080)
+<details>
+<summary><strong>Deployment profiles and the legacy mirror trap</strong></summary>
+
+[`deploy/compose.profile-a.yml`](deploy/compose.profile-a.yml) describes a model-colocated deployment on port 8084; [`deploy/compose.profile-b.yml`](deploy/compose.profile-b.yml) describes a GPU-free sidecar on `visionclaw_network`, port 8080. The sidecar delegates to a separately configured model service. Run Docker builds and bind-mounted deployments on the deployment host: bind paths resolve there, not inside an agent container.
+
+The retained [`app/mirror.sh`](app/mirror.sh) writes its four-file mirror to **`app/data/`**, which neither compose profile mounts as its corpus directory. It is also insufficient for the newer strict reload path, which requires six artefacts and the corresponding marker, digests and semantic-generation metadata. Copying four files into root `data/` is not a complete promotion procedure.
+
+Use the current promotion/reload runbook. Inspect the loaded generation and index readiness after activation. A 200 response from `/health` can coexist with missing corpus data; liveness alone does not establish usable grounding. Keep the prior verified generation for rollback.
+
+</details>
+
+## Use the serving interface
+
+Assuming the port-8084 profile is configured and has loaded a corpus:
+
+```sh
+# Retrieval only: no model call.
+curl -fsS http://localhost:8084/loom/scaffold \
+  -H 'Content-Type: application/json' \
+  -d '{"prompt":"what is a rollup?","budget_tokens":700}'
+
+# Retrieve, then delegate to the configured backend.
+curl -fsS http://localhost:8084/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"messages":[{"role":"user","content":"what is a rollup?"}],"max_tokens":1536}'
+
+# For a subject outside this corpus: explicit model passthrough.
+curl -fsS http://localhost:8084/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"messages":[{"role":"user","content":"Explain this code review."}],"max_tokens":1536,"loom_options":{"scaffold":false}}'
 ```
 
-- **Profile A — host-colocated on HP (reference).** GPU-colocated with the model (`loom-model` Qwen3.8-27B on `:8085`); the augmentation hot path is fully in-process. `hp-nat.service` DNATs `:8084` onto the LAN.
-- **Profile B — sidecar on `visionclaw_network`.** GPU-free, delegates the model by URL; it is the consumer-facing door (the email gateway binds `REASONER_BASE_URL=http://loom:8080/v1`).
+The last example supplies no review content; add the material you want the backend to consider. Passthrough deliberately performs no corpus retrieval and reports `corpus_backed: false`. A model response through the Loom URL is therefore not automatically a grounded response.
 
-Both profiles serve **byte-identical generations** for the same `commitSha`. The corpus is not baked: `app/mirror.sh` pulls the published, sha-addressable generation from [narrativegoldmine.com](https://narrativegoldmine.com) atomically, so Loom always serves a known generation.
+| Endpoint | Purpose | Model needed |
+|---|---|---|
+| `GET /health` | Liveness, loaded generation, graph/index/backend readiness and policy | No |
+| `GET /loom/generation` | Identity of the generation being served | No |
+| `POST /loom/scaffold` | Budget-clamped retrieval/context assembly | No |
+| `POST /loom/search` | Store search | No |
+| `POST /loom/sparql` | Read-only, bounded query | No |
+| `POST /mcp` | Streamable HTTP tools: manifest, browse, resolve, SPARQL, neighbours and paths | No |
+| `POST /v1/chat/completions` | Context injection, optional verbatim serving or passthrough | For delegated generation |
+| `GET /v1/models` | Backend model discovery | Backend required |
+| `/loom/attest` and `/loom/attest/verify` | Feature-dependent attestation ledger and chain verification | No |
 
-Since 2026-08-14 the reference deployment ships the model engine **inside this stack**: the `loom-model` container serves **Qwen3.8-27B** (Heretic abliterated Q8_0, ~19.5 tok/s) via llama.cpp on `:8085` (262 K native context, embedded-MTP speculative decoding n=3). Model reference: [`docs/QWEN3.8-CONNECTION.md`](docs/QWEN3.8-CONNECTION.md). Connect a LAN machine: [`docs/REMOTE-CLIENT-SETUP.md`](docs/REMOTE-CLIENT-SETUP.md).
+An attestation entry and a rehashed ledger are not proof that a model answer is true or that the whole estate's governance loop is complete. Read the route and signer contract before integrating that optional surface.
 
-> **⚠️ Canonical artefact dir is `data/` at the repo root — the "empty floor" trap.**
-> Both compose profiles bind-mount `../data` (i.e. `<repo>/data/`) to `/app/data:ro`. The
-> generation artefacts (`scaffold-index.json`, `prose-index.json`, `ontology.ttl`,
-> `ontology-inferred.ttl`, `ontology-corpus.rvdb`) **must live in `<repo>/data/`.**
-> `app/data/` is a **legacy Python-layout path** and is **not mounted** — anything there is invisible
-> to the container.
->
-> `data/` is **untracked** (see `.gitignore`): the artefacts are generated per generation and a `git pull`
-> must never replace or delete the bundle being served.
->
-> **Mirror discrepancy (root cause, not yet fixed in code):** `app/mirror.sh` resolves its target as
-> `dirname(mirror.sh)/data` → it writes to **`app/data/`**, *not* the mounted `<repo>/data/`. So a
-> fresh mirror populates the legacy dir while the container reads the (empty) canonical dir. Until
-> `mirror.sh` is repointed at `<repo>/data/`, run it and then copy/sync the four artefacts into
-> `<repo>/data/` before `up`. **Do not edit `mirror.sh` as part of this note** — the fix is tracked
-> separately; this is the operational workaround.
->
-> **Failure fingerprint:** logs say `lexical index NOT loaded; serving on an empty floor` **while
-> `/health` still returns 200**. That combination is an **artefact-path problem, not a dead
-> container** — the process is up and answering; it just found no corpus in `data/`. Fix the path,
-> restart; do not rebuild or replace the container.
-
----
-
-## Architecture
+## How it works
 
 ```mermaid
 flowchart TB
-    subgraph KG["knowledgeGraph — corpus + pipeline"]
-        direction LR
-        VAULT["visionGraph Obsidian vault\n(8,100+ pages, ODbL)"]
-        PIPE["ontomark build\n(Rust, ADR-141)"]
-        GEN["Published GENERATION\n(OWL + closure + indexes)"]
-        VAULT --> PIPE --> GEN
-    end
-
-    subgraph LOOM["Loom — the grounding node"]
-        direction TB
-        MIRROR["Atomic generation\nmirror (sha-verified)"]
-        LEX["Lexical inverted index\n(title + relation scoring)"]
-        OX["Oxigraph SPARQL\n(reasoned closure)"]
-        CONF["Confidence gate\n(selective injection)"]
-        FAC["Façade\n(/v1 + /loom endpoints)"]
-        MIRROR --> LEX & OX
-        LEX & OX --> CONF --> FAC
-    end
-
-    subgraph MODEL["Model (swappable)"]
-        LLM["Qwen3.8 / Gemma / Muse\n/ next (a URL behind the door)"]
-    end
-
-    subgraph CONSUMERS["Consumers (hold the Loom URL)"]
-        AB["agentbox agents"]
-        EMAIL["email gateway"]
-        DREAM["dream engine"]
-        ANY["any /v1 client"]
-    end
-
-    GEN -->|"mirror.sh"| MIRROR
-    FAC -->|"scaffold-inject"| LLM
-    LLM -->|"grounded answer"| FAC
-    CONSUMERS --> FAC
-
-    style KG fill:#0a2a1a,stroke:#10b981,color:#fff
-    style LOOM fill:#1a1a2e,stroke:#e94560,color:#fff
-    style MODEL fill:#0a1a2a,stroke:#00d4ff,color:#fff
-    style CONSUMERS fill:#2a1a0a,stroke:#f59e0b,color:#fff
+    NOTES["Upstream Markdown corpus"] --> BUILD["Pinned Ontomark build"]
+    BUILD --> BUNDLE["Identified public bundle"]
+    BUNDLE --> PROMOTE["Verify, promote and reload"]
+    PROMOTE --> INDEX["Lexical and optional semantic indexes"]
+    PROMOTE --> GRAPH["Oxigraph: asserted and inferred RDF"]
+    INDEX --> POLICY["Retrieval and serving policy"]
+    GRAPH --> POLICY
+    CLIENT["Client or agent"] --> FACADE["Loom routes"]
+    FACADE --> POLICY
+    POLICY --> CONTEXT["Selected context and generation metadata"]
+    CONTEXT --> BACKEND["Configured model URL"]
+    BACKEND --> ANSWER["Answer and serving metadata"]
+    CONTEXT -->|"Optional verbatim mode"| ANSWER
 ```
 
-The crate graph is the enforcement mechanism for THE PRIZE: an adapter physically cannot return its own row/triple/vector shape as the served unit, because only `loom-domain` mints a `CanonicalUnit`. Design: [`docs/design/RUST-ARCHITECTURE.md`](docs/design/RUST-ARCHITECTURE.md).
+Shared producer contracts give readers compatible scaffold/prose structures without making Loom an ontology compiler. Runtime stores and indexes are rebuildable serving projections. The [crate architecture](docs/design/RUST-ARCHITECTURE.md) separates domain types, adapters, scaffold policy, façade and benchmark tooling. The current workspace also includes `loom-bench`; the older eight-crate badge is no longer a complete census.
 
----
+<details>
+<summary><strong>Confidence, optional serving controls and per-request policy</strong></summary>
 
-## Boundary — the Loom is the ontology only
+Retrieval confidence is a score-derived policy signal, not a calibrated probability of truth. Scores are comparable only within the reported scale. The `grounding` block records whether selection was full, scaled, skipped, verbatim or passthrough and exposes the relevant budget/seed information.
 
-The Loom serves the **published ontology** (the reasoned generation) and nothing else. It **never reads or mirrors the working graph** (personal/working notes, which may become multi-user or private). Uplift *into* the ontology happens through VisionClaw's governed propose door, the forum/ACSP surface, or direct agentic writes into the corpus — never the Loom; the new generation is then mirrored here read-only.
+- `LOOM_CONFIDENCE_INJECTION` enables score-based selective injection. Strong and minimum-match thresholds and the minimum budget fraction are configured independently. Inspect the selected compose profile and `/health`; defaults and deployed values differ.
+- `LOOM_VERBATIM_MODE` can return a canonical block without calling the backend.
+- Exposure telemetry reports what was delivered or dropped; `LOOM_EXPOSURE_APPEND` optionally adds a coverage line.
+- `LOOM_BACKEND_NO_THINK` and thinking-token controls affect delegated generation on their configured paths.
+- `loom_options.verbatim=false` declines verbatim serving while retaining scaffold processing. `loom_options.scaffold=false` bypasses retrieval, injection, verbatim and associated thinking controls for that request.
 
----
+See [confidence surfacing](docs/design/ADR-138-confidence-surfacing-contract.md), [scaffold opt-out](docs/design/ADR-139-per-request-scaffold-opt-out.md) and [the benchmark protocol](bench/UPLIFT-BENCH-PROTOCOL.md). Backend compatibility and available models still need checking when the configured URL changes.
 
-## Status & honesty
+</details>
 
-Honest state as of **2026-08-18**. Maturity words follow the ADR-002 ladder (*scaffolded / integrated / released*). Loom is a research/dev system on the DreamLab estate; this section is the honest split between what is built and what is gated off.
+## What the measurements establish
 
-| Capability | Maturity | Honest boundary |
-|:-----------|:---------|:----------------|
-| Lexical retrieval + confidence-gated injection | released | Ported constant-for-constant; served markdown byte-identical to the Python original on golden fixtures. |
-| Native oxigraph SPARQL | released | Read-only clamp *stronger* than Python's (PREFIX/BASE-prologue-aware LIMIT injection). |
-| The façade (all `/v1/*` and `/loom/*` endpoints) | released | Both compose profiles, `max_tokens` floor, atomic generation-verified mirror. |
-| Corpus generation served | released | 8,146 concept classes, ~282k triples in the reasoned closure, one sha-addressable generation. |
-| Findings-driven serving controls (F1–F3) | integrated | Verbatim serving, exposure telemetry, thinking control — wired, default-off, per-deployment opt-in. |
-| HNSW semantic fallback (RuVector) | gated off | Recall gate RED: `rgb-protocol 0.816`, below the `0.87` recorded implementation acceptance floor (not a value derived from a calibration study — see [`docs/research/README.md`](docs/research/README.md)). Wiring done and tested; the default does not change until the multivariate bench passes. |
-| Two-profile generation parity (A≡B) | integrated | Code implements both; the live health assertion runs at deployment cutover. |
-| Platform for any ontology connector | planned | Stated plainly: today Loom is one node with a provider-plugin seam. "Platform" is earned when a second provider lands. |
+Loom's experiments measure retrieval and answer behaviour on identified corpus snapshots. They support faithful delivery of curated facts under the tested policies; a headline recall gain does not by itself establish reasoning, precision, attribution accuracy or transfer to another corpus.
 
-The eight-crate hexagonal Rust workspace is built, gate-green (`just ci`), and was adversarially audited by a different model family (gpt-5.4) with all five findings remediated — [`.claude/evidence/AUDIT-gpt54.md`](.claude/evidence/AUDIT-gpt54.md).
+The [research index](docs/research/README.md) identifies the current manuscript and superseded versions. Its copy-control analysis distinguishes facts already exposed in context from recovered answers. Preserve that control when quoting the older approximately 0.94 grounded-recall figures; they are not a guarantee for arbitrary models or queries.
 
-**Provenance.** The corpus it serves is **AI-generated synthetic content produced under human direction, by design** — an ontology testbed, not an authoritative encyclopaedia. Every grounded answer is traceable to a corpus generation; that provenance attests traceable generation, not human authorship.
+<details>
+<summary><strong>October pilot: injection versus tool traversal</strong></summary>
 
----
+The [13 October pilot](docs/research/p1-pilot/RESULT.md) compared two arms on 40 preregistered questions using one generation. Lookup recall was similar, with substantially higher token and latency costs for tools. The path stratum favoured tools, but its gold came from the path tool and the injection arm often hit its output cap. The pooled confidence interval included zero. This pilot does not establish a general routing rule or universal tool-use advantage.
 
-## Documentation
+The [preregistration](bench/p1-pilot/PREREGISTRATION.md), raw results and scoring record make the limits inspectable. `loom-bench` is the new evaluation component since the previous README update; its existence is not a new production-grounding guarantee.
 
-**Operators** — [Docs hub](docs/README.md) · [Qwen3.8 connection](docs/QWEN3.8-CONNECTION.md) · [Remote client setup](docs/REMOTE-CLIENT-SETUP.md) · [Bench protocol](bench/UPLIFT-BENCH-PROTOCOL.md)
+</details>
 
-**Design** — [PRD-025](docs/design/PRD-025-ontology-loom-and-connector-platform.md) (product capstone) · [ADR-135](docs/design/ADR-135-ontology-loom-node.md) (keystone node boundary) · [ADR-137](docs/design/ADR-137-loom-rust-replatform.md) (Rust re-platform) · [RUST-ARCHITECTURE.md](docs/design/RUST-ARCHITECTURE.md) (build blueprint) · [DDD bounded context](docs/design/ddd-ontology-loom-context.md) · [Positioning](docs/design/LOOM-POSITIONING.md) · [agentbox ADR-051](docs/design/agentbox-ADR-051-loom-client-and-deferred-distillation.md) (harness client)
+## Working status
 
-**Research** — [Evidence index](docs/research/README.md) · [Input-exposure control paper](docs/research/gain-over-copy-paper/gain-over-copy-paper.pdf) · [Ontology uplift report](docs/research/ontology-uplift-report.pdf) · [Gemini 3.7 Flash report](docs/research/report-gemini-3.7-flash.md) · [Local model report](docs/research/report.md)
+**Source reviewed 21 October 2026 at `e2e4273`.** The source includes lexical retrieval, native SPARQL, the serving routes, the MCP plane and strict generation-reload tooling. Optional semantic fallback remains gated in the reference configurations. Activation is deployment-specific.
 
-**Audit** — [Evidence directory](.claude/evidence/) · [gpt-5.4 adversarial audit](.claude/evidence/AUDIT-gpt54.md)
+The [ADR-142 receipt](docs/design/ADR-142-consume-versioned-shared-ontology-contracts.md) records a first served Ontomark bundle on **12 October 2026**, generation `visionGraph@45976a8c…`, with verified identity and health observations. That replaces the earlier claim that first promotion was still pending. It is dated evidence, not a probe of today's server. [`deploy/ontomark-release.env`](deploy/ontomark-release.env) remains a separate, older publishing CLI pin and must not be read as the version embedded by every consumer.
 
----
+No live deployment, fresh full workspace test, recall benchmark or model-to-model parity run was performed for this README refresh. A new backend, corpus or profile requires its own acceptance evidence. The node serves the public generation; private working notes and ontology promotion belong to their owning systems.
 
-## Licence
+## Where it sits in VisionFlow
 
-Code: dual-licensed [MIT](LICENSE-MIT) OR [Apache-2.0](LICENSE-APACHE), at your option — the Rust ecosystem convention. Relicensed from AGPL-3.0-only in 2026-09; every contributor to this repository is DreamLab-AI, and no dependency forces copyleft (RocksDB reaches us through `oxrocksdb-sys`, which is `GPL-2.0 OR Apache-2.0`, and we elect Apache-2.0 — `deny.toml` enforces that election).
+| Project | Relationship |
+|---|---|
+| [VisionFlow](https://github.com/DreamLab-AI/VisionFlow) | Architecture, cross-estate compatibility and status |
+| [Ontomark](https://github.com/DreamLab-AI/ontomark) | Shared producer and typed bundle contracts |
+| [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) | Public corpus distribution; its retained archive differs from current publication |
+| [Agentbox](https://github.com/DreamLab-AI/agentbox) | Configured agent/CLI clients and product-specific integration |
+| [VisionClaw](https://github.com/DreamLab-AI/VisionClaw) | Knowledge application and governed write paths; independently loaded projections |
 
-Corpus/data terms are separate and unchanged: see the sibling [knowledgeGraph](https://github.com/DreamLab-AI/knowledgeGraph) licensing (ODbL-1.0 for the corpus, AGPL-3.0 for the pipeline).
+Loom assembles context. It does not grant an agent permission to change the ontology or sign a human decision, and it does not own every consumer's deployment.
 
----
+## Documentation and licence
 
-<div align="center">
+[Docs hub](docs/README.md) · [Reload runbook](docs/published-generation-reload.md) · [Research evidence](docs/research/README.md) · [Architecture](docs/design/RUST-ARCHITECTURE.md) · [Remote clients](docs/REMOTE-CLIENT-SETUP.md)
 
-**Part of [VisionFlow](https://github.com/DreamLab-AI/VisionFlow)** — Loom grounds the answers; [VisionClaw](https://github.com/DreamLab-AI/VisionClaw) reasons over the same corpus; [agentbox](https://github.com/DreamLab-AI/agentbox) runs the agents; [solid-pod-rs](https://github.com/DreamLab-AI/solid-pod-rs) stores sovereignly; [sidestr-rs](https://github.com/DreamLab-AI/sidestr-rs) is the economic engine, where a `did:nostr` key is a sidechain wallet; the [forum](https://github.com/DreamLab-AI/nostr-rust-forum) and [website](https://github.com/DreamLab-AI/dreamlab-ai-website) provide governance and operator surfaces.
-
-[Documentation](docs/README.md) · [Issues](https://github.com/DreamLab-AI/loom/issues) · [Evidence](.claude/evidence/)
-
-</div>
+Code is **MIT OR Apache-2.0**: [MIT](LICENSE-MIT), [Apache](LICENSE-APACHE). Corpus/data and third-party terms are separate; consult the producer's notices. Maintained by [DreamLab AI](https://www.dreamlab-ai.com/) and [John O'Hare](https://github.com/jjohare).
