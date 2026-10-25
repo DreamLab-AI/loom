@@ -187,6 +187,7 @@ pub struct TestEnvBuilder {
     ledger_path: Option<String>,
     profile: Option<String>,
     data_dir: Option<std::path::PathBuf>,
+    jev: Option<loom_facade::jev::JevConfig>,
 }
 
 impl TestEnvBuilder {
@@ -209,7 +210,14 @@ impl TestEnvBuilder {
             ledger_path: None,
             profile: None,
             data_dir: None,
+            jev: None,
         }
+    }
+
+    /// Jev option settings (default: the off default).
+    pub fn with_jev(mut self, jev: loom_facade::jev::JevConfig) -> Self {
+        self.jev = Some(jev);
+        self
     }
 
     /// Build over an EXTERNAL data directory instead of a private tempdir, so
@@ -355,6 +363,7 @@ impl TestEnvBuilder {
             exposure_append: self.exposure_append,
             backend_no_think: self.backend_no_think,
             think_token_floor: self.think_token_floor,
+            jev: self.jev.clone().unwrap_or_default(),
             deploy_profile: self
                 .profile
                 .clone()

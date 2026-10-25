@@ -14,6 +14,7 @@ pub mod bundle;
 pub mod config;
 pub mod error;
 pub mod fusion;
+pub mod jev;
 pub mod mcp_host;
 pub mod mirror;
 pub mod reload;

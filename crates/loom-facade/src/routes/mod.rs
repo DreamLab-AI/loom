@@ -35,6 +35,7 @@ use loom_scaffold::tuning::SYSTEM_PREAMBLE;
 
 use crate::error::ApiError;
 use crate::fusion::build_scaffold;
+use crate::jev;
 use crate::serving;
 use crate::state::AppState;
 
@@ -369,9 +370,22 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
     let mut new_msgs = messages;
     let mut scaffold: Option<Scaffold> = None;
 
+    // Jev option (default off): the query kept for the post-generation support
+    // annotation, and the per-request report of what the Jev stages did.
+    let jev_query = last_user_text.clone().filter(|_| !flags.passthrough);
+    let mut jev_report = jev::JevReport::default();
+
     if let Some(text) = last_user_text.filter(|_| !flags.passthrough) {
-        match build_scaffold(&st, &text, opts).await {
-            Ok(s) => scaffold = Some(s),
+        match build_scaffold(&st, &text, opts.clone()).await {
+            Ok(s) => {
+                // Jev stages run AFTER retrieval, the generation guard and the
+                // scaffold=false opt-out (which skips this block entirely).
+                scaffold = Some(if st.config.jev.enabled {
+                    jev_stages(&st, &text, &opts, s, &mut jev_report).await
+                } else {
+                    s
+                });
+            }
             Err(e) => {
                 // Parity with Python: a scaffold failure skips injection and
                 // still delegates the raw prompt (never 500s the chat path).
@@ -453,6 +467,15 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
                     injected,
                     ServedMode::delegated(flags.passthrough),
                 );
+                if st.config.jev.enabled {
+                    if let (Some(q), Some(s)) = (jev_query.as_deref(), scaffold.as_ref()) {
+                        let answer = serving::answer_text(&out);
+                        jev::check_support(&st.config.jev, q, s, &answer, &mut jev_report).await;
+                    }
+                    if let (Some(j), Value::Object(map)) = (jev_report.to_json(), &mut out) {
+                        map.insert("jev".to_owned(), j);
+                    }
+                }
             }
             (status, Json(out)).into_response()
         }
@@ -465,6 +488,28 @@ async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
             (code, Json(body)).into_response()
         }
     }
+}
+
+/// The Jev stages in order: gate (may withhold), then rank (may reorder). Each
+/// is a no-op that returns its input on any fallback.
+async fn jev_stages(
+    st: &AppState,
+    query: &str,
+    opts: &ScaffoldOpts,
+    scaffold: Scaffold,
+    report: &mut jev::JevReport,
+) -> Scaffold {
+    let cfg = &st.config.jev;
+    let scaffold = jev::apply_gate(
+        cfg,
+        st.retriever.as_ref(),
+        st.policy.min_inject_score,
+        query,
+        scaffold,
+        report,
+    )
+    .await;
+    jev::apply_rank(cfg, st.retriever.as_ref(), query, opts, scaffold, report).await
 }
 
 /// Proxy opaque upstream SSE without inventing completion chunks or buffering.

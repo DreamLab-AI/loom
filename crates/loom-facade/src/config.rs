@@ -93,6 +93,11 @@ pub struct Config {
     /// that every generation reload is — a ledger in a tmpfs would record
     /// governance decisions only until the next promotion.
     pub ledger_path: String,
+
+    // --- Jev option (typed decisions; default OFF = current behaviour) ---
+    /// `LOOM_JEV` (0) and the `LOOM_JEV_*` family: the opt-in System One gate
+    /// (LM-01) and evidence rank/support (LM-02). See [`crate::jev`].
+    pub jev: crate::jev::JevConfig,
 }
 
 impl Config {
@@ -128,6 +133,7 @@ impl Config {
             backend_no_think: env_bool("LOOM_BACKEND_NO_THINK", d.backend_no_think),
             think_token_floor: env_parse("LOOM_THINK_TOKEN_FLOOR", d.think_token_floor),
             ledger_path: env_string("LOOM_LEDGER_PATH", d.ledger_path),
+            jev: crate::jev::JevConfig::from_env(),
         }
     }
 
@@ -169,6 +175,7 @@ impl Default for Config {
             backend_no_think: false,       // F3 OFF ⇒ current behaviour preserved
             think_token_floor: 0,          // OFF by default; Profile A sets 1536 explicitly
             ledger_path: "data/ledger.jsonl".to_owned(),
+            jev: crate::jev::JevConfig::default(),
         }
     }
 }
