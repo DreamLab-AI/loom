@@ -26,6 +26,18 @@ services:
       # (every attestation failed EROFS). Backed by the loom-ledger volume.
       LOOM_LEDGER_PATH: "/var/lib/loom/ledger.jsonl"
       LOOM_DEPLOY_PROFILE: "a"
+      # Profile A runs on another host: supply a reachable sovereign endpoint.
+      # An empty endpoint falls open; never forward private evidence to a cloud vendor.
+      LOOM_JEV: "${LOOM_JEV:-1}"
+      LOOM_JEV_GATE: "1"
+      LOOM_JEV_RANK: "1"
+      LOOM_JEV_SUPPORT: "1"
+      LOOM_JEV_ENDPOINT: "${LOOM_JEV_ENDPOINT:-}"
+      LOOM_JEV_MODEL: "${LOOM_JEV_MODEL:-laya-typed-decisions}"
+      LOOM_JEV_LOCAL: "1"
+      LOOM_JEV_ALLOW_CLOUD: "0"
+      LOOM_JEV_TIMEOUT_MS: "4000"
+      # Gate stays advisory: no fitted LOOM_JEV_GATE_MIN_CONFIDENCE yet.
       # The model-swap seam: loom-model Qwen3.8-27B on the host loopback, GPU-colocated.
       DISTILL_BACKEND_URL: "http://127.0.0.1:8085/v1"
       # In-proc HNSW artifact is present but gated OFF until the recall bench clears (§8.4).
