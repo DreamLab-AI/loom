@@ -112,7 +112,7 @@ SWE-bench Pro 61.7 vs 51.2, OSWorld 84.3 vs 65.9, GPQA 89.2 vs 83.5, IFBench 79.
 - **Quant:** deployed model **Hemmingway-1.5 Q8_0** (2026-10-29 addendum); previously **Heretic abliterated Q8_0**; base
   unsloth **`UD-Q8_K_XL`** (31.5 GB, Unsloth Dynamic v3, maximal for 48 GB with full context)
   retained as rollback. Vision: `mmproj-BF16`.
-- **Backend:** llama.cpp `llama-server` (pinned commit `cc83d7b4`, CUDA sm_75) in the
+- **Backend:** llama.cpp `llama-server` (release b11982, commit `8a199ad3`, CUDA sm_75; image `loom-model:b11982`, rollback `loom-model:local` = `cc83d7b4`) in the
   `loom-model` container (`~/githubs/loom/docker-compose.yml`).
 - **Hardware:** 2× Quadro RTX 6000 (Turing, 24 GB each), layer-split.
 - **Capabilities:** text + **vision** (images/video frames), **tool calling**,
@@ -222,5 +222,5 @@ request `xhigh` explicitly for hard tasks). Chain-of-thought arrives in
 
 ---
 
-_Server: `loom-model` container (llama.cpp `cc83d7b4`, CUDA sm_75) · model
-`unsloth/Qwen3.8-27B-GGUF:UD-Q8_K_XL` + `mmproj-BF16` · host `10.10.10.1:8085`._
+_Server: `loom-model` container (llama.cpp b11982 `8a199ad3`, CUDA sm_75) · model
+`bartowski/HemmingwayAI_Hemmingway-1.5-GGUF:Q8_0` + Qwen3.8 `mmproj-BF16` · host `10.10.10.1:8085`._

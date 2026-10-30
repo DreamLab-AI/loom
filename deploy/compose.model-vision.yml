@@ -12,7 +12,7 @@
 name: loom-model
 services:
   model:
-    image: loom-model:local
+    image: loom-model:b11982  # llama.cpp b11982; rollback: loom-model:local (cc83d7b)
     container_name: loom-model
     entrypoint: [bash, /usr/local/bin/serve-qwen38.sh]
     network_mode: host
