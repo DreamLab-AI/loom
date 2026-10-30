@@ -1,6 +1,14 @@
-# HP's shared Qwen model: text, tools and image input through the Loom facade.
-# Retain the matching Qwen Jinja template and disable DFlash: the pinned server
-# does not support that speculative decoder with image turns. No new LAN port.
+# HP's shared model: text, tools and image input through the Loom facade.
+# Deployed 2026-10-29: HemmingwayAI/Hemmingway-1.5 (a Qwen3.8-27B finetune) at
+# Q8_0, MTP speculative decoding (n=3), full 262K context, layer-split over both
+# GPUs. Licence CC-BY-NC-4.0 (non-commercial); see docs/QWEN3.8-CONNECTION.md.
+# Retain the Unsloth-fixed Qwen Jinja template: the GGUF's embedded one is the
+# stock template, which raises on multiple system or developer messages. DFlash
+# stays off: the pinned server does not support it with image turns. No new LAN port.
+#
+# Rollback to Heretic Qwen3.8-27B: MAIN_GGUF=/models/qwen3.8-27B-heretic/RVN-Q8_0.gguf,
+# CHAT_TEMPLATE_FILE=/models/qwen3.8-27B-heretic/chat-template.jinja,
+# ALIAS=qwen3.8-27b-heretic-q8_0, SPEC=off; then `docker compose ... up -d --force-recreate model`.
 name: loom-model
 services:
   model:
@@ -11,13 +19,16 @@ services:
     restart: unless-stopped
     gpus: all
     environment:
-      MAIN_GGUF: /models/qwen3.8-27B-heretic/RVN-Q8_0.gguf
+      MAIN_GGUF: /models/hemmingway-1.5/HemmingwayAI_Hemmingway-1.5-Q8_0.gguf
+      # Base Qwen3.8 projector: n_embd matches, but Hemmingway was published text-only,
+      # so image input is smoke-tested (red-square probe), not qualified.
       MMPROJ: /models/qwen3.8-27B/mmproj-BF16.gguf
-      CHAT_TEMPLATE_FILE: /models/qwen3.8-27B-heretic/chat-template.jinja
-      ALIAS: qwen3.8-27b-heretic-q8_0
+      CHAT_TEMPLATE_FILE: /models/hemmingway-1.5/chat-template.jinja
+      ALIAS: hemmingway-1.5-q8_0
       CTX_SIZE: "262144"
       VISION: "1"
-      SPEC: "off"
+      SPEC: "mtp"
+      DRAFT_N_MAX: "3"
       REASONING_FORMAT: deepseek
     volumes:
       - ${LOOM_MODELS_DIR:-/home/john/models}:/models:ro

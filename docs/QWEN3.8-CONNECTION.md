@@ -1,7 +1,13 @@
 # Qwen3.8-27B — LAN Connection & Integration Guide
 
-> **Identity qualification (2026-09-07):** `qwen3.8-27B` is the compatibility wire alias.
-> The documented weight variant is **Heretic abliterated Qwen3.8-27B Q8_0**,
+> **Identity (2026-10-29):** the loaded weights are **Hemmingway-1.5 Q8_0**, GGUF sha256
+> `8b3c689c88395942c3e3caf3dac1f1d70fe16f86f490bd783bf44afa32834b4e`, served with the
+> Unsloth-fixed Qwen3.8 template (sha256 `12827f24…aaadce`, file
+> `/models/hemmingway-1.5/chat-template.jinja`). The wire alias is `hemmingway-1.5-q8_0`.
+> Both digests were checked on the HP at cutover; see the 2026-10-29 addendum below.
+>
+> **Identity qualification (2026-09-07, historical):** `qwen3.8-27B` is the compatibility wire alias.
+> The documented weight variant was then **Heretic abliterated Qwen3.8-27B Q8_0**,
 > which differs from the base model. The August deployment statement below is
 > historical evidence; a `/v1/models` alias alone cannot attest the loaded GGUF.
 > The façade provides ontology grounding, not proof of base-model refusal behaviour
@@ -20,6 +26,68 @@ SWE-bench Pro 61.7 vs 51.2, OSWorld 84.3 vs 65.9, GPQA 89.2 vs 83.5, IFBench 79.
 > container is unchanged — the re-platform swaps the *façade* substrate (stdlib Python → a Rust
 > binary), not the model behind it. Everything in this guide holds verbatim; swap the model and
 > no consumer changes.
+
+> **Addendum (2026-10-29): the deployed model is now Hemmingway-1.5 Q8_0, with MTP on.**
+> The `loom-model` container serves
+> [`HemmingwayAI/Hemmingway-1.5`](https://huggingface.co/HemmingwayAI/Hemmingway-1.5), a
+> Qwen3.8-27B finetune trained to write prose that reads as human, quantised by
+> [`bartowski`](https://huggingface.co/bartowski/HemmingwayAI_Hemmingway-1.5-GGUF) at **Q8_0**.
+> Same façade, port and serving script. Model id is now **`hemmingway-1.5-q8_0`**.
+>
+> - **Weights:** `/models/hemmingway-1.5/HemmingwayAI_Hemmingway-1.5-Q8_0.gguf`, 29,116,389,728
+>   bytes, sha256 `8b3c689c88395942c3e3caf3dac1f1d70fe16f86f490bd783bf44afa32834b4e`
+>   (matches the Hugging Face etag). Arch `qwen35`, 65 blocks; the MTP head (`blk.64.nextn.*`)
+>   is embedded at Q8_0. Q8_0 is the largest quant that fits: bf16 is ~54 GB against 48 GB of VRAM.
+> - **Fit:** full 262,144 context, q8_0 KV, layer split, vision on: 22.9 + 23.4 GB of 24.6 GB per card.
+>   `-sm tensor` was not tried: it requires f16 KV, estimated (not measured) at ~17 GB for 262K
+>   against ~8.5 GB at q8_0, which leaves no room beside 29 GB of weights.
+> - **Chat template:** the Unsloth-fixed Qwen3.8 template is kept, copied beside the weights as
+>   `chat-template.jinja`. The GGUF embeds the stock template, which raises on multiple system
+>   messages and on the `developer` role.
+> - **Vision:** Hemmingway was published text-only. The base `mmproj-BF16` loads (`n_embd` matches)
+>   and answers a red-square probe correctly, so image input works but is smoke-tested only.
+> - **MTP:** speculative decoding works and is now on (`SPEC=mtp`, `DRAFT_N_MAX=3`). Sweep on
+>   2026-10-29 at deployed sampling (temp 1.0, top-p 0.95, top-k 20), thinking off,
+>   `max_tokens` 700, median of 3 runs per prompt:
+>
+>   | Config | Prose tok/s | Technical tok/s | Draft acceptance |
+>   |---|---|---|---|
+>   | no spec | 16.7 | 16.7 | – |
+>   | n=2 | 22.4 | 24.2 | 31% / 39% |
+>   | **n=3** | 21.4 | **26.7** | 22% / 36% |
+>   | n=4 | 19.7 | 23.4 | 17% / 25% |
+>
+>   A recheck after the final restart (median of 2) gave 21.1 prose and 24.9 technical tok/s at n=3.
+>   Heretic with no speculation measured 16.5 tok/s on the same harness. Acceptance (22–36%) is
+>   well below the 2026-08-15 base-model sweep (`docs/research/evidence/mtp-sweep.txt`, 58.8% at
+>   n=2), whose sampling settings are not recorded, so the two are not directly comparable.
+> - **Verified through the façade (`:8084`):** `/v1/models`, chat with `reasoning_content` split
+>   out, `enable_thinking:false`, tool calling, an image turn with MTP on, and a grounded delegate
+>   (`served_mode: delegated`, four corpus seeds injected, 22.4 tok/s, 97/393 drafts accepted).
+> - **Old model names still work.** llama-server does not check the requested `model`, so clients
+>   sending `qwen3.8-27b-heretic-q8_0` or `qwen3.8-27B` were served by Hemmingway on both `:8085` and
+>   `:8084` (tested 2026-10-30). The response's `model` field now reads `hemmingway-1.5-q8_0`.
+>
+> **Before relying on it, note:**
+>
+> - **Licence is CC-BY-NC-4.0** (non-commercial). Qwen3.8 and the Heretic variant were Apache-2.0.
+> - **Not abliterated.** Refusal behaviour reverts toward base Qwen3.8; the Heretic variant's
+>   uncensoring does not carry over.
+> - **Voice.** Prose aims to read as human, which can include an invented first-person persona
+>   (one grounded test opened with "I'm still learning to type"). Consumers that need a neutral
+>   register should set a system prompt.
+> - **Training-data leakage on bare prompts.** With no system prompt and thinking off, "Say ok."
+>   sent straight to `:8085` returned an invented email signed "Suzanne" about "Enron UK's bank
+>   account", which suggests the Enron email corpus is in the finetune data. The same prompt through
+>   the façade answered "ok".
+> - **Grounding uplift is unmeasured on this model.** The repository's grounding results were
+>   measured on Qwen3.8; none have been re-run on Hemmingway.
+>
+> **Rollback:** in `deploy/compose.model-vision.yml` set
+> `MAIN_GGUF=/models/qwen3.8-27B-heretic/RVN-Q8_0.gguf`,
+> `CHAT_TEMPLATE_FILE=/models/qwen3.8-27B-heretic/chat-template.jinja`,
+> `ALIAS=qwen3.8-27b-heretic-q8_0`, `SPEC=off`, then recreate the `model` service. Those weights
+> remain on disk.
 
 > **Addendum (2026-08-18): the deployed variant is now Heretic abliterated Qwen3.8-27B Q8_0.**
 > The `loom-model` container serves
@@ -41,7 +109,7 @@ SWE-bench Pro 61.7 vs 51.2, OSWorld 84.3 vs 65.9, GPQA 89.2 vs 83.5, IFBench 79.
 
 - **Model:** `Qwen/Qwen3.8-27B` — 27B dense, 64 layers (48 linear-attention DeltaNet +
   16 full-attention), vision encoder, MTP head embedded.
-- **Quant:** deployed variant **Heretic abliterated Q8_0** (see addendum above); base
+- **Quant:** deployed model **Hemmingway-1.5 Q8_0** (2026-10-29 addendum); previously **Heretic abliterated Q8_0**; base
   unsloth **`UD-Q8_K_XL`** (31.5 GB, Unsloth Dynamic v3, maximal for 48 GB with full context)
   retained as rollback. Vision: `mmproj-BF16`.
 - **Backend:** llama.cpp `llama-server` (pinned commit `cc83d7b4`, CUDA sm_75) in the
@@ -61,7 +129,7 @@ SWE-bench Pro 61.7 vs 51.2, OSWorld 84.3 vs 65.9, GPQA 89.2 vs 83.5, IFBench 79.
 | Port         | `8085` (unchanged from Muse — clients keep working) |
 | Base URL     | `http://10.10.10.1:8085/v1`                       |
 | Chat route   | `POST /v1/chat/completions`                       |
-| Models route | `GET /v1/models`  → id `qwen3.8-27B`              |
+| Models route | `GET /v1/models`  → id `hemmingway-1.5-q8_0` (2026-10-29) |
 | Auth         | none                                              |
 | Health       | `GET http://10.10.10.1:8085/health`               |
 | Web UI       | `http://10.10.10.1:8085/`  (llama.cpp built-in)   |
