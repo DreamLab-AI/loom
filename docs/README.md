@@ -10,6 +10,23 @@ with the ground truth — reality wins, but history is annotated, not rewritten.
 - **[`../README.md`](../README.md)** — what Loom is, the measured result, how to build & deploy,
   and the honest shipped / gated-off / operational-tail split.
 
+## Typed-decision deployment
+
+Both serving profiles enable `LOOM_JEV`, including gate, rank and support.
+Profile B uses the sovereign `http://systemone:8097/v1/systemone` sidecar on
+`visionclaw_network`. Profile A runs on a separate host: set `LOOM_JEV_ENDPOINT`
+to a sovereign endpoint reachable from that host before recreating the service.
+An unset Profile A endpoint yields the existing fallback, not working inference.
+The Agentbox sidecar currently publishes only to its host's loopback, so its
+Docker name and loopback URL are not usable from the Profile A host.
+
+No cloud override is enabled. The intent gate remains annotation-only until a
+labelled evaluation establishes `LOOM_JEV_GATE_MIN_CONFIDENCE`; rank and support
+use their existing bounded behaviour. `LOOM_JEV=0` disables all three. These
+compose changes require service recreation; they do not modify a running node.
+The 2026-10-29 pre-rebuild probe confirmed `/health` and a synthetic Noul request
+on the local façade, not an end-to-end deployed Loom request.
+
 ## GOVERNANCE (authority chain — read top-down)
 
 ```

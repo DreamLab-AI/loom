@@ -25,6 +25,17 @@ services:
       # (every attestation failed EROFS). Backed by the loom-ledger volume.
       LOOM_LEDGER_PATH: "/var/lib/loom/ledger.jsonl"
       LOOM_DEPLOY_PROFILE: "b"
+      # Local typed decisions on the shared Docker network; never cloud egress.
+      LOOM_JEV: "${LOOM_JEV:-1}"
+      LOOM_JEV_GATE: "1"
+      LOOM_JEV_RANK: "1"
+      LOOM_JEV_SUPPORT: "1"
+      LOOM_JEV_ENDPOINT: "${LOOM_JEV_ENDPOINT:-http://systemone:8097/v1/systemone}"
+      LOOM_JEV_MODEL: "${LOOM_JEV_MODEL:-laya-typed-decisions}"
+      LOOM_JEV_LOCAL: "1"
+      LOOM_JEV_ALLOW_CLOUD: "0"
+      LOOM_JEV_TIMEOUT_MS: "4000"
+      # Gate stays advisory: no fitted LOOM_JEV_GATE_MIN_CONFIDENCE yet.
       # Model delegated by URL — GPU-free sidecar reaches loom-model over the docker net.
       DISTILL_BACKEND_URL: "http://loom-model:8085/v1"
       # bge-small-en-v1.5/384 (LOCKED model) for the semantic fallback's query embed.
