@@ -1,13 +1,16 @@
 # Loom model engine — llama.cpp llama-server, CUDA build for the host's 2x Quadro RTX 6000
 # (Turing sm_75 — CMAKE_CUDA_ARCHITECTURES=75, NOT 89/Ada). Serves Qwen3.8-27B on :8085.
 #
-# Pinned to llama.cpp master 2026-08-29 (cc83d7b): adds DFlash2 speculative decoding
-# (PR #27342, merged 2026-08-27 — block-diffusion drafter, --spec-type draft-dflash),
-# on top of everything the previous pin (030ebb55, 2026-08-11) had: qwen35 arch,
-# embedded-MTP draft-mtp spec decoding, qwen3vl_merger mmproj projector.
-# NOTE: vision + draft-dflash is still flaky upstream as of 2026-08-29 (M-RoPE draft
-# positions / acceptance collapse on image turns) — only enable SPEC=dflash on
-# text-only profiles (VISION=0) for now.
+# Pinned to llama.cpp release b11982 (8a199ad, 2026-10-29). Over the previous pin
+# (cc83d7b, 2026-08-29): GDN chunked/state-column CUDA kernels for qwen35 (#29353,
+# #30087), CUDA graphs for the MTP draft (#28549), MTP/DFlash image-turn fixes
+# (#30257, #28715, #28587), and Turing-relevant FlashAttention race fixes (#30103,
+# #30573). Measured on the HP with Hemmingway-1.5 Q8_0, MTP n=3, 2026-10-30: decode
+# unchanged (25.8 tok/s technical both), image turns unchanged (27.6 vs 28.2 tok/s),
+# prompt processing 874 vs 804 tok/s on an 11k-token prompt (+9%).
+# Rollback image: loom-model:local (cc83d7b).
+# NOTE: vision + draft-dflash was flaky at cc83d7b; the fixes above are not re-tested
+# with DFlash here, so keep SPEC=dflash on text-only profiles (VISION=0).
 # CUDA 13.3 matches the host toolkit (driver 610.43.03).
 ARG CUDA_VERSION=13.3.0
 
@@ -16,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git cmake ninja-build build-essential curl ca-certificates libcurl4-openssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-ARG LLAMA_COMMIT=cc83d7b4824f73cfdda4dfbb47ee39804f71b328
+ARG LLAMA_COMMIT=8a199ad31a7eb27d5a46a6b08026176d82bc9894
 RUN git init /src && cd /src \
     && git remote add origin https://github.com/ggml-org/llama.cpp \
     && git fetch --depth 1 origin ${LLAMA_COMMIT} \
