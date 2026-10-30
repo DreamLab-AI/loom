@@ -26,3 +26,4 @@ docs/research/latex/*-blx.bib
 # delete the bundle the façade is serving. Only the directory itself is kept.
 /data/*
 !/data/.gitkeep
+.claude/settings.local.json
