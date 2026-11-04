@@ -144,6 +144,54 @@ pub struct Paired {
     pub delta: f64,
 }
 
+/// One question's primary-metric score under both arms.
+#[derive(Clone, Debug)]
+pub struct QuestionOutcome {
+    /// Question id.
+    pub id: String,
+    /// Arm 3 recall.
+    pub arm3: f64,
+    /// Arm 4 recall.
+    pub arm4: f64,
+}
+
+/// Which questions moved, and which way, between the two arms.
+///
+/// A secondary diagnostic beside the preregistered mean and CI: the mean can
+/// hide regressions offset by improvements, so the questions are listed. The
+/// preregistered metric is continuous recall with no success threshold, so a
+/// question is classified by the strict sign of `arm4 - arm3`, never by an
+/// invented cut-off. Every list is sorted by id so the report is stable.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Directions {
+    /// Arm 4 scored higher: `(id, delta)`.
+    pub improved: Vec<(String, f64)>,
+    /// Arm 4 scored lower: `(id, delta)`.
+    pub regressed: Vec<(String, f64)>,
+    /// Equal scores.
+    pub unchanged: Vec<String>,
+}
+
+/// Classify each question by the sign of its paired difference.
+#[must_use]
+pub fn directions(outcomes: &[QuestionOutcome]) -> Directions {
+    let mut d = Directions::default();
+    for o in outcomes {
+        let delta = o.arm4 - o.arm3;
+        if delta.abs() < 1e-9 {
+            d.unchanged.push(o.id.clone());
+        } else if delta > 0.0 {
+            d.improved.push((o.id.clone(), delta));
+        } else {
+            d.regressed.push((o.id.clone(), delta));
+        }
+    }
+    d.improved.sort_by(|a, b| a.0.cmp(&b.0));
+    d.regressed.sort_by(|a, b| a.0.cmp(&b.0));
+    d.unchanged.sort();
+    d
+}
+
 /// Mean of the deltas.
 #[must_use]
 pub fn mean_delta(p: &[Paired]) -> f64 {
@@ -237,6 +285,33 @@ mod tests {
             recall("unhealthcare", &gold) < 1e-9,
             "substring must not match"
         );
+    }
+
+    #[test]
+    fn directions_split_by_strict_sign_and_sort_by_id() {
+        let o = |id: &str, a: f64, b: f64| QuestionOutcome {
+            id: id.to_owned(),
+            arm3: a,
+            arm4: b,
+        };
+        let d = directions(&[
+            o("q3", 0.5, 1.0),
+            o("q1", 1.0, 0.5),
+            o("q2", 0.5, 0.5),
+            o("q0", 0.0, 0.25),
+            o("q4", 0.3, 0.3 + 1e-12),
+        ]);
+        assert_eq!(
+            d.improved,
+            vec![("q0".to_owned(), 0.25), ("q3".to_owned(), 0.5)]
+        );
+        assert_eq!(d.regressed, vec![("q1".to_owned(), -0.5)]);
+        assert_eq!(d.unchanged, vec!["q2".to_owned(), "q4".to_owned()]);
+    }
+
+    #[test]
+    fn directions_of_nothing_is_empty() {
+        assert_eq!(directions(&[]), Directions::default());
     }
 
     #[test]

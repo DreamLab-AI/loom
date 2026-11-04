@@ -12,7 +12,10 @@ use std::fs;
 use std::time::{Duration, Instant};
 
 use anyhow::{anyhow, bail, Context, Result};
-use loom_bench::{bootstrap_ci, mean_delta, median, recall, Paired, Question, Rng, RunRecord};
+use loom_bench::{
+    bootstrap_ci, directions, mean_delta, median, recall, Paired, Question, QuestionOutcome, Rng,
+    RunRecord,
+};
 use serde_json::{json, Value};
 
 const DEFAULT_BASE: &str = "http://192.168.2.132:8084";
@@ -556,6 +559,7 @@ fn cmd_score(args: &[String]) -> Result<()> {
     println!("| stratum | n | arm3 recall | arm4 recall | delta | naive 95% CI | clustered 95% CI | tokens a3 / a4 (median) | turns a4 (median) | wall s a3 / a4 (median) |\n|---|---|---|---|---|---|---|---|---|---|");
     let mut strata: Vec<&str> = vec!["lookup", "cross", "path"];
     strata.push("ALL");
+    let mut outcomes = Vec::new();
     for s in strata {
         let mut paired = Vec::new();
         let (mut r3, mut r4, mut t3, mut t4, mut tu, mut w3, mut w4) =
@@ -569,6 +573,13 @@ fn cmd_score(args: &[String]) -> Result<()> {
                 cluster: q.domain.clone(),
                 delta: y - x,
             });
+            if s == "ALL" {
+                outcomes.push(QuestionOutcome {
+                    id: q.id.clone(),
+                    arm3: x,
+                    arm4: y,
+                });
+            }
             r3.push(x);
             r4.push(y);
             #[allow(clippy::cast_precision_loss)]
@@ -591,6 +602,17 @@ fn cmd_score(args: &[String]) -> Result<()> {
         let m = |v: &[f64]| v.iter().sum::<f64>() / v.len() as f64;
         println!("| {s} | {} | {:.2} | {:.2} | {:+.2} | [{:+.2}, {:+.2}] | [{:+.2}, {:+.2}] | {:.0} / {:.0} | {:.0} | {:.0} / {:.0} |", paired.len(), m(&r3), m(&r4), mean_delta(&paired), n1.0, n1.1, n2.0, n2.1, median(&t3), median(&t4), median(&tu), median(&w3), median(&w4));
     }
+    let d = directions(&outcomes);
+    let list = |v: &[(String, f64)]| {
+        v.iter()
+            .map(|(id, delta)| format!("{id} ({delta:+.2})"))
+            .collect::<Vec<_>>()
+            .join(", ")
+    };
+    println!("\nPer-question direction, arm 4 vs arm 3 (secondary diagnostic; strict sign of the recall difference, no threshold):");
+    println!("- improved {}: {}", d.improved.len(), list(&d.improved));
+    println!("- regressed {}: {}", d.regressed.len(), list(&d.regressed));
+    println!("- unchanged {}", d.unchanged.len());
     let gens: HashSet<&str> = recs.iter().map(|r| r.generation.as_str()).collect();
     println!("\nruns={} generations={gens:?}", recs.len());
     println!(
