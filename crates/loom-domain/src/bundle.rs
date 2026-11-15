@@ -182,6 +182,7 @@ mod tests {
         ServingIdentity {
             generation: Generation {
                 id: GenerationId(gen.to_owned()),
+                built_by: None,
                 source: GenerationSource::MirrorManifest,
                 generated_at: Some(gen.to_owned()),
                 commit_sha: None,

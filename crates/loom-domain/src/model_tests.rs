@@ -73,6 +73,7 @@ fn relation_kind_other_tail() {
 fn scaffold_empty_shape() {
     let gen = Generation {
         id: GenerationId("build-abc".to_owned()),
+        built_by: None,
         source: GenerationSource::ScaffoldIndex,
         generated_at: None,
         commit_sha: None,
@@ -127,6 +128,7 @@ fn generation_equality_is_identity() {
     // different ids are not (the never-mixed-build parity guard).
     let base = |id: &str, count: Option<usize>| Generation {
         id: GenerationId(id.to_owned()),
+        built_by: None,
         source: GenerationSource::BuildManifest,
         generated_at: None,
         commit_sha: None,

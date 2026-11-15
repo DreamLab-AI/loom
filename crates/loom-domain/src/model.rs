@@ -426,6 +426,9 @@ pub struct GenerationId(pub String); // commitSha||buildId, or the mirror genera
 /// The full generation descriptor the mirror promotes and `/health` reports.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Generation {
+    /// Recorded bundle compiler; legacy missing metadata remains unknown.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub built_by: Option<ontomark_parse::provenance::BuildProducer>,
     pub id: GenerationId,
     pub source: GenerationSource, // build-manifest | mirror-manifest | scaffold-index
     pub generated_at: Option<String>,

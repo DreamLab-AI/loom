@@ -322,6 +322,7 @@ fn build_generation(index: &ScaffoldIndex) -> Generation {
     });
     Generation {
         id,
+        built_by: None,
         source: GenerationSource::ScaffoldIndex,
         generated_at,
         commit_sha: None,
@@ -498,6 +499,8 @@ impl LexicalIndex for LexicalRetriever {
                 .map(|r| Iri::from_slug(&ref_to_slug(r)))
                 .collect(),
             provenance: Provenance {
+                content_attribution: e.generated.clone(),
+                review_binding: e.review_binding.clone(),
                 generated: e
                     .generated
                     .clone()

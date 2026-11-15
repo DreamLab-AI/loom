@@ -141,6 +141,7 @@ pub fn semantic_hit(slug: &str, score: f32) -> ConceptMatch {
 pub fn generation_with_id(id: &str) -> Generation {
     Generation {
         id: GenerationId(id.to_owned()),
+        built_by: None,
         source: GenerationSource::MirrorManifest,
         generated_at: Some(id.to_owned()),
         commit_sha: None,

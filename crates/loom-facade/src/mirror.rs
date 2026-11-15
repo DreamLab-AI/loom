@@ -122,6 +122,7 @@ impl MirrorStore {
             .unwrap_or_else(|| "build-manifest".to_owned());
         Some(Generation {
             id: GenerationId(id),
+            built_by: None,
             source: GenerationSource::BuildManifest,
             generated_at: str_field(&m, "generatedAt"),
             commit_sha,
@@ -149,6 +150,7 @@ impl MirrorStore {
         let id = generated_at.clone().unwrap_or_else(|| "mirror".to_owned());
         Some(Generation {
             id: GenerationId(id),
+            built_by: None,
             source: GenerationSource::MirrorManifest,
             generated_at,
             commit_sha: None,
@@ -183,6 +185,7 @@ impl MirrorStore {
                             .clone()
                             .unwrap_or_else(|| "scaffold-index".to_owned()),
                     ),
+                    built_by: None,
                     source: GenerationSource::ScaffoldIndex,
                     generated_at: generated,
                     commit_sha: None,
@@ -199,6 +202,7 @@ impl MirrorStore {
             }
             None => Generation {
                 id: GenerationId("unavailable".to_owned()),
+                built_by: None,
                 source: GenerationSource::Unavailable,
                 generated_at: None,
                 commit_sha: None,
@@ -266,6 +270,9 @@ fn str_field(v: &Value, key: &str) -> Option<String> {
 fn vault_build_generation(m: &Value, id: String) -> Generation {
     Generation {
         id: GenerationId(id),
+        built_by: m
+            .get("built_by")
+            .and_then(|v| serde_json::from_value(v.clone()).ok()),
         source: GenerationSource::VaultBuild,
         generated_at: str_field(m, "generated_at"),
         commit_sha: str_field(m, "commit"),
@@ -455,5 +462,21 @@ fn strict_artifact(name: &str, spec: &Value) -> StrictArtifact {
         name: name.to_owned(),
         sha256: str_field(spec, "sha256"),
         bytes: spec.get("bytes").and_then(Value::as_u64),
+    }
+}
+
+#[cfg(test)]
+mod provenance_contract_tests {
+    use super::*;
+    #[test]
+    fn bundle_builder_is_preserved_but_never_inferred_for_legacy_markers() {
+        let mut marker =
+            serde_json::json!({"built_by":{"name":"ontomark-compile","version":"0.9.0"}});
+        let generation = vault_build_generation(&marker, "visionGraph@test".into());
+        assert_eq!(generation.built_by.unwrap().name, "ontomark-compile");
+        marker.as_object_mut().unwrap().remove("built_by");
+        assert!(vault_build_generation(&marker, "visionGraph@test".into())
+            .built_by
+            .is_none());
     }
 }

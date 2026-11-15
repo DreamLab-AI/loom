@@ -9,6 +9,7 @@ authors.workspace = true
 description = "Ontology Loom domain core: canonical types, ports (traits), and the error model. No I/O, no framework."
 
 [dependencies]
+ontomark-parse.workspace = true
 serde = { workspace = true }
 # serde_json is a RUNTIME dep here, not test-only: ModelBackend::chat carries a
 # serde_json::Value across the port and LoomError wraps serde_json::Error.

@@ -36,3 +36,18 @@ default features disabled. Loom retains its own trust interpretation; the
 compiler's optional reasoner does not enter the serving dependency graph. The
 publishing CLI has a separate release tag and asset checksum in
 `deploy/ontomark-release.env`.
+
+## Provenance and review bindings (VisionFlow ADR-2024)
+
+The shared Ontomark reader preserves source stamp scope and digest metadata.
+Canonical units expose `content_attribution` only when the source supplies it and
+`review_binding` only when the source bundle carries assessed freshness counts.
+The legacy `generated: process:vault` fallback remains processing history; it is
+not content authorship. A missing legacy review summary means unknown.
+
+Generation descriptors retain an explicit `built_by` compiler name/version from
+C3 markers. Readers never infer this from their own package version. Human review,
+logical derivation and signed admission receipts retain their separate roles.
+`is_human_verified` remains the historical verification query; callers needing
+freshness must inspect the source review summary and individual stamp scopes.
+A digest or a positive stamp count is not a signature or whole-page certification.

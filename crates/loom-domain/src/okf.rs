@@ -70,7 +70,10 @@ impl Actor {
     /// Whether this actor is a human signer.
     #[must_use]
     pub fn is_human(&self) -> bool {
-        self.0.starts_with("human:")
+        self.0
+            .trim()
+            .strip_prefix("human:")
+            .is_some_and(|id| !id.trim().is_empty())
     }
 
     /// Whether this actor is a machine — a build process or an agent. The
@@ -92,6 +95,9 @@ pub struct Attestation {
     /// missing timestamp is not a reason to discard the attestation.
     #[serde(default)]
     pub at: Option<String>,
+    /// Explicit review scope and binding, preserved without granting trust.
+    #[serde(flatten)]
+    pub extensions: std::collections::BTreeMap<String, serde_json::Value>,
 }
 
 impl Attestation {
@@ -99,6 +105,7 @@ impl Attestation {
     #[must_use]
     pub fn by(actor: Actor) -> Self {
         Self {
+            extensions: std::collections::BTreeMap::default(),
             by: actor,
             at: None,
         }
@@ -108,6 +115,7 @@ impl Attestation {
     #[must_use]
     pub fn at(actor: Actor, at: impl Into<String>) -> Self {
         Self {
+            extensions: std::collections::BTreeMap::default(),
             by: actor,
             at: Some(at.into()),
         }
@@ -125,6 +133,12 @@ impl Attestation {
 pub struct Provenance {
     /// Who produced this unit.
     pub generated: Attestation,
+    /// Explicit source attribution; absent means unknown, including legacy fallback.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content_attribution: Option<Attestation>,
+    /// Source review freshness, separate from historical verification records.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub review_binding: Option<ontomark_parse::provenance::ReviewSummary>,
     /// Every verification since, in the order the corpus records them. Empty is
     /// the honest common case.
     #[serde(default)]
@@ -142,6 +156,8 @@ impl Provenance {
     #[must_use]
     pub fn vault_generated() -> Self {
         Self {
+            content_attribution: None,
+            review_binding: None,
             generated: Attestation::by(Actor::new("process:vault")),
             verified: Vec::new(),
         }
@@ -268,6 +284,8 @@ mod tests {
     #[test]
     fn human_and_machine_verification_are_distinguishable() {
         let p = Provenance {
+            content_attribution: None,
+            review_binding: None,
             generated: Attestation::by(Actor::process("vault", "1.0")),
             verified: vec![Attestation::at(
                 Actor::human("npub1abc"),

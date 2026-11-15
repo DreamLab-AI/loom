@@ -370,6 +370,7 @@ fn sidecar_to_generation(parsed: Option<&GenerationSidecar>) -> Generation {
     match parsed {
         Some(g) => Generation {
             id: GenerationId(g.generated_at.clone()),
+            built_by: None,
             source: GenerationSource::MirrorManifest,
             generated_at: Some(g.generated_at.clone()),
             commit_sha: None,
@@ -385,6 +386,7 @@ fn sidecar_to_generation(parsed: Option<&GenerationSidecar>) -> Generation {
         },
         None => Generation {
             id: GenerationId("unavailable".to_owned()),
+            built_by: None,
             source: GenerationSource::Unavailable,
             generated_at: None,
             commit_sha: None,
