@@ -45,6 +45,12 @@ path = "src/bin/best_answers.rs"
 name = "reload_published_generation"
 path = "src/bin/reload_published_generation.rs"
 
+# ADR-141 D6: the explicit, recorded promotion step (validate, install atomically,
+# stamp `promoted_at`, append the promotion log). Underscored like its sibling.
+[[bin]]
+name = "promote_generation"
+path = "src/bin/promote_generation.rs"
+
 [features]
 # The governance ledger route (ADR-141). Default-on: the estate's promotion loop
 # needs a ledger endpoint, and the port has no other writer.

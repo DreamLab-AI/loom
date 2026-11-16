@@ -327,6 +327,8 @@ fn build_generation(index: &ScaffoldIndex) -> Generation {
         generated_at,
         commit_sha: None,
         promoted_at: None,
+        promoted_by: None,
+        previous_generation: None,
         cluster_span_seconds: None,
         artifacts: Vec::new(),
         verified_single_generation: false,

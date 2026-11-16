@@ -17,6 +17,7 @@ pub mod fusion;
 pub mod jev;
 pub mod mcp_host;
 pub mod mirror;
+pub mod promote;
 pub mod reload;
 pub mod routes;
 pub mod serving;

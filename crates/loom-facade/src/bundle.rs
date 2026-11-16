@@ -45,6 +45,7 @@
 //! perform.
 
 use std::collections::BTreeSet;
+use std::os::unix::fs::{DirBuilderExt, PermissionsExt};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -289,6 +290,27 @@ impl BundlePromoter {
     /// The staging bundle's own [`BundleError`] cases, plus
     /// [`BundleError::ArtefactUnreadable`] if the swap itself fails.
     pub fn promote(&self) -> Result<Vec<ArtifactSha>, BundleError> {
+        let marker = std::fs::read(self.staging.join(".generation.json")).map_err(|e| {
+            BundleError::ArtefactUnreadable {
+                name: ".generation.json".to_owned(),
+                detail: format!("staging marker unreadable: {e}"),
+            }
+        })?;
+        self.promote_with_marker(&marker)
+    }
+
+    /// As [`Self::promote`], but commits `marker_bytes` (the staging marker
+    /// with the promotion stamp added) instead of copying the staging marker
+    /// verbatim. The staging directory is never written, so the same bundle can
+    /// be promoted again, which is how a rollback works. `marker_bytes` must
+    /// describe the staging artefacts; this does not re-parse it.
+    ///
+    /// # Errors
+    /// As [`Self::promote`].
+    pub fn promote_with_marker(
+        &self,
+        marker_bytes: &[u8],
+    ) -> Result<Vec<ArtifactSha>, BundleError> {
         let staged = MirrorStore::new(&self.staging.join("scaffold-index.json").to_string_lossy());
         // (1) Verify the staging set completely BEFORE touching the target.
         let verified = verify_marker(&staged)?;
@@ -320,10 +342,24 @@ impl BundlePromoter {
             let from = self.staging.join(&art.name);
             let incoming = self.target.join(format!("{}.incoming", art.name));
             let to = self.target.join(&art.name);
+            if let Some(parent) = to.parent() {
+                // The service runs as a different (non-root) user from the one
+                // promoting, so directories and files are made world-readable
+                // whatever the promoter's umask or the bundle's own modes.
+                std::fs::DirBuilder::new()
+                    .recursive(true)
+                    .mode(SERVED_DIR_MODE)
+                    .create(parent)
+                    .map_err(|e| BundleError::ArtefactUnreadable {
+                        name: art.name.clone(),
+                        detail: format!("could not create directory: {e}"),
+                    })?;
+            }
             std::fs::copy(&from, &incoming).map_err(|e| BundleError::ArtefactUnreadable {
                 name: art.name.clone(),
                 detail: format!("stage copy failed: {e}"),
             })?;
+            set_served_mode(&incoming, &art.name)?;
             std::fs::rename(&incoming, &to).map_err(|e| BundleError::ArtefactUnreadable {
                 name: art.name.clone(),
                 detail: format!("swap failed: {e}"),
@@ -332,12 +368,13 @@ impl BundlePromoter {
 
         // (4) The marker last — this rename is the commit.
         let marker_incoming = self.target.join(".generation.json.incoming");
-        std::fs::copy(self.staging.join(".generation.json"), &marker_incoming).map_err(|e| {
+        std::fs::write(&marker_incoming, marker_bytes).map_err(|e| {
             BundleError::ArtefactUnreadable {
                 name: ".generation.json".to_owned(),
                 detail: format!("marker stage failed: {e}"),
             }
         })?;
+        set_served_mode(&marker_incoming, ".generation.json")?;
         std::fs::rename(&marker_incoming, &marker).map_err(|e| {
             BundleError::ArtefactUnreadable {
                 name: ".generation.json".to_owned(),
@@ -351,6 +388,20 @@ impl BundlePromoter {
         })?;
         Ok(verified)
     }
+}
+
+/// Mode of every installed artefact: readable by the container's user.
+const SERVED_FILE_MODE: u32 = 0o644;
+/// Mode of directories created for nested artefacts such as `graph/`.
+const SERVED_DIR_MODE: u32 = 0o755;
+
+fn set_served_mode(path: &std::path::Path, name: &str) -> Result<(), BundleError> {
+    std::fs::set_permissions(path, std::fs::Permissions::from_mode(SERVED_FILE_MODE)).map_err(|e| {
+        BundleError::ArtefactUnreadable {
+            name: name.to_owned(),
+            detail: format!("could not set mode: {e}"),
+        }
+    })
 }
 
 // --- verification helpers ---------------------------------------------------

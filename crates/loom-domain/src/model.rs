@@ -433,7 +433,16 @@ pub struct Generation {
     pub source: GenerationSource, // build-manifest | mirror-manifest | scaffold-index
     pub generated_at: Option<String>,
     pub commit_sha: Option<String>,
+    /// When this generation was put in service by `promote_generation`
+    /// (RFC 3339 UTC). `None` for a bundle nobody promoted explicitly.
     pub promoted_at: Option<String>,
+    /// Who or what promoted it (an operator name or `loom-nightly`), as
+    /// recorded in the commit marker at promotion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub promoted_by: Option<String>,
+    /// The generation id this promotion replaced, if one was in service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub previous_generation: Option<String>,
     pub cluster_span_seconds: Option<f64>,
     pub artifacts: Vec<ArtifactSha>, // per-artifact sha256 (never-mixed proof)
     pub verified_single_generation: bool,
