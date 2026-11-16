@@ -103,7 +103,39 @@ trap 'rm -rf "$WORK"' EXIT
 git clone --quiet --shared --no-checkout "$SOURCE_REPO" "$WORK/src"
 git -C "$WORK/src" checkout --quiet --detach "$SHA"
 log "building $WANT with ontomark $ONTOMARK_RELEASE_TAG"
-"$ONTOMARK" --repo "$WORK/src" build --out "$WORK/out" --with-rvdb --stats
+# The flags are those of visionGraph's own publish workflow, so the Loom serves
+# the closure that is published (.github/workflows/publish.yml, step
+# "ontomark build → artefacts + content staging", on origin/main):
+#
+#   from the publish workflow (same flags, same order):
+#     --vault all               both vaults; the default is `knowledge` only and
+#                               would silently build fewer pages
+#     --out DIR                 the bundle (the workflow's `site-data`; here a
+#                               private directory)
+#     --publish-out DIR         the content staging tree (the workflow's
+#                               `quartz/content`); put beside --out so it is
+#                               not kept with the bundle, and discarded with $WORK
+#     --with-markdown-mirror
+#     --certificate-out DIR     below --out, as in the workflow
+#     --stats
+#   Loom addition (not in the publish workflow):
+#     --with-rvdb               the embedded corpus the semantic artefact is built
+#                               from; promote_vault_build needs it and the Loom's
+#                               bundle check requires ontology-corpus.rvdb. Needs
+#                               the embedder (ONTOMARK_EMBED_ENDPOINT, default
+#                               http://192.168.2.132:9997/v1/embeddings).
+#   Invocation detail, not a build flag: --repo (the clean clone of $SHA).
+# The publish workflow's `ontomark validate --vault all` and
+# `ontomark repair bodies --vault all --check` are gates on the source, not part
+# of the build, and are left to visionGraph's CI.
+"$ONTOMARK" --repo "$WORK/src" build \
+    --vault all \
+    --out "$WORK/out" \
+    --publish-out "$WORK/publish" \
+    --with-markdown-mirror \
+    --certificate-out "$WORK/out/certificate" \
+    --stats \
+    --with-rvdb
 [[ -f "$WORK/out/data/.generation.json" ]] || die "the build produced no data/.generation.json"
 "$BIN/promote_vault_build" --data "$WORK/out/data"
 

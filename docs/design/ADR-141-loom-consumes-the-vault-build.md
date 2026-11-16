@@ -197,10 +197,10 @@ useful with the reload timer enabled**. A restart onto a corrupted data director
 **Drift corrected.** The operations document named `v0.1.0-rc.1` as the pinned `ontomark`; the pin is
 `deploy/ontomark-release.env` (`v0.9.0`), which the nightly sources.
 
-### Further decision — 2026-11-16 (owner): start-up fallback
+### Further decisions — 2026-11-16 (owner): start-up fallback, and the build flags
 
 **Status: built and tested on branch `feat/nightly-promotion`; not merged, not deployed, no image
-rebuilt, no timer enabled.** This decision supersedes the paragraph above that left a start-up
+rebuilt, no timer enabled.** These two decisions supersede the paragraph above that left a start-up
 fallback to the owner.
 
 **A. Start-up fallback.** If the generation in the data directory fails to activate at start, the
@@ -241,3 +241,27 @@ service serves the most recent retained previous generation that validates, and 
   is left for inspection; the retained semantic database is copied to the runtime directory before it
   is opened (redb mutates on open), and when there is no writable runtime directory it is not opened
   and the semantic fallback is reported unavailable.
+- *Cost.* Retained bundles are now the full publish-flag build (about 0.9 GB each with the markdown
+  mirror and certificate; `data/` is about 160 MB of it), up to `LOOM_KEEP_BUNDLES` of them.
+
+**B. Build flags.** The nightly builds with the flags of visionGraph's own publish workflow
+(`.github/workflows/publish.yml` on `origin/main`, step "ontomark build → artefacts + content
+staging"; no other workflow there calls ontomark), the same pinned `ontomark` (`v0.9.0`,
+`deploy/ontomark-release.env`):
+
+| | Flags |
+|---|---|
+| before | `ontomark --repo <clone> build --out <out> --with-rvdb --stats` |
+| after | `ontomark --repo <clone> build --vault all --out <out> --publish-out <work>/publish --with-markdown-mirror --certificate-out <out>/certificate --stats --with-rvdb` |
+
+From the publish workflow: `--vault all`, `--out`, `--publish-out`, `--with-markdown-mirror`,
+`--certificate-out` (below `--out`, as there), `--stats`. Only the output paths differ (a private
+directory; the staging tree sits beside the bundle so it is not retained). Loom addition:
+`--with-rvdb`, because the bundle check requires `ontology-corpus.rvdb`, which the publish workflow
+does not produce. `--repo` selects the clean clone and is not a build flag. The workflow's
+`ontomark validate` and `repair bodies --check` are gates on the source and stay in visionGraph's CI.
+The served bundle is unchanged by it: built both ways on the same visionGraph commit, `class_count`,
+`page_count` and both digests in the marker are identical and the shared artefacts differ only in the
+build-time stamp (`--vault all` widens only the `publish/` staging, which the nightly discards). The
+retained bundles do grow, to about 0.9 GB each.
+

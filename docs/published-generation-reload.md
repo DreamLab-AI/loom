@@ -249,11 +249,44 @@ A bundle that has been pruned cannot be re-promoted; rebuild it from its commit.
 to ten minutes of delay) fetches visionGraph, resolves `origin/HEAD`, and exits 0 with `current` if
 that generation is already installed and verifies. Otherwise it builds from a clean detached clone
 with the `ontomark` pinned in `deploy/ontomark-release.env` (downloaded once, sha256-verified, cached
-under `~/.local/state/loom/ontomark/<tag>/`) builds the semantic database with
+under `~/.local/state/loom/ontomark/<tag>/`) and the flags below, builds the semantic database with
 `promote_vault_build`,
 renames the finished bundle to `~/.local/state/loom/bundles/<sha>` and runs `promote_generation`. The
 build happens outside the data directory, so the service never sees a half-built bundle. It does not
 restart the service.
+
+**Build flags.** They are those of visionGraph's publish workflow (`.github/workflows/publish.yml`
+on `origin/main`, step "ontomark build → artefacts + content staging"; no other workflow there
+calls ontomark), plus one Loom addition:
+
+```text
+before: ontomark --repo CLONE build --out OUT --with-rvdb --stats
+after:  ontomark --repo CLONE build --vault all --out OUT --publish-out WORK/publish \
+            --with-markdown-mirror --certificate-out OUT/certificate --stats --with-rvdb
+```
+
+- From the publish workflow: `--vault all`, `--out`, `--publish-out`, `--with-markdown-mirror`,
+  `--certificate-out` (below `--out`, as in the workflow) and `--stats`. Only the paths differ: a
+  private output directory, and the staging tree beside the bundle so it is not retained.
+- Loom addition: `--with-rvdb`. The bundle check requires `ontology-corpus.rvdb` and its sidecar and
+  `promote_vault_build` makes them from the records this flag emits; the publish workflow produces
+  neither. It calls the embedder (`ONTOMARK_EMBED_ENDPOINT`, default
+  `http://192.168.2.132:9997/v1/embeddings`).
+- `--repo` only selects the clean clone. The workflow's `ontomark validate --vault all` and
+  `ontomark repair bodies --vault all --check` are gates on the source, left to visionGraph's CI.
+- The served bundle is unchanged by the new flags. Built both ways on visionGraph `a5b754af`, the
+  marker's `class_count` (9595), `page_count`, `content_digest` and `ontology_digest` are identical, and
+  the shared artefacts differ only in the build-time stamp. `--vault all` only widens the `publish/`
+  staging to `working/`'s public pages (the ontology projections stay on `knowledge/`), and the nightly
+  discards that staging. What the change buys is that the invocation is the published one.
+- Cost: a retained bundle directory is now about 0.9 GB (markdown mirror and certificate included;
+  `data/` is about 160 MB of it), so about 4.5 GB at the default; `LOOM_KEEP_BUNDLES` (default 5) bounds it.
+
+Checked on 16 November 2026 with the real pinned `ontomark` v0.9.0 (asset sha256 verified against
+`deploy/ontomark-release.env`) on a clone of visionGraph `a5b754af`: the build took under two minutes;
+`promote_vault_build`, `promote_generation` into an empty data directory and
+`reload_published_generation verify` all succeeded. The Loom installs the 21 artefacts the marker lists;
+the certificate, markdown mirror and staging tree stay in the retained bundle, not in `data/`.
 
 ## Start-up fallback
 
