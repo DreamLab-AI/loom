@@ -54,6 +54,8 @@ services:
       # LOOM_THINK_TOKEN_FLOOR: "1536"    # raise sub-floor max_tokens when thinking active (0 disables)
       # F2 exposure telemetry is always emitted when injected; this only appends the line:
       # LOOM_EXPOSURE_APPEND: "0"
+      # Where the start-up fallback looks for previous generations (the mount below).
+      LOOM_RETAINED_BUNDLES_DIR: "/app/retained-bundles"
       RUST_LOG: "info"
       # --- pg-write / off-turn write channel — BUILD/OFF-TURN ONLY, never the query
       # hot path (§10 boundary rule). The serving binary is compiled WITHOUT the
@@ -66,6 +68,10 @@ services:
     # Relative to this compose file (loom/deploy/): the fully mirrored generation dir.
     volumes:
       - ../data:/app/data:ro
+      # Previous generations kept by loom-nightly-promotion.sh, for the start-up
+      # fallback (ADR-141 amendment). Read-only; override the host path with
+      # LOOM_BUNDLES_DIR if the nightly runs with a different LOOM_STATE_DIR.
+      - ${LOOM_BUNDLES_DIR:-${HOME}/.local/state/loom/bundles}:/app/retained-bundles:ro
       - loom-ledger:/var/lib/loom
     tmpfs:
       # uid/gid must match the image's non-root user (65532) or the entrypoint

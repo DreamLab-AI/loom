@@ -190,11 +190,54 @@ named the reload timer's precondition but no step that produced a bundle to relo
 a running process never swaps bundles, so it keeps serving the generation it loaded, and the reload
 tick (D6) refuses to restart onto a bundle that does not verify. A promotion therefore takes effect
 at the next restart, which the reload timer performs within five minutes; **the nightly is only
-useful with the reload timer enabled**. There is deliberately no start-up fallback to an older
-bundle: a restart onto a corrupted data directory still refuses to serve (D6, "no automatic rollback
-replaces a failed generation silently"). Whether to add one is an owner decision. Rollback is
+useful with the reload timer enabled**. A restart onto a corrupted data directory is handled by the start-up fallback below. Rollback is
 `promote_generation --allow-rollback` on a retained bundle directory (see
 `docs/published-generation-reload.md`).
 
 **Drift corrected.** The operations document named `v0.1.0-rc.1` as the pinned `ontomark`; the pin is
 `deploy/ontomark-release.env` (`v0.9.0`), which the nightly sources.
+
+### Further decision — 2026-11-16 (owner): start-up fallback
+
+**Status: built and tested on branch `feat/nightly-promotion`; not merged, not deployed, no image
+rebuilt, no timer enabled.** This decision supersedes the paragraph above that left a start-up
+fallback to the owner.
+
+**A. Start-up fallback.** If the generation in the data directory fails to activate at start, the
+service serves the most recent retained previous generation that validates, and says so everywhere.
+
+- *Where previous generations are.* `loom-nightly-promotion.sh` keeps the newest `LOOM_KEEP_BUNDLES`
+  (default 5) built bundles at `$LOOM_STATE_DIR/bundles/<commit>/data`. They are outside the data
+  directory the container mounts, so the compose files mount that directory read-only at
+  `/app/retained-bundles` and set `LOOM_RETAINED_BUNDLES_DIR`. Unset or missing means no fallback
+  and the previous behaviour: refuse to serve.
+- *Which one.* The promotion log (`<data>/promotions.jsonl`) is read newest first; the generation
+  that failed is skipped; the first whose retained bundle passes promotion's own checks
+  (`promote::validate_bundle`: strict reload check, an `ontomark build` marker naming a hex source
+  commit, indexes and Turtle parse, id equal to the logged one) is served. A directory under the
+  root that the log does not name is never chosen. The one promotion check it cannot repeat is that
+  the commit exists in the source repository (the service has no checkout); the log line is its
+  stand-in, because promotion wrote it only after that check passed.
+- *Trigger.* Only an activation error with a commit marker present (a missing or mis-hashed
+  artefact, a promotion in flight), or a marker file that is not valid JSON. A data directory with no marker at all
+  still degrades as before, and the current generation's checks are not tightened.
+- *Reporting.* `/health` gains `status` (`serving` or `fallback`) and a `fallback` block (failed
+  generation or null if its marker is unreadable, the activation error, the generation served, and
+  where from). `ok` stays `true` so that the container health check and clients keep the node:
+  it answers, and what it serves is declared. `/loom/generation` carries the same `fallback` block;
+  the loaded phase stays `activated` and never becomes `served`; `serving_bundle.disk_matches_loaded`
+  is `false`; the MCP manifest lists `generation-fallback` as degraded; a warning is logged at start.
+- *Reload tooling.* `served_matches` rejects any report with a `fallback` block, so the reload tool
+  never records `served` for a fallback. If a restart lands in a fallback it exits 1 with
+  `the service is serving a fallback generation ...` and leaves `reload-pending`. If the data
+  directory itself no longer verifies, the tool refuses before touching the receipt, as it always
+  has, so the last `served` receipt then describes the generation that was previously served, not
+  the failed one; the non-zero exit and the `/health` fallback block are the signals.
+- *Recovery.* No state is persisted. A successful `promote_generation` (a newer commit, or the
+  same generation rebuilt, which repairs an installed copy that no longer verifies) replaces the data
+  directory and the next restart serves it normally. The nightly's "already current" test uses
+  `verify`, which fails on a corrupt install, so it rebuilds and promotes.
+- *Never.* The service never writes into the data directory or a retained bundle. The failed bundle
+  is left for inspection; the retained semantic database is copied to the runtime directory before it
+  is opened (redb mutates on open), and when there is no writable runtime directory it is not opened
+  and the semantic fallback is reported unavailable.

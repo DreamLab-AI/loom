@@ -155,8 +155,9 @@ pub fn promote(opts: &PromoteOptions) -> Result<PromoteOutcome, PromoteError> {
         .map_err(|e| refuse(format!("{}: {e}", Path::new(&lock_path).display())))?;
     lock.try_lock()
         .map_err(|e| refuse(format!("another promotion holds the lock: {e}")))?;
+    let _unlock = Unlock(&lock);
 
-    let candidate = Candidate::read(&opts.bundle, &opts.source_repo)?;
+    let candidate = Candidate::read(&opts.bundle, Some(&opts.source_repo))?;
     let installed = Installed::read(&opts.data_dir);
 
     if let Some(installed) = &installed {
@@ -224,6 +225,45 @@ pub fn promote(opts: &PromoteOptions) -> Result<PromoteOutcome, PromoteError> {
     Ok(PromoteOutcome::Promoted(Box::new(record)))
 }
 
+/// Releases the promotion lock explicitly when [`promote`] returns. Closing the
+/// file is not enough: a child process forked by another thread (git, in a
+/// parallel caller) holds a duplicate of the descriptor until it execs, and the
+/// lock belongs to the open file description, so it would outlive this call.
+struct Unlock<'file>(&'file fs::File);
+
+impl Drop for Unlock<'_> {
+    fn drop(&mut self) {
+        let _ = self.0.unlock();
+    }
+}
+
+/// A bundle that passed the promotion checks.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ValidatedBundle {
+    /// The generation id the marker declares (`visionGraph@<sha>`).
+    pub generation: String,
+    /// The source commit the marker declares.
+    pub commit: String,
+    /// The artefact digest, as the reload tool and the service compute it.
+    pub content_digest: String,
+}
+
+/// Apply the checks [`promote`] applies to a candidate, without installing
+/// anything: the strict reload check, an `ontomark build` marker naming a hex
+/// source commit, and parseable indexes and Turtle. When `source_repo` is given
+/// the declared commit must also exist there; the service has no checkout, so
+/// it passes `None` and relies on the promotion log, which only records bundles
+/// that passed this check with a repository.
+///
+/// # Errors
+/// [`PromoteError::Refused`] naming the first check that failed.
+pub fn validate_bundle(
+    bundle: &Path,
+    source_repo: Option<&Path>,
+) -> Result<ValidatedBundle, PromoteError> {
+    Ok(Candidate::read(bundle, source_repo)?.validated())
+}
+
 /// The candidate bundle, validated.
 struct Candidate {
     id: String,
@@ -234,7 +274,15 @@ struct Candidate {
 }
 
 impl Candidate {
-    fn read(bundle: &Path, source_repo: &Path) -> Result<Self, PromoteError> {
+    fn validated(&self) -> ValidatedBundle {
+        ValidatedBundle {
+            generation: self.id.clone(),
+            commit: self.commit.clone(),
+            content_digest: self.content_digest.clone(),
+        }
+    }
+
+    fn read(bundle: &Path, source_repo: Option<&Path>) -> Result<Self, PromoteError> {
         let verified = verified_bundle(bundle).map_err(|e| refuse(e.to_string()))?;
         let raw = fs::read(bundle.join(".generation.json"))
             .map_err(|e| refuse(format!(".generation.json: {e}")))?;
@@ -256,11 +304,13 @@ impl Candidate {
                 "the declared commit is not a hex sha: {commit}"
             )));
         }
-        if !commit_exists(source_repo, &commit) {
-            return Err(refuse(format!(
-                "the declared source commit {commit} is not present in {}",
-                source_repo.display()
-            )));
+        if let Some(repo) = source_repo {
+            if !commit_exists(repo, &commit) {
+                return Err(refuse(format!(
+                    "the declared source commit {commit} is not present in {}",
+                    repo.display()
+                )));
+            }
         }
         parse_check(bundle)?;
         Ok(Self {

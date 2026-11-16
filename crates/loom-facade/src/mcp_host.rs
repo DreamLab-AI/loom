@@ -108,6 +108,9 @@ impl ToolHost for AppState {
         if crate::bundle::generation_is_stale(&self.generation.identity().generation) {
             degraded.push("generation-stale".to_owned());
         }
+        if self.generation.fallback().is_some() {
+            degraded.push("generation-fallback".to_owned());
+        }
         let manifest = self.manifest.manifest(salience, &degraded).await?;
         Ok(ToolOutcome::new(
             to_value(&manifest).unwrap_or(Value::Null),

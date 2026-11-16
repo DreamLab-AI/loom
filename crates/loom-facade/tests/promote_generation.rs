@@ -75,7 +75,10 @@ fn make_bundle(root: &Path, commit: &str) -> PathBuf {
         ("scaffold-index.json", FIXTURE.as_bytes().to_vec()),
         (
             "prose-index.json",
-            br#"{"version":1,"classes":{}}"#.to_vec(),
+            serde_json::to_vec(&json!({
+                "pages": {"knowledge-graph": {"dfull": format!("prose of {commit}")}}
+            }))
+            .unwrap(),
         ),
         (
             "ontology.ttl",
@@ -476,4 +479,306 @@ fn a_damaged_installed_bundle_still_counts_for_ordering_and_the_log() {
     let lines = rig.log_lines();
     assert_eq!(lines.len(), 2);
     assert_eq!(lines[1]["previous_generation"], rig.id(2));
+}
+
+// --- start-up fallback (ADR-141 amendment) ------------------------------------
+
+use loom_domain::BundleError;
+use loom_facade::{build_router, try_app_state, Config};
+
+fn copy_tree(from: &Path, to: &Path) {
+    fs::create_dir_all(to).unwrap();
+    for entry in fs::read_dir(from).unwrap() {
+        let entry = entry.unwrap();
+        let target = to.join(entry.file_name());
+        if entry.file_type().unwrap().is_dir() {
+            copy_tree(&entry.path(), &target);
+        } else {
+            fs::copy(entry.path(), target).unwrap();
+        }
+    }
+}
+
+impl Rig {
+    /// Keep generation `n`'s built bundle where the nightly keeps it:
+    /// `<retained>/<commit>/data`.
+    fn retain(&self, n: usize) {
+        let commit = &self.source.commits[n];
+        copy_tree(
+            &self.bundle(n),
+            &self.root.join("retained").join(commit).join("data"),
+        );
+    }
+
+    fn config(&self) -> Config {
+        Config {
+            index_path: self
+                .data
+                .join("scaffold-index.json")
+                .to_string_lossy()
+                .into_owned(),
+            prose_path: self
+                .data
+                .join("prose-index.json")
+                .to_string_lossy()
+                .into_owned(),
+            hnsw_artifact: self
+                .data
+                .join("ontology-corpus.rvdb")
+                .to_string_lossy()
+                .into_owned(),
+            ledger_path: self
+                .root
+                .join("ledger.jsonl")
+                .to_string_lossy()
+                .into_owned(),
+            retained_bundles_dir: Some(self.root.join("retained").to_string_lossy().into_owned()),
+            ..Config::default()
+        }
+    }
+
+    /// Both generations promoted and retained, then the current one corrupted.
+    fn corrupt_current(&self) {
+        promote(&self.opts(self.bundle(0))).unwrap();
+        promote(&self.opts(self.bundle(1))).unwrap();
+        self.retain(0);
+        self.retain(1);
+        let ttl = self.data.join("ontology.ttl");
+        let mut bytes = fs::read(&ttl).unwrap();
+        bytes.extend_from_slice(b"# bit rot\n");
+        fs::write(ttl, bytes).unwrap();
+    }
+
+    fn data_snapshot(&self) -> Vec<(String, Vec<u8>)> {
+        fn walk(dir: &Path, base: &Path, out: &mut Vec<(String, Vec<u8>)>) {
+            for entry in fs::read_dir(dir).unwrap() {
+                let path = entry.unwrap().path();
+                if path.is_dir() {
+                    walk(&path, base, out);
+                } else {
+                    let name = path.strip_prefix(base).unwrap().display().to_string();
+                    out.push((name, fs::read(&path).unwrap()));
+                }
+            }
+        }
+        let mut out = Vec::new();
+        walk(&self.data, &self.data, &mut out);
+        out.sort();
+        out
+    }
+}
+
+fn start(config: Config) -> Result<axum::Router, BundleError> {
+    try_app_state(config).map(build_router)
+}
+
+#[tokio::test]
+async fn corrupt_current_and_valid_previous_serves_the_previous_and_says_so() {
+    let rig = Rig::new(2);
+    rig.corrupt_current();
+    let before = rig.data_snapshot();
+    let retained_before = rig.root.join("retained");
+    let retained_digest =
+        verified_bundle(&retained_before.join(&rig.source.commits[0]).join("data"))
+            .expect("the retained bundle verifies")
+            .content_digest;
+
+    let router = start(rig.config()).unwrap_or_else(|e| panic!("{e}"));
+    let (_, health) = call(router.clone(), "GET", "/health", None).await;
+    assert_eq!(health["status"], "fallback", "{health}");
+    assert_eq!(
+        health["generation"]["id"],
+        rig.id(0),
+        "the previous is served"
+    );
+    assert_eq!(health["fallback"]["failed_generation"], rig.id(1));
+    assert_eq!(health["fallback"]["serving_generation"], rig.id(0));
+    assert!(
+        health["fallback"]["reason"]
+            .as_str()
+            .is_some_and(|r| r.contains("ontology.ttl")),
+        "the reason names the failing artefact: {health}"
+    );
+    // Previous, not current: the digest is the retained bundle's own.
+    assert_eq!(
+        health["serving_bundle"]["identity"]["content_digest"],
+        retained_digest
+    );
+    assert_ne!(
+        health["serving_bundle"]["disk_matches_loaded"],
+        Value::Bool(true),
+        "the data directory still holds the failed generation"
+    );
+    // Never the normal `served`, even after answering requests.
+    let (_, generation) = call(router, "GET", "/loom/generation", None).await;
+    assert_eq!(generation["identity"]["phase"], "activated", "{generation}");
+    assert_eq!(generation["fallback"]["failed_generation"], rig.id(1));
+
+    // Read-only: the failed bundle is left for inspection, the retained one intact.
+    assert_eq!(
+        rig.data_snapshot(),
+        before,
+        "the data directory is untouched"
+    );
+    verified_bundle(&retained_before.join(&rig.source.commits[0]).join("data"))
+        .expect("the retained bundle still verifies after start");
+}
+
+#[tokio::test]
+async fn corrupt_current_and_no_valid_previous_refuses() {
+    let rig = Rig::new(2);
+    rig.corrupt_current();
+    // The only previous generation is itself damaged.
+    let victim = rig
+        .root
+        .join("retained")
+        .join(&rig.source.commits[0])
+        .join("data")
+        .join("ontology-inferred.ttl");
+    fs::write(victim, b"not what the marker hashed").unwrap();
+    let result = start(rig.config());
+    assert!(
+        matches!(result, Err(BundleError::HashMismatch { .. })),
+        "refuses with the original failure: {:?}",
+        result.err()
+    );
+}
+
+#[tokio::test]
+async fn corrupt_current_with_no_retained_directory_refuses_as_before() {
+    let rig = Rig::new(2);
+    rig.corrupt_current();
+    let mut config = rig.config();
+    config.retained_bundles_dir = None;
+    assert!(start(config).is_err());
+    let mut config = rig.config();
+    config.retained_bundles_dir = Some(rig.root.join("missing").display().to_string());
+    assert!(start(config).is_err());
+}
+
+#[tokio::test]
+async fn a_valid_bundle_the_log_does_not_name_is_never_chosen() {
+    let rig = Rig::new(2);
+    rig.corrupt_current();
+    fs::remove_file(rig.data.join("promotions.jsonl")).unwrap();
+    assert!(
+        start(rig.config()).is_err(),
+        "a retained directory alone is not enough"
+    );
+}
+
+#[tokio::test]
+async fn a_valid_current_generation_is_unaffected() {
+    let rig = Rig::new(2);
+    promote(&rig.opts(rig.bundle(0))).unwrap();
+    promote(&rig.opts(rig.bundle(1))).unwrap();
+    rig.retain(0);
+    let router = start(rig.config()).unwrap_or_else(|e| panic!("{e}"));
+    let (_, health) = call(router.clone(), "GET", "/health", None).await;
+    assert_eq!(health["status"], "serving", "{health}");
+    assert_eq!(health["fallback"], Value::Null);
+    assert_eq!(health["generation"]["id"], rig.id(1));
+    assert_eq!(health["serving_bundle"]["disk_matches_loaded"], true);
+    let (_, generation) = call(router, "GET", "/loom/generation", None).await;
+    assert_eq!(generation["fallback"], Value::Null);
+}
+
+#[tokio::test]
+async fn a_later_good_promotion_returns_to_normal() {
+    let rig = Rig::new(3);
+    rig.corrupt_current();
+    let _ = start(rig.config()).expect("falls back first");
+
+    // A rebuild of the same generation repairs the damaged install ...
+    promote(&rig.opts(rig.bundle(1))).expect("repairs the corrupt copy");
+    verified_bundle(&rig.data).expect("the repaired install verifies");
+    let router = start(rig.config()).unwrap_or_else(|e| panic!("{e}"));
+    let (_, health) = call(router, "GET", "/health", None).await;
+    assert_eq!(health["status"], "serving", "{health}");
+    assert_eq!(health["generation"]["id"], rig.id(1));
+
+    // ... and so does a newer one.
+    let ttl = rig.data.join("ontology.ttl");
+    fs::write(&ttl, b"damaged again").unwrap();
+    assert!(start(rig.config()).is_ok(), "falls back again");
+    promote(&rig.opts(rig.bundle(2))).expect("promotes over the damaged install");
+    let router = start(rig.config()).unwrap_or_else(|e| panic!("{e}"));
+    let (_, health) = call(router, "GET", "/health", None).await;
+    assert_eq!(health["status"], "serving", "{health}");
+    assert_eq!(health["generation"]["id"], rig.id(2));
+    assert_eq!(health["fallback"], Value::Null);
+}
+
+#[tokio::test]
+async fn the_retained_semantic_artefact_is_copied_not_opened_in_place() {
+    let rig = Rig::new(2);
+    rig.corrupt_current();
+    let retained = rig
+        .root
+        .join("retained")
+        .join(&rig.source.commits[0])
+        .join("data");
+    // As the container's entrypoint leaves it: a writable runtime directory.
+    let mut config = rig.config();
+    let runtime = rig.root.join("run");
+    fs::create_dir_all(&runtime).unwrap();
+    config.hnsw_artifact = runtime.join("ontology-corpus.rvdb").display().to_string();
+    let _router = start(config).unwrap_or_else(|e| panic!("{e}"));
+    for name in [
+        "ontology-corpus.rvdb",
+        "ontology-corpus.rvdb.generation.json",
+    ] {
+        assert_eq!(
+            fs::read(runtime.join("fallback").join(name)).unwrap(),
+            fs::read(retained.join(name)).unwrap(),
+            "{name} is copied for opening"
+        );
+    }
+    verified_bundle(&retained).expect("the retained bundle is untouched");
+}
+
+/// The container sets `ONTOLOGY_PROSE_INDEX=/app/data/prose-index.json`, and the
+/// lexical adapter reads that variable rather than the configured path. A
+/// fallback must still serve the prose of the bundle it serves.
+#[tokio::test]
+async fn a_fallback_serves_the_prose_of_the_retained_bundle_not_the_failed_one() {
+    let rig = Rig::new(2);
+    rig.corrupt_current();
+    let prose = |commit: &str| format!("prose of {commit}");
+    std::env::set_var("ONTOLOGY_PROSE_INDEX", rig.data.join("prose-index.json"));
+    let state = try_app_state(rig.config()).unwrap_or_else(|e| panic!("{e}"));
+    std::env::remove_var("ONTOLOGY_PROSE_INDEX");
+    let unit = state
+        .retriever
+        .resolve(&loom_domain::Iri::from_slug("knowledge-graph"))
+        .expect("the fixture class resolves");
+    assert_eq!(
+        unit.dfull.as_deref(),
+        Some(prose(&rig.source.commits[0]).as_str()),
+        "prose comes from the generation being served"
+    );
+}
+
+#[tokio::test]
+async fn a_garbled_marker_falls_back_and_otherwise_keeps_the_old_degraded_start() {
+    let rig = Rig::new(2);
+    rig.corrupt_current();
+    fs::write(rig.data.join(".generation.json"), b"{").unwrap();
+    let router = start(rig.config()).unwrap_or_else(|e| panic!("{e}"));
+    let (_, health) = call(router, "GET", "/health", None).await;
+    assert_eq!(health["status"], "fallback", "{health}");
+    assert_eq!(health["fallback"]["failed_generation"], Value::Null);
+    // The failed id is unknown, so the newest logged generation is eligible: here
+    // the same generation, from its intact retained copy.
+    assert_eq!(health["generation"]["id"], rig.id(1));
+
+    // Nothing retained: today's behaviour, an unattested start on the data directory.
+    let mut config = rig.config();
+    config.retained_bundles_dir = None;
+    let (_, health) = call(start(config).unwrap(), "GET", "/health", None).await;
+    assert_eq!(health["status"], "serving");
+    assert_eq!(
+        health["serving_bundle"]["identity"]["atomicity_verified"],
+        false
+    );
 }

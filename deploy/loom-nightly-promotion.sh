@@ -14,13 +14,21 @@
 #     half-built bundle; a failed build leaves the installed generation alone;
 #   * promote_generation refuses an invalid or older bundle (non-zero exit).
 #
+# Start-up fallback: the bundles kept under $LOOM_STATE_DIR/bundles/<commit>/data
+# are what the service falls back to if the generation in DATA_DIR fails to load
+# at start (it reads them through LOOM_RETAINED_BUNDLES_DIR and picks from
+# $DATA_DIR/promotions.jsonl). A later successful promotion, followed by the
+# reload tick's restart, returns the service to normal; nothing here needs to
+# know the service fell back.
+#
 # Configuration (environment; defaults suit the HP checkout layout):
 #   LOOM_HOME         ~/githubs/loom          checkout holding target/release binaries and deploy/
 #   LOOM_DATA_DIR     $LOOM_HOME/data         the directory the service reads (bind-mounted :ro)
 #   LOOM_SOURCE_REPO  ~/githubs/visionGraph   visionGraph checkout (fetched, never modified)
 #   LOOM_SOURCE_REF   origin/HEAD             the ref to promote (the remote default branch)
 #   LOOM_STATE_DIR    ~/.local/state/loom     bundles, ontomark cache, lock
-#   LOOM_KEEP_BUNDLES 5                       built bundles kept for rollback
+#   LOOM_KEEP_BUNDLES 5                       built bundles kept for rollback and for the
+#                                             service's start-up fallback (see below)
 set -euo pipefail
 
 LOOM_HOME="${LOOM_HOME:-$HOME/githubs/loom}"
@@ -103,6 +111,9 @@ log "building $WANT with ontomark $ONTOMARK_RELEASE_TAG"
 FINAL="$STATE_DIR/bundles/$SHA"
 rm -rf "$FINAL"
 mv "$WORK/out" "$FINAL"
+# The service (uid 65532) reads retained bundles through a read-only mount for its
+# start-up fallback; the build's own modes are not guaranteed.
+chmod -R a+rX "$FINAL"
 
 # 5. Validate, install atomically, stamp, log. Non-zero if it refuses.
 "$BIN/promote_generation" \

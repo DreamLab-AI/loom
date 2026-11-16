@@ -40,7 +40,8 @@ For the HP checkout layout, the supplied user service explicitly runs compose
 other services. Adjust the reviewed absolute paths before installing it elsewhere.
 The old image and generation must remain available for operator rollback. Run one
 manual tick with the same arguments and inspect the receipt before enabling the
-timer. No automatic rollback replaces a failed generation silently.
+timer. The reload tick never rolls back; the start-up fallback (see § Start-up fallback) is a
+separate, loudly reported mechanism.
 
 The transition refuses incomplete, hash-mismatched, indirect or in-flight
 publication, serialises invocations using a lock, and writes a pending receipt
@@ -248,10 +249,57 @@ A bundle that has been pruned cannot be re-promoted; rebuild it from its commit.
 to ten minutes of delay) fetches visionGraph, resolves `origin/HEAD`, and exits 0 with `current` if
 that generation is already installed and verifies. Otherwise it builds from a clean detached clone
 with the `ontomark` pinned in `deploy/ontomark-release.env` (downloaded once, sha256-verified, cached
-under `~/.local/state/loom/ontomark/<tag>/`), builds the semantic database with `promote_vault_build`,
+under `~/.local/state/loom/ontomark/<tag>/`) builds the semantic database with
+`promote_vault_build`,
 renames the finished bundle to `~/.local/state/loom/bundles/<sha>` and runs `promote_generation`. The
 build happens outside the data directory, so the service never sees a half-built bundle. It does not
 restart the service.
+
+## Start-up fallback
+
+If the generation in `data/` fails to load at start (a missing or mis-hashed artefact, an unreadable
+marker, a promotion left in flight), the service serves the most recent retained previous generation
+that validates instead of refusing, and says so. If none validates, it refuses to serve as before.
+
+- **Where from.** The bundles the nightly keeps, `~/.local/state/loom/bundles/<commit>/data` (the
+  newest `LOOM_KEEP_BUNDLES`, default 5). The compose files mount that directory read-only at
+  `/app/retained-bundles` (`LOOM_BUNDLES_DIR` overrides the host path) and set
+  `LOOM_RETAINED_BUNDLES_DIR`. Without that variable there is no fallback.
+- **Which.** `data/promotions.jsonl` is read newest first, skipping the generation that failed (when
+  its marker is too damaged to name it, nothing is skipped, so the newest logged generation may be
+  served from its intact retained copy); the
+  first whose retained bundle passes the checks promotion applies (see above, except that the source
+  commit is taken on the log's word, as the container has no checkout) is served. A directory the log
+  does not name is never used.
+- **What you see.**
+
+```bash
+curl -s http://127.0.0.1:8084/health | jq '{ok, status, fallback}'
+# {"ok": true, "status": "fallback",
+#  "fallback": {"failed_generation": "visionGraph@<sha>", "reason": "<why it failed>",
+#               "serving_generation": "visionGraph@<older sha>", "serving_dir": "/app/retained-bundles/<older sha>/data"}}
+```
+
+  `status` is `serving` in the normal case. `ok` stays `true`: the node answers, so the container
+  health check and clients keep it, and the status says what it is answering from. `/loom/generation`
+  carries the same `fallback` block (`null` normally); its phase stays `activated`, never `served`;
+  `disk.matches_loaded` is `false`; the MCP manifest lists `generation-fallback` as degraded; and a
+  `SERVING A FALLBACK GENERATION` warning is logged at start.
+- **Reload tool.** `reload_published_generation` never records `served` for a fallback: a report
+  with a `fallback` block does not prove the bundle. If a restart lands in a fallback it exits 1
+  with `the service is serving a fallback generation ...` and the receipt stays `reload-pending`.
+  If `data/` itself no longer verifies it refuses first, as always, and the receipt is untouched,
+  so it still holds the last generation proved served: the exit status and `/health` are the signal.
+- **Clearing it.** Nothing is stored. A successful `promote_generation` clears the cause: a newer
+  commit, or the same generation rebuilt (which repairs an installed copy that no longer verifies).
+  The nightly rebuilds when `data/` does not verify, so it does this unprompted; the reload tick then
+  restarts the service onto it and `status` is `serving` again.
+- **Left alone.** The service never writes to `data/` or to a retained bundle, so the failed bundle
+  stays for inspection until a promotion replaces it. The semantic database is copied to
+  `/run/loom/fallback/` before it is opened (redb mutates on open); with no writable runtime
+  directory it is not opened and `/health` shows the semantic index unavailable.
+- **Not covered.** A valid-looking but wrong bundle is not detected, and neither is a `data/` that
+  verifies but fails to load for another reason; the reload tick's restart and probe cover the latter.
 
 ### Deploy on the Loom's host, and switch the nightly on
 
@@ -267,7 +315,11 @@ git fetch origin && git merge --ff-only origin/main      # after feat/nightly-pr
 cargo build --release -p loom-facade --bin promote_generation --bin reload_published_generation
 cargo build --release -p loom-vector-ruvector --bin promote_vault_build
 
-# 2. Rebuild the image so /health can report promoted_by and previous_generation.
+# 2. The fallback mount's source must exist and be readable before the container is recreated,
+#    or Docker creates it as root: install -d -m 0755 ~/.local/state/loom/bundles
+#    Then rebuild the image so /health can report promoted_by, previous_generation and the start-up
+#    fallback status, and recreate the container so the compose change (read-only mount of
+#    ~/.local/state/loom/bundles and LOOM_RETAINED_BUNDLES_DIR) takes effect.
 #    (See the build line at the top of deploy/compose.profile-a.yml; a rebuild restarts the
 #    service onto the data directory as it is now.)
 

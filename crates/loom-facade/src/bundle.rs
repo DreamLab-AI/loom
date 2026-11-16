@@ -55,6 +55,7 @@ use loom_domain::{
     ArtifactSha, BundleError, BundlePhase, Generation, GenerationStore, LoomError, ServingIdentity,
 };
 
+use crate::fallback::FallbackInfo;
 use crate::mirror::{hex_sha256, MirrorStore};
 
 /// The in-flight sentinel this module's promoter writes for the whole duration
@@ -85,8 +86,14 @@ const DEGRADED_CANDIDATES: &[&str] = &[
 #[derive(Debug)]
 pub struct LoadedBundle {
     identity: ServingIdentity,
-    /// The disk view, for `disk_generation()` / `disk_matches_loaded()`.
+    /// The disk view, for `disk_generation()` / `disk_matches_loaded()`. For a
+    /// fallback this is still the data directory, not the directory served.
     disk: MirrorStore,
+    /// The directory the loaded artefacts were read from: the data directory,
+    /// except for a fallback.
+    served_dir: PathBuf,
+    /// Set only when this bundle is a start-up fallback (ADR-141 amendment).
+    fallback: Option<FallbackInfo>,
     /// Set the first time this bundle answers a request, so the reported phase
     /// can distinguish `activated` from `served`.
     served: AtomicBool,
@@ -133,11 +140,41 @@ impl LoadedBundle {
     /// through without touching a filesystem promotion.
     #[must_use]
     pub fn from_identity(index_path: &str, identity: ServingIdentity) -> Self {
+        let disk = MirrorStore::new(index_path);
         Self {
             identity,
-            disk: MirrorStore::new(index_path),
+            served_dir: disk.data_dir().to_path_buf(),
+            disk,
+            fallback: None,
             served: AtomicBool::new(false),
         }
+    }
+
+    /// Strictly activate the bundle in the directory of `served_index_path`
+    /// as a start-up fallback for the failed data directory of
+    /// `disk_index_path`. The disk view stays on the data directory, so
+    /// `disk_matches_loaded` reports `false` and a restart stays owed; the
+    /// loaded identity is never advertised as `served`.
+    ///
+    /// # Errors
+    /// Every strict [`BundleError`] case, for the fallback directory.
+    pub fn activate_fallback(
+        served_index_path: &str,
+        disk_index_path: &str,
+        info: FallbackInfo,
+    ) -> Result<Self, BundleError> {
+        let strict = Self::activate(served_index_path)?;
+        Ok(Self {
+            disk: MirrorStore::new(disk_index_path),
+            fallback: Some(info),
+            ..strict
+        })
+    }
+
+    /// The fallback descriptor, when this bundle is a start-up fallback.
+    #[must_use]
+    pub fn fallback(&self) -> Option<&FallbackInfo> {
+        self.fallback.as_ref()
     }
 
     fn capture(disk: MirrorStore, observed: Vec<ArtifactSha>, verified: bool) -> Self {
@@ -146,6 +183,8 @@ impl LoadedBundle {
         let generation = <MirrorStore as GenerationStore>::current(&disk);
         let content_digest = hex_sha256(ServingIdentity::digest_input(&observed).as_bytes());
         Self {
+            served_dir: disk.data_dir().to_path_buf(),
+            fallback: None,
             identity: ServingIdentity {
                 generation,
                 content_digest,
@@ -170,7 +209,9 @@ impl LoadedBundle {
     #[must_use]
     pub fn reported_identity(&self) -> ServingIdentity {
         let mut id = self.identity.clone();
-        if self.served.load(Ordering::Relaxed) {
+        // A fallback never reaches `served`: that phase is what the reload tool
+        // takes as "the promoted bundle is in service".
+        if self.fallback.is_none() && self.served.load(Ordering::Relaxed) {
             id.advance_to(BundlePhase::Served);
         }
         id
@@ -209,7 +250,7 @@ impl LoadedBundle {
     /// [`BundleError::ActivatedDrift`] on a changed artefact,
     /// [`BundleError::MissingArtefact`] on one that has been removed.
     pub fn verify_loaded(&self) -> Result<(), BundleError> {
-        let dir = self.disk.data_dir();
+        let dir = self.served_dir.as_path();
         if self.identity.artefacts.is_empty() {
             return Err(BundleError::EmptyManifest {
                 dir: dir.display().to_string(),

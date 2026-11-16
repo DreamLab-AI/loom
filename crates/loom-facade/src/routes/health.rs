@@ -28,7 +28,18 @@ use crate::state::{AppState, ConfidenceStats};
 /// (the confidence-check bin, deploy smoke tests) can consume it typed.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct HealthResponse {
+    /// Whether the node answers. A start-up fallback still answers, so this
+    /// stays `true`; read `status` for whether it is the intended generation.
     pub ok: bool,
+    /// `"serving"` for the generation in the data directory, `"fallback"` when
+    /// the node started on a retained previous generation because the current
+    /// one failed to activate. Anything keyed on health must read this.
+    #[serde(default = "default_status")]
+    pub status: String,
+    /// Present only when `status` is `"fallback"`: the generation that failed
+    /// and why, and the generation being served instead.
+    #[serde(default)]
+    pub fallback: Option<crate::fallback::FallbackInfo>,
     pub facet: String,
     pub mode: String,
     /// The backend endpoint, or `null` on a retrieval-only node.
@@ -65,6 +76,10 @@ pub struct HealthResponse {
     pub injection_policy: InjectionPolicyBlock,
     pub serving: ServingBlock,
     pub confidence: ConfidenceStats,
+}
+
+fn default_status() -> String {
+    "serving".to_owned()
 }
 
 /// The confidence gate's configuration, verbatim from `InjectionPolicy`.
@@ -150,8 +165,15 @@ pub(super) async fn health(State(st): State<AppState>) -> Response {
         identity: identity.clone(),
     };
 
+    let fallback = st.generation.fallback().cloned();
     Json(HealthResponse {
         ok: true,
+        status: if fallback.is_some() {
+            "fallback".to_owned()
+        } else {
+            default_status()
+        },
+        fallback,
         facet: "loom-facade".to_owned(),
         mode: "scaffold".to_owned(),
         backend,
