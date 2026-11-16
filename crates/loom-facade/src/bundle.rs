@@ -45,6 +45,7 @@
 //! perform.
 
 use std::collections::BTreeSet;
+use std::os::unix::fs::{DirBuilderExt, PermissionsExt};
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -54,6 +55,7 @@ use loom_domain::{
     ArtifactSha, BundleError, BundlePhase, Generation, GenerationStore, LoomError, ServingIdentity,
 };
 
+use crate::fallback::FallbackInfo;
 use crate::mirror::{hex_sha256, MirrorStore};
 
 /// The in-flight sentinel this module's promoter writes for the whole duration
@@ -84,8 +86,14 @@ const DEGRADED_CANDIDATES: &[&str] = &[
 #[derive(Debug)]
 pub struct LoadedBundle {
     identity: ServingIdentity,
-    /// The disk view, for `disk_generation()` / `disk_matches_loaded()`.
+    /// The disk view, for `disk_generation()` / `disk_matches_loaded()`. For a
+    /// fallback this is still the data directory, not the directory served.
     disk: MirrorStore,
+    /// The directory the loaded artefacts were read from: the data directory,
+    /// except for a fallback.
+    served_dir: PathBuf,
+    /// Set only when this bundle is a start-up fallback (ADR-141 amendment).
+    fallback: Option<FallbackInfo>,
     /// Set the first time this bundle answers a request, so the reported phase
     /// can distinguish `activated` from `served`.
     served: AtomicBool,
@@ -132,11 +140,41 @@ impl LoadedBundle {
     /// through without touching a filesystem promotion.
     #[must_use]
     pub fn from_identity(index_path: &str, identity: ServingIdentity) -> Self {
+        let disk = MirrorStore::new(index_path);
         Self {
             identity,
-            disk: MirrorStore::new(index_path),
+            served_dir: disk.data_dir().to_path_buf(),
+            disk,
+            fallback: None,
             served: AtomicBool::new(false),
         }
+    }
+
+    /// Strictly activate the bundle in the directory of `served_index_path`
+    /// as a start-up fallback for the failed data directory of
+    /// `disk_index_path`. The disk view stays on the data directory, so
+    /// `disk_matches_loaded` reports `false` and a restart stays owed; the
+    /// loaded identity is never advertised as `served`.
+    ///
+    /// # Errors
+    /// Every strict [`BundleError`] case, for the fallback directory.
+    pub fn activate_fallback(
+        served_index_path: &str,
+        disk_index_path: &str,
+        info: FallbackInfo,
+    ) -> Result<Self, BundleError> {
+        let strict = Self::activate(served_index_path)?;
+        Ok(Self {
+            disk: MirrorStore::new(disk_index_path),
+            fallback: Some(info),
+            ..strict
+        })
+    }
+
+    /// The fallback descriptor, when this bundle is a start-up fallback.
+    #[must_use]
+    pub fn fallback(&self) -> Option<&FallbackInfo> {
+        self.fallback.as_ref()
     }
 
     fn capture(disk: MirrorStore, observed: Vec<ArtifactSha>, verified: bool) -> Self {
@@ -145,6 +183,8 @@ impl LoadedBundle {
         let generation = <MirrorStore as GenerationStore>::current(&disk);
         let content_digest = hex_sha256(ServingIdentity::digest_input(&observed).as_bytes());
         Self {
+            served_dir: disk.data_dir().to_path_buf(),
+            fallback: None,
             identity: ServingIdentity {
                 generation,
                 content_digest,
@@ -169,7 +209,9 @@ impl LoadedBundle {
     #[must_use]
     pub fn reported_identity(&self) -> ServingIdentity {
         let mut id = self.identity.clone();
-        if self.served.load(Ordering::Relaxed) {
+        // A fallback never reaches `served`: that phase is what the reload tool
+        // takes as "the promoted bundle is in service".
+        if self.fallback.is_none() && self.served.load(Ordering::Relaxed) {
             id.advance_to(BundlePhase::Served);
         }
         id
@@ -208,7 +250,7 @@ impl LoadedBundle {
     /// [`BundleError::ActivatedDrift`] on a changed artefact,
     /// [`BundleError::MissingArtefact`] on one that has been removed.
     pub fn verify_loaded(&self) -> Result<(), BundleError> {
-        let dir = self.disk.data_dir();
+        let dir = self.served_dir.as_path();
         if self.identity.artefacts.is_empty() {
             return Err(BundleError::EmptyManifest {
                 dir: dir.display().to_string(),
@@ -289,6 +331,27 @@ impl BundlePromoter {
     /// The staging bundle's own [`BundleError`] cases, plus
     /// [`BundleError::ArtefactUnreadable`] if the swap itself fails.
     pub fn promote(&self) -> Result<Vec<ArtifactSha>, BundleError> {
+        let marker = std::fs::read(self.staging.join(".generation.json")).map_err(|e| {
+            BundleError::ArtefactUnreadable {
+                name: ".generation.json".to_owned(),
+                detail: format!("staging marker unreadable: {e}"),
+            }
+        })?;
+        self.promote_with_marker(&marker)
+    }
+
+    /// As [`Self::promote`], but commits `marker_bytes` (the staging marker
+    /// with the promotion stamp added) instead of copying the staging marker
+    /// verbatim. The staging directory is never written, so the same bundle can
+    /// be promoted again, which is how a rollback works. `marker_bytes` must
+    /// describe the staging artefacts; this does not re-parse it.
+    ///
+    /// # Errors
+    /// As [`Self::promote`].
+    pub fn promote_with_marker(
+        &self,
+        marker_bytes: &[u8],
+    ) -> Result<Vec<ArtifactSha>, BundleError> {
         let staged = MirrorStore::new(&self.staging.join("scaffold-index.json").to_string_lossy());
         // (1) Verify the staging set completely BEFORE touching the target.
         let verified = verify_marker(&staged)?;
@@ -320,10 +383,24 @@ impl BundlePromoter {
             let from = self.staging.join(&art.name);
             let incoming = self.target.join(format!("{}.incoming", art.name));
             let to = self.target.join(&art.name);
+            if let Some(parent) = to.parent() {
+                // The service runs as a different (non-root) user from the one
+                // promoting, so directories and files are made world-readable
+                // whatever the promoter's umask or the bundle's own modes.
+                std::fs::DirBuilder::new()
+                    .recursive(true)
+                    .mode(SERVED_DIR_MODE)
+                    .create(parent)
+                    .map_err(|e| BundleError::ArtefactUnreadable {
+                        name: art.name.clone(),
+                        detail: format!("could not create directory: {e}"),
+                    })?;
+            }
             std::fs::copy(&from, &incoming).map_err(|e| BundleError::ArtefactUnreadable {
                 name: art.name.clone(),
                 detail: format!("stage copy failed: {e}"),
             })?;
+            set_served_mode(&incoming, &art.name)?;
             std::fs::rename(&incoming, &to).map_err(|e| BundleError::ArtefactUnreadable {
                 name: art.name.clone(),
                 detail: format!("swap failed: {e}"),
@@ -332,12 +409,13 @@ impl BundlePromoter {
 
         // (4) The marker last — this rename is the commit.
         let marker_incoming = self.target.join(".generation.json.incoming");
-        std::fs::copy(self.staging.join(".generation.json"), &marker_incoming).map_err(|e| {
+        std::fs::write(&marker_incoming, marker_bytes).map_err(|e| {
             BundleError::ArtefactUnreadable {
                 name: ".generation.json".to_owned(),
                 detail: format!("marker stage failed: {e}"),
             }
         })?;
+        set_served_mode(&marker_incoming, ".generation.json")?;
         std::fs::rename(&marker_incoming, &marker).map_err(|e| {
             BundleError::ArtefactUnreadable {
                 name: ".generation.json".to_owned(),
@@ -351,6 +429,20 @@ impl BundlePromoter {
         })?;
         Ok(verified)
     }
+}
+
+/// Mode of every installed artefact: readable by the container's user.
+const SERVED_FILE_MODE: u32 = 0o644;
+/// Mode of directories created for nested artefacts such as `graph/`.
+const SERVED_DIR_MODE: u32 = 0o755;
+
+fn set_served_mode(path: &std::path::Path, name: &str) -> Result<(), BundleError> {
+    std::fs::set_permissions(path, std::fs::Permissions::from_mode(SERVED_FILE_MODE)).map_err(|e| {
+        BundleError::ArtefactUnreadable {
+            name: name.to_owned(),
+            detail: format!("could not set mode: {e}"),
+        }
+    })
 }
 
 // --- verification helpers ---------------------------------------------------

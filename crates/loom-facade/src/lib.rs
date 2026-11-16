@@ -13,10 +13,12 @@ pub mod build_info;
 pub mod bundle;
 pub mod config;
 pub mod error;
+pub mod fallback;
 pub mod fusion;
 pub mod jev;
 pub mod mcp_host;
 pub mod mirror;
+pub mod promote;
 pub mod reload;
 pub mod routes;
 pub mod serving;
@@ -30,7 +32,7 @@ pub use config::Config;
 pub use routes::build_router;
 pub use state::AppState;
 
-use loom_domain::{GraphStore, LexicalIndex, VectorIndex};
+use loom_domain::{BundleError, GraphStore, LexicalIndex, VectorIndex};
 use loom_scaffold::policy::InjectionPolicy;
 use loom_scaffold::LexicalRetriever;
 
@@ -63,13 +65,103 @@ const EMPTY_INDEX_JSON: &str = r#"{"version":1,"generated":"","classes":{}}"#;
 /// Never — the empty-index fallback guarantees a usable lexical floor, and every
 /// other adapter is fail-open.
 pub fn try_app_state_from_env() -> Result<AppState, loom_domain::BundleError> {
-    let config = Config::from_env();
+    try_app_state(Config::from_env())
+}
 
+/// Activate the data directory's bundle; if that fails and a retained
+/// generation validates, activate that instead and say so. Returns the config
+/// the rest of start-up must use (rebased onto the fallback directory when one
+/// is served).
+fn activate_or_fall_back(config: Config) -> Result<(Config, LoadedBundle), BundleError> {
+    let disk = mirror::MirrorStore::new(&config.index_path);
+    // A marker file that is not valid JSON counts as "no marker" to the store,
+    // which would start unattested over a damaged directory. Treat it as the
+    // failure it is, but keep the old degraded start when nothing can replace it.
+    let garbled = disk.commit_marker_path().is_file() && !disk.has_commit_marker();
+    let failure = if garbled {
+        BundleError::MarkerUnreadable {
+            dir: disk.data_dir().display().to_string(),
+            detail: format!("{} is not valid JSON", disk.commit_marker_path().display()),
+        }
+    } else {
+        match LoadedBundle::activate_or_degraded(&config.index_path) {
+            Ok(bundle) => return Ok((config, bundle)),
+            Err(failure) => failure,
+        }
+    };
+    let failed = {
+        disk.has_commit_marker().then(|| {
+            <mirror::MirrorStore as loom_domain::GenerationStore>::current(&disk)
+                .id
+                .0
+        })
+    };
+    let Some(selected) = fallback::select(&config, failed.as_deref()) else {
+        if garbled {
+            let bundle = LoadedBundle::activate_or_degraded(&config.index_path)?;
+            return Ok((config, bundle));
+        }
+        return Err(failure);
+    };
+    let rebased = fallback::rebased(&config, &selected.dir);
+    let info = fallback::FallbackInfo {
+        failed_generation: failed,
+        reason: failure.to_string(),
+        serving_generation: selected.generation,
+        serving_dir: selected.dir.display().to_string(),
+    };
+    tracing::warn!(
+        failed = ?info.failed_generation,
+        reason = %info.reason,
+        serving = %info.serving_generation,
+        dir = %info.serving_dir,
+        data = %config.index_path,
+        "SERVING A FALLBACK GENERATION: the current generation failed to activate; \
+         the failed bundle is left untouched for inspection"
+    );
+    // A fallback that does not itself activate strictly is no fallback: report
+    // the original failure, not a second one.
+    match LoadedBundle::activate_fallback(&rebased.index_path, &config.index_path, info) {
+        Ok(bundle) => Ok((rebased, bundle)),
+        Err(_) if garbled => {
+            let bundle = LoadedBundle::activate_or_degraded(&config.index_path)?;
+            Ok((config, bundle))
+        }
+        Err(_) => Err(failure),
+    }
+}
+
+/// The lexical adapter reads the prose index from `$ONTOLOGY_PROSE_INDEX`, not
+/// from the configured path, so over a fallback it would attach the failed
+/// bundle's prose to the retained bundle's index. Attach the right one.
+fn with_bundle_prose(
+    retriever: LexicalRetriever,
+    bundle: &LoadedBundle,
+    config: &Config,
+) -> LexicalRetriever {
+    if bundle.fallback().is_none() {
+        return retriever;
+    }
+    retriever.with_prose(loom_scaffold::prose::load_prose(std::path::Path::new(
+        &config.prose_path,
+    )))
+}
+
+/// [`try_app_state_from_env`] over an explicit [`Config`].
+///
+/// # Errors
+/// As [`try_app_state_from_env`].
+///
+/// # Panics
+/// Never — see [`try_app_state_from_env`].
+pub fn try_app_state(config: Config) -> Result<AppState, loom_domain::BundleError> {
     // --- serving identity (FIRST, and fatal on failure) --------------------
     // Verify before loading anything, so no content is read from a set that is
     // about to be rejected. `verify_atomicity` runs here, on the serving path,
-    // rather than existing only as a method nothing calls.
-    let bundle = LoadedBundle::activate_or_degraded(&config.index_path)?;
+    // rather than existing only as a method nothing calls. The one softening:
+    // a retained previous generation that passes promotion's checks is served
+    // instead, and reported as a fallback everywhere.
+    let (config, bundle) = activate_or_fall_back(config)?;
     {
         let id = bundle.identity();
         tracing::info!(
@@ -100,6 +192,8 @@ pub fn try_app_state_from_env() -> Result<AppState, loom_domain::BundleError> {
             LexicalRetriever::from_json_str(EMPTY_INDEX_JSON).expect("static empty index parses")
         }
     };
+
+    let retriever = with_bundle_prose(retriever, &bundle, &config);
 
     // --- graph (accelerator) — fail-open; report availability.
     let graph = OxigraphStore::load(config.data_dir());
@@ -161,7 +255,8 @@ pub fn try_app_state_from_env() -> Result<AppState, loom_domain::BundleError> {
     // this point; future disk changes are detected by the generation endpoint.
     if bundle.identity().atomicity_verified {
         bundle.verify_loaded()?;
-        if !bundle.disk_matches_loaded() {
+        // A fallback differs from the data directory by definition.
+        if bundle.fallback().is_none() && !bundle.disk_matches_loaded() {
             return Err(loom_domain::BundleError::ActivatedDrift {
                 name: ".generation.json".to_owned(),
             });

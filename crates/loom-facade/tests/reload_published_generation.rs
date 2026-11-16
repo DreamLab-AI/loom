@@ -1088,3 +1088,51 @@ mod cli {
         assert_eq!(code(&run(&["verify"])), 2);
     }
 }
+
+// --- a start-up fallback is never "served" (ADR-141 amendment) ----------------
+
+/// A report that would prove the bundle, but for the `fallback` block.
+fn serving_a_fallback(dir: &Path) -> Value {
+    let mut report = serving(dir, "g1");
+    report["fallback"] = json!({
+        "failed_generation": "g1",
+        "reason": "artefact hash mismatch",
+        "serving_generation": "g0",
+        "serving_dir": "/app/retained-bundles/abc/data"
+    });
+    report
+}
+
+#[test]
+fn a_fallback_report_never_proves_the_bundle() {
+    let f = Legacy::new();
+    let bundle = verified_bundle(&f.root).unwrap();
+    assert!(loom_facade::reload::served_matches(
+        &serving(&f.root, "g1"),
+        &bundle
+    ));
+    let mut with_null = serving(&f.root, "g1");
+    with_null["fallback"] = Value::Null;
+    assert!(loom_facade::reload::served_matches(&with_null, &bundle));
+    assert!(!loom_facade::reload::served_matches(
+        &serving_a_fallback(&f.root),
+        &bundle
+    ));
+}
+
+#[test]
+fn a_service_that_restarts_into_a_fallback_is_reported_and_not_recorded_served() {
+    let f = Legacy::new();
+    let err = run_reconcile(
+        &f,
+        || Ok(serving_a_fallback(&f.root)),
+        || Ok(()),
+        Duration::ZERO,
+    )
+    .unwrap_err();
+    let ReloadError::Fallback(why) = &err else {
+        panic!("expected a fallback error, got {err:?}");
+    };
+    assert!(why.contains("g0") && why.contains("hash mismatch"), "{why}");
+    assert_eq!(f.receipt()["state"], "reload-pending");
+}

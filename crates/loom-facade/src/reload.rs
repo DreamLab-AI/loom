@@ -70,6 +70,10 @@ pub enum ReloadError {
     Reload(String),
     /// The service did not prove the expected bundle before the deadline.
     Timeout,
+    /// The service came back on a retained previous generation (a start-up
+    /// fallback) instead of the bundle in the data directory. Nothing is
+    /// recorded as served.
+    Fallback(String),
     /// The receipt could not be written.
     Io(io::Error),
 }
@@ -80,6 +84,10 @@ impl fmt::Display for ReloadError {
             Self::Invalid(why) => write!(f, "{why}"),
             Self::Reload(why) => write!(f, "reload failed: {why}"),
             Self::Timeout => write!(f, "reloaded service did not prove the expected bundle"),
+            Self::Fallback(why) => write!(
+                f,
+                "the service is serving a fallback generation, not the expected bundle: {why}"
+            ),
             Self::Io(e) => write!(f, "receipt: {e}"),
         }
     }
@@ -284,6 +292,11 @@ fn check_sidecar(dir: &Path, generation: &str) -> Result<(), ReloadError> {
 pub fn served_matches(report: &Value, bundle: &Bundle) -> bool {
     let at = |path: &[&str]| path.iter().try_fold(report, |v, key| v.get(*key));
     let is = |path: &[&str], want: &Value| at(path) == Some(want);
+    // A start-up fallback is never the bundle that was asked for, whatever else
+    // the report says.
+    if report_fallback(report).is_some() {
+        return false;
+    }
     let id = Value::String(bundle.generation.clone());
     report.is_object()
         && is(&["id"], &id)
@@ -305,6 +318,22 @@ pub fn served_matches(report: &Value, bundle: &Bundle) -> bool {
         && at(&["embedding", "rejections"])
             .and_then(Value::as_array)
             .is_some_and(Vec::is_empty)
+}
+
+/// The `fallback` block of a `/loom/generation` report, when the service is
+/// serving a start-up fallback, rendered for an error message.
+fn report_fallback(report: &Value) -> Option<String> {
+    let block = report.get("fallback").filter(|v| !v.is_null())?;
+    let field = |name: &str| block.get(name).and_then(Value::as_str).unwrap_or("unknown");
+    Some(format!(
+        "serving {} because {} failed: {}",
+        field("serving_generation"),
+        block
+            .get("failed_generation")
+            .and_then(Value::as_str)
+            .unwrap_or("the current generation"),
+        field("reason")
+    ))
 }
 
 /// `serde_json` formatter that reproduces Python's `json.dump` defaults
@@ -399,22 +428,23 @@ pub fn reconcile<P: IdentityProbe, R: Reloader, C: Clock>(
     write_receipt(receipt, "reload-pending", &bundle).map_err(ReloadError::Io)?;
     reloader.reload().map_err(ReloadError::Reload)?;
     let deadline = clock.now() + timeout;
+    let mut fallback: Option<String> = None;
     loop {
         if verified_bundle(dir)? != bundle {
             return Err(invalid("publication changed during reload"));
         }
-        if probe
-            .fetch()
-            .is_ok_and(|report| served_matches(&report, &bundle))
-        {
-            if verified_bundle(dir)? != bundle {
-                return Err(invalid("publication changed during identity probe"));
+        if let Ok(report) = probe.fetch() {
+            if served_matches(&report, &bundle) {
+                if verified_bundle(dir)? != bundle {
+                    return Err(invalid("publication changed during identity probe"));
+                }
+                write_receipt(receipt, "served", &bundle).map_err(ReloadError::Io)?;
+                return Ok(Outcome::Reloaded);
             }
-            write_receipt(receipt, "served", &bundle).map_err(ReloadError::Io)?;
-            return Ok(Outcome::Reloaded);
+            fallback = report_fallback(&report);
         }
         if clock.now() >= deadline {
-            return Err(ReloadError::Timeout);
+            return Err(fallback.map_or(ReloadError::Timeout, ReloadError::Fallback));
         }
         clock.sleep(POLL_INTERVAL);
     }

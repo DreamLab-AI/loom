@@ -1,0 +1,11 @@
+[Unit]
+Description=Promote the latest visionGraph closure into the Loom (build, validate, install, log)
+
+[Service]
+Type=oneshot
+# Paths follow the HP checkout layout; the script's defaults match them. The
+# service is NOT restarted here: loom-generation-reload.timer does that.
+ExecStart=%h/githubs/loom/deploy/loom-nightly-promotion.sh
+TimeoutStartSec=2h
+UMask=0022
+NoNewPrivileges=true

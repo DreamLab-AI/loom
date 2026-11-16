@@ -3,7 +3,7 @@
 Status: Proposed · 2026-09-22 · Extends ADR-135 (generation discipline), ADR-136 D4 (atomic
 mirror), ADR-138 (grounding contract) and ADR-140 (the two planes) · Amends ADR-140 D1 and D4 in
 place · Realises the Loom half of VisionFlow **PRD Sovereign Corpus** (Q8, Q10, §3.4) and serves
-its contract C5
+its contract C5 · Nightly promotion with a recorded stamp (amendment of 2026-11-16): **built and tested on branch `feat/nightly-promotion`, not merged, not deployed**
 
 <!-- lands with ontomark step 10 -->
 > Producer rename (EXP-10 step 10): the corpus build is `ontomark build`, a pinned released tag, and the `vault` name survives only as the governance adapter. The marker shapes, the served identity and the ledger described here are unchanged by the rename.
@@ -158,3 +158,110 @@ Owner decision, recorded in [Ontomark ADR-OM-005](https://github.com/DreamLab-AI
 The owner also records that identifiers need not be stable over time at this stage: re-minting across the synthetic corpus to best practice is permitted, provided each re-mint ships the identity mapping, visibility diff and rollback artefact VisionClaw ADR-2137 §4 requires. The ledger route keeps recording what was served under which id.
 
 Producer: the bundle is produced by the released `ontomark` CLI (visionGraph `publish.yml`; VisionClaw's own build is retired behind gates). A **private** `--vault all` machine bundle, never published to the site, exists for VisionClaw's GPU view; the Loom continues to serve the public generation.
+
+## Amendment — 2026-11-16: nightly promotion with a recorded stamp
+
+Owner decision V-1 (16 November 2026): activate the semantic bundle with nightly promotion and a
+recorded promotion stamp. **Status: built and tested on branch `feat/nightly-promotion`; not merged,
+not deployed, nothing enabled on the Loom's host.**
+
+**What was wrong.** On 2026-11-15 the door's `/health` reported `visionGraph@c2cef6c4…` (built
+2026-10-21), 26 days and 196 commits behind `visionGraph`, with `promoted_at: null`. Nothing built or
+installed a newer closure, and nothing recorded when or by whom the served one was installed. D6
+named the reload timer's precondition but no step that produced a bundle to reload.
+
+**What this amendment adds (all in `loom-facade`).**
+
+1. `promote_generation` validates a built bundle, installs it with the existing `BundlePromoter`
+   protocol (in-flight sentinel, write beside, rename, marker last) and appends one JSON line to
+   `<data>/promotions.jsonl`. Validation is the strict reload check, plus: an `ontomark build`
+   marker that declares a source commit; the scaffold index, prose index and both Turtle files parse;
+   the commit exists in the source repository; and the bundle is not older than the installed
+   generation (its commit is not a strict ancestor of the installed one) unless `--allow-rollback`.
+   A refusal exits 1 and leaves the installed generation byte-for-byte untouched. The same
+   generation already installed is a no-op (exit 0, no log line).
+2. The marker it commits carries `promoted_at`, `promoted_by` and `previous_generation`. The service
+   reads them with the rest of the marker, so `/health` (`generation.promoted_at`, `promoted_by`,
+   `previous_generation`) and `/loom/generation` report them once a promoted bundle is loaded.
+3. `deploy/loom-nightly-promotion.{sh,service,timer}` fetch visionGraph, build with the pinned
+   release in `deploy/ontomark-release.env`, run `promote_vault_build` and `promote_generation`.
+
+**What did not change, and why it matters.** Reload is still a process boundary (ADR-135 closeout):
+a running process never swaps bundles, so it keeps serving the generation it loaded, and the reload
+tick (D6) refuses to restart onto a bundle that does not verify. A promotion therefore takes effect
+at the next restart, which the reload timer performs within five minutes; **the nightly is only
+useful with the reload timer enabled**. A restart onto a corrupted data directory is handled by the start-up fallback below. Rollback is
+`promote_generation --allow-rollback` on a retained bundle directory (see
+`docs/published-generation-reload.md`).
+
+**Drift corrected.** The operations document named `v0.1.0-rc.1` as the pinned `ontomark`; the pin is
+`deploy/ontomark-release.env` (`v0.9.0`), which the nightly sources.
+
+### Further decisions — 2026-11-16 (owner): start-up fallback, and the build flags
+
+**Status: built and tested on branch `feat/nightly-promotion`; not merged, not deployed, no image
+rebuilt, no timer enabled.** These two decisions supersede the paragraph above that left a start-up
+fallback to the owner.
+
+**A. Start-up fallback.** If the generation in the data directory fails to activate at start, the
+service serves the most recent retained previous generation that validates, and says so everywhere.
+
+- *Where previous generations are.* `loom-nightly-promotion.sh` keeps the newest `LOOM_KEEP_BUNDLES`
+  (default 5) built bundles at `$LOOM_STATE_DIR/bundles/<commit>/data`. They are outside the data
+  directory the container mounts, so the compose files mount that directory read-only at
+  `/app/retained-bundles` and set `LOOM_RETAINED_BUNDLES_DIR`. Unset or missing means no fallback
+  and the previous behaviour: refuse to serve.
+- *Which one.* The promotion log (`<data>/promotions.jsonl`) is read newest first; the generation
+  that failed is skipped; the first whose retained bundle passes promotion's own checks
+  (`promote::validate_bundle`: strict reload check, an `ontomark build` marker naming a hex source
+  commit, indexes and Turtle parse, id equal to the logged one) is served. A directory under the
+  root that the log does not name is never chosen. The one promotion check it cannot repeat is that
+  the commit exists in the source repository (the service has no checkout); the log line is its
+  stand-in, because promotion wrote it only after that check passed.
+- *Trigger.* Only an activation error with a commit marker present (a missing or mis-hashed
+  artefact, a promotion in flight), or a marker file that is not valid JSON. A data directory with no marker at all
+  still degrades as before, and the current generation's checks are not tightened.
+- *Reporting.* `/health` gains `status` (`serving` or `fallback`) and a `fallback` block (failed
+  generation or null if its marker is unreadable, the activation error, the generation served, and
+  where from). `ok` stays `true` so that the container health check and clients keep the node:
+  it answers, and what it serves is declared. `/loom/generation` carries the same `fallback` block;
+  the loaded phase stays `activated` and never becomes `served`; `serving_bundle.disk_matches_loaded`
+  is `false`; the MCP manifest lists `generation-fallback` as degraded; a warning is logged at start.
+- *Reload tooling.* `served_matches` rejects any report with a `fallback` block, so the reload tool
+  never records `served` for a fallback. If a restart lands in a fallback it exits 1 with
+  `the service is serving a fallback generation ...` and leaves `reload-pending`. If the data
+  directory itself no longer verifies, the tool refuses before touching the receipt, as it always
+  has, so the last `served` receipt then describes the generation that was previously served, not
+  the failed one; the non-zero exit and the `/health` fallback block are the signals.
+- *Recovery.* No state is persisted. A successful `promote_generation` (a newer commit, or the
+  same generation rebuilt, which repairs an installed copy that no longer verifies) replaces the data
+  directory and the next restart serves it normally. The nightly's "already current" test uses
+  `verify`, which fails on a corrupt install, so it rebuilds and promotes.
+- *Never.* The service never writes into the data directory or a retained bundle. The failed bundle
+  is left for inspection; the retained semantic database is copied to the runtime directory before it
+  is opened (redb mutates on open), and when there is no writable runtime directory it is not opened
+  and the semantic fallback is reported unavailable.
+- *Cost.* Retained bundles are now the full publish-flag build (about 0.9 GB each with the markdown
+  mirror and certificate; `data/` is about 160 MB of it), up to `LOOM_KEEP_BUNDLES` of them.
+
+**B. Build flags.** The nightly builds with the flags of visionGraph's own publish workflow
+(`.github/workflows/publish.yml` on `origin/main`, step "ontomark build → artefacts + content
+staging"; no other workflow there calls ontomark), the same pinned `ontomark` (`v0.9.0`,
+`deploy/ontomark-release.env`):
+
+| | Flags |
+|---|---|
+| before | `ontomark --repo <clone> build --out <out> --with-rvdb --stats` |
+| after | `ontomark --repo <clone> build --vault all --out <out> --publish-out <work>/publish --with-markdown-mirror --certificate-out <out>/certificate --stats --with-rvdb` |
+
+From the publish workflow: `--vault all`, `--out`, `--publish-out`, `--with-markdown-mirror`,
+`--certificate-out` (below `--out`, as there), `--stats`. Only the output paths differ (a private
+directory; the staging tree sits beside the bundle so it is not retained). Loom addition:
+`--with-rvdb`, because the bundle check requires `ontology-corpus.rvdb`, which the publish workflow
+does not produce. `--repo` selects the clean clone and is not a build flag. The workflow's
+`ontomark validate` and `repair bodies --check` are gates on the source and stay in visionGraph's CI.
+The served bundle is unchanged by it: built both ways on the same visionGraph commit, `class_count`,
+`page_count` and both digests in the marker are identical and the shared artefacts differ only in the
+build-time stamp (`--vault all` widens only the `publish/` staging, which the nightly discards). The
+retained bundles do grow, to about 0.9 GB each.
+

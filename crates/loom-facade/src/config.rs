@@ -94,6 +94,15 @@ pub struct Config {
     /// governance decisions only until the next promotion.
     pub ledger_path: String,
 
+    // --- start-up fallback (ADR-141 amendment) ---
+    /// `LOOM_RETAINED_BUNDLES_DIR` (unset). The directory holding previously
+    /// promoted, complete bundles laid out `<dir>/<commit>/data/` (what
+    /// `loom-nightly-promotion.sh` keeps). When the current generation fails to
+    /// activate at start, the newest generation in `promotions.jsonl` that
+    /// validates from here is served instead, loudly reported as a fallback.
+    /// Unset or missing means no fallback: a failed activation refuses to serve.
+    pub retained_bundles_dir: Option<String>,
+
     // --- Jev option (typed decisions; default OFF = current behaviour) ---
     /// `LOOM_JEV` (0) and the `LOOM_JEV_*` family: the opt-in System One gate
     /// (LM-01) and evidence rank/support (LM-02). See [`crate::jev`].
@@ -133,6 +142,9 @@ impl Config {
             backend_no_think: env_bool("LOOM_BACKEND_NO_THINK", d.backend_no_think),
             think_token_floor: env_parse("LOOM_THINK_TOKEN_FLOOR", d.think_token_floor),
             ledger_path: env_string("LOOM_LEDGER_PATH", d.ledger_path),
+            retained_bundles_dir: std::env::var("LOOM_RETAINED_BUNDLES_DIR")
+                .ok()
+                .filter(|v| !v.is_empty()),
             jev: crate::jev::JevConfig::from_env(),
         }
     }
@@ -175,6 +187,7 @@ impl Default for Config {
             backend_no_think: false,       // F3 OFF ⇒ current behaviour preserved
             think_token_floor: 0,          // OFF by default; Profile A sets 1536 explicitly
             ledger_path: "data/ledger.jsonl".to_owned(),
+            retained_bundles_dir: None,
             jev: crate::jev::JevConfig::default(),
         }
     }

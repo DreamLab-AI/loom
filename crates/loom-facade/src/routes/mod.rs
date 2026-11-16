@@ -177,6 +177,9 @@ async fn generation(State(st): State<AppState>) -> Response {
             "matches_loaded": st.generation.disk_matches_loaded(),
         },
         "drift": drift,
+        // `null` for the generation in the data directory; the descriptor when
+        // the node started on a retained previous generation (never `served`).
+        "fallback": st.generation.fallback().map_or(Value::Null, to_value),
     }))
     .into_response()
 }

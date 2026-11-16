@@ -1,0 +1,11 @@
+[Unit]
+Description=Nightly promotion of the visionGraph default branch into the Loom
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+RandomizedDelaySec=10min
+Persistent=true
+Unit=loom-nightly-promotion.service
+
+[Install]
+WantedBy=timers.target

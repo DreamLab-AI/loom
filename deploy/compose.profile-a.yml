@@ -81,6 +81,8 @@ services:
       # LOOM_EXPOSURE_APPEND additionally appends a "Not covered above" line to the
       # answer — left off here (telemetry only, no content mutation by default).
       # LOOM_EXPOSURE_APPEND: "0"
+      # Where the start-up fallback looks for previous generations (the mount below).
+      LOOM_RETAINED_BUNDLES_DIR: "/app/retained-bundles"
       RUST_LOG: "info"
     # Mirrored generation incl. ontology-corpus.rvdb — READ-ONLY (the entrypoint
     # copies the rvdb to a writable /run/loom before opening it; see entrypoint.sh).
@@ -89,6 +91,10 @@ services:
     # ontology-corpus.rvdb(+.generation.json). `../data` is the repo's mirror dir.
     volumes:
       - ../data:/app/data:ro
+      # Previous generations kept by loom-nightly-promotion.sh, for the start-up
+      # fallback (ADR-141 amendment). Read-only; override the host path with
+      # LOOM_BUNDLES_DIR if the nightly runs with a different LOOM_STATE_DIR.
+      - ${LOOM_BUNDLES_DIR:-${HOME}/.local/state/loom/bundles}:/app/retained-bundles:ro
       - loom-ledger:/var/lib/loom
     # CANONICAL artefact dir is `<repo>/data/` (this `../data`); `app/data/` is LEGACY & UNMOUNTED.
     # NB: app/mirror.sh writes to app/data/ — sync artefacts into ../data before `up`, or the log
