@@ -91,6 +91,7 @@ RUN set -eux; \
 # Build ONLY the serving binary's dependency closure (default features: no
 # pg-write / attest / semantic-fallback), locked to the committed lockfile.
 WORKDIR /build/loom
+ARG CARGO_BUILD_JOBS=12
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     cargo build --release --locked --bin loom-facade || true
 
