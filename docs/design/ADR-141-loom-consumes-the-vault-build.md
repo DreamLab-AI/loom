@@ -3,7 +3,7 @@
 Status: Proposed · 2026-09-22 · Extends ADR-135 (generation discipline), ADR-136 D4 (atomic
 mirror), ADR-138 (grounding contract) and ADR-140 (the two planes) · Amends ADR-140 D1 and D4 in
 place · Realises the Loom half of VisionFlow **PRD Sovereign Corpus** (Q8, Q10, §3.4) and serves
-its contract C5
+its contract C5 · Nightly promotion with a recorded stamp (amendment of 2026-11-16): **built and tested on branch `feat/nightly-promotion`, not merged, not deployed**
 
 <!-- lands with ontomark step 10 -->
 > Producer rename (EXP-10 step 10): the corpus build is `ontomark build`, a pinned released tag, and the `vault` name survives only as the governance adapter. The marker shapes, the served identity and the ledger described here are unchanged by the rename.
@@ -158,3 +158,43 @@ Owner decision, recorded in [Ontomark ADR-OM-005](https://github.com/DreamLab-AI
 The owner also records that identifiers need not be stable over time at this stage: re-minting across the synthetic corpus to best practice is permitted, provided each re-mint ships the identity mapping, visibility diff and rollback artefact VisionClaw ADR-2137 §4 requires. The ledger route keeps recording what was served under which id.
 
 Producer: the bundle is produced by the released `ontomark` CLI (visionGraph `publish.yml`; VisionClaw's own build is retired behind gates). A **private** `--vault all` machine bundle, never published to the site, exists for VisionClaw's GPU view; the Loom continues to serve the public generation.
+
+## Amendment — 2026-11-16: nightly promotion with a recorded stamp
+
+Owner decision V-1 (16 November 2026): activate the semantic bundle with nightly promotion and a
+recorded promotion stamp. **Status: built and tested on branch `feat/nightly-promotion`; not merged,
+not deployed, nothing enabled on the Loom's host.**
+
+**What was wrong.** On 2026-11-15 the door's `/health` reported `visionGraph@c2cef6c4…` (built
+2026-10-21), 26 days and 196 commits behind `visionGraph`, with `promoted_at: null`. Nothing built or
+installed a newer closure, and nothing recorded when or by whom the served one was installed. D6
+named the reload timer's precondition but no step that produced a bundle to reload.
+
+**What this amendment adds (all in `loom-facade`).**
+
+1. `promote_generation` validates a built bundle, installs it with the existing `BundlePromoter`
+   protocol (in-flight sentinel, write beside, rename, marker last) and appends one JSON line to
+   `<data>/promotions.jsonl`. Validation is the strict reload check, plus: an `ontomark build`
+   marker that declares a source commit; the scaffold index, prose index and both Turtle files parse;
+   the commit exists in the source repository; and the bundle is not older than the installed
+   generation (its commit is not a strict ancestor of the installed one) unless `--allow-rollback`.
+   A refusal exits 1 and leaves the installed generation byte-for-byte untouched. The same
+   generation already installed is a no-op (exit 0, no log line).
+2. The marker it commits carries `promoted_at`, `promoted_by` and `previous_generation`. The service
+   reads them with the rest of the marker, so `/health` (`generation.promoted_at`, `promoted_by`,
+   `previous_generation`) and `/loom/generation` report them once a promoted bundle is loaded.
+3. `deploy/loom-nightly-promotion.{sh,service,timer}` fetch visionGraph, build with the pinned
+   release in `deploy/ontomark-release.env`, run `promote_vault_build` and `promote_generation`.
+
+**What did not change, and why it matters.** Reload is still a process boundary (ADR-135 closeout):
+a running process never swaps bundles, so it keeps serving the generation it loaded, and the reload
+tick (D6) refuses to restart onto a bundle that does not verify. A promotion therefore takes effect
+at the next restart, which the reload timer performs within five minutes; **the nightly is only
+useful with the reload timer enabled**. There is deliberately no start-up fallback to an older
+bundle: a restart onto a corrupted data directory still refuses to serve (D6, "no automatic rollback
+replaces a failed generation silently"). Whether to add one is an owner decision. Rollback is
+`promote_generation --allow-rollback` on a retained bundle directory (see
+`docs/published-generation-reload.md`).
+
+**Drift corrected.** The operations document named `v0.1.0-rc.1` as the pinned `ontomark`; the pin is
+`deploy/ontomark-release.env` (`v0.9.0`), which the nightly sources.

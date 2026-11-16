@@ -1,6 +1,10 @@
 # Published generation reload
 
 <!-- lands with ontomark step 10 -->
+> Promotion (building, validating, installing and recording a generation) is documented in
+> [§ Promotion and rollback](#promotion-and-rollback) below; this binary only reloads what is
+> already installed.
+
 The `reload_published_generation` binary (crate `loom-facade`) is the once-per-tick transition from a
 **complete published bundle** to a **verified served bundle**. The example user
 timer runs every five minutes. It is supplied but not installed or enabled.
@@ -115,8 +119,8 @@ has three steps, and only the last touches HP.
 **1. Build** from a clean `visionGraph` checkout with a released `ontomark`. Pin
 `ontomark` to a release tag and checksum, never to a branch, and confirm
 `ontomark --version` reports the release's CLI version. The release pin file
-`deploy/ontomark-release.env` pins the published `v0.1.0-rc.1` Linux x86-64 asset;
-its CLI version is `0.1.0`. The typed serving readers use the independent
+`deploy/ontomark-release.env` pins the published Linux x86-64 asset (tag and sha256; today
+`v0.9.0`). Read the file, not this document, for the current pin. The typed serving readers use the independent
 `ontomark-compile` crate release with its reasoner disabled. The `vault` baked into agentbox images up to at least
 2026-10-02 (0.1.0) predates the portable-records file and writes JSONL under the
 database's name, `ontology-corpus.rvdb`, which `promote_vault_build` cannot use,
@@ -174,3 +178,126 @@ ssh john@10.10.10.1 "set -e; cd ~/githubs/loom
 The marker is replaced last and atomically, and the in-flight file makes any tick
 that runs during the copy refuse rather than reload a half-copied bundle. The next
 tick, or a manual one, then restarts `loom` and writes `served`.
+
+## Promotion and rollback
+
+Promotion is the explicit, recorded step that puts a built bundle in service. It is
+`promote_generation` (crate `loom-facade`), run nightly by `deploy/loom-nightly-promotion.sh`.
+
+```bash
+promote_generation --bundle DIR --data-dir DIR --source-repo DIR \
+    [--log FILE] [--promoted-by NAME] [--allow-rollback]
+```
+
+`--bundle` is the `data/` directory `ontomark build` wrote (after `promote_vault_build`);
+`--data-dir` is the directory the service reads; `--source-repo` is a visionGraph checkout.
+
+**What it does, in order.** It takes a lock beside the log, validates the bundle without touching
+`--data-dir`, compares it with what is installed, installs it, then logs it.
+
+- Validation: the strict reload check (six artefacts, hashes and sizes, semantic sidecar,
+  `visionGraph@<commit>` id), an `ontomark build` marker that declares its source commit, the
+  scaffold and prose indexes and both Turtle files parse, and the commit exists in `--source-repo`.
+  The semantic database is not opened (redb mutates it on open).
+- Comparison: the same generation already installed prints `current <id>`, exits 0 and writes
+  nothing. A bundle whose commit is a strict ancestor of the installed one is refused as older.
+  So is one that cannot be ordered (the installed marker is legacy or its commit is not in the
+  repository). `--allow-rollback` overrides both.
+- Install: the existing `BundlePromoter` protocol: `.promotion-in-flight` sentinel, each artefact
+  written beside as `<name>.incoming` and renamed, the marker renamed last. The marker adds
+  `promoted_at` (UTC), `promoted_by` and `previous_generation`. The bundle directory is not modified.
+- Log: one JSON line appended and fsynced.
+
+Exit status: `0` after `promoted <id>` or `current <id>`; `1` for a refusal or failure; `2` for usage.
+A refusal leaves the installed generation untouched. If the swap itself fails part-way (disk full),
+the directory is left uncommitted, which the service and the reload tick both refuse; run
+`promote_generation` again with a good bundle to repair it.
+
+**Where the log is.** `<data-dir>/promotions.jsonl` unless `--log` says otherwise (the nightly uses
+the default). Fields: `generation`, `source_repository`, `source_remote`, `commit`, `built_by`,
+`promoted_at`, `promoted_by`, `previous_generation`, `content_digest`, `bundle`.
+
+```bash
+tail -n 3 ~/githubs/loom/data/promotions.jsonl | jq .
+curl -s http://127.0.0.1:8084/health | jq '.generation | {id, promoted_at, promoted_by, previous_generation}'
+```
+
+**When it takes effect.** The running service never swaps bundles; it reports the generation it
+loaded, and shows `serving_bundle.disk_matches_loaded: false` while a promoted one waits. The reload
+timer restarts it within five minutes. Enable both timers (below), or run the reload tick by hand.
+
+**Rollback.** Every line of the log names the `bundle` directory it was installed from, and the
+nightly keeps the newest five under `~/.local/state/loom/bundles/<sha>/`. To go back to the
+generation named in a line's `previous_generation`, find that id's bundle in the log and promote it
+again with the flag, then reload:
+
+```bash
+BUNDLE=$(jq -r 'select(.generation=="visionGraph@<sha>") | .bundle' ~/githubs/loom/data/promotions.jsonl | tail -n 1)
+~/githubs/loom/target/release/promote_generation --bundle "$BUNDLE" \
+    --data-dir ~/githubs/loom/data --source-repo ~/githubs/visionGraph \
+    --promoted-by "$USER" --allow-rollback
+systemctl --user start loom-generation-reload.service     # or wait for the timer
+```
+
+The rollback is itself logged (`promoted_by` is you, `previous_generation` is the bad one). The
+nightly will promote the newest commit again the next night; stop it first with
+`systemctl --user disable --now loom-nightly-promotion.timer` if the rollback is meant to last.
+A bundle that has been pruned cannot be re-promoted; rebuild it from its commit.
+
+**The nightly** (`deploy/loom-nightly-promotion.sh`, with a user service and timer at 03:15 plus up
+to ten minutes of delay) fetches visionGraph, resolves `origin/HEAD`, and exits 0 with `current` if
+that generation is already installed and verifies. Otherwise it builds from a clean detached clone
+with the `ontomark` pinned in `deploy/ontomark-release.env` (downloaded once, sha256-verified, cached
+under `~/.local/state/loom/ontomark/<tag>/`), builds the semantic database with `promote_vault_build`,
+renames the finished bundle to `~/.local/state/loom/bundles/<sha>` and runs `promote_generation`. The
+build happens outside the data directory, so the service never sees a half-built bundle. It does not
+restart the service.
+
+### Deploy on the Loom's host, and switch the nightly on
+
+The running Loom is on the HP node (colocated with the model, `:8084` DNAT'd to the LAN; see
+`docs/estate-network.md`). Nothing below is done by the repository; it is the owner's sequence, in
+this order, run on HP (reach it from the machinelearn host shell: `ssh john@10.10.10.1`).
+
+```bash
+cd ~/githubs/loom
+git fetch origin && git merge --ff-only origin/main      # after feat/nightly-promotion is merged
+
+# 1. Build the three binaries (promote_vault_build lives in a different crate).
+cargo build --release -p loom-facade --bin promote_generation --bin reload_published_generation
+cargo build --release -p loom-vector-ruvector --bin promote_vault_build
+
+# 2. Rebuild the image so /health can report promoted_by and previous_generation.
+#    (See the build line at the top of deploy/compose.profile-a.yml; a rebuild restarts the
+#    service onto the data directory as it is now.)
+
+# 3. Dry-run the nightly once, by hand, as the service user. This also shows whether fetch and
+#    release-download credentials exist in a systemd context. It builds, validates, installs and logs.
+install -Dm644 deploy/loom-nightly-promotion.service ~/.config/systemd/user/loom-nightly-promotion.service
+install -Dm644 deploy/loom-nightly-promotion.timer   ~/.config/systemd/user/loom-nightly-promotion.timer
+systemctl --user daemon-reload                            # installs the units; enables nothing
+systemctl --user start loom-nightly-promotion.service
+journalctl --user -u loom-nightly-promotion.service -n 80 --no-pager
+tail -n 1 data/promotions.jsonl | jq .
+stat -c '%a %n' data data/.generation.json data/ontology.ttl      # expect 755 / 644 / 644
+
+# 4. Let the existing reload tick restart the service onto it, then read the evidence.
+systemctl --user start loom-generation-reload.service
+cat ~/.local/state/loom/reload.json                        # expect "state": "served"
+curl -s http://127.0.0.1:8084/health | jq '.generation | {id, promoted_at, promoted_by, previous_generation}'
+
+# 5. Only then enable both timers. (Install the reload units first, as in
+#    § When to enable the timer, if they are not installed yet.)
+systemctl --user enable --now loom-nightly-promotion.timer loom-generation-reload.timer
+loginctl enable-linger "$USER"
+systemctl --user list-timers 'loom-*'
+```
+
+If the checkouts are not at `~/githubs/loom` and `~/githubs/visionGraph`,
+set `LOOM_HOME`, `LOOM_DATA_DIR`, `LOOM_SOURCE_REPO` with `systemctl --user edit
+loom-nightly-promotion.service` (`[Service]` then `Environment=...`). The container's user is
+`nonroot` (uid 65532): `promote_generation` makes installed files 0644 and directories 0755 whatever
+the build umask, so the container can read them. Each retained bundle directory is the full
+`ontomark build` output, several hundred MB; `LOOM_KEEP_BUNDLES` (default 5) bounds the space.
+
+To stop the nightly: `systemctl --user disable --now loom-nightly-promotion.timer`.
