@@ -80,9 +80,103 @@ fn leading_select_re() -> &'static Regex {
     })
 }
 
+/// Blank out everything a keyword scan must not see: string literals (`"..."`,
+/// `'...'`, and their triple-quoted long forms, honouring backslash escapes),
+/// IRI references (`<...>`) and `#` comments. Masked spans are replaced with
+/// spaces (newlines kept), so keyword boundaries and offsets are preserved.
+///
+/// A `<` only opens an IRI when a `>` follows before any character that cannot
+/// occur in an IRIREF (whitespace, `<"{}|^` or a backtick or backslash), so
+/// the comparison operator in `FILTER(?a < ?b)` is left alone. An unterminated
+/// literal is left UNMASKED, which fails closed: any keyword inside it is still seen.
+fn mask_non_code(query: &str) -> String {
+    let chars: Vec<char> = query.chars().collect();
+    let mut out: Vec<char> = Vec::with_capacity(chars.len());
+    let blank = |c: char| if c == '\n' { '\n' } else { ' ' };
+    let mut i = 0;
+    while i < chars.len() {
+        let c = chars[i];
+        match c {
+            '#' => {
+                while i < chars.len() && chars[i] != '\n' {
+                    out.push(' ');
+                    i += 1;
+                }
+            }
+            '"' | '\'' => {
+                let long = i + 2 < chars.len() && chars[i + 1] == c && chars[i + 2] == c;
+                let qlen = if long { 3 } else { 1 };
+                let mut j = i + qlen;
+                let mut end = None;
+                while j < chars.len() {
+                    if chars[j] == '\\' {
+                        j += 2;
+                        continue;
+                    }
+                    if chars[j] == c
+                        && (!long
+                            || (j + 2 < chars.len() && chars[j + 1] == c && chars[j + 2] == c))
+                    {
+                        end = Some(j + qlen);
+                        break;
+                    }
+                    if !long && chars[j] == '\n' {
+                        break;
+                    }
+                    j += 1;
+                }
+                if let Some(e) = end {
+                    // Keep the delimiters so the shape stays a literal, blank the body.
+                    out.extend(std::iter::repeat_n(c, qlen));
+                    out.extend(chars[i + qlen..e - qlen].iter().map(|&x| blank(x)));
+                    out.extend(std::iter::repeat_n(c, qlen));
+                    i = e;
+                } else {
+                    out.push(c);
+                    i += 1;
+                }
+            }
+            '<' => {
+                let mut j = i + 1;
+                let mut close = None;
+                while j < chars.len() {
+                    let d = chars[j];
+                    if d == '>' {
+                        close = Some(j);
+                        break;
+                    }
+                    if d.is_whitespace()
+                        || matches!(d, '<' | '"' | '{' | '}' | '|' | '^' | '`' | '\\')
+                    {
+                        break;
+                    }
+                    j += 1;
+                }
+                if let Some(e) = close {
+                    out.push('<');
+                    out.extend(chars[i + 1..e].iter().map(|_| ' '));
+                    out.push('>');
+                    i = e + 1;
+                } else {
+                    out.push(c);
+                    i += 1;
+                }
+            }
+            _ => {
+                out.push(c);
+                i += 1;
+            }
+        }
+    }
+    out.into_iter().collect()
+}
+
 /// Reject writes/SERVICE and require a read form. Ports `LoomGraph.validate`;
 /// both failures are `BadQuery` (→ HTTP 400 at the router edge).
 pub fn validate(query: &str) -> Result<(), LoomError> {
+    // Keywords inside literals, IRIs and comments are data, not operations.
+    let code = mask_non_code(query);
+    let query = code.as_str();
     if forbidden_re().is_match(query) {
         return Err(LoomError::BadQuery(
             "forbidden keyword (write/SERVICE) — the Loom store is read-only".to_owned(),
@@ -102,9 +196,10 @@ pub fn validate(query: &str) -> Result<(), LoomError> {
 /// `re.match(r"\s*SELECT")` anchoring lets bypass the clamp — and only when no
 /// `LIMIT n` already appears. Non-SELECT read forms are never LIMIT-injected.
 pub fn clamp(query: &str, default_limit: usize) -> String {
-    if read_form_re().is_match(query)
-        && leading_select_re().is_match(query)
-        && !limit_re().is_match(query)
+    let code = mask_non_code(query);
+    if read_form_re().is_match(&code)
+        && leading_select_re().is_match(&code)
+        && !limit_re().is_match(&code)
     {
         // Python: query.rstrip().rstrip(";") — trim trailing whitespace, then
         // trailing semicolons, then append the LIMIT on a fresh line.
@@ -405,6 +500,58 @@ mod tests {
             // And lowercase — the clamp is case-insensitive.
             assert!(validate(&verb.to_lowercase()).is_err(), "lowercase {verb}");
         }
+    }
+
+    #[test]
+    fn update_keywords_inside_literals_iris_and_comments_pass() {
+        let ok = [
+            r#"SELECT ?s WHERE { ?s ?p ?l FILTER(CONTAINS(LCASE(STR(?l)), "add")) }"#,
+            r#"SELECT ?s WHERE { ?s ?p ?l FILTER(CONTAINS(?l, "move")) }"#,
+            "SELECT ?s WHERE { ?s ?p 'insert delete drop' }",
+            "SELECT ?s WHERE { ?s ?p \"\"\"line one\nclear copy\"\"\" }",
+            r#"SELECT ?s WHERE { ?s ?p "say \"load\" now" }"#,
+            "SELECT ?s WHERE { ?s <urn:x:create> ?o }",
+            "SELECT ?s WHERE { ?s ?p ?o } # drop everything\n",
+            "# INSERT in a leading comment\nSELECT * WHERE { ?s ?p ?o }",
+            "SELECT * WHERE { ?s ?p ?o FILTER(?o < 5 && ?o > 1) }",
+        ];
+        for q in ok {
+            assert!(validate(q).is_ok(), "should pass: {q}");
+        }
+    }
+
+    #[test]
+    fn real_update_operations_stay_refused() {
+        let bad = [
+            "INSERT DATA { <urn:a> <urn:b> <urn:c> }",
+            "insert data { <urn:a> <urn:b> \"x\" }",
+            "DELETE WHERE { ?s ?p ?o }",
+            "LOAD <http://example.org/data>",
+            "CLEAR ALL",
+            "DROP GRAPH <urn:g>",
+            "CREATE GRAPH <urn:g>",
+            "ADD <urn:a> TO <urn:b>",
+            "MOVE <urn:a> TO <urn:b>",
+            "COPY <urn:a> TO <urn:b>",
+            "PrEfIx ex: <urn:x#> InSeRt DaTa { ex:a ex:b ex:c }",
+            "PREFIX ex: <urn:x#>\nPREFIX y: <urn:y#>\nDELETE { ?s ?p ?o } WHERE { ?s ?p ?o }",
+            "PREFIX ex: <urn:x#> MOVE ex:a TO ex:b",
+            "SELECT * WHERE { ?s ?p \"x\" } ; DROP ALL",
+            "SELECT * WHERE { SERVICE <http://example.org/sparql> { ?s ?p ?o } }",
+            // A literal closing must not swallow a following real keyword.
+            "SELECT * WHERE { ?s ?p \"a\" } ; ADD <urn:a> TO <urn:b>",
+            // Unterminated literal fails closed.
+            "SELECT * WHERE { ?s ?p \"oops } ; DROP ALL",
+        ];
+        for q in bad {
+            assert!(validate(q).is_err(), "should be refused: {q}");
+        }
+    }
+
+    #[test]
+    fn limit_ignores_literal_and_comment_text() {
+        let q = "SELECT ?s WHERE { ?s ?p \"LIMIT 5\" }";
+        assert!(clamp(q, 7).ends_with("LIMIT 7"));
     }
 
     #[test]
