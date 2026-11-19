@@ -168,6 +168,8 @@ fn host_of(url: &str) -> Option<String> {
 /// unique-local, `.local`/`.internal`/`.lan`, or a single-label name (a compose
 /// service such as `loom` or `systemone`).
 #[must_use]
+// The suffixes are DNS labels on a lowercased host name, not file extensions.
+#[allow(clippy::case_sensitive_file_extension_comparisons)]
 pub fn is_local_url(url: &str) -> bool {
     use std::net::IpAddr;
     let Ok(u) = reqwest::Url::parse(url) else {
@@ -196,8 +198,8 @@ pub fn is_local_url(url: &str) -> bool {
         || d.ends_with(".localhost")
 }
 
-fn truthy(v: Option<String>) -> bool {
-    matches!(v.as_deref(), Some(s) if !matches!(s, "" | "0" | "false" | "no"))
+fn truthy(v: Option<&str>) -> bool {
+    matches!(v, Some(s) if !matches!(s, "" | "0" | "false" | "no"))
 }
 
 /// Resolve the endpoint (contract §2, first match wins) for a **local-only**
@@ -216,7 +218,7 @@ pub fn resolve_endpoint(
 
     // 1. explicit config
     if let Some(url) = nonempty("LOOM_JEV_ENDPOINT") {
-        let declared_local = truthy(get("LOOM_JEV_LOCAL"));
+        let declared_local = truthy(get("LOOM_JEV_LOCAL").as_deref());
         if !(declared_local || is_local_url(&url) || allow_cloud) {
             return Err(Fallback::NonLocalRefused);
         }
@@ -227,9 +229,9 @@ pub fn resolve_endpoint(
         });
     }
     // 2. agentbox loopback proxy (holds the vendor key: no Authorization)
-    if truthy(get("AGENTBOX_SYSTEM_ONE_PROXY")) {
+    if truthy(get("AGENTBOX_SYSTEM_ONE_PROXY").as_deref()) {
         if let Some(url) = nonempty("AGENTBOX_SYSTEM_ONE_ENDPOINT") {
-            if !(truthy(get("AGENTBOX_SYSTEM_ONE_BACKEND_LOCAL")) || allow_cloud) {
+            if !(truthy(get("AGENTBOX_SYSTEM_ONE_BACKEND_LOCAL").as_deref()) || allow_cloud) {
                 return Err(Fallback::NonLocalRefused);
             }
             return Ok(Endpoint {
@@ -386,16 +388,16 @@ impl JevConfig {
     #[must_use]
     pub fn from_lookup(get: &dyn Fn(&str) -> Option<String>) -> Self {
         let d = Self::default();
-        let enabled = truthy(get("LOOM_JEV"));
+        let enabled = truthy(get("LOOM_JEV").as_deref());
         if !enabled {
             return d;
         }
         let flag = |k: &str, dv: bool| match get(k) {
             None => dv,
-            Some(v) => truthy(Some(v)),
+            Some(v) => truthy(Some(v.as_str())),
         };
         let num = |k: &str| get(k).and_then(|v| v.parse::<f64>().ok());
-        let allow_cloud = truthy(get("LOOM_JEV_ALLOW_CLOUD"));
+        let allow_cloud = truthy(get("LOOM_JEV_ALLOW_CLOUD").as_deref());
         Self {
             enabled,
             gate: flag("LOOM_JEV_GATE", d.gate),
@@ -842,19 +844,16 @@ pub async fn apply_rank(
     let mut reordered: Vec<ConceptMatch> = order.iter().map(|&i| head[i].clone()).collect();
     reordered.extend(scaffold.seeds.iter().skip(MAX_RECORDS).cloned());
 
-    let candidate = match retriever
+    let Ok(candidate) = retriever
         .assemble(
             query,
             &reordered,
             opts.clone().with_path(scaffold.fusion_path),
         )
         .await
-    {
-        Ok(s) => s,
-        Err(_) => {
-            log_fallback("rank", RANK_QUESTION_SET, &Fallback::InvariantBroken);
-            return scaffold;
-        }
+    else {
+        log_fallback("rank", RANK_QUESTION_SET, &Fallback::InvariantBroken);
+        return scaffold;
     };
     let same_gate = candidate.engaged
         && candidate.effective_budget == scaffold.effective_budget

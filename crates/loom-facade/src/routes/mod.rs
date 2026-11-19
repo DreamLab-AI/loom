@@ -338,6 +338,9 @@ async fn semantic_search(State(st): State<AppState>, body: Bytes) -> Response {
 
 // --- POST /v1/chat/completions ----------------------------------------------
 
+// One request handler read top to bottom; splitting it would scatter the
+// order in which the scaffold, the Jev options and the upstream call happen.
+#[allow(clippy::too_many_lines)]
 async fn chat_completions(State(st): State<AppState>, body: Bytes) -> Response {
     let mut body_obj: Map<String, Value> = match parse_body(&body) {
         Value::Object(m) => m,

@@ -61,18 +61,18 @@ impl JevTransport for MockTransport {
     }
 }
 
-fn endpoint() -> Result<Endpoint, Fallback> {
-    Ok(Endpoint {
+fn endpoint() -> Endpoint {
+    Endpoint {
         url: "http://127.0.0.1:1/v1/systemone".to_owned(),
         model: "jev-test".to_owned(),
         bearer_env: None,
-    })
+    }
 }
 
 fn cfg(t: &Arc<MockTransport>) -> JevConfig {
     JevConfig {
         enabled: true,
-        endpoint: endpoint(),
+        endpoint: Ok(endpoint()),
         transport: TransportHandle(t.clone()),
         ..JevConfig::default()
     }
@@ -142,10 +142,9 @@ async fn run(jev: Option<JevConfig>, req_body: Value) -> Run {
     let env = b.build();
     let (status, body) = call(env.router(), "POST", "/v1/chat/completions", Some(req_body)).await;
     let reqs = server.received_requests().await.unwrap();
-    let forwarded = reqs
-        .first()
-        .map(|r| serde_json::from_slice::<Value>(&r.body).unwrap())
-        .unwrap_or(Value::Null);
+    let forwarded = reqs.first().map_or(Value::Null, |r| {
+        serde_json::from_slice::<Value>(&r.body).unwrap()
+    });
     Run {
         status,
         body: norm(body),
@@ -294,6 +293,7 @@ async fn low_confidence_rank_and_support_fall_back_too() {
     let baseline = run(None, chat()).await;
     let t = MockTransport::new(|req| {
         // Reverse ranking with LOW confidence, and a support answer out of range.
+        #[allow(clippy::cast_precision_loss)] // i is a candidate index below ten
         let mut a = answer_for(req, &|i| 3.0 - i as f64, 0.9);
         if let Some(m) = a["answers"].as_object_mut() {
             for v in m.values_mut() {
@@ -352,7 +352,7 @@ async fn gate_request_is_a_valid_system_one_body() {
             .all(|k| ["model", "state", "questions"].contains(&k.as_str())),
         "{keys:?}"
     );
-    assert!(!GATE_QUESTION_SET.is_empty());
+    assert_ne!(GATE_QUESTION_SET, "");
 }
 
 // --- 3. accept paths ---------------------------------------------------------
@@ -422,6 +422,7 @@ async fn rank_reorders_within_the_same_budget_and_keeps_every_source() {
     let base_sys = system_text(&baseline.forwarded);
 
     // Prefer the LAST-retrieved candidate: the reverse of retrieval order.
+    #[allow(clippy::cast_precision_loss)] // i is a candidate index below ten
     let t = MockTransport::new(|req| Ok(answer_for(req, &|i| 0.5 * i as f64, 0.9)));
     let mut c = cfg(&t);
     c.gate = false;
@@ -647,7 +648,7 @@ async fn a_transport_that_ignores_its_deadline_is_still_cut_off() {
     let baseline = run(None, chat()).await;
     let mut c = JevConfig {
         enabled: true,
-        endpoint: endpoint(),
+        endpoint: Ok(endpoint()),
         transport: TransportHandle(Arc::new(Hang)),
         ..JevConfig::default()
     };
