@@ -3,7 +3,6 @@
     clippy::too_many_lines,
     clippy::similar_names,
     clippy::too_many_arguments,
-    items_after_statements,
     clippy::items_after_statements
 )]
 
