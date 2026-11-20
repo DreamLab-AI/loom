@@ -132,7 +132,13 @@ fn truncate(s: &str) -> String {
     if s.len() <= CAP {
         s.to_owned()
     } else {
-        format!("{}…", &s[..CAP])
+        // Cut on a char boundary: a byte slice through a multi-byte character
+        // (a non-ASCII error body) would panic the request.
+        let mut end = CAP;
+        while !s.is_char_boundary(end) {
+            end -= 1;
+        }
+        format!("{}…", &s[..end])
     }
 }
 
@@ -230,6 +236,36 @@ mod tests {
 
     fn approx(a: f32, b: f32) -> bool {
         (a - b).abs() < 1e-6
+    }
+
+    /// COV-B-F2: a non-ASCII error body must truncate on a char boundary, not
+    /// panic (a byte slice through a multi-byte character aborts the request).
+    #[test]
+    fn truncate_never_splits_a_multibyte_character() {
+        // 199 ASCII bytes then a 3-byte char straddling the 200-byte cap.
+        let body = format!("{}€€€", "a".repeat(199));
+        let out = truncate(&body);
+        assert!(out.ends_with('…'));
+        assert_eq!(out.trim_end_matches('…'), "a".repeat(199));
+        // A short non-ASCII body is returned whole.
+        assert_eq!(truncate("héllo"), "héllo");
+    }
+
+    #[tokio::test]
+    async fn non_ascii_error_body_is_a_labelled_embed_error_not_a_panic() {
+        let server = MockServer::start().await;
+        let body = format!("{}€€€", "a".repeat(199));
+        Mock::given(method("POST"))
+            .and(path("/embeddings"))
+            .respond_with(ResponseTemplate::new(500).set_body_string(body))
+            .mount(&server)
+            .await;
+        let embedder = XinferenceEmbedder::new(&server.uri(), Duration::from_secs(5));
+        let err = embedder
+            .embed_batch(&["alpha".to_owned()])
+            .await
+            .expect_err("a 500 must surface as an error");
+        assert!(matches!(err, LoomError::Embed(_)), "{err:?}");
     }
 
     #[tokio::test]
