@@ -73,6 +73,15 @@ agent access estate-wide as **Rust CLI-first, no MCP inside the estate**.
    `loom-client`; `/mcp` remains, and is kept solely as the door for hosts outside the estate,
    which are remote by definition and speak HTTP. A stdio transport serves an agent running beside
    the corpus — exactly the case that now uses the CLI — so it had no remaining consumer.
+> Note 2026-11-20: the clause "refusing a declared `content_digest` that disagrees with the artefact
+> set" no longer holds, deliberately. The marker's `content_digest` is the source-corpus digest `vault
+> build` / `ontomark-compile` computes over the page files (`ontomark/crates/ontomark-compile/src/build/generation.rs:221`),
+> which cannot be recomputed from the artefacts, so a comparison could never agree and refused every real
+> bundle. Commit `0ff176c` (2026-09-23) made the reloader carry it and not compare it; the Rust port keeps
+> that (`crates/loom-facade/src/reload.rs:214-218`, `mirror.rs:381-383`). Tampering is caught by the
+> per-artefact sha256/size checks (`reload.rs:244-249`) and the serving identity is the recomputed artefact
+> digest. Adding the comparison would be wrong unless the builder also publishes an artefact-set digest.
+
 6. **The reload timer's precondition is named and its commands are written down.** It is enabled
    after the **first clean promotion of a `vault build` bundle** verified by one manual tick whose
    receipt reads `served`; `docs/published-generation-reload.md` carries the exact

@@ -360,6 +360,12 @@ never a new canonical store.
 Binding posture — sig-verify at the derived door AND the RuVector read; provider door
 strict-nip98; write-path-never-widened.
 
+> Note 2026-11-20: VisionClaw does not yet meet this bullet. `POST /api/ontology/derived` (and `regenerate`,
+> the reads) are gated `RequireAuth::power_user()` only (`src/handlers/ontology_derived_handler.rs:231`;
+> the module doc, lines 15-17, says the gate mirrors the privileged ontology scope) and the handler binds the
+> caller as `_auth`, so there is no BIP-340 envelope check and no distiller-provider allowlist. Who may write
+> `:summary` is an authorisation-policy choice, so nothing was changed; recorded as an owner decision (AW1-09).
+
 - **Verify the BIP-340 envelope sig at BOTH the `/derived` write door AND the RuVector read**
   (recombine), against a **distiller-provider allowlist** — NOT generic `power_user`. Generic
   `power_user` must NOT suffice to write `:summary`. Unsigned/unverifiable → 400 (write) /
